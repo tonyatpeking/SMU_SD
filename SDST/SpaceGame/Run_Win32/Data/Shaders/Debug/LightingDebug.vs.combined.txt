@@ -1,0 +1,137 @@
+#version 420 core
+
+layout(binding=1, std140) uniform uboTimeClock
+{
+	float GAME_DELTA_TIME;
+	float GAME_TIME;
+	float SYSTEM_DELTA_TIME;
+	float SYSTEM_TIME;
+};
+
+layout(binding=2, std140) uniform uboCamera
+{
+	mat4 VIEW;
+	mat4 PROJECTION;
+	mat4 VP;
+	vec3 CAMERA_POSITION;
+	float PAD_CAM_0;
+};
+
+layout(binding=3, std140) uniform uboInstance
+{
+	mat4 MODEL;
+	mat4 MVP;
+	vec4 TINT;
+	float SPECULAR_AMOUNT;
+	float SPECULAR_POWER;
+	float PAD_INST_0;
+	float PAD_INST_1;
+};
+
+layout(binding=5, std140) uniform uboGlobal
+{
+	vec2 WINDOW_SIZE;
+};
+
+struct Light
+{
+	vec4 color; // alpha is intensity
+
+    vec3 position;
+    float isPointLight;  // 1 for point light, 0 for directional light
+
+	vec3 direction; // the direction the light is pointing
+    float sourceRadius; // the physical size of the light, affects attenuation
+
+    float coneInnerDot;
+    float coneOuterDot;
+    float pad1;
+    float pad0;
+};
+
+//MAX_LIGHTS can be set in cpp with define injection
+#ifndef MAX_LIGHTS
+#define MAX_LIGHTS (8)
+#endif
+
+layout(binding=6, std140) uniform uboLights
+{
+	vec4 AMBIENT;  // xyz color, w intensity
+	Light LIGHTS[MAX_LIGHTS];
+};                                                          
+//#include "Data/Shaders/Includes/RendererUniformBlocks.glsl"
+#define RangeMap(val, inStart, inEnd, outStart, outEnd) \
+(((val) - (inStart)) / ((inEnd) - (inStart)) * ((outEnd) - (outStart)) + (outStart))
+
+
+#define RangeMapTo01(val, inStart, inEnd) \
+(((val) - (inStart)) / ((inEnd) - (inStart)))
+
+
+#define RangeMapFrom01(val, outStart, outEnd) \
+(((val) * ((outEnd) - (outStart)) + (outStart))
+
+           
+//#include "Data/Shaders/Includes/Math.glsl"
+vec3 ComputeDiffuse( vec3 dirToLight, vec4 lightColor, vec3 fragNormal )
+{
+    float dot3 = dot(dirToLight, fragNormal);
+    return max( dot3, 0 ) * lightColor.xyz;
+}
+
+vec3 ComputeSpecular( vec3 dirToLight, vec4 lightColor,
+    vec3 camDir, vec3 fragNormal, float specAmount, float specPower )
+{
+    vec3 reflectDir = reflect( -dirToLight, fragNormal );
+    float dotReflect = max( 0, dot( camDir, reflectDir ) );
+    float specFactor = specAmount * pow( dotReflect, specPower );
+    return specFactor * lightColor.xyz;
+}
+
+//from https://imdoingitwrong.wordpress.com/2011/01/31/light-attenuation/
+float ComputeAttenuation( float lightDist, float sourceRadius )
+{
+    float temp = lightDist / sourceRadius + 1;
+    return 1.0f / (temp * temp);
+}
+
+vec4 NormalToColor( vec3 normal )
+{
+    // maps -1,1 to 0,1
+    return vec4( normal * 0.5 + 0.5, 1 );
+}                          
+//#include "Data/Shaders/Includes/LightFunctions.glsl"
+
+    
+//#include "Data/Shaders/Includes/Common.glsl"
+
+in vec3 POSITION;
+in vec4 COLOR;
+in vec2 UV;
+in vec3 NORMAL;
+in vec4 TANGENT;
+
+out vec4 passColor;
+out vec2 passUV;
+out vec3 passWorldNormal;
+out vec3 passWorldTangent;
+out vec3 passWorldBitangent;
+out vec3 passWorldPos;
+
+void main( void )
+{
+    vec4 localPos = vec4( POSITION, 1 );
+    vec4 worldPos = MODEL * localPos;
+    vec4 cameraPos = VIEW * worldPos;
+    vec4 clipPos = PROJECTION * cameraPos;
+
+    gl_Position = clipPos;
+
+    passColor = COLOR * TINT;
+    passUV = UV;
+    passWorldNormal = ( MODEL * vec4( NORMAL, 0.0f )).xyz;
+    passWorldTangent = ( MODEL * vec4( TANGENT.xyz, 0.0f )).xyz;
+	passWorldBitangent = cross( passWorldTangent, passWorldNormal ) * TANGENT.w;
+    passWorldPos = worldPos.xyz;
+}                                
+

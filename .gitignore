@@ -3,7 +3,7 @@
 *.lo
 *.o
 *.obj
-!data/*/*.obj
+!**/Data/**/*.obj
 
 # Precompiled Headers
 *.gch
@@ -98,3 +98,8 @@ data/log/
 data/screenshot/
 *.log
 data/config/user.config
+
+
+**/.vs/
+**/Temporary/
+**/Screenshots/

@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="General">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Entities">
+      <UniqueIdentifier>{1f6d6060-0cc2-4c00-be5c-16659c8b6ce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map">
+      <UniqueIdentifier>{a0a0d815-d5b5-4bfb-90a0-47a86bad7b74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{9f60a2fe-5dcb-4ee8-aa27-9a878f5d7b9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Fonts">
+      <UniqueIdentifier>{773e5d24-352b-449d-a4ee-c4d9213736d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Images">
+      <UniqueIdentifier>{4e8fd155-c0ac-44f7-9b41-0fbb4246ec35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{70f7cec3-2a2f-414b-a1a0-a2aab0c568fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Shaders">
+      <UniqueIdentifier>{86e7b35c-3901-4e2d-abbc-d0ef633d1371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameStates">
+      <UniqueIdentifier>{9dc62c4e-307f-4623-abec-b7683da879db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stats">
+      <UniqueIdentifier>{f351e90c-4274-4526-9d86-b58d3eb26717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Definitions">
+      <UniqueIdentifier>{20e200b9-e424-4f0e-952c-e656440b0a06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Shaders\Includes">
+      <UniqueIdentifier>{ad49a60f-666b-4b57-bb16-9fe0b2de9235}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main_Win32.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommon.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommands.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState_Loading.cpp">
+      <Filter>GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState_MainMenu.cpp">
+      <Filter>GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState_Victory.cpp">
+      <Filter>GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameplayEnums.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState_Playing.cpp">
+      <Filter>GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCommon.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineBuildPreferences.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineBuildPreferences.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCommands.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.hpp">
+      <Filter>GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState_Loading.hpp">
+      <Filter>GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState_MainMenu.hpp">
+      <Filter>GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStateType.hpp">
+      <Filter>GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState_Victory.hpp">
+      <Filter>GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayEnums.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState_Playing.hpp">
+      <Filter>GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroid.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">
+      <Filter>Data</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Run_Win32\Data\Fonts\SquirrelFixedFont.png">
+      <Filter>Data\Fonts</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Run_Win32\Data\Shaders\error.fs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\error.vs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\showUV.fs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\showUV.vs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\fog.fs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\fog.vs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\cubeBorders.fs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\cubeBorders.vs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\grayscale.fs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\grayscale.vs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\lit.fs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\lit.vs">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\Includes\Common.glsl">
+      <Filter>Data\Shaders\Includes</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\Includes\LightFunctions.glsl">
+      <Filter>Data\Shaders\Includes</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\Includes\Math.glsl">
+      <Filter>Data\Shaders\Includes</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\Includes\RendererUniformBlocks.glsl">
+      <Filter>Data\Shaders\Includes</Filter>
+    </None>
+  </ItemGroup>
+</Project>

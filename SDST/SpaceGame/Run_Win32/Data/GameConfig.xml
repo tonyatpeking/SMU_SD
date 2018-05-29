@@ -1,0 +1,96 @@
+<!-- Only supports one level of nested nodes-->
+<GameConfig>
+
+    <General
+      appName="Protogame2D"
+      consoleHeightRatio="1"
+      tileWidth="1"
+      halfTileWidth="0.5"
+      fontPath="Data/Fonts/SquirrelFixedFont.png"
+      fontSprtiesheetLayout="16,16"
+      testTexturePath="Data/Images/Test_StbiAndDirectX.png"
+    />
+
+    <Definitions
+        tileDefPath="Data/Definitions/Tiles.xml"
+        mapDefPath="Data/Definitions/Maps.xml"
+        actorDefPath="Data/Definitions/Actors.xml"
+        projectileDefPath="Data/Definitions/Projectiles.xml"
+        portalDefPath="Data/Definitions/Portals.xml"
+        adventureDefPath="Data/Definitions/Adventures.xml"
+        itemDefPath="Data/Definitions/Items.xml"
+    />
+
+    <KeyBindings
+      keyPause="P"
+      keySlowTime="T"
+    />
+
+    <CameraSettings
+      orthoSysSize="1600,900"
+      cameraZoomTilesVertical="10"
+      overlayColor="0, 0, 0, 175"
+      backgroundColor="70, 70, 70, 255"
+    />
+
+    <TimeSettings
+      framsPerSecond="60"
+      maxDeltaSeconds="0.33"
+      speedOfTimeNormal="1"
+      speedOfTimeSlow="0.1"
+      speedOfTimeFast="5"
+    />
+
+    <DevSettings
+      numDevCircleSides="30"
+      velocityColor="255, 255, 0, 255"
+      physicsRadiusColor="0, 255, 255, 255"
+      cosmeticRadiusColor="255, 0, 255, 255"
+    />
+
+    <Sounds
+      soundAttract="Data/Audio/TestSound.mp3"
+      soundGameplay="Data/Audio/TestSound.mp3"
+      soundPause="Data/Audio/TestSound.mp3"
+      soundVictory="Data/Audio/TestSound.mp3"
+    />
+
+    <LPCAnimSet spritePath="Data/Images/PlayerBody.png" spriteLayout="13,21" fps="6">
+        <SpriteAnim animType="CAST_NORTH"	spriteIndexRange="0~6"/>
+        <SpriteAnim animType="CAST_WEST"	spriteIndexRange="13~19"/>
+        <SpriteAnim animType="CAST_SOUTH"	spriteIndexRange="26~32"/>
+        <SpriteAnim animType="CAST_EAST"	spriteIndexRange="39~45"/>
+
+        <SpriteAnim animType="THRUST_NORTH"	spriteIndexRange="112~105"/>
+        <SpriteAnim animType="THRUST_WEST"	spriteIndexRange="125~118"/>
+        <SpriteAnim animType="THRUST_SOUTH"	spriteIndexRange="138~131"/>
+        <SpriteAnim animType="THRUST_EAST"	spriteIndexRange="151~144"/>
+
+        <SpriteAnim animType="SLASH_NORTH"	spriteIndexRange="112~105"/>
+        <SpriteAnim animType="SLASH_WEST"	spriteIndexRange="125~118"/>
+        <SpriteAnim animType="SLASH_SOUTH"	spriteIndexRange="138~131"/>
+        <SpriteAnim animType="SLASH_EAST"	spriteIndexRange="151~144"/>
+
+        <SpriteAnim animType="MOVE_NORTH"	spriteIndexRange="112~105"/>
+        <SpriteAnim animType="MOVE_WEST"	spriteIndexRange="125~118"/>
+        <SpriteAnim animType="MOVE_SOUTH"	spriteIndexRange="138~131"/>
+        <SpriteAnim animType="MOVE_EAST"	spriteIndexRange="151~144"/>
+
+        <SpriteAnim animType="SLASH_NORTH"	spriteIndexRange="112~105"/>
+        <SpriteAnim animType="SLASH_WEST"	spriteIndexRange="125~118"/>
+        <SpriteAnim animType="SLASH_SOUTH"	spriteIndexRange="138~131"/>
+        <SpriteAnim animType="SLASH_EAST"	spriteIndexRange="151~144"/>
+
+        <SpriteAnim animType="SHOOT_NORTH"	spriteIndexRange="212~220" fps="26"/>
+        <SpriteAnim animType="SHOOT_WEST"	spriteIndexRange="225~233" fps="26"/>
+        <SpriteAnim animType="SHOOT_SOUTH"	spriteIndexRange="238~246" fps="26"/>
+        <SpriteAnim animType="SHOOT_EAST"	spriteIndexRange="251~259" fps="26"/>
+
+        <SpriteAnim animType="IDLE"		    spriteIndices="143"/>
+        <SpriteAnim animType="IDLE_NORTH"	spriteIndices="105"/>
+        <SpriteAnim animType="IDLE_WEST"	spriteIndices="117"/>
+        <SpriteAnim animType="IDLE_SOUTH"	spriteIndices="130"/>
+        <SpriteAnim animType="IDLE_EAST"	spriteIndices="143"/>
+    </LPCAnimSet>
+
+</GameConfig>
