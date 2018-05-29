@@ -104,3 +104,6 @@ data/config/user.config
 **/.vs/
 **/Temporary/
 **/Screenshots/
+
+# Third party
+!**/ThirdParty/**/*.*
