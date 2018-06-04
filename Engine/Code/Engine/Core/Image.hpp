@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Engine/Math/IVec2.hpp"
+#include "Engine/Math/Vec2.hpp"
 #include "Engine/Core/Rgba.hpp"
 
 class Image
@@ -14,6 +15,7 @@ public:
     ~Image() {};
     Rgba	GetTexel( int x, int y ) const; 			// (0,0) is top-left
     void	SetTexel( int x, int y, const Rgba& color );
+    Rgba    GetTexelAtUV( const Vec2& uv );
     void    SetAll( const Rgba& color );
     IVec2 GetDimentions() const { return m_dimensions; };
     void FlipYCoords();

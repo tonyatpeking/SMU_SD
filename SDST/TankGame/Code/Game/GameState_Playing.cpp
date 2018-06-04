@@ -147,7 +147,7 @@ void GameState_Playing::OnEnter()
 
     TestEnter();
 
-    CreateOrGetNoiseImage();
+    CreateNoiseImage();
 }
 
 void GameState_Playing::OnExit()
@@ -827,20 +827,20 @@ void GameState_Playing::MakeSkyBox()
     g_renderSceneGraph->AddGameObject( skybox );
 }
 
-void GameState_Playing::CreateOrGetNoiseImage()
+void GameState_Playing::CreateNoiseImage()
 {
     float scale = 50;
     uint numOctaves = 2;
 
     m_noiseImage = new Image( m_noiseImageSize, m_noiseImageSize );
 
-    for (int posX = 0; posX < m_noiseImageSize ; ++posX)
+    for( int posX = 0; posX < m_noiseImageSize; ++posX )
     {
         for( int posY = 0; posY < m_noiseImageSize; ++posY )
         {
-            float redVal = Noise::Compute2dPerlin( (float)posX, (float) posY, scale, numOctaves ) + 1;
+            float redVal = Noise::Compute2dPerlin( (float) posX, (float) posY, scale, numOctaves ) + 1;
             Rgba color = Rgba::BLACK;
-            color.r = redVal / 2 * 255;
+            color.r = (uchar) ( redVal / 2 * 255 );
             m_noiseImage->SetTexel( posX, posY, color );
         }
     }

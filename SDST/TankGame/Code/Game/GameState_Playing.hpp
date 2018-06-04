@@ -68,7 +68,7 @@ private:
     ParticleEmitter* MakeExhaustParticles( const Vec3& offset );
     void SetExhaustSpawnRate( float rate );
     void MakeSkyBox();
-    void CreateOrGetNoiseImage();
+    void CreateNoiseImage();
 
     Image* m_noiseImage = nullptr;
     Texture* m_noiseTexture = nullptr;

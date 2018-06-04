@@ -82,6 +82,12 @@
     <ClCompile Include="Asteroid.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameMap.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMapChunk.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -133,6 +139,10 @@
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="Asteroid.hpp" />
+    <ClInclude Include="GameMap.hpp">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMapChunk.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">

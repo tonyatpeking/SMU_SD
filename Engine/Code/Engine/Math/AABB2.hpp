@@ -47,6 +47,7 @@ public:
     Vec2 GetCenter() const; // return the center position of the box
     Vec2 RangeMap01ToBounds( const Vec2& localPoint ) const; // local point treats the AABB2 as a coord system, with mins = (0,0) and maxs = (1,1) in local
     Vec2 RangeMap01ToBounds( float x, float y ) const;
+    Vec2 GetNormalizedPosition( const Vec2& pos ); // where is the point if mins is 0,0 and 1,1 is maxs
     AABB2 RangeMap01ToBounds( const AABB2& localBounds ) const;
     AABB2 RangeMap01ToBounds( const Vec2& localMins, const Vec2& localMaxs ) const;
     AABB2 RangeMap01ToBounds( float minX, float minY, float maxX, float maxY ) const;

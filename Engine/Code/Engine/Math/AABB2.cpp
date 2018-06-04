@@ -236,6 +236,11 @@ AABB2 AABB2::RangeMap01ToBounds( const AABB2& localBounds ) const
     return RangeMap01ToBounds( localBounds.mins, localBounds.maxs );
 }
 
+Vec2 AABB2::GetNormalizedPosition( const Vec2& pos )
+{
+    return RangeMap( pos, mins, maxs, Vec2::ZEROS, Vec2::ONES );
+}
+
 AABB2 AABB2::WithoutTranslation() const
 {
     Vec2 center = GetCenter();

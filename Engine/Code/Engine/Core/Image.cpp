@@ -9,6 +9,7 @@
 
 #include "Engine/Core/Image.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
+#include "Engine/Math/MathUtils.hpp"
 
 
 Image::Image( const String& imageFilePath )
@@ -54,6 +55,13 @@ void Image::SetTexel( int x, int y, const Rgba& color )
 {
     int texelIdx = x + ( y * m_dimensions.x );
     m_texels[texelIdx] = color;
+}
+
+Rgba Image::GetTexelAtUV( const Vec2& uv )
+{
+    int x = RoundToInt( uv.x * m_dimensions.x );
+    int y = RoundToInt( uv.y * m_dimensions.y );
+    return GetTexel( x, y );
 }
 
 void Image::SetAll( const Rgba& color )
