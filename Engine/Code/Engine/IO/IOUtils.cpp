@@ -1,8 +1,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+
 
 #include "Engine/IO/IOUtils.hpp"
 
@@ -16,6 +18,32 @@ String GetCurrentDir()
     char working_directory[MAX_PATH + 1];
     GetCurrentDirectoryA( sizeof( working_directory ), working_directory );
     return String( working_directory );
+}
+
+bool DirExists( const String& path )
+{
+    DWORD attrib = GetFileAttributesA( path.c_str() );
+
+    return ( attrib != INVALID_FILE_ATTRIBUTES
+             && ( attrib & FILE_ATTRIBUTE_DIRECTORY ) );
+}
+
+bool FileExists( const String& path )
+{
+    DWORD attrib = GetFileAttributesA( path.c_str() );
+    // if last error was not ERROR_FILE_NOT_FOUND then it exists
+    // but we don't have access to the file
+    if( INVALID_FILE_ATTRIBUTES == attrib && GetLastError() == ERROR_FILE_NOT_FOUND )
+    {
+        //File not found
+        return false;
+    }
+    return true;
+}
+
+bool MakeDir( const String& path )
+{
+    return CreateDirectoryA( path.c_str(), NULL );
 }
 
 bool WriteToFile( const String& path, const String& text )

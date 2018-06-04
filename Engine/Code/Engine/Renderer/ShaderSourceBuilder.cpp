@@ -56,8 +56,8 @@ void ShaderSourceBuilder::InitShaderLoader( String& source,
 bool ShaderSourceBuilder::InsertDefinesToShaderSource( const String defines )
 {
     // find line with version,
-    size_t versionPos;
-    size_t versionLine;
+    size_t versionPos = 0;
+    size_t versionLine = 0;
     bool found = StringUtils::FindInStrings( m_mainSourceNoComment, "#version",
                                              versionLine, versionPos );
     if( !found )
@@ -93,8 +93,8 @@ bool ShaderSourceBuilder::InsertIncludesToShaderSource()
 {
     while( true )
     {
-        size_t includePos;
-        size_t includeLine;
+        size_t includePos = 0;
+        size_t includeLine = 0;
         bool found = StringUtils::FindInStrings( m_mainSourceNoComment, "#include",
                                                  includeLine, includePos );
         if( !found )

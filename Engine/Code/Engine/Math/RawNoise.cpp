@@ -4,6 +4,9 @@
 #include "Engine/Math/RawNoise.hpp"
 
 
+namespace Noise
+{
+
 //-----------------------------------------------------------------------------------------------
 // Fast hash of an int32 into a different (unrecognizable) uint32.
 //
@@ -16,7 +19,7 @@
 //
 // I call this particular approach SquirrelNoise (version 4).
 //
-unsigned int Get1dNoiseUint( int positionX, unsigned int seed )
+unsigned int Get1dUint( int positionX, unsigned int seed )
 {
 	const unsigned int BIT_NOISE1 = 0xD2A80A23; // 0b1101'0010'1010'1000'0000'1010'0010'0011;
 	const unsigned int BIT_NOISE2 = 0xA884F197; // 0b1010'1000'1000'0100'1111'0001'1001'0111;
@@ -34,3 +37,4 @@ unsigned int Get1dNoiseUint( int positionX, unsigned int seed )
 }
 
 
+}

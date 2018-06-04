@@ -8,6 +8,7 @@
 #include "Engine/Core/Console.hpp"
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Core/StringUtils.hpp"
+#include "Engine/IO/IOUtils.hpp"
 
 #include "Game/GameCommon.hpp"
 
@@ -77,8 +78,22 @@ void main( void )
     StringUtils::ReplaceComments( mockShader );
     g_console->Print( mockShader );
 
+}
+
+void IOTests()
+{
+
+    String someDir = IOUtils::GetCurrentDir() + "\\somefolder";
+    String someFile = IOUtils::GetCurrentDir() + "\\somefile.txt";
 
 
+    g_console->Print( "dir exists: " + ::ToString( IOUtils::DirExists( someDir ) ) );
+
+    g_console->Print( "dir create: " + ::ToString( IOUtils::MakeDir( someDir ) ) );
+
+    g_console->Print( "dir exists: " + ::ToString( IOUtils::DirExists( someDir ) ) );
+
+    g_console->Print( "file exists: " + ::ToString( IOUtils::FileExists( someFile ) ) );
 
 }
 
@@ -88,6 +103,7 @@ void RunTests()
     //TrajectoryTests();
     StringTests();
 
+    IOTests();
 };
 
 // each update test is responsible of fetching its own clock

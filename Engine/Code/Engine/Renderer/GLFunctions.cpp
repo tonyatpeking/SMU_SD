@@ -44,6 +44,9 @@ bool GLCheckError( char const *file, char const *func, int line )
         return true;
     }
 #endif
+    UNUSED( file );
+    UNUSED( func );
+    UNUSED( line );
     return false;
 }
 

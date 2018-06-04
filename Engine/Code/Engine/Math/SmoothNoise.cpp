@@ -18,9 +18,11 @@
 // 4D noise: also T (+after / -before)
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace Noise
+{
 
 //-----------------------------------------------------------------------------------------------
-float Compute1dFractalNoise( float position, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
+float Compute1dFractal( float position, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
 {
 	const float OCTAVE_OFFSET = 0.636764989593174f; // Translation/bias to add to each octave
 
@@ -35,8 +37,8 @@ float Compute1dFractalNoise( float position, float scale, unsigned int numOctave
 		float positionFloor = floorf( currentPosition );
 		int indexWest = (int) positionFloor;
 		int indexEast = indexWest + 1;
-		float valueWest = Get1dNoiseZeroToOne( indexWest, seed );
-		float valueEast = Get1dNoiseZeroToOne( indexEast, seed );
+		float valueWest = Get1dZeroToOne( indexWest, seed );
+		float valueEast = Get1dZeroToOne( indexEast, seed );
 
 		// Do a smoothed (nonlinear) weighted average of nearby grid point values
 		float distanceFromWest = currentPosition - positionFloor;
@@ -68,7 +70,7 @@ float Compute1dFractalNoise( float position, float scale, unsigned int numOctave
 
 
 //-----------------------------------------------------------------------------------------------
-float Compute2dFractalNoise( float posX, float posY, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
+float Compute2dFractal( float posX, float posY, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
 {
 	const float OCTAVE_OFFSET = 0.636764989593174f; // Translation/bias to add to each octave
 
@@ -86,10 +88,10 @@ float Compute2dFractalNoise( float posX, float posY, float scale, unsigned int n
 		int indexSouthY = (int) cellMins.y;
 		int indexEastX = indexWestX + 1;
 		int indexNorthY = indexSouthY + 1;
-		float valueSouthWest = Get2dNoiseZeroToOne( indexWestX, indexSouthY, seed );
-		float valueSouthEast = Get2dNoiseZeroToOne( indexEastX, indexSouthY, seed );
-		float valueNorthWest = Get2dNoiseZeroToOne( indexWestX, indexNorthY, seed );
-		float valueNorthEast = Get2dNoiseZeroToOne( indexEastX, indexNorthY, seed );
+		float valueSouthWest = Get2dZeroToOne( indexWestX, indexSouthY, seed );
+		float valueSouthEast = Get2dZeroToOne( indexEastX, indexSouthY, seed );
+		float valueNorthWest = Get2dZeroToOne( indexWestX, indexNorthY, seed );
+		float valueNorthEast = Get2dZeroToOne( indexEastX, indexNorthY, seed );
 
 		// Do a smoothed (nonlinear) weighted average of nearby grid point values
 		Vec2 displacementFromMins = currentPos - cellMins;
@@ -127,7 +129,7 @@ float Compute2dFractalNoise( float posX, float posY, float scale, unsigned int n
 
 
 //-----------------------------------------------------------------------------------------------
-float Compute3dFractalNoise( float posX, float posY, float posZ, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
+float Compute3dFractal( float posX, float posY, float posZ, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
 {
 	const float OCTAVE_OFFSET = 0.636764989593174f; // Translation/bias to add to each octave
 
@@ -149,14 +151,14 @@ float Compute3dFractalNoise( float posX, float posY, float posZ, float scale, un
 		int indexAboveZ = indexBelowZ + 1;
 
 		// Noise grid cell has 8 corners in 3D
-		float aboveSouthWest = Get3dNoiseZeroToOne( indexWestX, indexSouthY, indexAboveZ, seed );
-		float aboveSouthEast = Get3dNoiseZeroToOne( indexEastX, indexSouthY, indexAboveZ, seed );
-		float aboveNorthWest = Get3dNoiseZeroToOne( indexWestX, indexNorthY, indexAboveZ, seed );
-		float aboveNorthEast = Get3dNoiseZeroToOne( indexEastX, indexNorthY, indexAboveZ, seed );
-		float belowSouthWest = Get3dNoiseZeroToOne( indexWestX, indexSouthY, indexBelowZ, seed );
-		float belowSouthEast = Get3dNoiseZeroToOne( indexEastX, indexSouthY, indexBelowZ, seed );
-		float belowNorthWest = Get3dNoiseZeroToOne( indexWestX, indexNorthY, indexBelowZ, seed );
-		float belowNorthEast = Get3dNoiseZeroToOne( indexEastX, indexNorthY, indexBelowZ, seed );
+		float aboveSouthWest = Get3dZeroToOne( indexWestX, indexSouthY, indexAboveZ, seed );
+		float aboveSouthEast = Get3dZeroToOne( indexEastX, indexSouthY, indexAboveZ, seed );
+		float aboveNorthWest = Get3dZeroToOne( indexWestX, indexNorthY, indexAboveZ, seed );
+		float aboveNorthEast = Get3dZeroToOne( indexEastX, indexNorthY, indexAboveZ, seed );
+		float belowSouthWest = Get3dZeroToOne( indexWestX, indexSouthY, indexBelowZ, seed );
+		float belowSouthEast = Get3dZeroToOne( indexEastX, indexSouthY, indexBelowZ, seed );
+		float belowNorthWest = Get3dZeroToOne( indexWestX, indexNorthY, indexBelowZ, seed );
+		float belowNorthEast = Get3dZeroToOne( indexEastX, indexNorthY, indexBelowZ, seed );
 
 		// Do a smoothed (nonlinear) weighted average of nearby grid point values
 		Vec3 displacementFromMins = currentPos - cellMins;
@@ -203,7 +205,7 @@ float Compute3dFractalNoise( float posX, float posY, float posZ, float scale, un
 
 
 //-----------------------------------------------------------------------------------------------
-float Compute4dFractalNoise( float posX, float posY, float posZ, float posT, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
+float Compute4dFractal( float posX, float posY, float posZ, float posT, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
 {
 	const float OCTAVE_OFFSET = 0.636764989593174f; // Translation/bias to add to each octave
 
@@ -227,23 +229,23 @@ float Compute4dFractalNoise( float posX, float posY, float posZ, float posT, flo
 		int indexAfterT = indexBeforeT + 1;
 
 		// Noise grid cell has 16 "corners" in 4D
-		float beforeBelowSW = Get4dNoiseZeroToOne( indexWestX, indexSouthY, indexBelowZ, indexBeforeT, seed );
-		float beforeBelowSE = Get4dNoiseZeroToOne( indexEastX, indexSouthY, indexBelowZ, indexBeforeT, seed );
-		float beforeBelowNW = Get4dNoiseZeroToOne( indexWestX, indexNorthY, indexBelowZ, indexBeforeT, seed );
-		float beforeBelowNE = Get4dNoiseZeroToOne( indexEastX, indexNorthY, indexBelowZ, indexBeforeT, seed );
-		float beforeAboveSW = Get4dNoiseZeroToOne( indexWestX, indexSouthY, indexAboveZ, indexBeforeT, seed );
-		float beforeAboveSE = Get4dNoiseZeroToOne( indexEastX, indexSouthY, indexAboveZ, indexBeforeT, seed );
-		float beforeAboveNW = Get4dNoiseZeroToOne( indexWestX, indexNorthY, indexAboveZ, indexBeforeT, seed );
-		float beforeAboveNE = Get4dNoiseZeroToOne( indexEastX, indexNorthY, indexAboveZ, indexBeforeT, seed );
+		float beforeBelowSW = Get4dZeroToOne( indexWestX, indexSouthY, indexBelowZ, indexBeforeT, seed );
+		float beforeBelowSE = Get4dZeroToOne( indexEastX, indexSouthY, indexBelowZ, indexBeforeT, seed );
+		float beforeBelowNW = Get4dZeroToOne( indexWestX, indexNorthY, indexBelowZ, indexBeforeT, seed );
+		float beforeBelowNE = Get4dZeroToOne( indexEastX, indexNorthY, indexBelowZ, indexBeforeT, seed );
+		float beforeAboveSW = Get4dZeroToOne( indexWestX, indexSouthY, indexAboveZ, indexBeforeT, seed );
+		float beforeAboveSE = Get4dZeroToOne( indexEastX, indexSouthY, indexAboveZ, indexBeforeT, seed );
+		float beforeAboveNW = Get4dZeroToOne( indexWestX, indexNorthY, indexAboveZ, indexBeforeT, seed );
+		float beforeAboveNE = Get4dZeroToOne( indexEastX, indexNorthY, indexAboveZ, indexBeforeT, seed );
 
-		float afterBelowSW = Get4dNoiseZeroToOne( indexWestX, indexSouthY, indexBelowZ, indexAfterT, seed );
-		float afterBelowSE = Get4dNoiseZeroToOne( indexEastX, indexSouthY, indexBelowZ, indexAfterT, seed );
-		float afterBelowNW = Get4dNoiseZeroToOne( indexWestX, indexNorthY, indexBelowZ, indexAfterT, seed );
-		float afterBelowNE = Get4dNoiseZeroToOne( indexEastX, indexNorthY, indexBelowZ, indexAfterT, seed );
-		float afterAboveSW = Get4dNoiseZeroToOne( indexWestX, indexSouthY, indexAboveZ, indexAfterT, seed );
-		float afterAboveSE = Get4dNoiseZeroToOne( indexEastX, indexSouthY, indexAboveZ, indexAfterT, seed );
-		float afterAboveNW = Get4dNoiseZeroToOne( indexWestX, indexNorthY, indexAboveZ, indexAfterT, seed );
-		float afterAboveNE = Get4dNoiseZeroToOne( indexEastX, indexNorthY, indexAboveZ, indexAfterT, seed );
+		float afterBelowSW = Get4dZeroToOne( indexWestX, indexSouthY, indexBelowZ, indexAfterT, seed );
+		float afterBelowSE = Get4dZeroToOne( indexEastX, indexSouthY, indexBelowZ, indexAfterT, seed );
+		float afterBelowNW = Get4dZeroToOne( indexWestX, indexNorthY, indexBelowZ, indexAfterT, seed );
+		float afterBelowNE = Get4dZeroToOne( indexEastX, indexNorthY, indexBelowZ, indexAfterT, seed );
+		float afterAboveSW = Get4dZeroToOne( indexWestX, indexSouthY, indexAboveZ, indexAfterT, seed );
+		float afterAboveSE = Get4dZeroToOne( indexEastX, indexSouthY, indexAboveZ, indexAfterT, seed );
+		float afterAboveNW = Get4dZeroToOne( indexWestX, indexNorthY, indexAboveZ, indexAfterT, seed );
+		float afterAboveNE = Get4dZeroToOne( indexEastX, indexNorthY, indexAboveZ, indexAfterT, seed );
 
 		// Do a smoothed (nonlinear) weighted average of nearby grid point values
 		Vec4 displacementFromMins = currentPos - cellMins;
@@ -305,7 +307,7 @@ float Compute4dFractalNoise( float posX, float posY, float posZ, float posT, flo
 //
 // In 1D, the gradients are trivial: -1.0 or 1.0, so resulting noise is boring at one octave.
 //
-float Compute1dPerlinNoise( float position, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
+float Compute1dPerlin( float position, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
 {
 	const float OCTAVE_OFFSET = 0.636764989593174f; // Translation/bias to add to each octave
 	const float gradients[2] = { -1.f, 1.f }; // 1D unit "gradient" vectors; one back, one forward
@@ -321,8 +323,8 @@ float Compute1dPerlinNoise( float position, float scale, unsigned int numOctaves
 		float positionFloor = (float) floorf( currentPosition );
 		int indexWest = (int) positionFloor;
 		int indexEast = indexWest + 1;
-		float gradientWest = gradients[ Get1dNoiseUint( indexWest, seed ) & 0x00000001 ];
-		float gradientEast = gradients[ Get1dNoiseUint( indexEast, seed ) & 0x00000001 ];
+		float gradientWest = gradients[ Get1dUint( indexWest, seed ) & 0x00000001 ];
+		float gradientEast = gradients[ Get1dUint( indexEast, seed ) & 0x00000001 ];
 
 		// Dot each point's gradient with displacement from point to position
 		float displacementFromWest = currentPosition - positionFloor; // always positive
@@ -363,7 +365,7 @@ float Compute1dPerlinNoise( float position, float scale, unsigned int numOctaves
 //
 // In 2D, gradients are unit-length vectors in various directions with even angular distribution.
 //
-float Compute2dPerlinNoise( float posX, float posY, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
+float Compute2dPerlin( float posX, float posY, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
 {
 	const float OCTAVE_OFFSET = 0.636764989593174f; // Translation/bias to add to each octave
 	const Vec2 gradients[ 8 ] = // Normalized unit vectors in 8 quarter-cardinal directions
@@ -394,10 +396,10 @@ float Compute2dPerlinNoise( float posX, float posY, float scale, unsigned int nu
 		int indexEastX  = indexWestX  + 1;
 		int indexNorthY = indexSouthY + 1;
 
-		unsigned int noiseSW = Get2dNoiseUint( indexWestX, indexSouthY, seed );
-		unsigned int noiseSE = Get2dNoiseUint( indexEastX, indexSouthY, seed );
-		unsigned int noiseNW = Get2dNoiseUint( indexWestX, indexNorthY, seed );
-		unsigned int noiseNE = Get2dNoiseUint( indexEastX, indexNorthY, seed );
+		unsigned int noiseSW = Get2dUint( indexWestX, indexSouthY, seed );
+		unsigned int noiseSE = Get2dUint( indexEastX, indexSouthY, seed );
+		unsigned int noiseNW = Get2dUint( indexWestX, indexNorthY, seed );
+		unsigned int noiseNE = Get2dUint( indexEastX, indexNorthY, seed );
 
 		const Vec2& gradientSW = gradients[ noiseSW & 0x00000007 ];
 		const Vec2& gradientSE = gradients[ noiseSE & 0x00000007 ];
@@ -454,7 +456,7 @@ float Compute2dPerlinNoise( float posX, float posY, float scale, unsigned int nu
 //
 // In 3D, gradients are unit-length vectors in random (3D) directions.
 //
-float Compute3dPerlinNoise( float posX, float posY, float posZ, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
+float Compute3dPerlin( float posX, float posY, float posZ, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
 {
 	const float OCTAVE_OFFSET = 0.636764989593174f; // Translation/bias to add to each octave
     const float fSQRT_3_OVER_3 = 0.577350269189f;
@@ -488,14 +490,14 @@ float Compute3dPerlinNoise( float posX, float posY, float posZ, float scale, uns
 		int indexNorthY = indexSouthY + 1;
 		int indexAboveZ = indexBelowZ + 1;
 
-		unsigned int noiseBelowSW = Get3dNoiseUint( indexWestX, indexSouthY, indexBelowZ, seed );
-		unsigned int noiseBelowSE = Get3dNoiseUint( indexEastX, indexSouthY, indexBelowZ, seed );
-		unsigned int noiseBelowNW = Get3dNoiseUint( indexWestX, indexNorthY, indexBelowZ, seed );
-		unsigned int noiseBelowNE = Get3dNoiseUint( indexEastX, indexNorthY, indexBelowZ, seed );
-		unsigned int noiseAboveSW = Get3dNoiseUint( indexWestX, indexSouthY, indexAboveZ, seed );
-		unsigned int noiseAboveSE = Get3dNoiseUint( indexEastX, indexSouthY, indexAboveZ, seed );
-		unsigned int noiseAboveNW = Get3dNoiseUint( indexWestX, indexNorthY, indexAboveZ, seed );
-		unsigned int noiseAboveNE = Get3dNoiseUint( indexEastX, indexNorthY, indexAboveZ, seed );
+		unsigned int noiseBelowSW = Get3dUint( indexWestX, indexSouthY, indexBelowZ, seed );
+		unsigned int noiseBelowSE = Get3dUint( indexEastX, indexSouthY, indexBelowZ, seed );
+		unsigned int noiseBelowNW = Get3dUint( indexWestX, indexNorthY, indexBelowZ, seed );
+		unsigned int noiseBelowNE = Get3dUint( indexEastX, indexNorthY, indexBelowZ, seed );
+		unsigned int noiseAboveSW = Get3dUint( indexWestX, indexSouthY, indexAboveZ, seed );
+		unsigned int noiseAboveSE = Get3dUint( indexEastX, indexSouthY, indexAboveZ, seed );
+		unsigned int noiseAboveNW = Get3dUint( indexWestX, indexNorthY, indexAboveZ, seed );
+		unsigned int noiseAboveNE = Get3dUint( indexEastX, indexNorthY, indexAboveZ, seed );
 
 		Vec3 gradientBelowSW = gradients[ noiseBelowSW & 0x00000007 ];
 		Vec3 gradientBelowSE = gradients[ noiseBelowSE & 0x00000007 ];
@@ -572,7 +574,7 @@ float Compute3dPerlinNoise( float posX, float posY, float posZ, float scale, uns
 //
 // In 4D, gradients are unit-length hyper-vectors in random (4D) directions.
 //
-float Compute4dPerlinNoise( float posX, float posY, float posZ, float posT, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
+float Compute4dPerlin( float posX, float posY, float posZ, float posT, float scale, unsigned int numOctaves, float octavePersistence, float octaveScale, bool renormalize, unsigned int seed )
 {
 	const float OCTAVE_OFFSET = 0.636764989593174f; // Translation/bias to add to each octave
 
@@ -617,22 +619,22 @@ float Compute4dPerlinNoise( float posX, float posY, float posZ, float posT, floa
 		int indexAfterT = indexBeforeT + 1;
 
 		// "BeforeBSW" stands for "BeforeBelowSouthWest" below (i.e. 4D hypercube mins), etc.
-		unsigned int noiseBeforeBSW = Get4dNoiseUint( indexWestX, indexSouthY, indexBelowZ, indexBeforeT, seed );
-		unsigned int noiseBeforeBSE = Get4dNoiseUint( indexEastX, indexSouthY, indexBelowZ, indexBeforeT, seed );
-		unsigned int noiseBeforeBNW = Get4dNoiseUint( indexWestX, indexNorthY, indexBelowZ, indexBeforeT, seed );
-		unsigned int noiseBeforeBNE = Get4dNoiseUint( indexEastX, indexNorthY, indexBelowZ, indexBeforeT, seed );
-		unsigned int noiseBeforeASW = Get4dNoiseUint( indexWestX, indexSouthY, indexAboveZ, indexBeforeT, seed );
-		unsigned int noiseBeforeASE = Get4dNoiseUint( indexEastX, indexSouthY, indexAboveZ, indexBeforeT, seed );
-		unsigned int noiseBeforeANW = Get4dNoiseUint( indexWestX, indexNorthY, indexAboveZ, indexBeforeT, seed );
-		unsigned int noiseBeforeANE = Get4dNoiseUint( indexEastX, indexNorthY, indexAboveZ, indexBeforeT, seed );
-		unsigned int noiseAfterBSW = Get4dNoiseUint( indexWestX, indexSouthY, indexBelowZ, indexAfterT, seed );
-		unsigned int noiseAfterBSE = Get4dNoiseUint( indexEastX, indexSouthY, indexBelowZ, indexAfterT, seed );
-		unsigned int noiseAfterBNW = Get4dNoiseUint( indexWestX, indexNorthY, indexBelowZ, indexAfterT, seed );
-		unsigned int noiseAfterBNE = Get4dNoiseUint( indexEastX, indexNorthY, indexBelowZ, indexAfterT, seed );
-		unsigned int noiseAfterASW = Get4dNoiseUint( indexWestX, indexSouthY, indexAboveZ, indexAfterT, seed );
-		unsigned int noiseAfterASE = Get4dNoiseUint( indexEastX, indexSouthY, indexAboveZ, indexAfterT, seed );
-		unsigned int noiseAfterANW = Get4dNoiseUint( indexWestX, indexNorthY, indexAboveZ, indexAfterT, seed );
-		unsigned int noiseAfterANE = Get4dNoiseUint( indexEastX, indexNorthY, indexAboveZ, indexAfterT, seed );
+		unsigned int noiseBeforeBSW = Get4dUint( indexWestX, indexSouthY, indexBelowZ, indexBeforeT, seed );
+		unsigned int noiseBeforeBSE = Get4dUint( indexEastX, indexSouthY, indexBelowZ, indexBeforeT, seed );
+		unsigned int noiseBeforeBNW = Get4dUint( indexWestX, indexNorthY, indexBelowZ, indexBeforeT, seed );
+		unsigned int noiseBeforeBNE = Get4dUint( indexEastX, indexNorthY, indexBelowZ, indexBeforeT, seed );
+		unsigned int noiseBeforeASW = Get4dUint( indexWestX, indexSouthY, indexAboveZ, indexBeforeT, seed );
+		unsigned int noiseBeforeASE = Get4dUint( indexEastX, indexSouthY, indexAboveZ, indexBeforeT, seed );
+		unsigned int noiseBeforeANW = Get4dUint( indexWestX, indexNorthY, indexAboveZ, indexBeforeT, seed );
+		unsigned int noiseBeforeANE = Get4dUint( indexEastX, indexNorthY, indexAboveZ, indexBeforeT, seed );
+		unsigned int noiseAfterBSW = Get4dUint( indexWestX, indexSouthY, indexBelowZ, indexAfterT, seed );
+		unsigned int noiseAfterBSE = Get4dUint( indexEastX, indexSouthY, indexBelowZ, indexAfterT, seed );
+		unsigned int noiseAfterBNW = Get4dUint( indexWestX, indexNorthY, indexBelowZ, indexAfterT, seed );
+		unsigned int noiseAfterBNE = Get4dUint( indexEastX, indexNorthY, indexBelowZ, indexAfterT, seed );
+		unsigned int noiseAfterASW = Get4dUint( indexWestX, indexSouthY, indexAboveZ, indexAfterT, seed );
+		unsigned int noiseAfterASE = Get4dUint( indexEastX, indexSouthY, indexAboveZ, indexAfterT, seed );
+		unsigned int noiseAfterANW = Get4dUint( indexWestX, indexNorthY, indexAboveZ, indexAfterT, seed );
+		unsigned int noiseAfterANE = Get4dUint( indexEastX, indexNorthY, indexAboveZ, indexAfterT, seed );
 
 		// Mask with 15 (mod 16) to look up in gradients table
 		Vec4 gradientBeforeBSW = gradients[ noiseBeforeBSW & 0x0000000F ];
@@ -739,3 +741,4 @@ float Compute4dPerlinNoise( float posX, float posY, float posZ, float posT, floa
 	return totalNoise;
 }
 
+}

@@ -15,6 +15,7 @@ class Light;
 class Asteroid;
 class Projectile;
 class ParticleEmitter;
+class Image;
 
 class GameState_Playing : public GameState
 {
@@ -67,6 +68,11 @@ private:
     ParticleEmitter* MakeExhaustParticles( const Vec3& offset );
     void SetExhaustSpawnRate( float rate );
     void MakeSkyBox();
+    void CreateOrGetNoiseImage();
+
+    Image* m_noiseImage = nullptr;
+    Texture* m_noiseTexture = nullptr;
+    int m_noiseImageSize = 256;
 
     ParticleEmitter* m_leftThrustEmitter;
     ParticleEmitter* m_rightThrustEmitter;

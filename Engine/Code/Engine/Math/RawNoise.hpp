@@ -35,30 +35,34 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace Noise
+
+{
+
 
 //-----------------------------------------------------------------------------------------------
 // Raw pseudorandom noise functions (random-access / deterministic).  Basis of all other noise.
 //
-unsigned int Get1dNoiseUint( int index, unsigned int seed=0 );
-unsigned int Get2dNoiseUint( int indexX, int indexY, unsigned int seed=0 );
-unsigned int Get3dNoiseUint( int indexX, int indexY, int indexZ, unsigned int seed=0 );
-unsigned int Get4dNoiseUint( int indexX, int indexY, int indexZ, int indexT, unsigned int seed=0 );
+unsigned int Get1dUint( int index, unsigned int seed=0 );
+unsigned int Get2dUint( int indexX, int indexY, unsigned int seed=0 );
+unsigned int Get3dUint( int indexX, int indexY, int indexZ, unsigned int seed=0 );
+unsigned int Get4dUint( int indexX, int indexY, int indexZ, int indexT, unsigned int seed=0 );
 
 //-----------------------------------------------------------------------------------------------
 // Same functions, mapped to floats in [0,1] for convenience.
 //
-float Get1dNoiseZeroToOne( int index, unsigned int seed=0 );
-float Get2dNoiseZeroToOne( int indexX, int indexY, unsigned int seed=0 );
-float Get3dNoiseZeroToOne( int indexX, int indexY, int indexZ, unsigned int seed=0 );
-float Get4dNoiseZeroToOne( int indexX, int indexY, int indexZ, int indexT, unsigned int seed=0 );
+float Get1dZeroToOne( int index, unsigned int seed=0 );
+float Get2dZeroToOne( int indexX, int indexY, unsigned int seed=0 );
+float Get3dZeroToOne( int indexX, int indexY, int indexZ, unsigned int seed=0 );
+float Get4dZeroToOne( int indexX, int indexY, int indexZ, int indexT, unsigned int seed=0 );
 
 //-----------------------------------------------------------------------------------------------
 // Same functions, mapped to floats in [-1,1] for convenience.
 //
-float Get1dNoiseNegOneToOne( int index, unsigned int seed=0 );
-float Get2dNoiseNegOneToOne( int indexX, int indexY, unsigned int seed=0 );
-float Get3dNoiseNegOneToOne( int indexX, int indexY, int indexZ, unsigned int seed=0 );
-float Get4dNoiseNegOneToOne( int indexX, int indexY, int indexZ, int indexT, unsigned int seed=0 );
+float Get1dNegOneToOne( int index, unsigned int seed=0 );
+float Get2dNegOneToOne( int indexX, int indexY, unsigned int seed=0 );
+float Get3dNegOneToOne( int indexX, int indexY, int indexZ, unsigned int seed=0 );
+float Get4dNegOneToOne( int indexX, int indexY, int indexZ, int indexT, unsigned int seed=0 );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,93 +71,93 @@ float Get4dNoiseNegOneToOne( int indexX, int indexY, int indexZ, int indexT, uns
 
 
 //-----------------------------------------------------------------------------------------------
-inline unsigned int Get2dNoiseUint( int indexX, int indexY, unsigned int seed )
+inline unsigned int Get2dUint( int indexX, int indexY, unsigned int seed )
 {
-	const int PRIME_NUMBER = 198491317; // Large prime number with non-boring bits
-	return Get1dNoiseUint( indexX + (PRIME_NUMBER * indexY), seed );
+    const int PRIME_NUMBER = 198491317; // Large prime number with non-boring bits
+    return Get1dUint( indexX + ( PRIME_NUMBER * indexY ), seed );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline unsigned int Get3dNoiseUint( int indexX, int indexY, int indexZ, unsigned int seed )
+inline unsigned int Get3dUint( int indexX, int indexY, int indexZ, unsigned int seed )
 {
-	const int PRIME1 = 198491317; // Large prime number with non-boring bits
-	const int PRIME2 = 6542989; // Large prime number with distinct and non-boring bits
-	return Get1dNoiseUint( indexX + (PRIME1 * indexY) + (PRIME2 * indexZ), seed );
+    const int PRIME1 = 198491317; // Large prime number with non-boring bits
+    const int PRIME2 = 6542989; // Large prime number with distinct and non-boring bits
+    return Get1dUint( indexX + ( PRIME1 * indexY ) + ( PRIME2 * indexZ ), seed );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline unsigned int Get4dNoiseUint( int indexX, int indexY, int indexZ, int indexT, unsigned int seed )
+inline unsigned int Get4dUint( int indexX, int indexY, int indexZ, int indexT, unsigned int seed )
 {
-	const int PRIME1 = 198491317; // Large prime number with non-boring bits
-	const int PRIME2 = 6542989; // Large prime number with distinct and non-boring bits
-	const int PRIME3 = 357239; // Large prime number with distinct and non-boring bits
-	return Get1dNoiseUint( indexX + (PRIME1 * indexY) + (PRIME2 * indexZ) + (PRIME3 * indexT), seed );
+    const int PRIME1 = 198491317; // Large prime number with non-boring bits
+    const int PRIME2 = 6542989; // Large prime number with distinct and non-boring bits
+    const int PRIME3 = 357239; // Large prime number with distinct and non-boring bits
+    return Get1dUint( indexX + ( PRIME1 * indexY ) + ( PRIME2 * indexZ ) + ( PRIME3 * indexT ), seed );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline float Get1dNoiseZeroToOne( int index, unsigned int seed )
+inline float Get1dZeroToOne( int index, unsigned int seed )
 {
-	const double ONE_OVER_MAX_UINT = (1.0 / (double) 0xFFFFFFFF);
-	return (float)( ONE_OVER_MAX_UINT * (double) Get1dNoiseUint( index, seed ) );
+    const double ONE_OVER_MAX_UINT = ( 1.0 / (double) 0xFFFFFFFF );
+    return (float) ( ONE_OVER_MAX_UINT * (double) Get1dUint( index, seed ) );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline float Get2dNoiseZeroToOne( int indexX, int indexY, unsigned int seed )
+inline float Get2dZeroToOne( int indexX, int indexY, unsigned int seed )
 {
-	const double ONE_OVER_MAX_UINT = (1.0 / (double) 0xFFFFFFFF);
-	return (float)( ONE_OVER_MAX_UINT * (double) Get2dNoiseUint( indexX, indexY, seed ) );
+    const double ONE_OVER_MAX_UINT = ( 1.0 / (double) 0xFFFFFFFF );
+    return (float) ( ONE_OVER_MAX_UINT * (double) Get2dUint( indexX, indexY, seed ) );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline float Get3dNoiseZeroToOne( int indexX, int indexY, int indexZ, unsigned int seed )
+inline float Get3dZeroToOne( int indexX, int indexY, int indexZ, unsigned int seed )
 {
-	const double ONE_OVER_MAX_UINT = (1.0 / (double) 0xFFFFFFFF);
-	return (float)( ONE_OVER_MAX_UINT * (double) Get3dNoiseUint( indexX, indexY, indexZ, seed ) );
+    const double ONE_OVER_MAX_UINT = ( 1.0 / (double) 0xFFFFFFFF );
+    return (float) ( ONE_OVER_MAX_UINT * (double) Get3dUint( indexX, indexY, indexZ, seed ) );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline float Get4dNoiseZeroToOne( int indexX, int indexY, int indexZ, int indexT, unsigned int seed )
+inline float Get4dZeroToOne( int indexX, int indexY, int indexZ, int indexT, unsigned int seed )
 {
-	const double ONE_OVER_MAX_UINT = (1.0 / (double) 0xFFFFFFFF);
-	return (float)( ONE_OVER_MAX_UINT * (double) Get4dNoiseUint( indexX, indexY, indexZ, indexT, seed ) );
+    const double ONE_OVER_MAX_UINT = ( 1.0 / (double) 0xFFFFFFFF );
+    return (float) ( ONE_OVER_MAX_UINT * (double) Get4dUint( indexX, indexY, indexZ, indexT, seed ) );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline float Get1dNoiseNegOneToOne( int index, unsigned int seed )
+inline float Get1dNegOneToOne( int index, unsigned int seed )
 {
-	const double ONE_OVER_MAX_INT = (1.0 / (double) 0x7FFFFFFF);
-	return (float)( ONE_OVER_MAX_INT * (double) (int) Get1dNoiseUint( index, seed ) );
+    const double ONE_OVER_MAX_INT = ( 1.0 / (double) 0x7FFFFFFF );
+    return (float) ( ONE_OVER_MAX_INT * (double) (int) Get1dUint( index, seed ) );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline float Get2dNoiseNegOneToOne( int indexX, int indexY, unsigned int seed )
+inline float Get2dNegOneToOne( int indexX, int indexY, unsigned int seed )
 {
-	const double ONE_OVER_MAX_INT = (1.0 / (double) 0x7FFFFFFF);
-	return (float)( ONE_OVER_MAX_INT * (double) (int) Get2dNoiseUint( indexX, indexY, seed ) );
+    const double ONE_OVER_MAX_INT = ( 1.0 / (double) 0x7FFFFFFF );
+    return (float) ( ONE_OVER_MAX_INT * (double) (int) Get2dUint( indexX, indexY, seed ) );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline float Get3dNoiseNegOneToOne( int indexX, int indexY, int indexZ, unsigned int seed )
+inline float Get3dNegOneToOne( int indexX, int indexY, int indexZ, unsigned int seed )
 {
-	const double ONE_OVER_MAX_INT = (1.0 / (double) 0x7FFFFFFF);
-	return (float)( ONE_OVER_MAX_INT * (double) (int) Get3dNoiseUint( indexX, indexY, indexZ, seed ) );
+    const double ONE_OVER_MAX_INT = ( 1.0 / (double) 0x7FFFFFFF );
+    return (float) ( ONE_OVER_MAX_INT * (double) (int) Get3dUint( indexX, indexY, indexZ, seed ) );
 }
 
 
 //-----------------------------------------------------------------------------------------------
-inline float Get4dNoiseNegOneToOne( int indexX, int indexY, int indexZ, int indexT, unsigned int seed )
+inline float Get4dNegOneToOne( int indexX, int indexY, int indexZ, int indexT, unsigned int seed )
 {
-	const double ONE_OVER_MAX_INT = (1.0 / (double) 0x7FFFFFFF);
-	return (float)( ONE_OVER_MAX_INT * (double) (int) Get4dNoiseUint( indexX, indexY, indexZ, indexT, seed ) );
+    const double ONE_OVER_MAX_INT = ( 1.0 / (double) 0x7FFFFFFF );
+    return (float) ( ONE_OVER_MAX_INT * (double) (int) Get4dUint( indexX, indexY, indexZ, indexT, seed ) );
 }
 
-
+}

@@ -8,11 +8,13 @@
 #include "Engine/Math/AABB3.hpp"
 #include "Engine/Math/Intersection.hpp"
 #include "Engine/Math/Random.hpp"
+#include "Engine/Math/SmoothNoise.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/Core/GameObject.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/Image.hpp"
 #include "Engine/Renderer/ShaderProgram.hpp"
 #include "Engine/Renderer/MeshPrimitive.hpp"
 #include "Engine/Renderer/Mesh.hpp"
@@ -27,6 +29,7 @@
 #include "Engine/Time/Tween.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/IO/ObjLoader.hpp"
+#include "Engine/IO/IOUtils.hpp"
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Renderer/Light.hpp"
 #include "Engine/Particles/ParticleEmitter.hpp"
@@ -143,6 +146,8 @@ void GameState_Playing::OnEnter()
     SetAmbient( 0.1f );
 
     TestEnter();
+
+    CreateOrGetNoiseImage();
 }
 
 void GameState_Playing::OnExit()
@@ -325,6 +330,13 @@ void GameState_Playing::MakePrimitiveShapes()
 void GameState_Playing::TestEnter()
 {
     MakePrimitiveShapes();
+    g_console->Print( "Current Dir:" );
+    g_console->Print( IOUtils::GetCurrentDir() );
+
+
+
+
+
 
 }
 
@@ -806,13 +818,38 @@ void GameState_Playing::MakeSkyBox()
 {
     GameObject* skybox = new GameObject();
     Renderable* renderable = Renderable::MakeCube();
-    Texture* cubemap = new CubeMap( "Data/Images/galaxy2.png" );
+    Texture* cubemap = new CubeMap( "Data/Images/Skybox/SkyAndSea.jpg" );
     Material* mat = new Material();
     mat->SetDiffuse( cubemap );
     mat->SetShaderPass( 0, ShaderPass::GetSkyboxShader() );
     renderable->SetMaterial( 0, mat );
     skybox->SetRenderable( renderable );
     g_renderSceneGraph->AddGameObject( skybox );
+}
+
+void GameState_Playing::CreateOrGetNoiseImage()
+{
+    float scale = 50;
+    uint numOctaves = 2;
+
+    m_noiseImage = new Image( m_noiseImageSize, m_noiseImageSize );
+
+    for (int posX = 0; posX < m_noiseImageSize ; ++posX)
+    {
+        for( int posY = 0; posY < m_noiseImageSize; ++posY )
+        {
+            float redVal = Noise::Compute2dPerlin( (float)posX, (float) posY, scale, numOctaves ) + 1;
+            Rgba color = Rgba::BLACK;
+            color.r = redVal / 2 * 255;
+            m_noiseImage->SetTexel( posX, posY, color );
+        }
+    }
+
+    m_noiseTexture = new Texture( m_noiseImage );
+
+    DebugRender::SetOptions( 100, Rgba::WHITE, Rgba::WHITE );
+    DebugRender::DrawQuad( AABB2::NEG_ONES_ONES * 2, Vec3::ZEROS, Vec3::ZEROS, m_noiseTexture );
+
 }
 
 void GameState_Playing::AttatchCameraToShip()
