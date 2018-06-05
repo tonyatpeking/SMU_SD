@@ -9,8 +9,11 @@ class Renderable;
 class RenderSceneGraph
 {
 public:
-	RenderSceneGraph(){};
-	~RenderSceneGraph(){};
+    static RenderSceneGraph* GetCurrentScene() { return s_currentScene; };
+    static void SetCurrentScene( RenderSceneGraph* scene ) { s_currentScene = scene; };
+
+    RenderSceneGraph() {};
+    ~RenderSceneGraph() {};
 
     void AddGameObject( GameObject* gameObject );
     void AddLight( Light* light );
@@ -27,6 +30,8 @@ public:
 
 
 private:
+
+    static RenderSceneGraph* s_currentScene;
 
     std::vector<GameObject*> m_gameObjects;
     std::vector<Renderable*> m_renderables;

@@ -16,6 +16,7 @@ class Asteroid;
 class Projectile;
 class ParticleEmitter;
 class Image;
+class GameMap;
 
 class GameState_Playing : public GameState
 {
@@ -30,7 +31,7 @@ public:
 
 private:
 
-    void CreateCamera();
+    void MakeCamera();
     void ProcessMovementInput();
 
 
@@ -57,7 +58,7 @@ private:
     void MakeLights();
     void UpdateLights();
     void RenderLights() const;
-    void MoveLightToCamera( bool isSpotLight );
+    void MakeSun();
     void SetLightPos( const Vec3& pos );
     void SetAmbient( float ambient );
     void MakeProjectile( const Vec3& offset );
@@ -68,11 +69,15 @@ private:
     ParticleEmitter* MakeExhaustParticles( const Vec3& offset );
     void SetExhaustSpawnRate( float rate );
     void MakeSkyBox();
-    void CreateNoiseImage();
+    void MakeNoiseImage();
+    void MakeMap();
+    void SnapTransformToHeightmap( Transform* transform );
 
     Image* m_noiseImage = nullptr;
     Texture* m_noiseTexture = nullptr;
     int m_noiseImageSize = 256;
+
+    GameMap* m_map = nullptr;
 
     ParticleEmitter* m_leftThrustEmitter;
     ParticleEmitter* m_rightThrustEmitter;
@@ -90,7 +95,7 @@ private:
 
     float m_fov = 80;
     float m_near = 0.001f;
-    float m_far = 100;
+    float m_far = 1000;
 
     float m_moveSpeed = 15;
     float m_rollSpeed = 200;

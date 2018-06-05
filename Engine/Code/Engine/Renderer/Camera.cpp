@@ -2,14 +2,32 @@
 #include "Engine/Renderer/FrameBuffer.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/Window.hpp"
+#include "Engine/Renderer/RenderSceneGraph.hpp"
+
 
 Camera::Camera()
 {
+    // this is needed because only the base class SetScene will be called
+    if( m_scene )
+        m_scene->AddCamera( this );
 }
 
 Camera::~Camera()
 {
+    if( m_scene )
+        m_scene->RemoveCamera( this );
     delete m_frameBuffer;
+}
+
+void Camera::SetScene( RenderSceneGraph* scene )
+{
+    if( m_scene )
+        m_scene->RemoveCamera( this );
+
+    GameObject::SetScene( scene );
+
+    if( m_scene )
+        m_scene->AddCamera( this );
 }
 
 void Camera::SetColorTarget( Texture *colorTarget )

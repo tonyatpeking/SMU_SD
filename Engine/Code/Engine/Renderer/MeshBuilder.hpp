@@ -20,8 +20,11 @@ public:
     MeshBuilder() {};
     ~MeshBuilder() {};
 
-    static MeshBuilder FromSurfacePatch( SurfacePatch* sp, int uGridLines = 20,
-                                         int vGridLines = 20 );
+    // uvTile only affects the texture uv
+    static MeshBuilder FromSurfacePatch(
+        SurfacePatch* sp, int uGridLines = 20,
+        int vGridLines = 20, const AABB2& uvBounds = AABB2::ZEROS_ONES,
+        float uvTile = 1.f );
 
     void BeginSubMesh( DrawPrimitive prim = DrawPrimitive::TRIANGLES,
                        bool useIndices = true );
@@ -46,8 +49,8 @@ public:
     void AddFaceIdxRange( uint startIdx, uint endIdx );
     void AddBuilder( const MeshBuilder& builderToAdd );
     void AddQuad2D( const AABB2 bounds = AABB2::NEG_ONES_ONES,
-                  const Rgba& tint = Rgba::WHITE,
-                  const AABB2& uvs = AABB2::ZEROS_ONES );
+                    const Rgba& tint = Rgba::WHITE,
+                    const AABB2& uvs = AABB2::ZEROS_ONES );
 
     void AddQuad( const Vec3& pos, const Vec3& right, const Vec3& up,
                   const AABB2& bounds = AABB2::NEG_ONES_ONES,

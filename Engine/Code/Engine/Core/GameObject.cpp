@@ -1,9 +1,28 @@
 #include "Engine/Core/GameObject.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Renderer/RenderSceneGraph.hpp"
+
+GameObject::GameObject()
+{
+    m_scene = RenderSceneGraph::GetCurrentScene();
+    SetScene( m_scene );
+}
 
 GameObject::~GameObject()
 {
+    SetScene( nullptr );
     delete m_renderable;
+}
+
+void GameObject::SetScene( RenderSceneGraph* scene )
+{
+    if( m_scene )
+        m_scene->RemoveGameObject( this );
+
+    m_scene = scene;
+
+    if( m_scene )
+        m_scene->AddGameObject( this );
 }
 
 Transform& GameObject::GetTransform()
@@ -16,8 +35,6 @@ const Transform& GameObject::GetTransform() const
 {
     return m_transform;
 }
-
-
 
 void GameObject::PreRender( Camera* camera )
 {
@@ -35,22 +52,26 @@ Renderable* GameObject::SetRenderable( Renderable* renderable )
 
 Renderable* GameObject::GetRenderable()
 {
-    RegenModelMatIfDirty();
+    if( m_renderable )
+        RegenModelMatIfDirty();
     return m_renderable;
 }
 
 const Renderable* GameObject::GetRenderable() const
 {
-    RegenModelMatIfDirty();
+    if( m_renderable )
+        RegenModelMatIfDirty();
     return m_renderable;
 }
 
 void GameObject::RegenModelMatIfDirty() const
 {
-//     if( m_modelMatDirty )
-//     {
-//         m_modelMatDirty = false;
-//     }
+    //     if( m_modelMatDirty )
+    //     {
+    //         m_modelMatDirty = false;
+    //     }
     m_renderable->m_modelMatrix = m_transform.GetLocalToWorld();
 
 }
+
+

@@ -24,6 +24,9 @@ public:
 
     std::vector<Rgba>	m_texels;
 private:
+    void CalcInverseDimensions();
+    Vec2 m_inversDimensions;
+    Vec2 m_halfTexelUV;
     IVec2		m_dimensions;
     // by default ordered left-to-right, then down, from [0]=(0,0) at top-left
 

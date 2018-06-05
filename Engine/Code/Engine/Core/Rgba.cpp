@@ -48,6 +48,26 @@ Rgba::Rgba( const Rgba & copy )
 {
 }
 
+Rgba Rgba::operator+( const Rgba& toAdd )
+{
+    Rgba added;
+    added.r = r + toAdd.r;
+    added.g = g + toAdd.g;
+    added.b = b + toAdd.b;
+    added.a = a + toAdd.a;
+    return added;
+}
+
+Rgba Rgba::operator*( float scale )
+{
+    Rgba scaled;
+    scaled.r = (uchar) ( (float) r * scale );
+    scaled.g = (uchar) ( (float) g * scale );
+    scaled.b = (uchar) ( (float) b * scale );
+    scaled.a = (uchar) ( (float) a * scale );
+    return scaled;
+}
+
 void Rgba::operator=( const Rgba & copyFrom )
 {
     r = copyFrom.r;
@@ -145,7 +165,7 @@ Vec3 Rgba::ToVec3() const
     return Vec3(
         ( (float) r ) / 255.f,
         ( (float) g ) / 255.f,
-        ( (float) b ) / 255.f);
+        ( (float) b ) / 255.f );
 }
 
 void Rgba::ScaleRGB( float rgbScale )

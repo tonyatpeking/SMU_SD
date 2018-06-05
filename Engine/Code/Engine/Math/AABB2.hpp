@@ -52,7 +52,7 @@ public:
     AABB2 RangeMap01ToBounds( const Vec2& localMins, const Vec2& localMaxs ) const;
     AABB2 RangeMap01ToBounds( float minX, float minY, float maxX, float maxY ) const;
     AABB2 WithoutTranslation() const ;
-
+    AABB2 GetNormalizedBounds( const AABB2& bounds );// where is the bounds if mins is 0,0 and 1,1 is maxs
     Vec2 GetMinXMaxY() const;
     Vec2 GetMaxXMinY() const;
     float GetHeight() const;

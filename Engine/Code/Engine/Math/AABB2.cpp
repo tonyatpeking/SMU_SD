@@ -247,6 +247,14 @@ AABB2 AABB2::WithoutTranslation() const
     return AABB2( mins - center, maxs - center );
 }
 
+AABB2 AABB2::GetNormalizedBounds( const AABB2& bounds )
+{
+    AABB2 normalizedBounds;
+    normalizedBounds.mins = GetNormalizedPosition( bounds.mins );
+    normalizedBounds.maxs = GetNormalizedPosition( bounds.maxs );
+    return normalizedBounds;
+}
+
 Vec2 AABB2::GetMinXMaxY() const
 {
     return Vec2( mins.x, maxs.y );

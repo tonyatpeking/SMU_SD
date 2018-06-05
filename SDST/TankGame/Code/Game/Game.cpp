@@ -101,6 +101,7 @@ void Game::Initialize()
     g_renderer->SetBackGroundColor( g_config->backgroundColor );
     g_forwardRenderingPath = new ForwardRenderingPath(g_renderer);
     g_renderSceneGraph = new RenderSceneGraph();
+    RenderSceneGraph::SetCurrentScene( g_renderSceneGraph );
     LoadSounds();
 
     GameCommands::RegisterAllCommands();

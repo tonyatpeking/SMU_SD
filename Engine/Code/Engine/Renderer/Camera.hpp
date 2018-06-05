@@ -5,18 +5,23 @@
 #include "Engine/Math/Ray3.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/Transform.hpp"
+#include "Engine/Core/GameObject.hpp"
 
 class Texture;
 class Vec3;
 class Mat4;
 class Material;
 class FrameBuffer;
+class RenderSceneGraph;
 
-class Camera
+
+class Camera : public GameObject
 {
 public:
     Camera();
-    ~Camera();
+    virtual ~Camera();
+
+    virtual void SetScene( RenderSceneGraph* scene ) override;
 
     // will be implemented later
     void SetColorTarget( Texture *colorTarget );
@@ -46,10 +51,6 @@ public:
     const Mat4& GetCamToWorldMatrix() const { return m_transform.GetLocalToWorld(); };
     const Mat4& GetViewMatrix() { return m_transform.GetWorldToLocal(); };
     const Mat4& GetProjMatrix() const { return m_projMat; };
-
-    Transform& GetTransform() { return m_transform; };
-
-    Transform m_transform;
 
     // default all to identity
     //Mat4 m_camToWorld;  // where is the camera?

@@ -1032,7 +1032,7 @@ void Renderer::UseCamera( Camera* camera )
     m_cameraUBOData.projection = m_currentCamera->GetProjMatrix();
     m_cameraUBOData.view = m_currentCamera->GetViewMatrix();
     m_cameraUBOData.vp = m_currentCamera->GetVPMatrix();
-    m_cameraUBOData.cameraPosition = m_currentCamera->m_transform.GetWorldPosition();
+    m_cameraUBOData.cameraPosition = m_currentCamera->GetTransform().GetWorldPosition();
 
     m_cameraUniformBuffer.Set( m_cameraUBOData );
     m_cameraUniformBuffer.BindToSlot( UBO::CAMERA_BINDING );

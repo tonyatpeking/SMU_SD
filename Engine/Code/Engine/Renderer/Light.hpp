@@ -7,8 +7,10 @@
 class Light : public GameObject
 {
 public:
-    Light() {};
-    ~Light() {};
+    Light();
+    virtual ~Light();
+
+    virtual void SetScene( RenderSceneGraph* scene ) override;
 
     float GetContributionToPoint( Vec3 point );
 

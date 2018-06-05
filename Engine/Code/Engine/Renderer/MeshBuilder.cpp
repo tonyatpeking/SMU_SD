@@ -9,20 +9,34 @@
 
 
 MeshBuilder MeshBuilder::FromSurfacePatch( SurfacePatch* sp,
-                                           int uGridLines, int vGridLines )
+                                           int uGridLines, int vGridLines,
+                                           const AABB2& uvBounds, float uvTile )
 {
     MeshBuilder mb{};
     mb.BeginSubMesh();
+
+    float uRange = uvBounds.GetWidth();
+    if( uRange == 0 )
+        uRange = 0.0001f;
+    float vRange = uvBounds.GetHeight();
+    if( vRange == 0 )
+        vRange = 0.0001f;
+
     float uSpacing = 1.f / ( (float) uGridLines - 1.f );
+    uSpacing = uSpacing * uRange;
+
     float vSpacing = 1.f / ( (float) vGridLines - 1.f );
+    vSpacing = vSpacing * vRange;
+
     // Set all the vertices
     for( int vIdx = 0; vIdx < vGridLines; ++vIdx )
     {
-        float v = vIdx * vSpacing;
+        float v = uvBounds.mins.v + ( vIdx * vSpacing );
         for( int uIdx = 0; uIdx < uGridLines; ++uIdx )
         {
-            Vec2 uv = Vec2( uIdx * uSpacing, v );
-            mb.SetUV( uv );
+            float u = uvBounds.mins.u + ( uIdx * uSpacing );
+            Vec2 uv = Vec2( u, v );
+            mb.SetUV( uv * uvTile );
             Vec3 tangent = sp->EvalTangent( uv );
             Vec3 bitangent = sp->EvalBitangent( uv );
             Vec3 normal = sp->CalcNormal( bitangent, tangent );

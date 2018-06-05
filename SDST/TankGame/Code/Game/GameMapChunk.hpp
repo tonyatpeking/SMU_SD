@@ -1,10 +1,11 @@
 #pragma once
 #include "Engine/Math/IVec2.hpp"
+#include "Engine/Core/GameObject.hpp"
 
 class GameMap;
 class Renderable;
 
-class GameMapChunk
+class GameMapChunk : public GameObject
 {
 public:
     GameMapChunk( GameMap* map, IVec2 index );
@@ -15,5 +16,5 @@ public:
 private:
     GameMap * m_map = nullptr;
     IVec2 m_index;
-    Renderable* m_renderable = nullptr;
+
 };

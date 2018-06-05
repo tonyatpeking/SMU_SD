@@ -16,6 +16,8 @@ public:
                    unsigned char blueByte, unsigned char alphaByte = 255 );
 
     // Operators
+    Rgba operator+( const Rgba& toAdd );
+    Rgba operator*( float scale );
     void operator=( const Rgba& copyFrom );
     bool operator==( const Rgba& compare ) const;
     friend bool operator<( const Rgba& a, const Rgba& b );

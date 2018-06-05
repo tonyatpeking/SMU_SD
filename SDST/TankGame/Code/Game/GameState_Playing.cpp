@@ -1,6 +1,7 @@
 ﻿#include "Engine/UI/Menu.hpp"
-#include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/Random.hpp"
+#include "Engine/Math/Vec2.hpp"
+#include "Engine/Math/IVec2.hpp"
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/IVec3.hpp"
 #include "Engine/Math/MathUtils.hpp"
@@ -41,7 +42,7 @@
 #include "Game/Game.hpp"
 #include "Game/App.hpp"
 #include "Game/Asteroid.hpp"
-
+#include "Game/GameMap.hpp"
 
 GameState_Playing::GameState_Playing()
     : GameState( GameStateType::PLAYING )
@@ -80,7 +81,6 @@ void GameState_Playing::Update()
                 MakeAsteroid( asteroid->m_maxHealth / 2.f,
                               asteroid->GetTransform().GetWorldPosition() );
             }
-            g_renderSceneGraph->RemoveGameObject( asteroid );
             delete asteroid;
             ContainerUtils::EraseAtIndexFast( m_asteroids, goIdx );
         }
@@ -90,7 +90,6 @@ void GameState_Playing::Update()
     {
         if( m_projectiles[goIdx]->ShouldDie() )
         {
-            g_renderSceneGraph->RemoveGameObject( m_projectiles[goIdx] );
             delete m_projectiles[goIdx];
             ContainerUtils::EraseAtIndexFast( m_projectiles, goIdx );
         }
@@ -107,7 +106,6 @@ void GameState_Playing::Update()
     {
         if( m_emitters[emitterIdx]->ShouldDie() )
         {
-            g_renderSceneGraph->RemoveGameObject( m_emitters[emitterIdx] );
             delete  m_emitters[emitterIdx];
             ContainerUtils::EraseAtIndexFast( m_emitters, emitterIdx );
         }
@@ -125,7 +123,7 @@ void GameState_Playing::OnEnter()
 {
     GameState::OnEnter();
 
-    CreateCamera();
+    MakeCamera();
 
     DebugRender::Set3DCamera( g_mainCamera );
 
@@ -139,6 +137,8 @@ void GameState_Playing::OnEnter()
 
     MakeLights();
 
+    MakeSun();
+
     MakeAsteroids();
 
     MakeSkyBox();
@@ -147,7 +147,9 @@ void GameState_Playing::OnEnter()
 
     TestEnter();
 
-    CreateNoiseImage();
+    MakeNoiseImage();
+
+    MakeMap();
 }
 
 void GameState_Playing::OnExit()
@@ -166,11 +168,10 @@ void GameState_Playing::ProcessInput()
 
 
 
-void GameState_Playing::CreateCamera()
+void GameState_Playing::MakeCamera()
 {
     delete g_mainCamera;
     g_mainCamera = new Camera();
-    g_renderSceneGraph->AddCamera( g_mainCamera );
     g_mainCamera->SetColorTarget( g_renderer->DefaultColorTarget() );
     g_mainCamera->SetDepthStencilTarget( g_renderer->DefaultDepthTarget() );
     g_mainCamera->SetProjection( m_fov, m_near, m_far ); //fov near far
@@ -204,6 +205,8 @@ void GameState_Playing::ProcessMovementInput()
         shipTransform.TranslateLocal( Vec3::RIGHT * ds * m_moveSpeed );
         isMoving = true;
     }
+
+    SnapTransformToHeightmap( &shipTransform );
 
     if( isMoving )
         SetExhaustSpawnRate( 60 );
@@ -273,20 +276,17 @@ void GameState_Playing::MakePrimitiveShapes()
     quad->SetRenderable( Renderable::MakeQuad() );
     quad->GetRenderable()->SetMaterial( 0, mat );
     quad->GetTransform().TranslateLocal( Vec3::FORWARD * 10 );
-    g_renderSceneGraph->AddGameObject( quad );
 
     GameObject* cube = new GameObject();
     cube->SetRenderable( Renderable::MakeCube() );
     cube->GetRenderable()->SetMaterial( 0, mat );
     cube->GetTransform().TranslateLocal( Vec3( 4, 0, 10 ) );
-    g_renderSceneGraph->AddGameObject( cube );
 
 
     GameObject* sphere = new GameObject();
     sphere->SetRenderable( Renderable::MakeUVSphere() );
     sphere->GetRenderable()->SetMaterial( 0, mat );
     sphere->GetTransform().TranslateLocal( Vec3( -4, 0, 10 ) );
-    g_renderSceneGraph->AddGameObject( sphere );
 
     GameObject* cylinder = new GameObject();
     Renderable* renderable = new Renderable();
@@ -295,7 +295,6 @@ void GameState_Playing::MakePrimitiveShapes()
     cylinder->SetRenderable( renderable );
     cylinder->GetRenderable()->SetMaterial( 0, mat );
     cylinder->GetTransform().TranslateLocal( Vec3( 0, 2, 10 ) );
-    g_renderSceneGraph->AddGameObject( cylinder );
 
 
     GameObject* cone = new GameObject();
@@ -305,7 +304,6 @@ void GameState_Playing::MakePrimitiveShapes()
     cone->SetRenderable( renderable );
     cone->GetRenderable()->SetMaterial( 0, mat );
     cone->GetTransform().TranslateLocal( Vec3( -4, 2, 10 ) );
-    g_renderSceneGraph->AddGameObject( cone );
 
     GameObject* torus = new GameObject();
     renderable = new Renderable();
@@ -314,7 +312,6 @@ void GameState_Playing::MakePrimitiveShapes()
     torus->SetRenderable( renderable );
     torus->GetRenderable()->SetMaterial( 0, mat );
     torus->GetTransform().TranslateLocal( Vec3( -8, 2, 10 ) );
-    g_renderSceneGraph->AddGameObject( torus );
 
     GameObject* helicoid = new GameObject();
     renderable = new Renderable();
@@ -323,7 +320,6 @@ void GameState_Playing::MakePrimitiveShapes()
     helicoid->SetRenderable( renderable );
     helicoid->GetRenderable()->SetMaterial( 0, matDouble );
     helicoid->GetTransform().TranslateLocal( Vec3( 4, 2, 10 ) );
-    g_renderSceneGraph->AddGameObject( helicoid );
 }
 
 
@@ -332,12 +328,6 @@ void GameState_Playing::TestEnter()
     MakePrimitiveShapes();
     g_console->Print( "Current Dir:" );
     g_console->Print( IOUtils::GetCurrentDir() );
-
-
-
-
-
-
 }
 
 void GameState_Playing::TestRender() const
@@ -439,7 +429,7 @@ void GameState_Playing::TestInput()
         }
     }
 
-    const Vec3 camPos =  g_mainCamera->m_transform.GetWorldPosition();
+    const Vec3 camPos =  g_mainCamera->GetTransform().GetWorldPosition();
     // Sphere
     if( g_input->WasKeyJustPressed( 'V' ) )
     {
@@ -494,7 +484,7 @@ void GameState_Playing::TestInput()
     if( g_input->WasKeyJustPressed( 'V' ) )
     {
         DebugRender::SetOptions( -1, Rgba::GREEN, Rgba::RED );
-        Transform trans = g_mainCamera->m_transform;
+        Transform trans = g_mainCamera->GetTransform();
         trans.TranslateLocal( Vec3( -5, 0, 4 ) );
 
 
@@ -511,19 +501,6 @@ void GameState_Playing::TestInput()
         uint handle = DebugRender::DrawGrid( camPos, 10, 70 );
         handles.push_back( handle );
     }
-
-    // Spotlight at camera
-    if( g_input->WasKeyJustPressed( 'F' ) )
-    {
-        MoveLightToCamera( true );
-    }
-
-    // Directional light at camera
-    if( g_input->WasKeyJustPressed( 'R' ) )
-    {
-        MoveLightToCamera( false );
-    }
-
 }
 
 void GameState_Playing::MakeSpaceShip()
@@ -546,7 +523,6 @@ void GameState_Playing::MakeSpaceShip()
     m_shipHull->SetRenderable( spaceShipRenderable );
     m_shipHull->GetRenderable()->SetMaterial( 0, mat );
     //m_gameObjects.push_back( m_shipHull );
-    g_renderSceneGraph->AddGameObject( m_shipHull );
 
     // Add spotlight to front of ship
     Light* light = new Light();
@@ -556,7 +532,6 @@ void GameState_Playing::MakeSpaceShip()
     light->m_intensity = 4;
     light->GetTransform().SetWorldPosition( Vec3( 0, 3, -4 ) );
     light->SetParent( m_shipHull );
-    g_renderSceneGraph->AddLight( light );
 
     // Add exhaust trail
     m_rightThrustEmitter = MakeExhaustParticles( Vec3( 3, 0, -3 ) );
@@ -597,7 +572,6 @@ void GameState_Playing::LoadMiku()
 
     m_miku->SetRenderable( mikuRenderable );
     m_miku->GetTransform().TranslateLocal( Vec3::DOWN * 5 + Vec3::LEFT * 15 );
-    g_renderSceneGraph->AddGameObject( m_miku );
 }
 
 void GameState_Playing::MakeLights()
@@ -632,8 +606,6 @@ void GameState_Playing::MakeLights()
         light->GetTransform().TranslateLocal( Vec3::UP * 20 );
 
         m_lights.push_back( light );
-        g_renderSceneGraph->AddLight( light );
-        g_renderSceneGraph->AddGameObject( light );
     }
 }
 
@@ -658,27 +630,17 @@ void GameState_Playing::RenderLights() const
         g_renderer->DrawRenderable( light->GetRenderable() );
 }
 
-void GameState_Playing::MoveLightToCamera( bool isSpotLight )
+void GameState_Playing::MakeSun()
 {
     Light* light = m_lights[m_lightsToSpawn - 1];
-    light->GetTransform().SetLocalToParent( g_mainCamera->GetCamToWorldMatrix() );
-    if( isSpotLight )
-    {
-        light->m_sourceRadius = 5.f;
-        light->m_isPointLight = 1;
-        light->m_coneInnerDot = CosDeg( 0 );
-        light->m_coneOuterDot = CosDeg( 20 );
-        light->m_intensity = 17;
-    }
-    else
-    {
-        light->m_sourceRadius = 99999.f;
-        light->m_isPointLight = 0;
-        light->m_coneInnerDot = -2;
-        light->m_coneOuterDot = -2;
-        light->m_intensity = 1;
-    }
+    light->m_color = Rgba::WHITE;
+    light->GetTransform().SetWorldEuler( Vec3( 45, 0, 0 ) );
 
+    light->m_sourceRadius = 99999.f;
+    light->m_isPointLight = 0;
+    light->m_coneInnerDot = -2;
+    light->m_coneOuterDot = -2;
+    light->m_intensity = 1;
 }
 
 
@@ -715,7 +677,6 @@ void GameState_Playing::MakeProjectile( const Vec3& offset )
     trans.TranslateLocal( offset );
     //trans.RotateLocalEuler( Vec3( pitch, yaw, 0 ));
     //trans.SetLocalToParent( rot * trans.GetLocalToParent() );
-    g_renderSceneGraph->AddGameObject( proj );
     m_projectiles.push_back( proj );
 }
 
@@ -735,7 +696,6 @@ void GameState_Playing::MakeAsteroid( float maxHealth, const Vec3& position )
     asteroid->m_velocity = Random::Vec3InRange( Vec3( -10, -10, -10 ), Vec3( 10, 10, 10 ) );
     asteroid->m_drag = 1;
     m_asteroids.push_back( asteroid );
-    g_renderSceneGraph->AddGameObject( asteroid );
 
 }
 
@@ -781,7 +741,6 @@ void GameState_Playing::MakeCollisionParticles( const Vec3& position )
     emitter->SetParticleSpawnCB( CollisionParticleSpawnCB );
     emitter->Burst( 40, 70 );
     m_emitters.push_back( emitter );
-    g_renderSceneGraph->AddGameObject( emitter );
 }
 
 // exhaust particles spawn callback
@@ -804,7 +763,6 @@ ParticleEmitter* GameState_Playing::MakeExhaustParticles( const Vec3& offset )
     emitter->SetParentWorldSpace( m_shipHull );
     emitter->m_spawnPointTransform.SetLocalPosition( offset );
     m_emitters.push_back( emitter );
-    g_renderSceneGraph->AddGameObject( emitter );
     return emitter;
 }
 
@@ -824,12 +782,11 @@ void GameState_Playing::MakeSkyBox()
     mat->SetShaderPass( 0, ShaderPass::GetSkyboxShader() );
     renderable->SetMaterial( 0, mat );
     skybox->SetRenderable( renderable );
-    g_renderSceneGraph->AddGameObject( skybox );
 }
 
-void GameState_Playing::CreateNoiseImage()
+void GameState_Playing::MakeNoiseImage()
 {
-    float scale = 50;
+    float scale = 20;
     uint numOctaves = 2;
 
     m_noiseImage = new Image( m_noiseImageSize, m_noiseImageSize );
@@ -849,6 +806,25 @@ void GameState_Playing::CreateNoiseImage()
 
     DebugRender::SetOptions( 100, Rgba::WHITE, Rgba::WHITE );
     DebugRender::DrawQuad( AABB2::NEG_ONES_ONES * 2, Vec3::ZEROS, Vec3::ZEROS, m_noiseTexture );
+
+}
+
+void GameState_Playing::MakeMap()
+{
+    m_map = new GameMap();;
+    m_map->LoadFromImage( m_noiseImage, AABB2( -128, -128, 128, 128 ),
+                          0, 32, IVec2( 16, 16 ) );
+}
+
+void GameState_Playing::SnapTransformToHeightmap( Transform* transform )
+{
+    Vec3 worldPos = transform->GetWorldPosition();
+    float height = m_map->GetHeight( Vec2::MakeFromXZ( worldPos ) );
+    height += 5;
+
+    Vec3 newWorldPos = worldPos;
+    newWorldPos.y = height;
+    transform->SetWorldPosition( newWorldPos );
 
 }
 

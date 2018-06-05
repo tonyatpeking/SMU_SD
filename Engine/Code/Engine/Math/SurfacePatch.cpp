@@ -3,6 +3,7 @@
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/IVec2.hpp"
+#include "Engine/Core/Image.hpp"
 
 
 Vec3 SurfacePatch::EvalPosition( const Vec2& uv )
@@ -96,3 +97,21 @@ Vec3 SurfacePatch_Torus::EvalImpl( const Vec2& uv )
     return Vec3( x, y, z );
 
 }
+
+//--------------------------------------------------------------------------------------
+// HeightMap
+Vec3 SurfacePatch_HeightMap::EvalImpl( const Vec2& uv )
+{
+    float x, y, z;
+    Vec2 posXZ = RangeMap( uv, Vec2::ZEROS, Vec2::ONES, m_extents.mins, m_extents.maxs );
+    x = posXZ.x;
+    z = posXZ.y;
+
+        float red = (float) m_heightMap->GetTexelAtUV( uv ).r;
+        y = RangeMap( red, 0.f, 255.f, m_minHeight, m_maxHeight );
+
+
+    return Vec3( x,y,z );
+}
+
+

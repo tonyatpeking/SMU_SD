@@ -1,10 +1,12 @@
 #pragma once
 #include "Engine/Core/SmartEnum.hpp"
 #include "Engine/Math/MathUtils.hpp"
+#include "Engine/Math/AABB2.hpp"
 class Vec2;
 class Vec3;
 class MeshBuilder;
 class Mesh;
+class Image;
 
 class SurfacePatch
 {
@@ -20,7 +22,7 @@ public:
     Vec3 CalcNormal( const Vec3& bitangent, const Vec3& tangent );
 
     Wrap::WrapMode m_wrapMode = Wrap::WrapMode::CLAMP;
-    float m_eps = 0.00001f;
+    float m_eps = 0.01f;
 protected:
 
     virtual Vec3 EvalImpl( const Vec2& uv ) = 0;
@@ -84,4 +86,28 @@ protected:
     virtual Vec3 EvalImpl( const Vec2& uv ) override;
     float m_tubeRadius;
     float m_loopRadius;
+};
+
+
+//--------------------------------------------------------------------------------------
+// HeightMap
+
+// only looks at the red channel of the image for now
+class SurfacePatch_HeightMap : public SurfacePatch
+{
+public:
+    // alpha controls curvature
+    SurfacePatch_HeightMap( Image* heightMap, const AABB2& extents = AABB2::ZEROS_ONES,
+                            float minHeight = 0, float maxHeight = 1 )
+        : m_heightMap( heightMap )
+        , m_extents( extents )
+        , m_minHeight( minHeight )
+        , m_maxHeight( maxHeight )
+    {};
+protected:
+    virtual Vec3 EvalImpl( const Vec2& uv ) override;
+    Image* m_heightMap;
+    AABB2 m_extents;
+    float m_minHeight;
+    float m_maxHeight;
 };

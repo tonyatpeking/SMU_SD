@@ -3,6 +3,8 @@
 #include "Engine/Core/GameObject.hpp"
 #include "Engine/Renderer/Renderable.hpp"
 
+RenderSceneGraph* RenderSceneGraph::s_currentScene = nullptr;
+
 void RenderSceneGraph::AddGameObject( GameObject* gameObject )
 {
     m_gameObjects.push_back( gameObject );
@@ -39,7 +41,11 @@ std::vector<Renderable*>& RenderSceneGraph::GetRenderables()
     m_renderables.reserve( m_gameObjects.size() );
     for ( auto& gameObject : m_gameObjects )
     {
-        m_renderables.push_back( gameObject->GetRenderable() );
+        Renderable* renderable = gameObject->GetRenderable();
+        if( renderable )
+            m_renderables.push_back( renderable );
     }
     return m_renderables;
 }
+
+

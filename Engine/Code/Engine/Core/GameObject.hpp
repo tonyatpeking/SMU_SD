@@ -3,14 +3,19 @@
 #include "Engine/Renderer/Renderable.hpp"
 
 class Camera;
+class RenderSceneGraph;
 
 class GameObject
 {
 public:
-    GameObject() {};
+    // GameObject will default to RenderSceneGraph::GetCurrentScene()
+    GameObject();
     virtual ~GameObject();
 
     virtual void Update() {};
+
+    virtual void SetScene( RenderSceneGraph* scene );
+
 
     Transform& GetTransform();
     const Transform& GetTransform() const;
@@ -37,5 +42,7 @@ protected:
     mutable Renderable* m_renderable;
 
     bool m_shouldDie = false;
+    RenderSceneGraph* m_scene = nullptr;
+
 
 };
