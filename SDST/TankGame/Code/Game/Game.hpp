@@ -14,6 +14,8 @@ class Adventure;
 class MainMenu;
 class InventoryMenu;
 class CubicSpline2D;
+class GameObject;
+class GameMap;
 class Texture;
 class GameState;
 class Map;
@@ -67,6 +69,18 @@ private:
     void ToggleDebugRenderModes();
 public:
     int m_victoryTeam = -1;
+
+    // Game resources, #TODO Move to res manager
+    Image* m_noiseImage = nullptr;
+    Texture* m_noiseTexture = nullptr;
+    int m_noiseImageSize = 256;
+
+    GameMap* m_map = nullptr;
+
+    GameObject* m_shipHull;
+    Texture* m_skybox = nullptr;
+
+
 private:
     float m_pauseEffectCurrentTime = 0.f;
     float m_pauseEffectTotalTime = 0.5f;

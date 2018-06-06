@@ -36,79 +36,79 @@ void GameState_MainMenu::Render() const
     GameState::Render();
 //
 //
-//     g_renderer->UseUICamera();
-//     g_renderer->DrawAABB( AABB2::MakeBoundsFromDimensions( g_window->GetDimensions() ), g_config->overlayColor );
-//
-//
-//     Vec2 screenCenter = (Vec2) g_window->GetDimensions() * 0.5f;
-//
-//     String text = "Space Game";
-//     Vec2 textPosition = screenCenter + Vec2( 0.f, 250.f );
-//     float textHeight = 70.f;
-//     float time = g_UIClock->GetTimeSinceStartupF();
-//     float timeOffset = 0.06f;
-//     float interval = 2.f;
-//     float flashDuration = 0.2f;
-//     float nextGlyphOffsetSeconds = 0.03f;
-//     g_renderer->DrawText2DFlashWave(
-//         text,
-//         textPosition + Vec2( m_textOffset, 0 ),
-//         textHeight,
-//         nullptr,
-//         g_UIClock->GetTimeSinceStartupF(),
-//         Rgba::WHITE,
-//         Rgba::GRAY,
-//         interval,
-//         flashDuration,
-//         nextGlyphOffsetSeconds );
-//
-//
-//     String textStart   = " Press Start to Start!               ";
-//     String textLabel   = "                                     ";
-//     String textMove    = " Move:       Mouse                   ";
-//     String textAim     = " Attack:     Mouse                   ";
-//     String textShoot   = " Rotate Camera: Right Mouse Button   ";
-//     String textAuthor  = "                        Tony Yu      ";
-//
-//     textPosition = textPosition - Vec2( 300.f, 150.f );
-//     Vec2 menuPosition = textPosition + Vec2( 800.f, 0.f );
-//
-//     m_menu->Render();
-//
-//     textHeight = 20.f;
-//     time -= timeOffset * 4.f;
-//     BitmapFont* font = nullptr;
-//     g_renderer->DrawText2DFlashWave( textStart, textPosition, textHeight, font, time, Rgba::WHITE,
-//                                      Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
-//
-//
-//     textPosition = textPosition - Vec2( 0.f, 150.f );
-//     Vec2 textOffset = Vec2( 0.f, 70.f );
-//     time -= timeOffset;
-//     g_renderer->DrawText2DFlashWave( textLabel, textPosition, textHeight, font, time, Rgba::WHITE,
-//                                      Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
-//
-//     textPosition = textPosition - textOffset;
-//     time -= timeOffset;
-//     g_renderer->DrawText2DFlashWave( textMove, textPosition, textHeight, font, time, Rgba::WHITE,
-//                                      Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
-//
-//     textPosition = textPosition - textOffset;
-//     time -= timeOffset;
-//     g_renderer->DrawText2DFlashWave( textAim, textPosition, textHeight, font, time, Rgba::WHITE,
-//                                      Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
-//
-//     textPosition = textPosition - textOffset;
-//     time -= timeOffset;
-//     g_renderer->DrawText2DFlashWave( textShoot, textPosition, textHeight, font, time, Rgba::WHITE,
-//                                      Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
-//
-//
-//     textPosition = textPosition - Vec2( 0, 150.f );
-//     textHeight = 30.f;
-//     time -= timeOffset;
-//     g_renderer->DrawText2DFlashWave( textAuthor, textPosition, textHeight, font, time, Rgba::WHITE,
-//                                      Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
+    g_renderer->UseUICamera();
+    g_renderer->DrawAABB( AABB2::MakeBoundsFromDimensions( g_window->GetDimensions() ), g_config->overlayColor );
+
+
+    Vec2 screenCenter = (Vec2) g_window->GetDimensions() * 0.5f;
+
+    String text = "Tank Game";
+    Vec2 textPosition = screenCenter + Vec2( 0.f, 250.f );
+    float textHeight = 70.f;
+    float time = g_UIClock->GetTimeSinceStartupF();
+    float timeOffset = 0.06f;
+    float interval = 2.f;
+    float flashDuration = 0.2f;
+    float nextGlyphOffsetSeconds = 0.03f;
+    g_renderer->DrawText2DFlashWave(
+        text,
+        textPosition + Vec2( m_textOffset, 0 ),
+        textHeight,
+        nullptr,
+        g_UIClock->GetTimeSinceStartupF(),
+        Rgba::WHITE,
+        Rgba::GRAY,
+        interval,
+        flashDuration,
+        nextGlyphOffsetSeconds );
+
+
+    String textStart   = " Press Start to Start!               ";
+    String textLabel   = " F4 Debug shader                     ";
+    String textMove    = " Move:       WASD                    ";
+    String textAim     = " Look:       Mouse                   ";
+    String textShoot   = "'Z' 'X' 'C' 'V' for debug render demo";
+    String textAuthor  = "                        Tony Yu      ";
+
+    textPosition = textPosition - Vec2( 300.f, 150.f );
+    Vec2 menuPosition = textPosition + Vec2( 800.f, 0.f );
+    m_menu->Render();
+
+
+    textHeight = 20.f;
+    time -= timeOffset * 4.f;
+    BitmapFont* font = nullptr;
+    g_renderer->DrawText2DFlashWave( textStart, textPosition, textHeight, font, time, Rgba::WHITE,
+                                     Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
+
+
+    textPosition = textPosition - Vec2( 0.f, 150.f );
+    Vec2 textOffset = Vec2( 0.f, 70.f );
+    time -= timeOffset;
+    g_renderer->DrawText2DFlashWave( textLabel, textPosition, textHeight, font, time, Rgba::WHITE,
+                                     Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
+
+    textPosition = textPosition - textOffset;
+    time -= timeOffset;
+    g_renderer->DrawText2DFlashWave( textMove, textPosition, textHeight, font, time, Rgba::WHITE,
+                                     Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
+
+    textPosition = textPosition - textOffset;
+    time -= timeOffset;
+    g_renderer->DrawText2DFlashWave( textAim, textPosition, textHeight, font, time, Rgba::WHITE,
+                                     Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
+
+    textPosition = textPosition - textOffset;
+    time -= timeOffset;
+    g_renderer->DrawText2DFlashWave( textShoot, textPosition, textHeight, font, time, Rgba::WHITE,
+                                     Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
+
+
+    textPosition = textPosition - Vec2( 0, 150.f );
+    textHeight = 30.f;
+    time -= timeOffset;
+    g_renderer->DrawText2DFlashWave( textAuthor, textPosition, textHeight, font, time, Rgba::WHITE,
+                                     Rgba::BLACK, interval, flashDuration, nextGlyphOffsetSeconds );
 
 }
 
@@ -116,7 +116,10 @@ void GameState_MainMenu::OnEnter()
 {
     GameState::OnEnter();
 
-    StartGame();
+    //StartGame();
+    g_input->LockCursor( false );
+    g_input->ClipCursor( false );
+    g_input->ShowCursor( true );
 
     m_menu = new Menu( g_renderer, g_input );
     AABB2 windowBounds = g_window->GetLocalBounds();
@@ -147,7 +150,7 @@ void GameState_MainMenu::ProcessInput()
 
 void GameState_MainMenu::StartGame()
 {
-    g_game->ChangeState( GameStateType::PLAYING );
+    g_game->ChangeState( GameStateType::LOBBY );
 }
 
 

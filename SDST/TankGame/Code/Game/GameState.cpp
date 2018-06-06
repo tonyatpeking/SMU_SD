@@ -10,6 +10,7 @@
 #include "Game/GameState_Loading.hpp"
 #include "Game/GameState_MainMenu.hpp"
 #include "Game/GameState_Victory.hpp"
+#include "Game/GameState_Lobby.hpp"
 
 GameState::GameState( GameStateType gameStateType )
     : m_gameStateType( gameStateType )
@@ -29,6 +30,8 @@ GameState* GameState::MakeGameState( GameStateType gameStateType )
         return new GameState_MainMenu();
     case GameStateType::VICTORY:
         return new GameState_Victory();
+    case GameStateType::LOBBY:
+        return new GameState_Lobby();
     default:
         LOG_FATAL( "Unimplemented GameState: " + GameStateType::ToString( gameStateType ) );
         return nullptr;

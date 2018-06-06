@@ -305,6 +305,7 @@
     <ClCompile Include="GameMapChunk.cpp" />
     <ClCompile Include="GameplayEnums.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="GameState_Lobby.cpp" />
     <ClCompile Include="GameState_Playing.cpp" />
     <ClCompile Include="GameState_Loading.cpp" />
     <ClCompile Include="GameState_MainMenu.cpp" />
@@ -330,6 +331,7 @@
     <ClInclude Include="EngineBuildPreferences.hpp" />
     <ClInclude Include="GameState.hpp" />
     <ClInclude Include="GameStateType.hpp" />
+    <ClInclude Include="GameState_Lobby.hpp" />
     <ClInclude Include="GameState_Playing.hpp" />
     <ClInclude Include="GameState_Loading.hpp" />
     <ClInclude Include="GameState_MainMenu.hpp" />

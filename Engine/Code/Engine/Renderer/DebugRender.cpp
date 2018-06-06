@@ -312,19 +312,19 @@ uint DebugRender::Logf( const char* format, ... )
 }
 
 
-uint DebugRender::DrawPoint( const Vec3& pos )
+uint DebugRender::DrawPoint( const Vec3& pos, float size )
 {
     g_options.m_screenspace = false;
     Renderable* renderable = new Renderable();
     renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
     MeshBuilder mb{};
     mb.BeginSubMesh( DrawPrimitive::LINES, false );
-    mb.PushPos( pos + Vec3::FORWARD * 0.1f );
-    mb.PushPos( pos + Vec3::BACKWARD * 0.1f );
-    mb.PushPos( pos + Vec3::LEFT * 0.1f );
-    mb.PushPos( pos + Vec3::RIGHT * 0.1f );
-    mb.PushPos( pos + Vec3::UP * 0.1f );
-    mb.PushPos( pos + Vec3::DOWN * 0.1f );
+    mb.PushPos( pos + Vec3::FORWARD * size );
+    mb.PushPos( pos + Vec3::BACKWARD * size );
+    mb.PushPos( pos + Vec3::LEFT * size );
+    mb.PushPos( pos + Vec3::RIGHT * size );
+    mb.PushPos( pos + Vec3::UP * size );
+    mb.PushPos( pos + Vec3::DOWN * size );
     mb.EndSubMesh();
     renderable->m_mesh = mb.MakeMesh();
     return AddTask( renderable );

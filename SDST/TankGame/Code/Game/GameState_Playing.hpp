@@ -41,7 +41,6 @@ private:
     std::vector<Projectile*> m_projectiles;
     std::vector<ParticleEmitter*> m_emitters;
     std::vector<Light*> m_lights;
-    GameObject* m_shipHull;
     GameObject* m_shipCenter;
     GameObject* m_miku;
 
@@ -52,10 +51,10 @@ private:
     void TestUpdate();
     void TestInput();
 
-    void MakeSpaceShip();
     void AttatchCameraToShip();
     void LoadMiku();
     void MakeLights();
+    void FinalizeSpaceShip();
     void UpdateLights();
     void RenderLights() const;
     void MakeSun();
@@ -66,18 +65,11 @@ private:
     void MakeAsteroid( float maxHealth, const Vec3& position );
     void CheckCollisions();
     void MakeCollisionParticles( const Vec3& position );
-    ParticleEmitter* MakeExhaustParticles( const Vec3& offset );
+    ParticleEmitter* MakeExhaustEmitter( const Vec3& offset );
     void SetExhaustSpawnRate( float rate );
-    void MakeSkyBox();
-    void MakeNoiseImage();
-    void MakeMap();
     void SnapTransformToHeightmap( Transform* transform );
+    void LeaveBreadCrumbs();
 
-    Image* m_noiseImage = nullptr;
-    Texture* m_noiseTexture = nullptr;
-    int m_noiseImageSize = 256;
-
-    GameMap* m_map = nullptr;
 
     ParticleEmitter* m_leftThrustEmitter;
     ParticleEmitter* m_rightThrustEmitter;

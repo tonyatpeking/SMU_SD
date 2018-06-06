@@ -12,5 +12,11 @@ public:
     void OnExit() override;
     void ProcessInput() override;
 protected:
+    // Load on second frame so that loading frame is rendered
+    void LoadResourcesOnSecondFrame();
+    void MakeSpaceShip();
+    void MakeSkyBox();
+    void MakeMap();
+    void MakeNoiseImage();
 
 };

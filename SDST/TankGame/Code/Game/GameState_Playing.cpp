@@ -9,7 +9,6 @@
 #include "Engine/Math/AABB3.hpp"
 #include "Engine/Math/Intersection.hpp"
 #include "Engine/Math/Random.hpp"
-#include "Engine/Math/SmoothNoise.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/Core/GameObject.hpp"
 #include "Engine/Core/Console.hpp"
@@ -34,7 +33,6 @@
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Renderer/Light.hpp"
 #include "Engine/Particles/ParticleEmitter.hpp"
-#include "Engine/Renderer/CubeMap.hpp"
 
 #include "Game/Projectile.hpp"
 #include "Game/GameState_Playing.hpp"
@@ -110,6 +108,8 @@ void GameState_Playing::Update()
             ContainerUtils::EraseAtIndexFast( m_emitters, emitterIdx );
         }
     }
+
+    LeaveBreadCrumbs();
 }
 
 void GameState_Playing::Render() const
@@ -123,17 +123,19 @@ void GameState_Playing::OnEnter()
 {
     GameState::OnEnter();
 
+    g_input->LockCursor( true );
+    g_input->ClipCursor( true );
+    g_input->ShowCursor( false );
+
     MakeCamera();
 
     DebugRender::Set3DCamera( g_mainCamera );
 
     g_renderer->SetBackGroundColor( Rgba::BLACK );
 
-    MakeSpaceShip();
-
     AttatchCameraToShip();
 
-    LoadMiku();
+    //LoadMiku();
 
     MakeLights();
 
@@ -141,15 +143,12 @@ void GameState_Playing::OnEnter()
 
     MakeAsteroids();
 
-    MakeSkyBox();
 
     SetAmbient( 0.1f );
 
     TestEnter();
 
-    MakeNoiseImage();
-
-    MakeMap();
+    FinalizeSpaceShip();
 }
 
 void GameState_Playing::OnExit()
@@ -181,7 +180,7 @@ void GameState_Playing::MakeCamera()
 void GameState_Playing::ProcessMovementInput()
 {
     float ds = g_gameClock->GetDeltaSecondsF();
-    Transform& shipTransform = m_shipHull->GetTransform();
+    Transform& shipTransform = g_game->m_shipHull->GetTransform();
 
     bool isMoving = false;
 
@@ -503,41 +502,6 @@ void GameState_Playing::TestInput()
     }
 }
 
-void GameState_Playing::MakeSpaceShip()
-{
-    m_shipHull = new GameObject();
-    Renderable* spaceShipRenderable = new Renderable();
-    //     MeshBuilder mb = ObjLoader::LoadFromFile(
-    //         "Data/Model/scifi_fighter_mk6/scifi_fighter_mk6.obj" );
-    spaceShipRenderable->m_mesh = Mesh::CreateOrGetMesh(
-        "Data/Model/scifi_fighter_mk6/scifi_fighter_mk6.obj", false, true );
-    Material* mat = new Material();
-    mat->m_specularAmount = 0.7f;
-    mat->m_specularPower = 30.f;
-    mat->m_diffuse = g_renderer->CreateOrGetTexture(
-        "Data/Model/scifi_fighter_mk6/SciFi_Fighter-MK6-diffuse.jpg" );
-    mat->m_normal = g_renderer->CreateOrGetTexture(
-        "Data/Model/scifi_fighter_mk6/ship_normal.png" );
-    mat->m_shaderPass = new ShaderPass();
-    mat->m_shaderPass->m_program = ShaderProgram::CreateOrGetFromFiles( "Data/Shaders/lit" );
-    m_shipHull->SetRenderable( spaceShipRenderable );
-    m_shipHull->GetRenderable()->SetMaterial( 0, mat );
-    //m_gameObjects.push_back( m_shipHull );
-
-    // Add spotlight to front of ship
-    Light* light = new Light();
-    light->m_sourceRadius = 10;
-    light->m_coneInnerDot = CosDeg( 0 );
-    light->m_coneOuterDot = CosDeg( 10 );
-    light->m_intensity = 4;
-    light->GetTransform().SetWorldPosition( Vec3( 0, 3, -4 ) );
-    light->SetParent( m_shipHull );
-
-    // Add exhaust trail
-    m_rightThrustEmitter = MakeExhaustParticles( Vec3( 3, 0, -3 ) );
-    m_leftThrustEmitter = MakeExhaustParticles( Vec3( -3, 0, -3 ) );
-
-}
 
 void GameState_Playing::LoadMiku()
 {
@@ -609,6 +573,22 @@ void GameState_Playing::MakeLights()
     }
 }
 
+void GameState_Playing::FinalizeSpaceShip()
+{
+    // Add spotlight to front of ship
+    Light* light = new Light();
+    light->m_sourceRadius = 10;
+    light->m_coneInnerDot = CosDeg( 0 );
+    light->m_coneOuterDot = CosDeg( 10 );
+    light->m_intensity = 4;
+    light->GetTransform().SetWorldPosition( Vec3( 0, 3, -4 ) );
+    light->SetParent( g_game->m_shipHull );
+
+    // Add exhaust trail
+    m_rightThrustEmitter = MakeExhaustEmitter( Vec3( 3, 0, -3 ) );
+    m_leftThrustEmitter = MakeExhaustEmitter( Vec3( -3, 0, -3 ) );
+}
+
 void GameState_Playing::UpdateLights()
 {
     for( uint lightIdx = 0; lightIdx < m_lightsToSpawn - 1; ++lightIdx )
@@ -663,7 +643,7 @@ void GameState_Playing::MakeProjectile( const Vec3& offset )
 {
     Projectile* proj = new Projectile();
     Transform& trans = proj->GetTransform();
-    Transform& shipTrans = m_shipHull->GetTransform();
+    Transform& shipTrans = g_game->m_shipHull->GetTransform();
 
     float yaw = Random::FloatInRange( -1, 1 );
     float pitch = Random::FloatInRange( -1, 1 );
@@ -755,12 +735,12 @@ void ExhaustParticleSpawnCB( Particle& particle )
     particle.m_maxAge = Random::FloatInRange( 1, 3 );
 }
 }
-ParticleEmitter* GameState_Playing::MakeExhaustParticles( const Vec3& offset )
+ParticleEmitter* GameState_Playing::MakeExhaustEmitter( const Vec3& offset )
 {
     ParticleEmitter* emitter = new ParticleEmitter( g_gameClock );
     emitter->SetSpawnRate( 0.001f );
     emitter->SetParticleSpawnCB( ExhaustParticleSpawnCB );
-    emitter->SetParentWorldSpace( m_shipHull );
+    emitter->SetParentWorldSpace( g_game->m_shipHull );
     emitter->m_spawnPointTransform.SetLocalPosition( offset );
     m_emitters.push_back( emitter );
     return emitter;
@@ -772,66 +752,33 @@ void GameState_Playing::SetExhaustSpawnRate( float rate )
     m_rightThrustEmitter->SetSpawnRate( rate );
 }
 
-void GameState_Playing::MakeSkyBox()
-{
-    GameObject* skybox = new GameObject();
-    Renderable* renderable = Renderable::MakeCube();
-    Texture* cubemap = new CubeMap( "Data/Images/Skybox/SkyAndSea.jpg" );
-    Material* mat = new Material();
-    mat->SetDiffuse( cubemap );
-    mat->SetShaderPass( 0, ShaderPass::GetSkyboxShader() );
-    renderable->SetMaterial( 0, mat );
-    skybox->SetRenderable( renderable );
-}
-
-void GameState_Playing::MakeNoiseImage()
-{
-    float scale = 20;
-    uint numOctaves = 2;
-
-    m_noiseImage = new Image( m_noiseImageSize, m_noiseImageSize );
-
-    for( int posX = 0; posX < m_noiseImageSize; ++posX )
-    {
-        for( int posY = 0; posY < m_noiseImageSize; ++posY )
-        {
-            float redVal = Noise::Compute2dPerlin( (float) posX, (float) posY, scale, numOctaves ) + 1;
-            Rgba color = Rgba::BLACK;
-            color.r = (uchar) ( redVal / 2 * 255 );
-            m_noiseImage->SetTexel( posX, posY, color );
-        }
-    }
-
-    m_noiseTexture = new Texture( m_noiseImage );
-
-    DebugRender::SetOptions( 100, Rgba::WHITE, Rgba::WHITE );
-    DebugRender::DrawQuad( AABB2::NEG_ONES_ONES * 2, Vec3::ZEROS, Vec3::ZEROS, m_noiseTexture );
-
-}
-
-void GameState_Playing::MakeMap()
-{
-    m_map = new GameMap();;
-    m_map->LoadFromImage( m_noiseImage, AABB2( -128, -128, 128, 128 ),
-                          0, 32, IVec2( 16, 16 ) );
-}
 
 void GameState_Playing::SnapTransformToHeightmap( Transform* transform )
 {
     Vec3 worldPos = transform->GetWorldPosition();
-    float height = m_map->GetHeight( Vec2::MakeFromXZ( worldPos ) );
+    float height = g_game->m_map->GetHeight( Vec2::MakeFromXZ( worldPos ) );
     height += 5;
 
     Vec3 newWorldPos = worldPos;
     newWorldPos.y = height;
     transform->SetWorldPosition( newWorldPos );
+}
 
+void GameState_Playing::LeaveBreadCrumbs()
+{
+    static Timer timer = Timer(g_gameClock,.1f);
+
+    if( timer.PopOneLap() )
+    {
+        DebugRender::SetOptions( 4.0f, Rgba::GREEN, Rgba::RED );
+        DebugRender::DrawPoint( g_game->m_shipHull->GetTransform().GetWorldPosition(), 1 );
+    }
 }
 
 void GameState_Playing::AttatchCameraToShip()
 {
     Transform& camTrans = g_mainCamera->GetTransform();
-    camTrans.SetParent( &m_shipHull->GetTransform() );
+    camTrans.SetParent( &(g_game->m_shipHull->GetTransform()) );
     camTrans.SetLocalPosition( Vec3( 0, 5, -15 ) );
     camTrans.LookAt( Vec3( 0, 0, 1000 ) );
 }

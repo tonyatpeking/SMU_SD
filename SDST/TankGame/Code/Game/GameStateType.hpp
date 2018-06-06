@@ -9,5 +9,6 @@ SMART_ENUM
     PLAYING,
     LOADING,
     MAIN_MENU,
-    VICTORY
+    VICTORY,
+    LOBBY
 )

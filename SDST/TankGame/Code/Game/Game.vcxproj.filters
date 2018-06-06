@@ -88,6 +88,9 @@
     <ClCompile Include="GameMapChunk.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameState_Lobby.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -143,6 +146,7 @@
       <Filter>Map</Filter>
     </ClInclude>
     <ClInclude Include="GameMapChunk.hpp" />
+    <ClInclude Include="GameState_Lobby.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">
