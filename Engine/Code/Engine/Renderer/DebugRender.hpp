@@ -108,7 +108,8 @@ uint DrawGlyph( const AABB2& bounds, const Vec3& pos, Texture* texture = nullptr
 
 // 3D
 uint DrawPoint( const Vec3& pos, float size = 0.1f );
-uint DrawLine( const Vec3& p0, const Vec3& p1, const Rgba& color0, const Rgba& color1 );
+uint DrawLine( const Vec3& p0, const Vec3& p1, const Rgba& color0 = Rgba::WHITE,
+               const Rgba& color1 = Rgba::WHITE );
 uint DrawBasis( const Mat4& basis = Mat4::IDENTITY );
 uint DrawSphere( const Vec3& pos, float radius = 1 );
 uint DrawAABB3( const AABB3& bounds );

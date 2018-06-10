@@ -25,6 +25,15 @@ Mat4::Mat4( const Vec2& iBasis, const Vec2& jBasis, const Vec2& translation /*= 
 }
 
 
+Mat4::Mat4( const Vec3& i, const Vec3& j, const Vec3& k, const Vec3& t )
+    : I( i )
+    , J( j )
+    , K( k )
+    , T( t, 1.f )
+{
+
+}
+
 Mat4 Mat4::MakeTranslation( const Vec3& translation )
 {
     Mat4 mat;
@@ -298,6 +307,25 @@ Mat4 Mat4::Transpose( const Mat4& mat )
     transpose.K = mat.GetRowZ();
     transpose.T = mat.GetRowW();
     return transpose;
+}
+
+Mat4 Mat4::LerpTransform( const Mat4& matA, const Mat4& matB, float t )
+{
+    Vec3 aRight = (Vec3) matA.I;
+    Vec3 bRight = (Vec3) matB.I;
+    Vec3 aUp = (Vec3) matA.J;
+    Vec3 bUp = (Vec3) matB.J;
+    Vec3 aForward = (Vec3) matA.K;
+    Vec3 bForward = (Vec3) matB.K;
+    Vec3 a_translation = (Vec3) matA.T;
+    Vec3 b_translation = (Vec3) matB.T;
+
+    Vec3 right = Slerp( aRight, bRight, t );
+    Vec3 up = Slerp( aUp, bUp, t );
+    Vec3 forward = Slerp( aForward, bForward, t );
+    Vec3 translation = Lerp( a_translation, b_translation, t );
+
+    return Mat4( right, up, forward, translation );
 }
 
 void Mat4::InvertTranslation()
@@ -639,7 +667,7 @@ Mat4 Mat4::MakeProjection( float fovVertDeg, float aspect, float near, float far
 {
     Mat4 mat;
 
-    float d = 1.0f / TanDeg( fovVertDeg / 2.f);
+    float d = 1.0f / TanDeg( fovVertDeg / 2.f );
     float q = 1.0f / ( far - near );
 
     mat.Ix = d / aspect;

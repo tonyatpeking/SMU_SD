@@ -36,15 +36,46 @@ void GameMap::LoadFromImage( Image* heightMap, const AABB2& extents, float minHe
     }
 }
 
-AABB2 GameMap::GetChunkExtentsAtIdx( const IVec2& idx )
+GameMapChunk* GameMap::GetChunkAtCoord( const IVec2& coord )
+{
+    if( !IsCoordOnMap( coord ) )
+        return nullptr;
+
+    uint idx = IVec2::CoordsToIndex( coord, m_chunkCounts.x );
+    return m_chunks[idx];
+}
+
+GameMapChunk* GameMap::GetChunkAtPos( const Vec2& pos )
+{
+    IVec2 idx = PosToCoord( pos );
+
+    return GetChunkAtCoord( idx );
+}
+
+IVec2 GameMap::PosToCoord( const Vec2& pos )
+{
+    Vec2 relativeToMins = pos - m_extents.mins;
+    Vec2 idxFloat = relativeToMins / m_chunkSize;
+    return IVec2::Floor( idxFloat );
+}
+
+bool GameMap::IsCoordOnMap( const IVec2& coord )
+{
+    return coord.x >= 0
+        && coord.y >= 0
+        && coord.x < m_chunkCounts.x
+        && coord.y < m_chunkCounts.y;
+}
+
+AABB2 GameMap::GetChunkExtentsAtCoord( const IVec2& coord )
 {
     AABB2 chunkExtents;
-    chunkExtents.mins = m_extents.mins + ( m_chunkSize * Vec2( idx ) );
+    chunkExtents.mins = m_extents.mins + ( m_chunkSize * Vec2( coord ) );
     chunkExtents.maxs = chunkExtents.mins + m_chunkSize;
     return chunkExtents;
 }
 
-float GameMap::GetHeight( const Vec2& pos )
+float GameMap::GetHeightAtPos( const Vec2& pos )
 {
     if( !m_heightMap || !m_surface )
         return m_minHeight;
@@ -57,4 +88,19 @@ float GameMap::GetHeight( const Vec2& pos )
     float height = m_surface->EvalPosition( uv ).y;
 
     return height;
+}
+
+Vec3 GameMap::GetNormalAtPos( const Vec2& pos )
+{
+    if( !m_heightMap || !m_surface )
+        return Vec3::UP;
+
+    if( !m_extents.IsPointInside( pos ) )
+        return Vec3::UP;
+
+    Vec2 uv = m_extents.GetNormalizedPosition( pos );
+
+    return m_surface->EvalNormal( uv );
+
+
 }

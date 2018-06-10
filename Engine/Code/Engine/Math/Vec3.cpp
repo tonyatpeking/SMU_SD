@@ -2,7 +2,7 @@
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/MathUtils.hpp"
-
+#include "Engine/Core/EngineCommon.hpp"
 
 //static values
 
@@ -375,4 +375,32 @@ Vec3 CartesianToSpherical( Vec3 position )
     spherical.elevation = RadToDeg( asinf( position.y / spherical.radius ) );
     spherical.azimuth = Atan2Deg( position.z, position.x );
     return spherical;
+}
+
+Vec3 Slerp( const Vec3& vecA, const Vec3& vecB, float t )
+{
+    float aLen = vecA.GetLength();
+    float bLen = vecB.GetLength();
+
+    float len = Lerp( aLen, bLen, t );
+    Vec3 unit = SlerpUnit( vecA / aLen, vecB / bLen, t );
+    return len * unit;
+}
+
+Vec3 SlerpUnit( const Vec3& vecA, const Vec3& vecB, float t )
+{
+    float cosAngle = Clampf( Dot( vecA, vecB ), -1.0f, 1.0f );
+    float angle = acosf( cosAngle );
+    if( angle < EPSILON )
+    {
+        return Lerp( vecA, vecB, t );
+    }
+    else
+    {
+        float posNum = sinf( t * angle );
+        float negNum = sinf( ( 1.0f - t ) * angle );
+        float den = sinf( angle );
+
+        return ( negNum / den ) * vecA + ( posNum / den ) * vecB;
+    }
 }

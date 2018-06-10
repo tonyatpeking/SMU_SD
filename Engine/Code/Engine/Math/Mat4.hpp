@@ -14,7 +14,7 @@ public:
     Mat4() {}; // default-construct to Identity matrix
     explicit Mat4( const float* sixteenValuesBasisMajor ); // float[16] array in order Ix, Iy...
     explicit Mat4( const Vec2& iBasis, const Vec2& jBasis, const Vec2& translation = Vec2( 0.f, 0.f ) );
-
+    explicit Mat4( const Vec3& i, const Vec3& j, const Vec3& k, const Vec3& t );
 
     // Operators
     void operator=( const Mat4& copyFrom );
@@ -75,6 +75,8 @@ public:
     static Mat4 MakeProjection( float fovVertDeg, float aspect,
                                 float near, float far );
     static Mat4 Transpose( const Mat4& mat );
+
+    static Mat4 LerpTransform( const Mat4& matA, const Mat4& matB, float t );
     // Matrix elements
 /*
     Ix Jx Kx Tx

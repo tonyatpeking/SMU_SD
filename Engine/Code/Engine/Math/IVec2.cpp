@@ -48,6 +48,11 @@ IVec2::IVec2( const IVec3& ivec3 )
 
 }
 
+IVec2 IVec2::Floor( const Vec2& vec2 )
+{
+    return IVec2( FloorToInt( vec2.x ), FloorToInt( vec2.y ) );
+}
+
 const IVec2 IVec2::operator+( const IVec2 & vecToAdd ) const
 {
     return IVec2( x + vecToAdd.x, y + vecToAdd.y );
@@ -199,3 +204,4 @@ const IVec2 Lerp( const IVec2& start, const IVec2& end, float t )
     int newY = Lerp( start.y, end.y, t );
     return IVec2( newX, newY );
 }
+

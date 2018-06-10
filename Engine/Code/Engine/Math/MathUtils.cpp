@@ -18,7 +18,7 @@
 
 bool AlmostEqual( const float a, const float b )
 {
-    return fabsf( a - b ) < EPS;
+    return fabsf( a - b ) < EPSILON;
 }
 
 bool AlmostEqual( const Vec2& a, const Vec2& b )

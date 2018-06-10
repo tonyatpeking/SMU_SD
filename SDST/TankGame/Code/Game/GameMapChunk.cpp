@@ -19,20 +19,22 @@ GameMapChunk::GameMapChunk( GameMap* map, IVec2 index )
 
 GameMapChunk::~GameMapChunk()
 {
+    delete m_meshBuilder;
 }
 
 void GameMapChunk::GenerateRenderable()
 {
     SetRenderable(new Renderable());
 
-    AABB2 chunkExtents = m_map->GetChunkExtentsAtIdx( m_index );
+    AABB2 chunkExtents = m_map->GetChunkExtentsAtCoord( m_index );
     AABB2 mapExtents = m_map->GetMapExtents();
 
     AABB2 uv = mapExtents.GetNormalizedBounds( chunkExtents );
 
     SurfacePatch* surface = m_map->GetSurfacePatch();
-    MeshBuilder mb = MeshBuilder::FromSurfacePatch( surface, 8, 8, uv, 16 );
-    m_renderable->SetMesh( mb.MakeMesh() );
+    m_meshBuilder = new MeshBuilder();
+    *m_meshBuilder = MeshBuilder::FromSurfacePatch( surface, 8, 8, uv, 16 );
+    m_renderable->SetMesh( m_meshBuilder->MakeMesh() );
 
     Material* mat = new Material();
     mat->m_specularAmount = 0.1f;

@@ -24,7 +24,7 @@ constexpr float INVERSE_MAX_UCHAR = 1.f / (float) MAX_UCHAR;
 constexpr float M_PI = 3.14159265359f;
 constexpr float M_SQRT2 = 1.41421356237f;
 constexpr float M_SQRT2_OVER_2 = M_SQRT2 / 2.f;
-constexpr float EPS = 0.000001f;
+constexpr float EPSILON = 0.000001f;
 
 
 #define UNUSED(x) (void)(x);

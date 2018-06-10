@@ -106,7 +106,7 @@ void GameState_Loading::MakeSkyBox()
 
 void GameState_Loading::MakeNoiseImage()
 {
-    float scale = 20;
+    float scale = 20.f;
     uint numOctaves = 2;
 
     g_game->m_noiseImage = new Image( g_game->m_noiseImageSize, g_game->m_noiseImageSize );
@@ -124,8 +124,8 @@ void GameState_Loading::MakeNoiseImage()
 
     g_game->m_noiseTexture = new Texture( g_game->m_noiseImage );
 
-//     DebugRender::SetOptions( 100, Rgba::WHITE, Rgba::WHITE );
-//     DebugRender::DrawQuad( AABB2::NEG_ONES_ONES * 2, Vec3::ZEROS, Vec3::ZEROS, g_game->m_noiseTexture );
+     //DebugRender::SetOptions( 100, Rgba::WHITE, Rgba::WHITE );
+     //DebugRender::DrawQuad( AABB2::NEG_ONES_ONES * 2, Vec3::ZEROS, Vec3::ZEROS, g_game->m_noiseTexture );
 
 }
 
@@ -133,5 +133,5 @@ void GameState_Loading::MakeMap()
 {
     g_game->m_map = new GameMap();;
     g_game->m_map->LoadFromImage( g_game->m_noiseImage, AABB2( -128, -128, 128, 128 ),
-                                  0, 32, IVec2( 16, 16 ) );
+                                  0, 10, IVec2( 16, 16 ) );
 }

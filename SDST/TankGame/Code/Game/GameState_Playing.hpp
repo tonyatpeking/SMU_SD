@@ -51,7 +51,8 @@ private:
     void TestUpdate();
     void TestInput();
 
-    void AttatchCameraToShip();
+    void AttatchCameraSpringToShip();
+    void UpdateCameraToFollow();
     void LoadMiku();
     void MakeLights();
     void FinalizeSpaceShip();
@@ -70,6 +71,8 @@ private:
     void SnapTransformToHeightmap( Transform* transform );
     void LeaveBreadCrumbs();
 
+    GameObject* m_cameraSpring = nullptr;
+
 
     ParticleEmitter* m_leftThrustEmitter;
     ParticleEmitter* m_rightThrustEmitter;
@@ -81,9 +84,8 @@ private:
     float m_lightIntensity = 400;
     float m_projectileVelocity = 50;
 
-    float m_yaw = 0;
-    float m_pitch = 0;
-    float m_roll = 0;
+    float m_camYaw = -90;
+    float m_camPitch = 0;
 
     float m_fov = 80;
     float m_near = 0.001f;

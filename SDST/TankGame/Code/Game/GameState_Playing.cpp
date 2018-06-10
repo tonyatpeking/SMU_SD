@@ -133,7 +133,7 @@ void GameState_Playing::OnEnter()
 
     g_renderer->SetBackGroundColor( Rgba::BLACK );
 
-    AttatchCameraToShip();
+    AttatchCameraSpringToShip();
 
     //LoadMiku();
 
@@ -170,7 +170,7 @@ void GameState_Playing::ProcessInput()
 void GameState_Playing::MakeCamera()
 {
     delete g_mainCamera;
-    g_mainCamera = new Camera();
+    g_mainCamera = new OrbitCamera();
     g_mainCamera->SetColorTarget( g_renderer->DefaultColorTarget() );
     g_mainCamera->SetDepthStencilTarget( g_renderer->DefaultDepthTarget() );
     g_mainCamera->SetProjection( m_fov, m_near, m_far ); //fov near far
@@ -181,6 +181,7 @@ void GameState_Playing::ProcessMovementInput()
 {
     float ds = g_gameClock->GetDeltaSecondsF();
     Transform& shipTransform = g_game->m_shipHull->GetTransform();
+    Transform& camTransform = g_mainCamera->GetTransform();
 
     bool isMoving = false;
 
@@ -212,22 +213,27 @@ void GameState_Playing::ProcessMovementInput()
     else
         SetExhaustSpawnRate( 0.001f );
 
-    float deltaYaw = 0;
-    float deltaPitch = 0;
-    float deltaRoll = 0;
+    float deltaShipYaw = 0;
+    float deltaCamYaw = 0;
+    float deltaCamPitch = 0;
 
     if( g_input->IsKeyPressed( 'Q' ) )
-        deltaRoll = ds * m_rollSpeed;
+        deltaShipYaw = -ds * m_rollSpeed;
     if( g_input->IsKeyPressed( 'E' ) )
-        deltaRoll = -ds * m_rollSpeed;
+        deltaShipYaw = ds * m_rollSpeed;
 
     Vec2 cursorDelta = g_input->GetCursorDelta();
     if( cursorDelta.GetLengthSquared() > 0.01f )
     {
-        deltaYaw = cursorDelta.x * m_turnSpeed;
-        deltaPitch = cursorDelta.y * m_turnSpeed;
+        deltaCamYaw = -cursorDelta.x * m_turnSpeed;
+        deltaCamPitch = cursorDelta.y * m_turnSpeed;
     }
-    shipTransform.RotateLocalEuler( Vec3( deltaPitch, deltaYaw, deltaRoll ) );
+    m_camYaw += deltaCamYaw;
+    m_camPitch += deltaCamPitch;
+    m_camPitch = Clampf( m_camPitch, -89, 89 );
+
+    shipTransform.RotateLocalEuler( Vec3( 0, deltaShipYaw, 0 ) );
+    UpdateCameraToFollow();
 
 
     if( g_input->IsKeyPressed( InputSystem::MOUSE_LEFT ) )
@@ -756,17 +762,33 @@ void GameState_Playing::SetExhaustSpawnRate( float rate )
 void GameState_Playing::SnapTransformToHeightmap( Transform* transform )
 {
     Vec3 worldPos = transform->GetWorldPosition();
-    float height = g_game->m_map->GetHeight( Vec2::MakeFromXZ( worldPos ) );
+    Vec2 worldPos2D = Vec2::MakeFromXZ( worldPos );
+    float height = g_game->m_map->GetHeightAtPos( worldPos2D );
     height += 5;
 
     Vec3 newWorldPos = worldPos;
     newWorldPos.y = height;
-    transform->SetWorldPosition( newWorldPos );
+    //transform->SetWorldPosition( newWorldPos );
+
+    // snap normal
+    Vec3 newUp = g_game->m_map->GetNormalAtPos( worldPos2D );
+    Vec3 oldRight = transform->GetRight();
+    Vec3 newForward = Cross( oldRight, newUp ).GetNormalized();
+    Vec3 newRight = Cross( newUp, newForward );
+
+    Mat4 newMat( newRight, newUp, newForward, newWorldPos );
+
+    transform->SetLocalToParent( newMat );
+
+    g_console->Printf( "%f,%f,%f", transform->GetLocalScale().x,
+                       transform->GetLocalScale().y,
+                       transform->GetLocalScale().z );
+
 }
 
 void GameState_Playing::LeaveBreadCrumbs()
 {
-    static Timer timer = Timer(g_gameClock,.1f);
+    static Timer timer = Timer( g_gameClock, .1f );
 
     if( timer.PopOneLap() )
     {
@@ -775,10 +797,36 @@ void GameState_Playing::LeaveBreadCrumbs()
     }
 }
 
-void GameState_Playing::AttatchCameraToShip()
+void GameState_Playing::AttatchCameraSpringToShip()
 {
+    m_cameraSpring = new GameObject();
+    m_cameraSpring->SetRenderable( Renderable::MakeUVSphere() );
+
+    Transform& trans = m_cameraSpring->GetTransform();
+    trans.SetParent( &( g_game->m_shipHull->GetTransform() ) );
+    trans.SetLocalPosition( Vec3( 0, 5, -15 ) );
+    trans.LookAt( Vec3( 0, 0, 1000 ) );
+}
+
+void GameState_Playing::UpdateCameraToFollow()
+{
+    float camHeight = 10;
+    float camRadius = 20;
+    float lookAtDist = 100;
+    Transform& shipTrans = g_game->m_shipHull->GetTransform();
     Transform& camTrans = g_mainCamera->GetTransform();
-    camTrans.SetParent( &(g_game->m_shipHull->GetTransform()) );
-    camTrans.SetLocalPosition( Vec3( 0, 5, -15 ) );
-    camTrans.LookAt( Vec3( 0, 0, 1000 ) );
+
+    Vec3 shipPos = shipTrans.GetWorldPosition();
+
+    Vec3 camOrbitPoint = shipPos + Vec3::UP * camHeight;
+
+    g_mainCamera->SetTarget( camOrbitPoint );
+    g_mainCamera->SetSphericalCoord( camRadius, m_camPitch, m_camYaw );
+
+    //Vec3 camPos = SphericalToCartesian( cameraFollowDist, 0, m_camYaw );
+    //camPos += shipPos + Vec3::UP * camHeight;
+
+    //camTrans.SetWorldPosition( camPos );
+    //camTrans.LookAt( shipPos + shipForwardOnPlane * lookAtDist );
+
 }

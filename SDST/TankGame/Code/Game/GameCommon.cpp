@@ -27,7 +27,7 @@ GameState_Playing* g_encounterState = nullptr;
 Actor* g_currentActor = nullptr;
 Map* g_map = nullptr;
 //OrbitCamera* g_orbitCamera = nullptr;
-Camera* g_mainCamera = nullptr;
+OrbitCamera* g_mainCamera = nullptr;
 ForwardRenderingPath* g_forwardRenderingPath = nullptr;
 RenderSceneGraph* g_renderSceneGraph = nullptr;
 

@@ -39,6 +39,9 @@ public:
     explicit IVec2( const IVec3& ivec3 );
 
     explicit IVec2( int initialX, int initialY );
+
+    static IVec2 Floor( const Vec2& vec2 );
+
     //operator Vec2() const { return Vec2( (float) x, (float) y ); }; // Cast (Vec2)intVec2
 
     const IVec2 operator+( const IVec2& vecToAdd ) const;		// vec2 + vec2

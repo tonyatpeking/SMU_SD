@@ -4,6 +4,7 @@
 
 class GameMap;
 class Renderable;
+class MeshBuilder;
 
 class GameMapChunk : public GameObject
 {
@@ -12,9 +13,11 @@ public:
     ~GameMapChunk();
     void GenerateRenderable();
 
-
 private:
-    GameMap * m_map = nullptr;
-    IVec2 m_index;
 
+
+
+    GameMap* m_map = nullptr;
+    IVec2 m_index;
+    MeshBuilder* m_meshBuilder = nullptr;
 };

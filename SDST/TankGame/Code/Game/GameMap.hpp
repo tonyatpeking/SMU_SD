@@ -15,21 +15,24 @@ public:
     void LoadFromImage( Image* heightMap, const AABB2& extents, float minHeight,
                         float maxHeight, const IVec2& chunkCounts );
 
-    GameMapChunk* GetChunkAtIndex( const IVec2& idx );
+    GameMapChunk* GetChunkAtCoord( const IVec2& coord );
     GameMapChunk* GetChunkAtPos( const Vec2& pos );
 
-    IVec2 PosToIndex( const Vec2& pos );
+    // Can return index that is out of range
+    IVec2 PosToCoord( const Vec2& pos );
 
-    // returns the mins of the chunk
-    Vec2 IndexToPos( const IVec2& idx );
 
-    AABB2 GetChunkExtentsAtIdx( const IVec2& idx );
+    bool IsCoordOnMap( const IVec2& coord );
 
-    float GetHeight( const Vec2& pos );
+    AABB2 GetChunkExtentsAtCoord( const IVec2& coord );
+
+    float GetHeightAtPos( const Vec2& pos );
+    Vec3 GetNormalAtPos( const Vec2& pos );
 
     Vec2& GetChunkSize() { return m_chunkSize; };
 
     SurfacePatch* GetSurfacePatch() { return m_surface; };
+
 
     AABB2 GetMapExtents() { return m_extents; };
 
