@@ -9,6 +9,7 @@ class Range;
 class Disc2;
 
 // Stand alone functions
+bool AlmostZero( float f );
 bool AlmostEqual( const float a, const float b );
 bool AlmostEqual( const Vec2& a, const Vec2& b );
 bool AlmostEqual( const AABB2& a, const AABB2& b );

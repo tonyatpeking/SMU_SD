@@ -308,7 +308,7 @@ void Vec2::RotateDegrees( float degrees )
     y = oldX * sinDeg + y * cosDeg;
 }
 
-ParseStatus Vec2::SetFromText( const String& text, const String& delimiter)
+ParseStatus Vec2::SetFromText( const String& text, const String& delimiter )
 {
     std::vector<float> out_floats;
     ParseStatus status = StringUtils::ParseToFloats( text, out_floats, delimiter );
@@ -364,4 +364,14 @@ float Dot( const Vec2 & v1, const Vec2 & v2 )
 float Cross( const Vec2 & v1, const Vec2 & v2 )
 {
     return ( v1.x * v2.y ) - ( v1.y * v2.x );
+}
+
+Vec2 Min( const Vec2& a, const Vec2& b )
+{
+    return Vec2( Minf( a.x, b.y ), Minf( a.y, b.y ) );
+}
+
+Vec2 Max( const Vec2& a, const Vec2& b )
+{
+    return Vec2( Maxf( a.x, b.y ), Maxf( a.y, b.y ) );
 }

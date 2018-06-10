@@ -16,6 +16,11 @@
 #include "Engine/Math/Disc2.hpp"
 
 
+bool AlmostZero( float f )
+{
+    return fabsf( f ) < EPSILON;
+}
+
 bool AlmostEqual( const float a, const float b )
 {
     return fabsf( a - b ) < EPSILON;

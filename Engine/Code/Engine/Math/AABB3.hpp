@@ -26,7 +26,6 @@ public:
     explicit AABB3( const Vec3& center, float width, float height, float depth );
 
     // Mutators:
-    void StretchToIncludePoint( float x, float y, float z ); // note: stretch, not move
     void StretchToIncludePoint( const Vec3& point ); // note: stretch, not move
     void AddPaddingToSides( float xPad, float yPad, float zPad );
     void Translate( const Vec3& translation ); // move the box; similar to +=
@@ -47,6 +46,7 @@ public:
     void SetCenter( const Vec3& center );
 
     // Accessors / queries:
+    bool IsValid() const;
     bool IsPointInside( float x, float y, float z ) const;
     bool IsPointInside( const Vec3& point ) const;
     Vec3 GetDimensions() const;

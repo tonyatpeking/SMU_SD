@@ -9,10 +9,11 @@ public:
     ~Ray3() {};
     void SetStartEnd( const Vec3& start, const Vec3& end );
     void Normalzie();
+    Vec3 Evaluate( float t ) const;
 
 public:
-    Vec3 m_point;
-    Vec3 m_direction;
+    Vec3 start;
+    Vec3 direction;
 
 private:
 

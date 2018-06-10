@@ -132,3 +132,7 @@ Vec3 SphericalToCartesian( Vec3 spherical );
 Vec3 CartesianToSpherical( Vec3 position );
 Vec3 Slerp( const Vec3& vecA, const Vec3& vecB, float t );
 Vec3 SlerpUnit( const Vec3& vecA, const Vec3& vecB, float t );
+// component wise min
+Vec3 Min( const Vec3& vecA, const Vec3& vecB );
+Vec3 Max( const Vec3& vecA, const Vec3& vecB );
+

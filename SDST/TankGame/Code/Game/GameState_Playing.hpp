@@ -51,7 +51,6 @@ private:
     void TestUpdate();
     void TestInput();
 
-    void AttatchCameraSpringToShip();
     void UpdateCameraToFollow();
     void LoadMiku();
     void MakeLights();
@@ -61,7 +60,10 @@ private:
     void MakeSun();
     void SetLightPos( const Vec3& pos );
     void SetAmbient( float ambient );
+
+    void MakeTurret();
     void MakeProjectile( const Vec3& offset );
+
     void MakeAsteroids();
     void MakeAsteroid( float maxHealth, const Vec3& position );
     void CheckCollisions();
@@ -71,7 +73,10 @@ private:
     void SnapTransformToHeightmap( Transform* transform );
     void LeaveBreadCrumbs();
 
-    GameObject* m_cameraSpring = nullptr;
+    void UpdateAimTarget();
+
+    GameObject* m_aimTarget = nullptr;
+    GameObject* m_turret = nullptr;
 
 
     ParticleEmitter* m_leftThrustEmitter;

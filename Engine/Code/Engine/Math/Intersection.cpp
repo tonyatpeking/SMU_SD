@@ -1,8 +1,8 @@
 #include "Engine/Math/Intersection.hpp"
+#include "Engine/Math/Segment3.hpp"
+#include "Engine/Math/Plane.hpp"
 
-
-
-bool Geometry::LinePlaneIntersection( const Vec3& pointOnLine, const Vec3& lineDir,
+bool Geometry::LinePlaneIntersect( const Vec3& pointOnLine, const Vec3& lineDir,
                                       const Vec3& pointOnPlane, const Vec3& planeNormal,
                                       Vec3& out_intersectionPoint )
 {
@@ -16,4 +16,12 @@ bool Geometry::LinePlaneIntersection( const Vec3& pointOnLine, const Vec3& lineD
     out_intersectionPoint = d * lineDir + pointOnLine;
 
     return true;
+}
+
+bool Geometry::SegmentPlaneIntersect( const Segment3& s, const Plane& p )
+{
+    float d0 = p.GetDistance( s.start );
+    float d1 = p.GetDistance( s.end );
+
+    return ( d0 * d1 ) <= 0.0f;
 }

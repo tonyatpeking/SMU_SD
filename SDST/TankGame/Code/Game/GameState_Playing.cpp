@@ -33,6 +33,7 @@
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Renderer/Light.hpp"
 #include "Engine/Particles/ParticleEmitter.hpp"
+#include "Engine/Math/Raycast.hpp"
 
 #include "Game/Projectile.hpp"
 #include "Game/GameState_Playing.hpp"
@@ -133,7 +134,7 @@ void GameState_Playing::OnEnter()
 
     g_renderer->SetBackGroundColor( Rgba::BLACK );
 
-    AttatchCameraSpringToShip();
+    MakeTurret();
 
     //LoadMiku();
 
@@ -181,7 +182,6 @@ void GameState_Playing::ProcessMovementInput()
 {
     float ds = g_gameClock->GetDeltaSecondsF();
     Transform& shipTransform = g_game->m_shipHull->GetTransform();
-    Transform& camTransform = g_mainCamera->GetTransform();
 
     bool isMoving = false;
 
@@ -234,7 +234,7 @@ void GameState_Playing::ProcessMovementInput()
 
     shipTransform.RotateLocalEuler( Vec3( 0, deltaShipYaw, 0 ) );
     UpdateCameraToFollow();
-
+    UpdateAimTarget();
 
     if( g_input->IsKeyPressed( InputSystem::MOUSE_LEFT ) )
     {
@@ -341,7 +341,22 @@ void GameState_Playing::TestRender() const
 
 void GameState_Playing::TestUpdate()
 {
+    Vec2 dim = g_window->GetDimensions() / 2.f;
+    Ray3 camRay = g_mainCamera->ScreenToPickRay( g_window->GetDimensions() / 2.f );
+//     DebugRender::SetOptions( 0.1f );
+//     DebugRender::DrawPoint( camRay.Evaluate( 100 ), 10.f );
 
+    AABB3 bbox( Vec3( 1, 22, 3 ), Vec3( 32, 44, 55 ) );
+    DebugRender::SetOptions( 0.f, Rgba::BLACK,Rgba::BLACK );
+    DebugRender::DrawAABB3( bbox );
+
+    RaycastHit3 hit = Raycast::ToAABB3( camRay, bbox );
+    if( hit.m_hit )
+    {
+        DebugRender::SetOptions( 0.f );
+        DebugRender::DrawPoint( hit.m_position, 1.f );
+        DebugRender::DrawLine( hit.m_position, hit.m_position + hit.m_normal * 10 );
+    }
 
 }
 
@@ -797,24 +812,48 @@ void GameState_Playing::LeaveBreadCrumbs()
     }
 }
 
-void GameState_Playing::AttatchCameraSpringToShip()
+void GameState_Playing::UpdateAimTarget()
 {
-    m_cameraSpring = new GameObject();
-    m_cameraSpring->SetRenderable( Renderable::MakeUVSphere() );
+    if( !m_aimTarget )
+    {
+        m_aimTarget = new GameObject();
+        m_aimTarget->SetRenderable( Renderable::MakeCube() );
+        m_aimTarget->GetRenderable()->GetMaterial(0)->SetShaderPass( 0, ShaderPass::GetWireframeDebugShader() );
+    }
 
-    Transform& trans = m_cameraSpring->GetTransform();
-    trans.SetParent( &( g_game->m_shipHull->GetTransform() ) );
-    trans.SetLocalPosition( Vec3( 0, 5, -15 ) );
-    trans.LookAt( Vec3( 0, 0, 1000 ) );
+
+
+    m_aimTarget->GetTransform().SetLocalPosition( g_game->m_shipHull->GetTransform().GetWorldPosition() + Vec3::UP * 10 );
+}
+
+void GameState_Playing::MakeTurret()
+{
+    Transform* shipTrans = &g_game->m_shipHull->GetTransform();
+    m_turret = new GameObject();
+    m_turret->SetRenderable( Renderable::MakeUVSphere() );
+
+    Transform* turretTrans = &m_turret->GetTransform();
+    turretTrans->SetParent( shipTrans );
+    turretTrans->SetLocalPosition( Vec3( 0, 1, 1 ) );
+    //turretTrans->LookAt( Vec3( 0, 0, 1000 ) );
+    turretTrans->SetLocalScale( 3 );
+
+    GameObject* barrel = new GameObject();
+    barrel->SetRenderable( Renderable::MakeCube() );
+    Transform* barrelTrans = &barrel->GetTransform();
+    barrelTrans->SetParent( turretTrans );
+    barrelTrans->SetLocalPosition( Vec3( 0, 0.37f, 1 ) );
+    //barrelTrans->LookAt( Vec3( 0, 0, 1000 ) );
+    barrelTrans->SetLocalScale( Vec3(0.2f,0.2f,2.f) );
+
+
 }
 
 void GameState_Playing::UpdateCameraToFollow()
 {
     float camHeight = 10;
     float camRadius = 20;
-    float lookAtDist = 100;
     Transform& shipTrans = g_game->m_shipHull->GetTransform();
-    Transform& camTrans = g_mainCamera->GetTransform();
 
     Vec3 shipPos = shipTrans.GetWorldPosition();
 
@@ -822,11 +861,5 @@ void GameState_Playing::UpdateCameraToFollow()
 
     g_mainCamera->SetTarget( camOrbitPoint );
     g_mainCamera->SetSphericalCoord( camRadius, m_camPitch, m_camYaw );
-
-    //Vec3 camPos = SphericalToCartesian( cameraFollowDist, 0, m_camYaw );
-    //camPos += shipPos + Vec3::UP * camHeight;
-
-    //camTrans.SetWorldPosition( camPos );
-    //camTrans.LookAt( shipPos + shipForwardOnPlane * lookAtDist );
 
 }

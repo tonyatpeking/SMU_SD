@@ -91,7 +91,7 @@ Vec3 Camera::ScreenToWorld( Vec2 pixel, float depthFromCamera )
 
 Ray3 Camera::ScreenToPickRay( Vec2 pixel )
 {
-    Vec3 startPoint = ScreenToWorld( pixel, 0.f );
+    Vec3 startPoint = ScreenToWorld( pixel, 0.5f );
     Vec3 endPoint = ScreenToWorld( pixel, 1.f );
 
     return Ray3( startPoint, endPoint - startPoint );

@@ -42,20 +42,10 @@ AABB3::AABB3( const Vec3& center, float width, float height, float depth )
     maxs.z += halfDepth;
 }
 
-void AABB3::StretchToIncludePoint( float x, float y, float z )
-{
-    mins.x = Minf( mins.x, x );
-    mins.y = Minf( mins.y, y );
-    mins.z = Minf( mins.z, z );
-
-    maxs.x = Maxf( maxs.x, x );
-    maxs.y = Maxf( maxs.y, y );
-    maxs.z = Maxf( maxs.z, z );
-}
-
 void AABB3::StretchToIncludePoint( const Vec3& point )
 {
-    StretchToIncludePoint( point.x, point.y, point.z );
+    mins = Min( mins, point );
+    maxs = Max( maxs, point );
 }
 
 void AABB3::AddPaddingToSides( float xPad, float yPad, float zPad )
@@ -184,6 +174,11 @@ void AABB3::SetCenter( const Vec3& center )
     Vec3 oldToNew = center - oldCenter;
     mins += oldToNew;
     maxs += oldToNew;
+}
+
+bool AABB3::IsValid() const
+{
+    return maxs.x > mins.x && maxs.y > mins.y;
 }
 
 bool AABB3::IsPointInside( float x, float y, float z ) const

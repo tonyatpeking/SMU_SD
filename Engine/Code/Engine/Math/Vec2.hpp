@@ -132,3 +132,8 @@ public: // NOTE: this is one of the few cases where we break both the "m_" namin
 float Dot( const Vec2& v1, const Vec2& v2 );
 // not really a cross product but useful for determining if point is left or right of line
 float Cross( const Vec2& v1, const Vec2& v2 );
+
+// component wise min
+Vec2 Min( const Vec2& vecA, const Vec2& vecB );
+Vec2 Max( const Vec2& vecA, const Vec2& vecB );
+
