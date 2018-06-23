@@ -141,12 +141,18 @@
     <ClInclude Include="RigidBody.hpp">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Asteroid.hpp" />
     <ClInclude Include="GameMap.hpp">
       <Filter>Map</Filter>
     </ClInclude>
-    <ClInclude Include="GameMapChunk.hpp" />
-    <ClInclude Include="GameState_Lobby.hpp" />
+    <ClInclude Include="Asteroid.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState_Lobby.hpp">
+      <Filter>GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMapChunk.hpp">
+      <Filter>Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">

@@ -6,6 +6,8 @@
 #include "Engine/Core/ParseStatus.hpp"
 #include "Engine/Core/Types.hpp"
 
+class MeshBuilder;
+class Mat4;
 
 class AABB3
 {
@@ -24,6 +26,8 @@ public:
 
     explicit AABB3( const Vec3& mins, const Vec3& maxs );
     explicit AABB3( const Vec3& center, float width, float height, float depth );
+
+    static AABB3 FromMeshBuilder( const MeshBuilder& meshBuilder, const Mat4& transform );
 
     // Mutators:
     void StretchToIncludePoint( const Vec3& point ); // note: stretch, not move
@@ -79,8 +83,8 @@ public:
     static AABB3 MakeBoundsFromDimensions( const IVec3& dimensions );
 
 public:
-    Vec3 mins = Vec3::ZEROS;
-    Vec3 maxs = Vec3::ZEROS;
+    Vec3 mins = Vec3::POS_INFINITY;
+    Vec3 maxs = Vec3::NEG_INFINITY;
 
 
 };

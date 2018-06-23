@@ -13,8 +13,10 @@
 *.so
 *.dylib
 *.dll
+!Engine/Code/ThirdParty/**
 !**/Run_Win32/*.dll
-**/Run_Win32/log.txt
+**/Run_Win32/**
+!**/Run_Win32/Data/**
 
 # Fortran module files
 *.mod

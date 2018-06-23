@@ -2,7 +2,8 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/Core/StringUtils.hpp"
-
+#include "Engine/Renderer/MeshBuilder.hpp"
+#include "Engine/Math/Mat4.hpp"
 
 const AABB3 AABB3::ZEROS_ONES = AABB3( 0, 0, 0, 1, 1, 1 );
 
@@ -40,6 +41,21 @@ AABB3::AABB3( const Vec3& center, float width, float height, float depth )
     maxs.x += halfWidth;
     maxs.y += halfHeight;
     maxs.z += halfDepth;
+}
+
+AABB3 AABB3::FromMeshBuilder( const MeshBuilder& meshBuilder, const Mat4& transform )
+{
+    AABB3 bounds{};
+    bool useTransform = ( transform != Mat4::IDENTITY );
+    uint vertCount = meshBuilder.GetVertCount();
+    for( uint vertIdx = 0; vertIdx < vertCount; ++vertIdx )
+    {
+        Vec3 pos = meshBuilder.GetVertex( vertIdx ).m_position;
+        if( useTransform )
+            pos = transform.TransformPosition( pos );
+        bounds.StretchToIncludePoint( pos );
+    }
+    return bounds;
 }
 
 void AABB3::StretchToIncludePoint( const Vec3& point )
@@ -178,7 +194,7 @@ void AABB3::SetCenter( const Vec3& center )
 
 bool AABB3::IsValid() const
 {
-    return maxs.x > mins.x && maxs.y > mins.y;
+    return maxs.x >= mins.x;
 }
 
 bool AABB3::IsPointInside( float x, float y, float z ) const

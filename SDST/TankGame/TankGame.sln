@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpaceGame", "Code\Game\Game.vcxproj", "{626D8073-FBA2-4885-B861-4D2A1F2AD37E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TankGame", "Code\Game\Game.vcxproj", "{626D8073-FBA2-4885-B861-4D2A1F2AD37E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "..\..\Engine\Code\Engine\Engine.vcxproj", "{F2DE36B5-C0FC-48BA-97C2-253D2F97796E}"
 EndProject

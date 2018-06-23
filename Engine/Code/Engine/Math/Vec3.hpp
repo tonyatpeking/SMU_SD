@@ -20,6 +20,8 @@ public:
     static const Vec3 ZEROS;
     static const Vec3 ONES;
     static const Vec3 NEG_ONES;
+    static const Vec3 POS_INFINITY;
+    static const Vec3 NEG_INFINITY;
 
 
     explicit Vec3( float initX = 0.f, float initY = 0.f, float initZ = 0.f );

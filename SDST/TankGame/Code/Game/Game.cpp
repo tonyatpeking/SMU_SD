@@ -43,6 +43,12 @@
 #include "Game/GameState_MainMenu.hpp"
 #include "Game/Tests.hpp"
 
+#include "ThirdParty/pybind11/embed.h"
+namespace py = pybind11;
+using namespace pybind11::literals;
+
+
+
 
 
 Game::Game()
@@ -112,6 +118,20 @@ void Game::Initialize()
         Tests::RunTests();
 
     MakePauseMenu();
+
+    py::scoped_interpreter guard{}; // start the interpreter and keep it alive
+
+    //py::object os = py::module::import( "os" );
+    float a = 42.f;
+    py::object obj = py::float_(a);
+    float x = obj.cast<float>(); // may throw cast_error
+    int i = 0;
+
+//     py::object makedirs = os.attr( "makedirs" );
+//     makedirs( "/tmp/path/to/somewhere1" );
+    //py::print( "Hello, World!" ); // use the Python API
+
+
 }
 
 void Game::ChangeState( GameStateType gameStateType, float timeTillTransition /*= 0.f */ )

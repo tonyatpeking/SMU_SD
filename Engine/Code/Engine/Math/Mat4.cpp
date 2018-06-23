@@ -139,6 +139,16 @@ const Vec4 Mat4::operator*( const Vec4& rhs ) const
 }
 
 
+bool Mat4::operator==( const Mat4& rhs ) const
+{
+    return I == rhs.I && J == rhs.J && K == rhs.K && T == rhs.T;
+}
+
+bool Mat4::operator!=( const Mat4& rhs ) const
+{
+    return !( *this == rhs );
+}
+
 bool Mat4::Invert()
 {
 
@@ -338,6 +348,17 @@ void Mat4::InvertTranslation()
 void Mat4::InvertRotation()
 {
     Transpose();
+}
+
+
+Vec3 Mat4::TransformPosition( const Vec3& rhs ) const
+{
+    return Vec3( (*this) * Vec4( rhs, 1 ));
+}
+
+Vec3 Mat4::TransformDisplacement( const Vec3& rhs ) const
+{
+    return Vec3( ( *this ) * Vec4( rhs, 0 ) );
 }
 
 Vec2 Mat4::TransformPosition2D( const Vec2& position2D )

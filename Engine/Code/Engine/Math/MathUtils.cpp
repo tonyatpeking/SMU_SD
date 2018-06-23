@@ -48,12 +48,12 @@ bool AlmostEqual( const Disc2& a, const Disc2& b )
 
 float RadToDeg( const float rad )
 {
-    return rad * ( 180.f / M_PI );
+    return rad * ( 180.f / (float) M_PI );
 }
 
 float DegToRad( const float deg )
 {
-    return deg * ( M_PI / 180.f );
+    return deg * ( (float) M_PI / 180.f );
 }
 
 float CosDeg( const float deg )
@@ -430,7 +430,7 @@ float Easing::ElasticStop( float t )
     if( t == 0.f ) return 0.f;  if( t == 1.f ) return 1.f;
     float p = .3f;
     float s = p / 4.f;
-    return (float) pow( 2.f, -10.f * t ) * sin( ( t - s )*( 2.f * M_PI ) / p ) + 1.f;
+    return  ( pow( 2.f, -10.f * t ) * sin( ( t - s )*( 2.f * (float) M_PI ) / p ) + 1.f );
 }
 
 float Easing::ElasticStartStop( float t )
@@ -443,10 +443,10 @@ float Easing::ElasticStartStop( float t )
     if( t < 1 )
     {
         float postFix = (float) pow( 2, 10 * ( t-=1 ) );
-        return -.5f*( postFix* sin( ( t - s )*( 2 * M_PI ) / p ) );
+        return ( -.5f*( postFix* sin( ( t - s )*( 2 * (float) M_PI ) / p ) ) );
     }
     float postFix = (float) pow( 2, -10 * ( t-=1 ) );
-    return postFix * sin( ( t - s )*( 2 * M_PI ) / p )*.5f + 1.f;
+    return postFix * sin( ( t - s )*( 2 * (float) M_PI ) / p )*.5f + 1.f;
 
 }
 

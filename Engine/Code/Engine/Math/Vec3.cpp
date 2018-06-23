@@ -18,6 +18,9 @@ const Vec3 Vec3::ONES = Vec3( 1.f, 1.f, 1.f );
 const Vec3 Vec3::NEG_ONES = Vec3( -1.f, -1.f, -1.f );
 
 
+const Vec3 Vec3::POS_INFINITY = Vec3( INFINITY, INFINITY, INFINITY );
+const Vec3 Vec3::NEG_INFINITY = Vec3( -INFINITY, -INFINITY, -INFINITY );
+
 Vec3::Vec3( float initX /*= 0.f*/, float initY /*= 0.f*/, float initZ /*= 0.f*/ )
     : x( initX )
     , y( initY )

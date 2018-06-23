@@ -355,6 +355,11 @@ VertexBuilderData& MeshBuilder::GetVertex( uint vertexIdx )
     return m_verts[vertexIdx];
 }
 
+const VertexBuilderData& MeshBuilder::GetVertex( uint vertexIdx ) const
+{
+    return m_verts[vertexIdx];
+}
+
 uint MeshBuilder::GetIndex( uint indexIdx )
 {
     return m_indices[indexIdx];

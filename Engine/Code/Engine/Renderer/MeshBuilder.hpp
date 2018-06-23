@@ -69,6 +69,7 @@ public:
     void Clear();
 
     VertexBuilderData& GetVertex( uint vertexIdx );
+    const VertexBuilderData& GetVertex( uint vertexIdx ) const;
     uint GetIndex( uint indexIdx );
     uint GetVertCount() const;
     uint GetIndexCount() const;
