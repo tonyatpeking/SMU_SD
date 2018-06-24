@@ -37,6 +37,8 @@ public:
     void DecomposeToSRT( Vec3& out_scale, Vec3& out_euler, Vec3& out_translation ) const;
     // Rotation part must be pure rotation (no scale), translation is ignored
     Vec3 DecomposeEuler() const;
+    bool IsAnyInf() const;
+    bool IsAnyNaN() const;
 
     // Mutators
     void SetIdentity();

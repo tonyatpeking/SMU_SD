@@ -23,8 +23,8 @@ float CosDeg( const float deg );
 float SinDeg( const float deg );
 float TanDeg( const float deg );
 float Atan2Deg( float y, float x );
-float ArcSinDeg( float deg );
-float ArcCosDeg( float deg );
+float ArcSinDeg( float sinTheta );
+float ArcCosDeg( float cosTheta );
 
 
 //Angle & Vector utilities

@@ -18,7 +18,7 @@ class MeshBuilder
 {
 public:
     MeshBuilder() {};
-    ~MeshBuilder() {};
+    virtual ~MeshBuilder() {};
 
     // uvTile only affects the texture uv
     static MeshBuilder FromSurfacePatch(

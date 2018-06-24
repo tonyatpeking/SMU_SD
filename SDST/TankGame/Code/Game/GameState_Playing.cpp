@@ -34,6 +34,7 @@
 #include "Engine/Renderer/Light.hpp"
 #include "Engine/Particles/ParticleEmitter.hpp"
 #include "Engine/Math/Raycast.hpp"
+#include "Engine/Math/Ray2.hpp"
 
 #include "Game/Projectile.hpp"
 #include "Game/GameState_Playing.hpp"
@@ -42,6 +43,7 @@
 #include "Game/App.hpp"
 #include "Game/Asteroid.hpp"
 #include "Game/GameMap.hpp"
+
 
 GameState_Playing::GameState_Playing()
     : GameState( GameStateType::PLAYING )
@@ -111,6 +113,7 @@ void GameState_Playing::Update()
     }
 
     LeaveBreadCrumbs();
+    UpdateTurret();
 }
 
 void GameState_Playing::Render() const
@@ -239,16 +242,11 @@ void GameState_Playing::ProcessMovementInput()
     if( g_input->IsKeyPressed( InputSystem::MOUSE_LEFT ) )
     {
         static float timeSinceLastSpawn = 0;
-        static bool alternator = false;
         timeSinceLastSpawn += ds;
         if( timeSinceLastSpawn > 0.15f )
         {
             timeSinceLastSpawn = 0;
-            if( alternator )
-                MakeProjectile( Vec3( 4.5f, 1, 8 ) );
-            else
-                MakeProjectile( Vec3( -4.5f, 1, 8 ) );
-            alternator = !alternator;
+            FireProjectile();
         }
 
     }
@@ -341,22 +339,7 @@ void GameState_Playing::TestRender() const
 
 void GameState_Playing::TestUpdate()
 {
-    Vec2 dim = g_window->GetDimensions() / 2.f;
-    Ray3 camRay = g_mainCamera->ScreenToPickRay( g_window->GetDimensions() / 2.f );
-//     DebugRender::SetOptions( 0.1f );
-//     DebugRender::DrawPoint( camRay.Evaluate( 100 ), 10.f );
 
-    AABB3 bbox( Vec3( 1, 22, 3 ), Vec3( 32, 44, 55 ) );
-    DebugRender::SetOptions( 0.f, Rgba::BLACK,Rgba::BLACK );
-    DebugRender::DrawAABB3( bbox );
-
-    RaycastHit3 hit = Raycast::ToAABB3( camRay, bbox );
-    if( hit.m_hit )
-    {
-        DebugRender::SetOptions( 0.f );
-        DebugRender::DrawPoint( hit.m_position, 1.f );
-        DebugRender::DrawLine( hit.m_position, hit.m_position + hit.m_normal * 10 );
-    }
 
 }
 
@@ -602,7 +585,7 @@ void GameState_Playing::FinalizeSpaceShip()
     light->m_coneInnerDot = CosDeg( 0 );
     light->m_coneOuterDot = CosDeg( 10 );
     light->m_intensity = 4;
-    light->GetTransform().SetWorldPosition( Vec3( 0, 3, -4 ) );
+    light->GetTransform().SetWorldPosition( Vec3( 0, 3, 0 ) );
     light->SetParent( g_game->m_shipHull );
 
     // Add exhaust trail
@@ -660,24 +643,35 @@ void GameState_Playing::SetAmbient( float ambient )
     g_renderer->SetAmbient( Vec4( 1, 1, 1, ambient ) );
 }
 
-void GameState_Playing::MakeProjectile( const Vec3& offset )
+void GameState_Playing::FireProjectile()
 {
     Projectile* proj = new Projectile();
     Transform& trans = proj->GetTransform();
-    Transform& shipTrans = g_game->m_shipHull->GetTransform();
+    Transform& barrelTransform = m_turretBarrel->GetTransform();
 
+    // give it a random yaw and pitch
     float yaw = Random::FloatInRange( -1, 1 );
     float pitch = Random::FloatInRange( -1, 1 );
 
     Mat4 rot = Mat4::MakeRotationEuler( yaw, pitch, 0 );
 
-    proj->m_velocity = rot * ( shipTrans.GetForward() * m_projectileVelocity );
+    proj->m_velocity = rot * ( barrelTransform.GetForward() * m_projectileVelocity );
     proj->m_drag = 0;
-    trans.SetLocalToParent( shipTrans.GetLocalToParent() );
-    trans.SetWorldPosition( shipTrans.GetWorldPosition() );
-    trans.TranslateLocal( offset );
-    //trans.RotateLocalEuler( Vec3( pitch, yaw, 0 ));
-    //trans.SetLocalToParent( rot * trans.GetLocalToParent() );
+    float maxDist = ( m_turretRayIndicator->GetTransform().GetWorldPosition()
+                      - barrelTransform.GetWorldPosition() ).GetLength();
+    float velMagnitude = proj->m_velocity.GetLength();
+    proj->m_maxAge = maxDist / velMagnitude;
+    proj->m_maxAge = proj->m_maxAge - g_gameClock->GetDeltaSecondsF();
+
+        trans.SetLocalToParent( barrelTransform.GetLocalToWorld() );
+    trans.SetWorldPosition( barrelTransform.GetWorldPosition() );
+
+    GameObjectCB deathCB = [this]( GameObject* gameObject ) {
+        this->MakeCollisionParticles( gameObject->GetTransform().GetWorldPosition() ); };
+
+
+     proj->AddDeathCallback( deathCB );
+
     m_projectiles.push_back( proj );
 }
 
@@ -795,10 +789,6 @@ void GameState_Playing::SnapTransformToHeightmap( Transform* transform )
 
     transform->SetLocalToParent( newMat );
 
-    g_console->Printf( "%f,%f,%f", transform->GetLocalScale().x,
-                       transform->GetLocalScale().y,
-                       transform->GetLocalScale().z );
-
 }
 
 void GameState_Playing::LeaveBreadCrumbs()
@@ -814,16 +804,89 @@ void GameState_Playing::LeaveBreadCrumbs()
 
 void GameState_Playing::UpdateRaycastHitIndicator()
 {
-    if( !m_raycastHitIndicator )
+    if( !m_camRayIndicator )
     {
-        m_raycastHitIndicator = new GameObject();
-        m_raycastHitIndicator->SetRenderable( Renderable::MakeCube() );
-        m_raycastHitIndicator->GetRenderable()->GetMaterial(0)
+        m_camRayIndicator = new GameObject();
+        m_camRayIndicator->SetRenderable( Renderable::MakeCube() );
+        m_camRayIndicator->GetRenderable()->GetMaterial( 0 )
             ->SetShaderPass( 0, ShaderPass::GetWireframeDebugShader() );
     }
 
-    Vec3 pos =  g_game->m_shipHull->GetTransform().GetWorldPosition() + Vec3::UP * 10;
-    m_raycastHitIndicator->GetTransform().SetLocalPosition( pos );
+    Vec2 dim = g_window->GetDimensions() / 2.f;
+    Ray3 camRay = g_mainCamera->ScreenToPickRay( g_window->GetDimensions() / 2.f );
+    RaycastHit3 hit = g_game->m_map->RaycastMap( camRay );
+
+    if( hit.m_hit )
+    {
+        Vec3 pos = hit.m_position;
+        m_camRayIndicator->GetTransform().SetLocalPosition( pos );
+    }
+    else
+    {
+        Vec3 pos = camRay.Evaluate( 1000 );
+        m_camRayIndicator->GetTransform().SetLocalPosition( pos );
+    }
+}
+
+void GameState_Playing::UpdateTurret()
+{
+    if( !m_camRayIndicator )
+        return;
+    static Vec3 savedScale = m_turret->GetTransform().GetLocalScale();
+    Transform& turretTransform = m_turret->GetTransform();
+    Transform targetTransform = turretTransform;
+    targetTransform.LookAt( m_camRayIndicator->GetTransform().GetWorldPosition() );
+    targetTransform.SetLocalScale( savedScale );
+
+    Vec3 turretForward = turretTransform.GetForward();
+    Vec3 targetForward = targetTransform.GetForward();
+
+    //     turretForward = Vec3( -1.98009145, -0.123912774, 2.25030732 );
+    //     targetForward = Vec3( -1.98009169, -0.123912789, 2.25030732 );
+
+    float totalAngle = Vec3::GetAngleBetween( turretForward, targetForward );
+
+    float degreesTurretCanTurn = g_gameClock->GetDeltaSecondsF() * turretDegreesPerSec;
+
+    float t = degreesTurretCanTurn / totalAngle;
+    t = Clampf01( t );
+
+    Mat4 newMat4 = Mat4::LerpTransform( turretTransform.GetLocalToParent(),
+                                        targetTransform.GetLocalToParent(), t );
+
+    if( newMat4.IsAnyInf() || newMat4.IsAnyNaN() )
+        int i = 0;
+
+    turretTransform.SetLocalToParent( newMat4 );
+    turretTransform.SetLocalScale( savedScale );
+
+    if( !m_turretRayIndicator )
+    {
+        m_turretRayIndicator = new GameObject();
+        m_turretRayIndicator->SetRenderable( Renderable::MakeCube() );
+        m_turretRayIndicator->GetRenderable()->GetMaterial( 0 )
+            ->SetShaderPass( 0, ShaderPass::GetWireframeDebugShader() );
+        m_turretRayIndicator->GetRenderable()->GetMaterial( 0 )->m_tint = Rgba::RED;
+    }
+
+    Transform& barrelTrans = m_turretBarrel->GetTransform();
+    Ray3 turretRay = Ray3( barrelTrans.GetWorldPosition(), barrelTrans.GetForward() );
+    RaycastHit3 hit = g_game->m_map->RaycastMap( turretRay );
+    Vec3 pos;
+
+    if( hit.m_hit )
+    {
+        pos = hit.m_position;
+        m_turretRayIndicator->GetTransform().SetLocalPosition( pos );
+    }
+    else
+    {
+        pos = turretRay.Evaluate( 1000 );
+        m_turretRayIndicator->GetTransform().SetLocalPosition( pos );
+    }
+
+    DebugRender::SetOptions( 0 );
+    DebugRender::DrawLine( barrelTrans.GetWorldPosition(), pos, Rgba::PURPLE, Rgba::RED );
 }
 
 void GameState_Playing::MakeTurret()
@@ -831,20 +894,21 @@ void GameState_Playing::MakeTurret()
     Transform* shipTrans = &g_game->m_shipHull->GetTransform();
     m_turret = new GameObject();
     m_turret->SetRenderable( Renderable::MakeUVSphere() );
+    m_turret->GetRenderable()->GetMaterial( 0 )->SetShaderPass( 0, ShaderPass::GetLitShader() );
 
     Transform* turretTrans = &m_turret->GetTransform();
     turretTrans->SetParent( shipTrans );
-    turretTrans->SetLocalPosition( Vec3( 0, 1, 1 ) );
-    //turretTrans->LookAt( Vec3( 0, 0, 1000 ) );
+    turretTrans->SetLocalPosition( Vec3( 0, 3, 1 ) );
     turretTrans->SetLocalScale( 3 );
 
-    GameObject* barrel = new GameObject();
-    barrel->SetRenderable( Renderable::MakeCube() );
-    Transform* barrelTrans = &barrel->GetTransform();
+    m_turretBarrel = new GameObject();
+    m_turretBarrel->SetRenderable( Renderable::MakeCube() );
+    m_turretBarrel->GetRenderable()->GetMaterial( 0 )->SetShaderPass( 0, ShaderPass::GetLitShader() );
+
+    Transform* barrelTrans = &m_turretBarrel->GetTransform();
     barrelTrans->SetParent( turretTrans );
-    barrelTrans->SetLocalPosition( Vec3( 0, 0.37f, 1 ) );
-    //barrelTrans->LookAt( Vec3( 0, 0, 1000 ) );
-    barrelTrans->SetLocalScale( Vec3(0.2f,0.2f,2.f) );
+    barrelTrans->SetLocalPosition( Vec3( 0.f, 0.f, 1 ) );
+    barrelTrans->SetLocalScale( Vec3( 0.2f, 0.2f, 2.f ) );
 
 
 }

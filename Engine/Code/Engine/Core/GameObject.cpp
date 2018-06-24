@@ -1,6 +1,7 @@
 #include "Engine/Core/GameObject.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Renderer/RenderSceneGraph.hpp"
+#include "Engine/Core/ContainerUtils.hpp"
 
 GameObject::GameObject()
 {
@@ -74,4 +75,27 @@ void GameObject::RegenModelMatIfDirty() const
 
 }
 
+void GameObject::SetShouldDie( bool shouldDie )
+{
+    m_shouldDie = shouldDie;
+    CallDeathCallbacks();
+}
+
+void GameObject::CallDeathCallbacks()
+{
+    for ( GameObjectCB cb : m_deathCallbacks )
+    {
+        cb( this );
+    }
+}
+
+void GameObject::AddDeathCallback( GameObjectCB cb )
+{
+    m_deathCallbacks.push_back( cb );
+}
+
+void GameObject::ClearDeathCallbacks()
+{
+    m_deathCallbacks.clear();
+}
 

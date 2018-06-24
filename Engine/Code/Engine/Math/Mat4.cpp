@@ -446,6 +446,26 @@ Vec3 Mat4::DecomposeEuler() const
     return euler;
 }
 
+bool Mat4::IsAnyInf() const
+{
+    for (int idx = 0; idx < 16 ; ++idx)
+    {
+        if( std::isinf( el[idx] ) )
+            return true;
+    }
+    return false;
+}
+
+bool Mat4::IsAnyNaN() const
+{
+    for( int idx = 0; idx < 16; ++idx )
+    {
+        if( std::isnan( el[idx] ) )
+            return true;
+    }
+    return false;
+}
+
 void Mat4::SetIdentity()
 {
     *this = IDENTITY;

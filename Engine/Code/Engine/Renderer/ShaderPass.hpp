@@ -28,6 +28,7 @@ public:
     static ShaderPass* GetWireframeDebugShader();
     static ShaderPass* GetAdditiveShader();
     static ShaderPass* GetSkyboxShader();
+    static ShaderPass* GetLitShader();
 
     ShaderPass();
 

@@ -7,7 +7,6 @@ Ray3::Ray3( const Vec3& point, const Vec3& dir )
     , direction( dir )
 {
     Normalzie();
-
 }
 
 void Ray3::SetStartEnd( const Vec3& startPoint, const Vec3& end )

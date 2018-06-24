@@ -7,7 +7,7 @@ GridStepper2D::GridStepper2D( const Ray2& ray, const Vec2& cellSize, const Vec2&
     , m_cellSize( cellSize )
     , m_origin( origin )
 {
-
+    Init();
 }
 
 Vec2 GridStepper2D::GetCurrentPos()

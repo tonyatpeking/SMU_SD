@@ -266,6 +266,17 @@ ShaderProgram* ShaderProgram::GetDebugProgram()
     return s_debugProgram;
 }
 
+ShaderProgram* ShaderProgram::GetLitProgram()
+{
+    static ShaderProgram* s_litProgram = nullptr;
+    if( !s_litProgram )
+    {
+        s_litProgram = CreateOrGetFromFiles(
+            "Data/Shaders/lit" );
+    }
+    return s_litProgram;
+}
+
 void ShaderProgram::Bind()
 {
     glUseProgram( m_programHandle );

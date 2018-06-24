@@ -83,6 +83,7 @@ void Clear();
 // will return null if task has been destroyed
 Task* GetTask( uint handle );
 void KillTask( uint handle );
+int GetTaskCount();
 
 // set the options will affect future pushed commands
 Options& GetOptions();

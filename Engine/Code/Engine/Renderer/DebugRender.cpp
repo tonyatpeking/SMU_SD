@@ -16,6 +16,7 @@
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Math/AABB3.hpp"
+#include "Engine/Renderer/Mesh.hpp"
 
 namespace
 {
@@ -59,14 +60,14 @@ void Render3DCommands()
             task->Render();
             if( task->m_options.m_mode == DebugRender::Mode::XRAY )
             {
-                Rgba savedTint = task->m_renderable->GetMaterial(0)->m_tint;
-                task->m_renderable->GetMaterial(0)->m_tint = XRAY_TINT;
-                task->m_renderable->GetMaterial(0)->m_shaderPass->EnableDepth(
+                Rgba savedTint = task->m_renderable->GetMaterial( 0 )->m_tint;
+                task->m_renderable->GetMaterial( 0 )->m_tint = XRAY_TINT;
+                task->m_renderable->GetMaterial( 0 )->m_shaderPass->EnableDepth(
                     DepthCompareMode::GREATER, false );
                 task->Render();
 
-                task->m_renderable->GetMaterial(0)->m_tint = savedTint;
-                task->m_renderable->GetMaterial(0)->m_shaderPass->EnableDepth(
+                task->m_renderable->GetMaterial( 0 )->m_tint = savedTint;
+                task->m_renderable->GetMaterial( 0 )->m_shaderPass->EnableDepth(
                     DepthCompareMode::LEQUAL );
             }
         }
@@ -131,9 +132,9 @@ Renderable* MakeRenderable3D()
 {
     g_options.m_screenspace = false;
     Renderable* renderable = new Renderable();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
     ShaderPass* shader = new ShaderPass();
-    renderable->GetMaterial(0)->m_shaderPass = shader;
+    renderable->GetMaterial( 0 )->m_shaderPass = shader;
     shader->SetFillMode( g_options.m_fillmode );
     switch( g_options.m_mode )
     {
@@ -223,6 +224,11 @@ void DebugRender::KillTask( uint handle )
         task->Kill();
 }
 
+int DebugRender::GetTaskCount()
+{
+    return (int) g_tasks.size();
+}
+
 DebugRender::Options& DebugRender::GetOptions()
 {
     return g_options;
@@ -254,10 +260,10 @@ uint DebugRender::DrawQuad2D( const AABB2& bounds, Texture* texture )
 {
     g_options.m_screenspace = true;
     Renderable* renderable = new Renderable();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
-    renderable->GetMaterial(0)->SetDiffuse( texture );
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->SetDiffuse( texture );
     renderable->m_mesh = MeshPrimitive::MakeQuad( bounds ).MakeMesh();
-    renderable->GetMaterial(0)->m_shaderPass = ShaderPass::GetDefaultUIShader();
+    renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
     return AddTask( renderable );
 }
 
@@ -266,12 +272,12 @@ uint DebugRender::DrawLine2D( const Vec2& p0, const Vec2& p1, const Rgba& colorP
 {
     g_options.m_screenspace = true;
     Renderable* renderable = new Renderable();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
     std::vector<Vec3> points;
     points.push_back( Vec3( p0 ) );
     points.push_back( Vec3( p1 ) );
     renderable->m_mesh = MeshPrimitive::MakeLineStrip( points, colorP0, colorP1 ).MakeMesh();
-    renderable->GetMaterial(0)->m_shaderPass = ShaderPass::GetDefaultUIShader();
+    renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
     return AddTask( renderable );
 }
 
@@ -280,7 +286,7 @@ uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& a
 {
     g_options.m_screenspace = true;
     Renderable* renderable = new Renderable();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
     TextMeshBuilder tmb{};
     tmb.m_boundingBox = bounds;
     tmb.m_fontHeight = fontSize;
@@ -290,8 +296,8 @@ uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& a
     tmb.m_text = Stringf( format, args );
     tmb.Finalize();
     renderable->m_mesh = tmb.MakeMesh();
-    renderable->GetMaterial(0)->m_diffuse = tmb.m_font->GetTexture();
-    renderable->GetMaterial(0)->m_shaderPass = ShaderPass::GetDefaultUIShader();
+    renderable->GetMaterial( 0 )->m_diffuse = tmb.m_font->GetTexture();
+    renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
     return AddTask( renderable );
 }
 
@@ -316,7 +322,7 @@ uint DebugRender::DrawPoint( const Vec3& pos, float size )
 {
     g_options.m_screenspace = false;
     Renderable* renderable = new Renderable();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
     MeshBuilder mb{};
     mb.BeginSubMesh( DrawPrimitive::LINES, false );
     mb.PushPos( pos + Vec3::FORWARD * size );
@@ -335,7 +341,7 @@ uint DebugRender::DrawLine( const Vec3& p0, const Vec3& p1, const Rgba& color0, 
 {
     g_options.m_screenspace = false;
     Renderable* renderable = new Renderable();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
     std::vector<Vec3> points;
     points.push_back( p0 );
     points.push_back( p1 );
@@ -348,7 +354,7 @@ uint DebugRender::DrawBasis( const Mat4& basis )
 {
     g_options.m_screenspace = false;
     Renderable* renderable = new Renderable();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
 
 
     MeshBuilder mb{};
@@ -404,7 +410,7 @@ uint DebugRender::DrawQuad( const AABB2& bounds, const Vec3& pos, const Vec3& eu
 {
     Renderable* renderable = MakeRenderable3D();
     renderable->m_mesh = MeshPrimitive::MakeQuad( bounds ).MakeMesh();
-    renderable->GetMaterial(0)->m_diffuse = texture;
+    renderable->GetMaterial( 0 )->m_diffuse = texture;
     renderable->SetModelMatrix( Mat4::MakeFromSRT( Vec3::ONES, euler, pos ) );
     return AddTask( renderable );
 
@@ -470,7 +476,7 @@ uint DebugRender::DrawText( const AABB2& bounds, const Mat4& transform, float fo
 {
     g_options.m_screenspace = false;
     Renderable* renderable = new Renderable();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
     TextMeshBuilder tmb{};
     tmb.m_boundingBox = bounds;
     tmb.m_fontHeight = fontSize;
@@ -480,10 +486,10 @@ uint DebugRender::DrawText( const AABB2& bounds, const Mat4& transform, float fo
     tmb.m_text = Stringf( format, args );
     tmb.Finalize();
     renderable->m_mesh = tmb.MakeMesh();
-    renderable->GetMaterial(0)->m_diffuse = tmb.m_font->GetTexture();
-    renderable->GetMaterial(0)->m_shaderPass = new ShaderPass();
-    renderable->GetMaterial(0)->m_shaderPass->EnableDepth( DepthCompareMode::LESS, false );
-    renderable->GetMaterial(0)->m_shaderPass->EnableBlending( BlendMode::ALPHA_BLEND );
+    renderable->GetMaterial( 0 )->m_diffuse = tmb.m_font->GetTexture();
+    renderable->GetMaterial( 0 )->m_shaderPass = new ShaderPass();
+    renderable->GetMaterial( 0 )->m_shaderPass->EnableDepth( DepthCompareMode::LESS, false );
+    renderable->GetMaterial( 0 )->m_shaderPass->EnableBlending( BlendMode::ALPHA_BLEND );
     renderable->m_modelMatrix = transform;
     return AddTask( renderable );
     return 0;
@@ -509,7 +515,7 @@ uint DebugRender::DrawTag( const AABB2& bounds, const Vec3& pos, float fontSize,
 {
     g_options.m_screenspace = true;
     Renderable* renderable = new Renderable();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
     TextMeshBuilder tmb{};
     tmb.m_boundingBox = bounds;
     tmb.m_fontHeight = fontSize;
@@ -519,8 +525,8 @@ uint DebugRender::DrawTag( const AABB2& bounds, const Vec3& pos, float fontSize,
     tmb.m_text = Stringf( format, args );
     tmb.Finalize();
     renderable->m_mesh = tmb.MakeMesh();
-    renderable->GetMaterial(0)->m_diffuse = tmb.m_font->GetTexture();
-    renderable->GetMaterial(0)->m_shaderPass = ShaderPass::GetDefaultUIShader();
+    renderable->GetMaterial( 0 )->m_diffuse = tmb.m_font->GetTexture();
+    renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
     uint handle = AddTask( renderable );
 
     std::function<void( void )> updatePos = [renderable, pos]()
@@ -542,9 +548,9 @@ uint DebugRender::DrawGlyph( const AABB2& bounds, const Vec3& pos, Texture* text
     g_options.m_screenspace = true;
     Renderable* renderable = new Renderable();
     renderable->m_mesh = MeshPrimitive::MakeQuad( bounds ).MakeMesh();
-    renderable->GetMaterial(0)->SetTint( g_options.m_startColor );
-    renderable->GetMaterial(0)->m_diffuse = texture;
-    renderable->GetMaterial(0)->m_shaderPass = ShaderPass::GetDefaultUIShader();
+    renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
+    renderable->GetMaterial( 0 )->m_diffuse = texture;
+    renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
     uint handle = AddTask( renderable );
 
     std::function<void( void )> updatePos = [renderable, pos]()
@@ -561,12 +567,14 @@ uint DebugRender::DrawGlyph( const AABB2& bounds, const Vec3& pos, Texture* text
 
 DebugRender::Task::Task()
     : m_uid( ++g_taskUidCounter )
-{}
+{
+}
 
 DebugRender::Task::~Task()
 {
     if( m_onDeathFunc )
         m_onDeathFunc();
+    delete m_renderable->m_mesh;
     delete m_renderable;
 }
 
@@ -584,7 +592,7 @@ void DebugRender::Task::Age()
 
     float normalizedAge = GetNormalizedAge();
     Rgba tint = Lerp( m_options.m_startColor, m_options.m_endColor, normalizedAge );
-    m_renderable->GetMaterial(0)->SetTint( tint );
+    m_renderable->GetMaterial( 0 )->SetTint( tint );
 }
 
 void DebugRender::Task::Kill()
@@ -611,3 +619,4 @@ float DebugRender::Task::GetNormalizedAge()
     float percentDead = 1.f - percentAlive;
     return Clampf01( percentDead );
 }
+

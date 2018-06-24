@@ -33,6 +33,8 @@ public:
     float GetHeightAtPos( const Vec2& pos );
     Vec3 GetNormalAtPos( const Vec2& pos );
 
+    Vec3 GetPos3D( const Vec2& pos );
+
     Vec2& GetChunkSize() { return m_chunkSize; };
 
     SurfacePatch* GetSurfacePatch() { return m_surface; };
@@ -41,11 +43,13 @@ public:
     AABB2 GetMapExtents() { return m_extents; };
 
     // maxDist = -1 will use map 3d diagonal length
-    // stepSize = -1 will use stretch stepSize to always step gridLength in x or y
     RaycastHit3 RaycastMap( const Ray3& ray, float maxDist = -1 );
 
     // The grid length of the mesh in x or y
     Vec2 GetGridCellLength();
+
+    float GetHeightRelativeToSurface( const Vec3& pos );
+
 
 private:
 

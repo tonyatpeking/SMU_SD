@@ -1,9 +1,14 @@
 #pragma once
+#include <functional>
+
 #include "Engine/Core/Transform.hpp"
 #include "Engine/Renderer/Renderable.hpp"
 
 class Camera;
 class RenderSceneGraph;
+class GameObject;
+
+typedef std::function<void( GameObject* )> GameObjectCB;
 
 class GameObject
 {
@@ -32,8 +37,11 @@ public:
         GetTransform().SetParent( &parent->GetTransform() );
     }
 
-    void SetShouldDie( bool shouldDie ) { m_shouldDie = shouldDie; };
+    void SetShouldDie( bool shouldDie );
     bool ShouldDie() { return m_shouldDie; };
+    void CallDeathCallbacks();
+    void AddDeathCallback( GameObjectCB cb );
+    void ClearDeathCallbacks();
 
 protected:
 
@@ -44,5 +52,5 @@ protected:
     bool m_shouldDie = false;
     RenderSceneGraph* m_scene = nullptr;
 
-
+    std::vector < GameObjectCB > m_deathCallbacks;
 };

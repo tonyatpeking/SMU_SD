@@ -24,6 +24,6 @@ public:
     Light* m_light;
 
     float m_age = 0;
-    const float MAX_AGE = 1;
+    float m_maxAge = 1.f;
 };
 

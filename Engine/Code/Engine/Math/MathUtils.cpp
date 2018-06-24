@@ -83,14 +83,16 @@ float Atan2Deg( float y, float x )
     return RadToDeg( atan2f( y, x ) );
 }
 
-float ArcSinDeg( float deg )
+float ArcSinDeg( float sinTheta )
 {
-    return RadToDeg( asinf( deg ) );
+    sinTheta = Clampf( sinTheta, -1.f, 1.f );
+    return RadToDeg( asinf( sinTheta ) );
 }
 
-float ArcCosDeg( float deg )
+float ArcCosDeg( float cosTheta )
 {
-    return RadToDeg( acosf( deg ) );
+    cosTheta = Clampf( cosTheta, -1.f, 1.f );
+    return RadToDeg( acosf( cosTheta ) );
 }
 
 float GetAngularDisplacement( float startDeg, float endDeg )

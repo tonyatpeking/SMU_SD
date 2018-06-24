@@ -85,11 +85,11 @@
     <ClCompile Include="GameMap.cpp">
       <Filter>Map</Filter>
     </ClCompile>
-    <ClCompile Include="GameMapChunk.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="GameState_Lobby.cpp">
       <Filter>GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMapChunk.cpp">
+      <Filter>Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

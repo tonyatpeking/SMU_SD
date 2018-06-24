@@ -62,7 +62,6 @@ private:
     void SetAmbient( float ambient );
 
     void MakeTurret();
-    void MakeProjectile( const Vec3& offset );
 
     void MakeAsteroids();
     void MakeAsteroid( float maxHealth, const Vec3& position );
@@ -74,10 +73,14 @@ private:
     void LeaveBreadCrumbs();
 
     void UpdateRaycastHitIndicator();
+    void UpdateTurret();
+    void FireProjectile();
 
-
-    GameObject* m_raycastHitIndicator = nullptr;
+    GameObject* m_camRayIndicator = nullptr;
+    GameObject* m_turretRayIndicator = nullptr;
     GameObject* m_turret = nullptr;
+    GameObject* m_turretBarrel = nullptr;
+    float turretDegreesPerSec = 90.f;
 
 
     ParticleEmitter* m_leftThrustEmitter;
@@ -100,5 +103,7 @@ private:
     float m_moveSpeed = 15;
     float m_rollSpeed = 200;
     float m_turnSpeed = 0.2f;
+
+
 
 };

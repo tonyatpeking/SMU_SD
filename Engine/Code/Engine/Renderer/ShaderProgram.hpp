@@ -13,6 +13,7 @@ public:
     static ShaderProgram* GetDefaultProgram();
     static ShaderProgram* GetInvalidProgram();
     static ShaderProgram* GetDebugProgram();
+    static ShaderProgram* GetLitProgram();
 
     // user of class must check for null and valid handle before calling bind
     void Bind();

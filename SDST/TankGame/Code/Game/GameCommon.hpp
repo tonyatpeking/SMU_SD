@@ -83,8 +83,6 @@ extern RenderSceneGraph* g_renderSceneGraph;
 // Owned by Encounter
 class Actor;
 extern Actor* g_currentActor;
-class Map;
-extern Map* g_map;
 // Owned by GameState_Playing
 class OrbitCamera;
 //extern OrbitCamera* g_orbitCamera;

@@ -45,9 +45,9 @@ Vec3::Vec3( const Vec4& vec4 )
 
 }
 
-Vec3 Vec3::MakeFromXZ( const Vec2& vec2 )
+Vec3 Vec3::MakeFromXZ( const Vec2& vec2, float y )
 {
-    return Vec3( vec2.x, 0, vec2.y );
+    return Vec3( vec2.x, y, vec2.y );
 }
 
 const Vec3 Vec3::operator+( const Vec3& vecToAdd ) const
@@ -253,6 +253,13 @@ float Vec3::GetDistance( const Vec3& a, const Vec3& b )
 float Vec3::GetDistanceSquared( const Vec3& a, const Vec3& b )
 {
     return ( a - b ).GetLengthSquared();
+}
+
+float Vec3::GetAngleBetween( const Vec3& a, const Vec3& b )
+{
+    float cosTheta = Dot( a, b ) / ( a.GetLength() * b.GetLength() );
+
+    return ArcCosDeg( cosTheta );
 }
 
 Vec3 Vec3::NearestPointOnLine( const Vec3& point, const Vec3& lineStart, const Vec3& lineEnd )

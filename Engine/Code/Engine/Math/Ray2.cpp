@@ -4,7 +4,10 @@
 
 Ray2 Ray2::FromRay3XZ( const Ray3& ray3 )
 {
-    return Ray2( Vec2::MakeFromXZ( ray3.start ), Vec2::MakeFromXZ( ray3.direction ).GetNormalized() );
+    Ray2 ray2{};
+    ray2.start = Vec2::MakeFromXZ( ray3.start );
+    ray2.direction = Vec2::MakeFromXZ( ray3.direction );
+    return ray2;
 }
 
 Ray2::Ray2( const Vec2& point, const Vec2& dir )

@@ -27,7 +27,7 @@ public:
     explicit Vec3( float initX = 0.f, float initY = 0.f, float initZ = 0.f );
     explicit Vec3( const Vec2& vec2, float appendZ = 0.f );
     explicit Vec3( const Vec4& vec4 );
-    static Vec3 MakeFromXZ( const Vec2& vec2 );
+    static Vec3 MakeFromXZ( const Vec2& vec2, float y = 0.f );
 
     // Operators
     const Vec3 operator+( const Vec3& vecToAdd ) const;		// vec3 + vec3
@@ -61,6 +61,7 @@ public:
     static Vec3 MakeVectorOnAxis( Axis axis, float lengthOnAxis=1.0f );// construct a vector based on axis
     static float GetDistance( const Vec3& a, const Vec3& b );
     static float GetDistanceSquared( const Vec3& a, const Vec3& b );
+    static float GetAngleBetween( const Vec3& a, const Vec3& b );
 
     // Geometry
 

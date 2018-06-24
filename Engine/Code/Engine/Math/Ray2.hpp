@@ -6,6 +6,7 @@ class Ray3;
 class Ray2
 {
 public:
+    // This is not normalized so that the Evaluate T will match with the 3D version
     static Ray2 FromRay3XZ( const Ray3& ray3 );
 
     Ray2() {};

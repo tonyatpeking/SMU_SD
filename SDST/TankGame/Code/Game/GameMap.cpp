@@ -1,3 +1,5 @@
+#include <functional>
+
 #include "Engine/Core/Image.hpp"
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Math/MathUtils.hpp"
@@ -6,6 +8,8 @@
 #include "Engine/Math/Raycast.hpp"
 #include "Engine/Math/GridStepper2D.hpp"
 #include "Engine/Math/Ray3.hpp"
+#include "Engine/Math/Solver.hpp"
+#include "Engine/Renderer/DebugRender.hpp"
 
 #include "Game/GameMapChunk.hpp"
 #include "Game/GameMap.hpp"
@@ -37,6 +41,10 @@ void GameMap::LoadFromImage( Image* heightMap, const AABB2& extents, float minHe
     {
         for( int chunkIdxX = 0; chunkIdxX < chunkCounts.x; ++chunkIdxX )
         {
+            if( chunkIdxX == 10 && chunkIdxY == 10 )
+                continue;
+            if( chunkIdxX == 8 && chunkIdxY == 8 )
+                continue;
             GameMapChunk* chunk = new GameMapChunk( this, IVec2( chunkIdxX, chunkIdxY ) );
             chunk->GenerateRenderable();
             m_chunks.push_back( chunk );
@@ -113,6 +121,12 @@ Vec3 GameMap::GetNormalAtPos( const Vec2& pos )
 
 }
 
+Vec3 GameMap::GetPos3D( const Vec2& pos )
+{
+    float height = GetHeightAtPos( pos );
+    return Vec3::MakeFromXZ( pos, height );
+}
+
 RaycastHit3 GameMap::RaycastMap( const Ray3& ray, float maxDist )
 {
     if( maxDist == -1 )
@@ -122,28 +136,49 @@ RaycastHit3 GameMap::RaycastMap( const Ray3& ray, float maxDist )
 
     Vec2 gridCellSize = GetGridCellLength();
 
-    GridStepper2D stepper = GridStepper2D( Ray2::FromRay3XZ( ray ), gridCellSize );
+    Ray2 ray2 = Ray2::FromRay3XZ( ray );
+    GridStepper2D stepper = GridStepper2D( ray2, gridCellSize );
 
     RaycastHit3 hit{};
     float prevT = 0;
-    while( stepper.GetCurrentT() < maxDist )
+    float currentT = 0;
+    while( currentT < maxDist )
     {
-        prevT = stepper.GetCurrentT();
+        // Use Grid stepper to narrow down search
+        prevT = currentT;
         stepper.Step();
-        Vec3 rayPos = ray.Evaluate( stepper.GetCurrentT() );
-        float mapHeight = GetHeightAtPos( Vec2::MakeFromXZ( rayPos ) );
-        if( rayPos.y < mapHeight )
+        currentT = stepper.GetCurrentT();
+        Vec3 rayPos = ray.Evaluate( currentT );
+
+        float relHeight = GetHeightRelativeToSurface( rayPos );
+
+        if( relHeight < 0.f )
         {
-
+            // Use Binary Search to find intersection
+            std::function<float( float t )> eval = [&]( float t ) -> float {
+                Vec3 pos = ray.Evaluate( t );
+                return GetHeightRelativeToSurface( pos );
+            };
+            float solveT = Solver::BinarySearch( prevT, currentT, eval, 10 );
+            hit.m_distance = solveT;
+            hit.m_hit = true;
+            Vec2 pos2D = ray2.Evaluate( solveT );
+            hit.m_normal = GetNormalAtPos( pos2D );
+            hit.m_position = GetPos3D( pos2D );
+            break;
         }
-
     }
-
     return hit;
 }
 
 Vec2 GameMap::GetGridCellLength()
 {
     return m_chunkSize / Vec2( m_chunkCellsPerSide );
+}
+
+float GameMap::GetHeightRelativeToSurface( const Vec3& pos )
+{
+    float mapHeight = GetHeightAtPos( Vec2::MakeFromXZ( pos ) );
+    return pos.y - mapHeight;
 }
 

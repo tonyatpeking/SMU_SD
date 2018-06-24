@@ -32,13 +32,13 @@ void Projectile::Update()
     float ds = g_gameClock->GetDeltaSecondsF();
     m_age += ds;
 
-    if( m_age > MAX_AGE )
+    if( m_age > m_maxAge )
         SetShouldDie( true );
 }
 
 void Projectile::SetUpRenderable()
 {
-    MeshBuilder quad = MeshPrimitive::MakeQuad( AABB2( -4, -0.2f, 4, 0.2f ), m_tint );
+    MeshBuilder quad = MeshPrimitive::MakeQuad( AABB2( -2, -0.2f, 2, 0.2f ), m_tint );
     Mat4 rotate = Mat4::MakeRotationEuler( Vec3( 0, 90, 0 ) );
     quad.TransformAllVerts( rotate );
     rotate = Mat4::MakeRotationEuler( Vec3( 0, 0, 60 ) );

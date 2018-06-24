@@ -64,7 +64,7 @@ void GameState_Loading::LoadResourcesOnSecondFrame()
         return;
     }
     MakeSpaceShip();
-    MakeSkyBox();
+    //MakeSkyBox();
     MakeNoiseImage();
     MakeMap();
 }
@@ -133,5 +133,5 @@ void GameState_Loading::MakeMap()
 {
     g_game->m_map = new GameMap();;
     g_game->m_map->LoadFromImage( g_game->m_noiseImage, AABB2( -128, -128, 128, 128 ),
-                                  0, 10, IVec2( 16, 16 ) );
+                                  0, 20, IVec2( 16, 16 ) );
 }

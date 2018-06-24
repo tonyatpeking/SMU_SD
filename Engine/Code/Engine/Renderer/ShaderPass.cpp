@@ -104,6 +104,18 @@ ShaderPass* ShaderPass::GetSkyboxShader()
     return s_shader;
 }
 
+ShaderPass* ShaderPass::GetLitShader()
+{
+    static ShaderPass* s_shader = nullptr;
+    if( !s_shader )
+    {
+        s_shader = new ShaderPass();
+        s_shader->SetProgram( ShaderProgram::GetLitProgram() );
+        s_shader->EnableBlending( BlendMode::ALPHA_BLEND );
+    }
+    return s_shader;
+}
+
 ShaderPass::ShaderPass()
 {
     SetProgram( ShaderProgram::GetDefaultProgram() );
