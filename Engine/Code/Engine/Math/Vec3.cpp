@@ -195,6 +195,13 @@ float Vec3::GetValueOnAxis( Axis axis ) const
     }
 }
 
+void Vec3::SnapToZero()
+{
+    x = ::SnapToZero( x );
+    y = ::SnapToZero( y );
+    z = ::SnapToZero( z );
+}
+
 ParseStatus Vec3::SetFromText( const String& text, const String& delimiter )
 {
     std::vector<float> out_floats;

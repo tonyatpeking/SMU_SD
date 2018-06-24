@@ -273,6 +273,14 @@ float AABB3::GetDepth() const
     return maxs.z - mins.z;
 }
 
+float AABB3::GetDiagonal3D() const
+{
+    float width = GetWidth();
+    float height = GetHeight();
+    float depth = GetDepth();
+    return sqrtf(width * width + height * height + depth * depth);
+}
+
 void AABB3::operator-=( const Vec3& antiTranslation )
 {
     Translate( -antiTranslation );

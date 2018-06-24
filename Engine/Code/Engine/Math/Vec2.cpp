@@ -328,6 +328,12 @@ void Vec2::Scale( const Vec2& scale )
     y *= scale.y;
 }
 
+void Vec2::SnapToZero()
+{
+    x = ::SnapToZero( x );
+    y = ::SnapToZero( y );
+}
+
 Vec2 Vec2::Reflect( const Vec2& vectorToReflect, const Vec2& reflectionNormal )
 {
     float valueOnNormal = Dot( reflectionNormal, vectorToReflect );

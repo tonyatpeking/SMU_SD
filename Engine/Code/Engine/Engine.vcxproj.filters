@@ -61,18 +61,15 @@
     <Filter Include="Renderer\GL">
       <UniqueIdentifier>{111643fe-a4b9-4797-99d4-4654256e530b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math\Primitive">
+      <UniqueIdentifier>{9e6bce7a-11c0-47f4-99b0-a0bc73ea3d23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Solver">
+      <UniqueIdentifier>{9fc657b6-3d5f-468e-a21b-5ae430ca47fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Math\MathUtils.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Math\Random.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\AABB2.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Disc2.cpp">
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Input\InputSystem.cpp">
@@ -138,9 +135,6 @@
     <ClCompile Include="Core\CommandSystem.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Math\CubicSpline.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\Material.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
@@ -158,9 +152,6 @@
     </ClCompile>
     <ClCompile Include="Time\Timer.cpp">
       <Filter>Time</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\CubeSide.cpp">
-      <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Time\Tween.cpp">
       <Filter>Time</Filter>
@@ -204,32 +195,8 @@
     <ClCompile Include="Renderer\ShaderSourceBuilder.cpp">
       <Filter>Renderer\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Mat4.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\IVec2.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Vec2.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Vec3.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Vec4.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Core\ErrorUtils.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\IVec3.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\IRange.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Range.cpp">
-      <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="IO\IOUtils.cpp">
       <Filter>IO</Filter>
@@ -260,9 +227,6 @@
     </ClCompile>
     <ClCompile Include="Renderer\TextMeshBuilder.cpp">
       <Filter>Renderer\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\AABB3.cpp">
-      <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\VertexLayout.cpp">
       <Filter>Renderer</Filter>
@@ -342,17 +306,68 @@
     <ClCompile Include="Renderer\RenderingContext.cpp">
       <Filter>Renderer\GL</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Plane.cpp">
-      <Filter>Math\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Ray3.cpp">
-      <Filter>Math\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Math\Raycast.cpp">
       <Filter>Math\Raycast</Filter>
     </ClCompile>
+    <ClCompile Include="Math\GridStepper2D.cpp">
+      <Filter>Math\Raycast</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\MathUtils.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\AABB3.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\CubeSide.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\CubicSpline.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Disc2.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\IRange.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\IVec2.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\IVec3.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Mat4.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\AABB2.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Range.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vec2.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vec3.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vec4.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Plane.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Ray3.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
     <ClCompile Include="Math\Segment3.cpp">
-      <Filter>Math\Geometry</Filter>
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Ray2.cpp">
+      <Filter>Math\Raycast</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Solver.cpp">
+      <Filter>Math\Solver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -360,12 +375,6 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\Random.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\AABB2.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Disc2.hpp">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Input\InputSystem.hpp">
@@ -391,9 +400,6 @@
     </ClInclude>
     <ClInclude Include="..\ThirdParty\stb\stb_image.h">
       <Filter>ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Axis.hpp">
-      <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Core\StringUtils.hpp">
       <Filter>Core</Filter>
@@ -467,14 +473,8 @@
     <ClInclude Include="UI\MenuEntry.hpp">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="Math\CubeSide.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Core\CommandSystem.hpp">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\CubicSpline.hpp">
-      <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="..\ThirdParty\gl\glcorearb.h">
       <Filter>ThirdParty</Filter>
@@ -560,32 +560,8 @@
     <ClInclude Include="Renderer\UBO.hpp">
       <Filter>Renderer\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Mat4.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\IVec2.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vec2.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vec3.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vec4.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Core\ErrorUtils.hpp">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\IVec3.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\IRange.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Range.hpp">
-      <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="IO\IOUtils.hpp">
       <Filter>IO</Filter>
@@ -619,9 +595,6 @@
     </ClInclude>
     <ClInclude Include="Renderer\TextMeshBuilder.hpp">
       <Filter>Renderer\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\AABB3.hpp">
-      <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\VertexLayout.hpp">
       <Filter>Renderer</Filter>
@@ -707,17 +680,68 @@
     <ClInclude Include="Renderer\RenderingContext.hpp">
       <Filter>Renderer\GL</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Plane.hpp">
-      <Filter>Math\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Ray3.hpp">
-      <Filter>Math\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Raycast.hpp">
       <Filter>Math\Raycast</Filter>
     </ClInclude>
+    <ClInclude Include="Math\GridStepper2D.hpp">
+      <Filter>Math\Raycast</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Mat4.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\AABB2.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\AABB3.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Axis.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\CubeSide.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\CubicSpline.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Disc2.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\IRange.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\IVec2.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\IVec3.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Range.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec2.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec3.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Plane.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Ray3.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
     <ClInclude Include="Math\Segment3.hpp">
-      <Filter>Math\Geometry</Filter>
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Ray2.hpp">
+      <Filter>Math\Raycast</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Solver.hpp">
+      <Filter>Math\Solver</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -53,6 +53,7 @@ public:
     Vec3 GetNormalized() const;
     Vec3 GetClosestCardinalDir();
     float GetValueOnAxis( Axis axis ) const;
+    void SnapToZero();
 
     ParseStatus SetFromText( const String& text, const String& delimiter = "," );
 

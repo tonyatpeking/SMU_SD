@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Engine/Core/EngineCommon.hpp"
 // Forward declaration
 class Vec2;
 class Vec3;
@@ -9,7 +9,8 @@ class Range;
 class Disc2;
 
 // Stand alone functions
-bool AlmostZero( float f );
+bool AlmostZero( float f, float eps = EPSILON );
+float SnapToZero( float f );
 bool AlmostEqual( const float a, const float b );
 bool AlmostEqual( const Vec2& a, const Vec2& b );
 bool AlmostEqual( const AABB2& a, const AABB2& b );
@@ -152,11 +153,7 @@ float PeriodicSawTooth( float t, float interval, float sawToothDuration = 1.f );
 
 }
 
-namespace Solver
-{
-bool Quadratic( float a, float b, float c, float& out_root1, float& out_root2 ); // root1 <= root2
 
-}
 
 namespace Wrap
 {

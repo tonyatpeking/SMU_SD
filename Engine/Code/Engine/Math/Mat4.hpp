@@ -50,6 +50,7 @@ public:
     void Transpose();
     void InvertTranslation();
     void InvertRotation();
+    void SnapToZero();
 
     // 2d
     void RotateDegrees2D( float rotationDegreesAboutZ ); //
@@ -60,6 +61,7 @@ public:
     // 3d
     void TranslateLocal( const Vec3& translation );
     void Scale( const Vec3& scale );
+
 
     // Producers
     static Mat4 MakeFromSRT( const Vec3& scale,

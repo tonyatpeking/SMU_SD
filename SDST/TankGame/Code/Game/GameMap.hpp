@@ -2,12 +2,16 @@
 #include <vector>
 
 #include "Engine/Math/AABB2.hpp"
+#include "Engine/Math/AABB3.hpp"
 class Image;
 class GameMapChunk;
 class SurfacePatch;
+struct RaycastHit3;
+class Ray3;
 
 class GameMap
 {
+    friend class GameMapChunk;
 public:
     GameMap() {};
     ~GameMap();
@@ -36,14 +40,24 @@ public:
 
     AABB2 GetMapExtents() { return m_extents; };
 
+    // maxDist = -1 will use map 3d diagonal length
+    // stepSize = -1 will use stretch stepSize to always step gridLength in x or y
+    RaycastHit3 RaycastMap( const Ray3& ray, float maxDist = -1 );
+
+    // The grid length of the mesh in x or y
+    Vec2 GetGridCellLength();
+
 private:
 
     AABB2 m_extents;
+    AABB3 m_bounds;
     float m_minHeight = 0;
     float m_maxHeight = 1;
     IVec2 m_chunkCounts;
     // In world units
     Vec2 m_chunkSize;
+    IVec2 m_chunkCellsPerSide = IVec2(8,8);
+    float m_uvRepeatPerChunk = 16;
 
     Image* m_heightMap = nullptr;
     std::vector<GameMapChunk*> m_chunks;

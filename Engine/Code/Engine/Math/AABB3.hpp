@@ -69,6 +69,7 @@ public:
     float GetHeight() const;
     float GetWidth() const;
     float GetDepth() const;
+    float GetDiagonal3D() const;
 
     // Operators:
     void operator+=( const Vec3& translation ); // move (translate) the box

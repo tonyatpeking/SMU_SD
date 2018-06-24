@@ -3,9 +3,13 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/Math/SurfacePatch.hpp"
+#include "Engine/Math/Raycast.hpp"
+#include "Engine/Math/GridStepper2D.hpp"
+#include "Engine/Math/Ray3.hpp"
 
 #include "Game/GameMapChunk.hpp"
 #include "Game/GameMap.hpp"
+
 
 
 GameMap::~GameMap()
@@ -19,6 +23,10 @@ void GameMap::LoadFromImage( Image* heightMap, const AABB2& extents, float minHe
 {
     m_heightMap = heightMap;
     m_extents = extents;
+    m_bounds = AABB3( Vec3( m_extents.GetCenter() ),
+                      m_extents.GetWidth(),
+                      maxHeight - m_minHeight,
+                      m_extents.GetHeight() );
     m_minHeight = minHeight;
     m_maxHeight = maxHeight;
     m_chunkCounts = chunkCounts;
@@ -104,3 +112,38 @@ Vec3 GameMap::GetNormalAtPos( const Vec2& pos )
 
 
 }
+
+RaycastHit3 GameMap::RaycastMap( const Ray3& ray, float maxDist )
+{
+    if( maxDist == -1 )
+    {
+        maxDist = m_bounds.GetDiagonal3D();
+    }
+
+    Vec2 gridCellSize = GetGridCellLength();
+
+    GridStepper2D stepper = GridStepper2D( Ray2::FromRay3XZ( ray ), gridCellSize );
+
+    RaycastHit3 hit{};
+    float prevT = 0;
+    while( stepper.GetCurrentT() < maxDist )
+    {
+        prevT = stepper.GetCurrentT();
+        stepper.Step();
+        Vec3 rayPos = ray.Evaluate( stepper.GetCurrentT() );
+        float mapHeight = GetHeightAtPos( Vec2::MakeFromXZ( rayPos ) );
+        if( rayPos.y < mapHeight )
+        {
+
+        }
+
+    }
+
+    return hit;
+}
+
+Vec2 GameMap::GetGridCellLength()
+{
+    return m_chunkSize / Vec2( m_chunkCellsPerSide );
+}
+

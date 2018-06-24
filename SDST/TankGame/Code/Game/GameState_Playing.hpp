@@ -73,9 +73,10 @@ private:
     void SnapTransformToHeightmap( Transform* transform );
     void LeaveBreadCrumbs();
 
-    void UpdateAimTarget();
+    void UpdateRaycastHitIndicator();
 
-    GameObject* m_aimTarget = nullptr;
+
+    GameObject* m_raycastHitIndicator = nullptr;
     GameObject* m_turret = nullptr;
 
 

@@ -57,6 +57,7 @@ public:
     Vec2 GetMaxXMinY() const;
     float GetHeight() const;
     float GetWidth() const;
+    float GetDiagonal() const;
     float Top() const { return maxs.y; };
     float Bottom() const { return mins.y; };
     float Left() const { return mins.x; };

@@ -2,6 +2,7 @@
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Math/Solver.hpp"
 
 
 Vec2 Trajectory::Evaluate( const Vec2& launchVelocity, float time, float gravity )

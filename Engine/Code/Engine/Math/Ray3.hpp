@@ -10,6 +10,8 @@ public:
     void SetStartEnd( const Vec3& start, const Vec3& end );
     void Normalzie();
     Vec3 Evaluate( float t ) const;
+    bool IsValid() { return direction != Vec3::ZEROS; };
+
 
 public:
     Vec3 start;

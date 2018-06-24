@@ -234,7 +234,7 @@ void GameState_Playing::ProcessMovementInput()
 
     shipTransform.RotateLocalEuler( Vec3( 0, deltaShipYaw, 0 ) );
     UpdateCameraToFollow();
-    UpdateAimTarget();
+    UpdateRaycastHitIndicator();
 
     if( g_input->IsKeyPressed( InputSystem::MOUSE_LEFT ) )
     {
@@ -812,18 +812,18 @@ void GameState_Playing::LeaveBreadCrumbs()
     }
 }
 
-void GameState_Playing::UpdateAimTarget()
+void GameState_Playing::UpdateRaycastHitIndicator()
 {
-    if( !m_aimTarget )
+    if( !m_raycastHitIndicator )
     {
-        m_aimTarget = new GameObject();
-        m_aimTarget->SetRenderable( Renderable::MakeCube() );
-        m_aimTarget->GetRenderable()->GetMaterial(0)->SetShaderPass( 0, ShaderPass::GetWireframeDebugShader() );
+        m_raycastHitIndicator = new GameObject();
+        m_raycastHitIndicator->SetRenderable( Renderable::MakeCube() );
+        m_raycastHitIndicator->GetRenderable()->GetMaterial(0)
+            ->SetShaderPass( 0, ShaderPass::GetWireframeDebugShader() );
     }
 
-
-
-    m_aimTarget->GetTransform().SetLocalPosition( g_game->m_shipHull->GetTransform().GetWorldPosition() + Vec3::UP * 10 );
+    Vec3 pos =  g_game->m_shipHull->GetTransform().GetWorldPosition() + Vec3::UP * 10;
+    m_raycastHitIndicator->GetTransform().SetLocalPosition( pos );
 }
 
 void GameState_Playing::MakeTurret()

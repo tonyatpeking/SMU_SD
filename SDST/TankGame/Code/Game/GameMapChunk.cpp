@@ -33,7 +33,10 @@ void GameMapChunk::GenerateRenderable()
 
     SurfacePatch* surface = m_map->GetSurfacePatch();
     m_meshBuilder = new MeshBuilder();
-    *m_meshBuilder = MeshBuilder::FromSurfacePatch( surface, 8, 8, uv, 16 );
+    int cellsPerSideX = m_map->m_chunkCellsPerSide.x;
+    int cellsPerSideY = m_map->m_chunkCellsPerSide.y;
+    *m_meshBuilder = MeshBuilder::FromSurfacePatch(
+        surface, cellsPerSideX, cellsPerSideY, uv, m_map->m_uvRepeatPerChunk );
     m_renderable->SetMesh( m_meshBuilder->MakeMesh() );
 
     Material* mat = new Material();

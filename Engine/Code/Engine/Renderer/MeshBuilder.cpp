@@ -9,7 +9,7 @@
 
 
 MeshBuilder MeshBuilder::FromSurfacePatch( SurfacePatch* sp,
-                                           int uGridLines, int vGridLines,
+                                           int uGridCells, int vGridCells,
                                            const AABB2& uvBounds, float uvTile )
 {
     MeshBuilder mb{};
@@ -22,17 +22,17 @@ MeshBuilder MeshBuilder::FromSurfacePatch( SurfacePatch* sp,
     if( vRange == 0 )
         vRange = 0.0001f;
 
-    float uSpacing = 1.f / ( (float) uGridLines - 1.f );
+    float uSpacing = 1.f / ( (float) uGridCells );
     uSpacing = uSpacing * uRange;
 
-    float vSpacing = 1.f / ( (float) vGridLines - 1.f );
+    float vSpacing = 1.f / ( (float) vGridCells );
     vSpacing = vSpacing * vRange;
 
     // Set all the vertices
-    for( int vIdx = 0; vIdx < vGridLines; ++vIdx )
+    for( int vIdx = 0; vIdx < vGridCells + 1; ++vIdx )
     {
         float v = uvBounds.mins.v + ( vIdx * vSpacing );
-        for( int uIdx = 0; uIdx < uGridLines; ++uIdx )
+        for( int uIdx = 0; uIdx < uGridCells + 1; ++uIdx )
         {
             float u = uvBounds.mins.u + ( uIdx * uSpacing );
             Vec2 uv = Vec2( u, v );
@@ -48,16 +48,16 @@ MeshBuilder MeshBuilder::FromSurfacePatch( SurfacePatch* sp,
         }
     }
     // Set all the indices
-    for( int vIdx = 0; vIdx < vGridLines - 1; ++vIdx )
+    for( int vIdx = 0; vIdx < vGridCells; ++vIdx )
     {
-        for( int uIdx = 0; uIdx < uGridLines - 1; ++uIdx )
+        for( int uIdx = 0; uIdx < uGridCells; ++uIdx )
         {
             // idx3 idx2
             // idx0 idx1
-            int idx0 = IVec2::CoordsToIndex( uIdx, vIdx, uGridLines );
-            int idx1 = IVec2::CoordsToIndex( uIdx + 1, vIdx, uGridLines );
-            int idx2 = IVec2::CoordsToIndex( uIdx + 1, vIdx + 1, uGridLines );
-            int idx3 = IVec2::CoordsToIndex( uIdx, vIdx + 1, uGridLines );
+            int idx0 = IVec2::CoordsToIndex( uIdx, vIdx, uGridCells + 1);
+            int idx1 = IVec2::CoordsToIndex( uIdx + 1, vIdx, uGridCells + 1 );
+            int idx2 = IVec2::CoordsToIndex( uIdx + 1, vIdx + 1, uGridCells + 1 );
+            int idx3 = IVec2::CoordsToIndex( uIdx, vIdx + 1, uGridCells + 1 );
             mb.AddFaceIdx( idx0, idx1, idx2, idx3 );
         }
     }

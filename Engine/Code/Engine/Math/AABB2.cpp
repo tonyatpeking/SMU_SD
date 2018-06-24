@@ -275,6 +275,13 @@ float AABB2::GetWidth() const
     return maxs.x - mins.x;
 }
 
+float AABB2::GetDiagonal() const
+{
+    float width = GetWidth();
+    float height = GetHeight();
+    return sqrtf( width * width + height * height );
+}
+
 //Operators:
 
 void AABB2::operator+=( const Vec2& translation )

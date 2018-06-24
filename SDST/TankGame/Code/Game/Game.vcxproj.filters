@@ -89,7 +89,7 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="GameState_Lobby.cpp">
-      <Filter>General</Filter>
+      <Filter>GameStates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

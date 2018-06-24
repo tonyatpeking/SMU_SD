@@ -69,6 +69,7 @@ public:
     void RotateDegrees( float degrees );
     ParseStatus SetFromText( const String& text, const String& delimiter = "," );
     void Scale( const Vec2& scale );
+    void SnapToZero();
 
     // Static
     static Vec2 Reflect( const Vec2& vectorToReflect, const Vec2& reflectionNormal );

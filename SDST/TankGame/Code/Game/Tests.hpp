@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include <functional>
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/Math/Trajectory.hpp"
@@ -9,6 +9,7 @@
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/IO/IOUtils.hpp"
+#include "Engine/Math/Solver.hpp"
 
 #include "Game/GameCommon.hpp"
 
@@ -16,11 +17,16 @@ namespace Tests
 {
 
 
-void QuadraticTests()
+void SolverTests()
 {
     float root1;
     float root2;
     Solver::Quadratic( 0.5f, -2.8f, 2.3f, root1, root2 );
+
+
+    std::function<float( float )> eval = []( float x ) -> float {return x - 0.123456789f; };
+    float bRoot = Solver::BinarySearch( 0.f, 1.f, eval, 10000, 0.00000000001f );
+    UNUSED( bRoot );
 };
 
 void TrajectoryTests()
@@ -99,7 +105,7 @@ void IOTests()
 
 void RunTests()
 {
-    QuadraticTests();
+    SolverTests();
     //TrajectoryTests();
     StringTests();
 

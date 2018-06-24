@@ -351,6 +351,14 @@ void Mat4::InvertRotation()
 }
 
 
+void Mat4::SnapToZero()
+{
+    for (int idx = 0; idx < 16 ; ++idx)
+    {
+        el[idx] = ::SnapToZero( el[idx] );
+    }
+}
+
 Vec3 Mat4::TransformPosition( const Vec3& rhs ) const
 {
     return Vec3( (*this) * Vec4( rhs, 1 ));

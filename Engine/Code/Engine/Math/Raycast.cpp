@@ -4,6 +4,7 @@
 #include "Engine/Math/Ray3.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/AABB3.hpp"
+#include "Engine/Math/IVec2.hpp"
 
 namespace Raycast
 {
@@ -88,6 +89,7 @@ RaycastHit3 ToAABB3( const Ray3& ray, const AABB3& bbox )
     return RaycastHit3( tmin, ray.Evaluate( tmin ), normal );
 
 }
+
 
 }
 

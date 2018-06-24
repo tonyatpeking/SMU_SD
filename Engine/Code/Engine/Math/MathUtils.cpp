@@ -16,9 +16,16 @@
 #include "Engine/Math/Disc2.hpp"
 
 
-bool AlmostZero( float f )
+bool AlmostZero( float f, float eps )
 {
-    return fabsf( f ) < EPSILON;
+    return fabsf( f ) < eps;
+}
+
+float SnapToZero( float f )
+{
+    if( AlmostZero( f ) )
+        return 0.f;
+    return f;
 }
 
 bool AlmostEqual( const float a, const float b )
@@ -149,6 +156,7 @@ int RoundToInt( float inValue )
 
 int FloorToInt( float inValue )
 {
+    // floorf behaves well for negatives
     return (int) floorf( inValue );
 }
 
@@ -486,38 +494,6 @@ float Wave::PeriodicSawTooth( float t, float interval, float sawToothDuration /*
     return SawTooth( t );
 }
 
-bool Solver::Quadratic( float a, float b, float c, float& out_root1, float& out_root2 )
-{
-    if( a == 0.f )
-    {
-        if( b == 0.f )
-            return false;
-        out_root1 = -c / b;
-        out_root2 = out_root1;
-        return true;
-    }
-
-    float discriminant = b * b - 4.f * a * c;
-    if( discriminant < 0.f )
-        return false;
-
-    float aInv = 1.f / a;
-    float dSqrt = sqrtf( discriminant ) * 0.5f * aInv;
-    float maxima = -0.5f * b * aInv;
-    float r1 = maxima - dSqrt;
-    float r2 = maxima + dSqrt;
-    if( r1 < r2 )
-    {
-        out_root1 = r1;
-        out_root2 = r2;
-    }
-    else
-    {
-        out_root2 = r1;
-        out_root1 = r2;
-    }
-    return true;
-}
 
 float Wrap::WrapFloat01( float value, WrapMode mode )
 {
