@@ -2,11 +2,20 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
+#include "Engine/Core/GameObjectManager.hpp"
 
-GameObject::GameObject()
+
+
+GameObject::GameObject( std::string type )
 {
+    SetType( type );
     m_scene = RenderSceneGraph::GetCurrentScene();
-    SetScene( m_scene );
+    if( m_scene )
+        m_scene->AddGameObject( this );
+
+    m_manager = GameObjectManager::GetDefault();
+    if( m_manager )
+        m_manager->AddGameObject( this );
 }
 
 GameObject::~GameObject()
@@ -24,6 +33,17 @@ void GameObject::SetScene( RenderSceneGraph* scene )
 
     if( m_scene )
         m_scene->AddGameObject( this );
+}
+
+void GameObject::SetGameObjectManager( GameObjectManager* manager )
+{
+    if( m_manager )
+        m_manager->RemoveGameObject( this );
+
+    m_manager = manager;
+
+    if( m_manager )
+        m_manager->AddGameObject( this );
 }
 
 Transform& GameObject::GetTransform()
@@ -83,7 +103,7 @@ void GameObject::SetShouldDie( bool shouldDie )
 
 void GameObject::CallDeathCallbacks()
 {
-    for ( GameObjectCB cb : m_deathCallbacks )
+    for( GameObjectCB cb : m_deathCallbacks )
     {
         cb( this );
     }
@@ -97,5 +117,10 @@ void GameObject::AddDeathCallback( GameObjectCB cb )
 void GameObject::ClearDeathCallbacks()
 {
     m_deathCallbacks.clear();
+}
+
+void GameObject::SetType( std::string type )
+{
+
 }
 

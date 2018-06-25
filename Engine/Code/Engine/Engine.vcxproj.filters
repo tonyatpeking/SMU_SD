@@ -369,6 +369,7 @@
     <ClCompile Include="Math\Solver.cpp">
       <Filter>Math\Solver</Filter>
     </ClCompile>
+    <ClCompile Include="Core\GameObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -743,6 +744,7 @@
     <ClInclude Include="Math\Solver.hpp">
       <Filter>Math\Solver</Filter>
     </ClInclude>
+    <ClInclude Include="Core\GameObjectManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">

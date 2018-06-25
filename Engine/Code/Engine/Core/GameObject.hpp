@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <string>
 
 #include "Engine/Core/Transform.hpp"
 #include "Engine/Renderer/Renderable.hpp"
@@ -7,6 +8,7 @@
 class Camera;
 class RenderSceneGraph;
 class GameObject;
+class GameObjectManager;
 
 typedef std::function<void( GameObject* )> GameObjectCB;
 
@@ -14,13 +16,13 @@ class GameObject
 {
 public:
     // GameObject will default to RenderSceneGraph::GetCurrentScene()
-    GameObject();
+    GameObject( std::string type = "Unknown" );
     virtual ~GameObject();
 
     virtual void Update() {};
 
     virtual void SetScene( RenderSceneGraph* scene );
-
+    void SetGameObjectManager( GameObjectManager* manager );
 
     Transform& GetTransform();
     const Transform& GetTransform() const;
@@ -43,7 +45,11 @@ public:
     void AddDeathCallback( GameObjectCB cb );
     void ClearDeathCallbacks();
 
+    void SetType( std::string type );
+    std::string GetType() { return m_type; };
+
 protected:
+    std::string m_type = "Unknown";
 
     Transform m_transform;
     mutable bool m_modelMatDirty = false;
@@ -51,6 +57,7 @@ protected:
 
     bool m_shouldDie = false;
     RenderSceneGraph* m_scene = nullptr;
+    GameObjectManager* m_manager = nullptr;
 
     std::vector < GameObjectCB > m_deathCallbacks;
 };

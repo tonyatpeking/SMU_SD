@@ -10,7 +10,7 @@ public:
 
     Vec3 m_velocity;
     float m_drag = 0.f;
-
+    float m_mass = 1.f;
 private:
 
 };

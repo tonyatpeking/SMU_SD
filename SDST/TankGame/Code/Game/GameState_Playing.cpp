@@ -43,7 +43,8 @@
 #include "Game/App.hpp"
 #include "Game/Asteroid.hpp"
 #include "Game/GameMap.hpp"
-
+#include "Game/Hive.hpp"
+#include "Game/Swarmer.hpp"
 
 GameState_Playing::GameState_Playing()
     : GameState( GameStateType::PLAYING )
@@ -153,6 +154,8 @@ void GameState_Playing::OnEnter()
     TestEnter();
 
     FinalizeSpaceShip();
+
+    CreateInitHives();
 }
 
 void GameState_Playing::OnExit()
@@ -663,16 +666,30 @@ void GameState_Playing::FireProjectile()
     proj->m_maxAge = maxDist / velMagnitude;
     proj->m_maxAge = proj->m_maxAge - g_gameClock->GetDeltaSecondsF();
 
-        trans.SetLocalToParent( barrelTransform.GetLocalToWorld() );
+    trans.SetLocalToParent( barrelTransform.GetLocalToWorld() );
     trans.SetWorldPosition( barrelTransform.GetWorldPosition() );
 
     GameObjectCB deathCB = [this]( GameObject* gameObject ) {
         this->MakeCollisionParticles( gameObject->GetTransform().GetWorldPosition() ); };
 
 
-     proj->AddDeathCallback( deathCB );
+    proj->AddDeathCallback( deathCB );
 
     m_projectiles.push_back( proj );
+}
+
+void GameState_Playing::CreateInitHives()
+{
+    GameMap* map = g_game->m_map;
+    AABB2 extents = map->GetMapExtents();
+    for( int i = 0; i < m_initHiveCount; ++i )
+    {
+        Vec2 pos2D = Random::Vec2InRange( extents.mins, extents.maxs );
+        Vec3 pos3D = map->GetPos3D( pos2D );
+        Hive* hive = new Hive();
+        Transform& transform = hive->GetTransform();
+        transform.SetLocalPosition( pos3D );
+    }
 }
 
 void GameState_Playing::MakeAsteroids()
@@ -787,7 +804,9 @@ void GameState_Playing::SnapTransformToHeightmap( Transform* transform )
 
     Mat4 newMat( newRight, newUp, newForward, newWorldPos );
 
+    Vec3 saveScale = transform->GetLocalScale();
     transform->SetLocalToParent( newMat );
+    transform->SetLocalScale( saveScale );
 
 }
 

@@ -274,6 +274,7 @@
     <ClCompile Include="Core\EngineCommon.cpp" />
     <ClCompile Include="Core\ErrorUtils.cpp" />
     <ClCompile Include="Core\GameObject.cpp" />
+    <ClCompile Include="Core\GameObjectManager.cpp" />
     <ClCompile Include="Core\Image.cpp" />
     <ClCompile Include="Core\Rgba.cpp" />
     <ClCompile Include="Core\StringUtils.cpp" />
@@ -389,6 +390,7 @@
     <ClInclude Include="Core\EngineCommon.hpp" />
     <ClInclude Include="Core\ErrorUtils.hpp" />
     <ClInclude Include="Core\GameObject.hpp" />
+    <ClInclude Include="Core\GameObjectManager.hpp" />
     <ClInclude Include="Core\HeatMap.hpp" />
     <ClInclude Include="Core\Image.hpp" />
     <ClInclude Include="Core\Rgba.hpp" />

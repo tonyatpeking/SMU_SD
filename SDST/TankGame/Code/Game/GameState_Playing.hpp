@@ -17,6 +17,8 @@ class Projectile;
 class ParticleEmitter;
 class Image;
 class GameMap;
+class Hive;
+class Swarmer;
 
 class GameState_Playing : public GameState
 {
@@ -76,6 +78,8 @@ private:
     void UpdateTurret();
     void FireProjectile();
 
+    void CreateInitHives();
+
     GameObject* m_camRayIndicator = nullptr;
     GameObject* m_turretRayIndicator = nullptr;
     GameObject* m_turret = nullptr;
@@ -88,7 +92,7 @@ private:
 
     Vec3 m_lightPos;
     uint m_lightDebugHandle = 0;
-    uint m_lightsToSpawn = 18;
+    uint m_lightsToSpawn = 1;
     float m_lightSourceRadius = 0.2f;
     float m_lightIntensity = 400;
     float m_projectileVelocity = 50;
@@ -104,6 +108,8 @@ private:
     float m_rollSpeed = 200;
     float m_turnSpeed = 0.2f;
 
-
-
+    // Hives and Swarmers
+    int m_initHiveCount = 5;
+    std::vector<Hive*> m_hives;
+    std::vector<Swarmer*> m_swarmers;
 };

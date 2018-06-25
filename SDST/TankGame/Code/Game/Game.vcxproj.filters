@@ -91,6 +91,12 @@
     <ClCompile Include="GameMapChunk.cpp">
       <Filter>Map</Filter>
     </ClCompile>
+    <ClCompile Include="Swarmer.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Hive.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -153,6 +159,10 @@
     <ClInclude Include="GameMapChunk.hpp">
       <Filter>Map</Filter>
     </ClInclude>
+    <ClInclude Include="Swarmer.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Hive.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">
