@@ -9,25 +9,22 @@
 #include "Game/Swarmer.hpp"
 
 Hive::Hive()
+    : RigidBody( "Hive" )
 {
     CreateRenderable();
-    for( int i = 0; i < m_initialSwarmerCount; ++i )
-    {
-        SpawnSwarmer();
-    }
 }
 
 Hive::~Hive()
 {
     TellSwarmersIDied();
+    delete m_spawnTimer;
 }
 
 void Hive::Update()
 {
     RigidBody::Update();
-    static Timer s_timer = Timer( g_gameClock, m_spawnInterval );
 
-    int numToSpawn = s_timer.PopAllLaps();
+    int numToSpawn = m_spawnTimer->PopAllLaps();
 
     for( int i = 0; i < numToSpawn; ++i )
     {
@@ -35,7 +32,16 @@ void Hive::Update()
             break;
         SpawnSwarmer();
     }
+}
 
+void Hive::OnFirstUpdate()
+{
+    m_spawnTimer = new Timer( g_gameClock, m_spawnInterval );
+    RigidBody::OnFirstUpdate();
+    for( int i = 0; i < m_initialSwarmerCount; ++i )
+    {
+        SpawnSwarmer();
+    }
 }
 
 void Hive::CreateRenderable()
@@ -48,6 +54,7 @@ void Hive::CreateRenderable()
 void Hive::SpawnSwarmer()
 {
     Swarmer* swarmer = new Swarmer();
+    Vec3 pos = GetTransform().GetWorldPosition();
     swarmer->GetTransform().SetWorldPosition( GetTransform().GetWorldPosition() );
     swarmer->SetHive( this );
 
@@ -61,7 +68,7 @@ void Hive::SwarmerDied( Swarmer* swarmer )
 
 void Hive::TellSwarmersIDied()
 {
-    for (int i = 0; i < m_swarmers.size() ; ++i)
+    for( int i = 0; i < m_swarmers.size(); ++i )
     {
         m_swarmers[i]->SetHive( nullptr );
     }

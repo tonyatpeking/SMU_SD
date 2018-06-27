@@ -13,6 +13,7 @@ public:
         : m_renderer( renderer ) {};
     ~ForwardRenderingPath() {};
     void Render( RenderSceneGraph* scene );
+
 private:
     void RenderSceneForCamera( Camera* camera );
     // lights is an array of light indices, max size is UBO::MAX_LIGHTS
@@ -23,4 +24,5 @@ private:
 private:
     Renderer * m_renderer;
     RenderSceneGraph* m_scene;
+
 };

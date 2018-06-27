@@ -15,6 +15,7 @@
 
 Projectile::Projectile( const Rgba& tint /*= Rgba::ORANGE */ )
     : m_tint( tint )
+    , RigidBody( "Projectile" )
 {
     SetUpRenderable();
     MakeLight();
@@ -75,11 +76,9 @@ void Projectile::MakeLight()
     m_light->GetTransform().SetLocalToParent(m_transform.GetLocalToParent());
     m_light->SetParent( this );
 
-    g_renderSceneGraph->AddLight( m_light );
 }
 
 void Projectile::DestroyLight()
 {
-    g_renderSceneGraph->RemoveLight( m_light );
-    delete m_light;
+    m_light->SetShouldDie( true );
 }

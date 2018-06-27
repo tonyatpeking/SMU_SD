@@ -33,6 +33,7 @@
 #include "Engine/Renderer/UniformBuffer.hpp"
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Renderer/ForwardRenderingPath.hpp"
+#include "Engine/Core/PythonInterpreter.hpp"
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
@@ -46,6 +47,16 @@
 #include "ThirdParty/pybind11/embed.h"
 namespace py = pybind11;
 using namespace pybind11::literals;
+
+PYBIND11_EMBEDDED_MODULE( fast_calc, m ) {
+    // `m` is a `py::module` which is used to bind functions and classes
+    m.def( "add", []( int i, int j ) {
+        return i + j;
+    } );
+    m.def( "rand", []( int i, int j ) {
+        return Random::IntInRange( i, j );
+    } );
+}
 
 
 
@@ -106,8 +117,9 @@ void Game::Initialize()
 
     g_renderer->SetBackGroundColor( g_config->backgroundColor );
     g_forwardRenderingPath = new ForwardRenderingPath(g_renderer);
-    g_renderSceneGraph = new RenderSceneGraph();
-    RenderSceneGraph::SetCurrentScene( g_renderSceneGraph );
+    g_renderSceneGraph = RenderSceneGraph::GetDefault();
+    g_gameObjectManager = GameObjectManager::GetDefault();
+
     LoadSounds();
 
     GameCommands::RegisterAllCommands();
@@ -119,18 +131,52 @@ void Game::Initialize()
 
     MakePauseMenu();
 
-    py::scoped_interpreter guard{}; // start the interpreter and keep it alive
+    //py::scoped_interpreter guard{}; // start the interpreter and keep it alive
+
+    PythonInterpreter::GetInstance()->Start();
+    PythonInterpreter* shell = PythonInterpreter::GetInstance();
+
+    shell->PushToShell( "2**123" );
+
+    std::string s = shell->ReadFromShell();
 
     //py::object os = py::module::import( "os" );
     float a = 42.f;
     py::object obj = py::float_(a);
     float x = obj.cast<float>(); // may throw cast_error
-    int i = 0;
+
+    py::object scope = py::module::import( "__main__" ).attr( "__dict__" );
+
+    // Evaluate an isolated expression
+    int result = py::eval( "10 + 10", scope ).cast<int>();
+
+
 
 //     py::object makedirs = os.attr( "makedirs" );
 //     makedirs( "/tmp/path/to/somewhere1" );
     //py::print( "Hello, World!" ); // use the Python API
 
+    py::exec( R"(
+        kwargs = dict(name="World", number=42)
+        message = "Hello, {name}! The answer is {number}".format(**kwargs)
+        print( "********" + message)
+    )" );
+
+
+    auto fast_calc = py::module::import( "fast_calc" );
+    result = fast_calc.attr( "rand" )( 1, 200 ).cast<int>();
+
+    py::exec( R"(
+        import sys
+        sys.path.append( 'D:\\Guildhall\\SpecialTopic\\SDST\\TankGame\\Run_Win32' )
+    )" );
+
+    auto py_module = py::module::import( "test" );
+    result = py_module.attr( "rnd" ).cast<int>();
+
+    //assert( result == 3 );
+
+    int i = 0;
 
 }
 

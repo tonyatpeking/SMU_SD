@@ -21,8 +21,6 @@ public:
     Camera();
     virtual ~Camera();
 
-    virtual void SetScene( RenderSceneGraph* scene ) override;
-
     // will be implemented later
     void SetColorTarget( Texture *colorTarget );
     void SetDepthStencilTarget( Texture *depthTarget );

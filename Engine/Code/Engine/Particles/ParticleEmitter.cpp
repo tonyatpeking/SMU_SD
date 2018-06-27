@@ -13,6 +13,7 @@
 ParticleEmitter::ParticleEmitter( Clock* clock )
     : m_clock( clock )
     , m_spawnTimer( clock, m_spawnRate )
+    , GameObject("ParticleEmitter")
 {
     SetupRenderable();
     m_builder.SetVertexType<VertexPCU>();

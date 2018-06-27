@@ -5,7 +5,7 @@
 class OrbitCamera : public Camera
 {
 public:
-	OrbitCamera(){};
+	OrbitCamera();
 	~OrbitCamera(){};
 
     void SetTarget( const Vec3& target );

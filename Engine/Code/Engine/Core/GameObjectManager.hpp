@@ -6,20 +6,23 @@
 
 class GameObject;
 
+typedef std::vector<GameObject*> GameObjects;
+
 class GameObjectManager
 {
     friend class GameObject;
 public:
-    static GameObjectManager* GetDefault() { return s_default; };
+    static GameObjectManager* GetDefault();
     static void SetDefault( GameObjectManager* manager ) { s_default = manager; };
 
     GameObjectManager() {};
     virtual ~GameObjectManager() {};
 
-    virtual void Update() {};
+    virtual void Update();
+    virtual void DeleteDeadGameObjects();
 
-
-    std::vector<GameObject*>& GetObjectsOfType( std::string type );
+    GameObjects& GetObjectsOfType( std::string type );
+    GameObjects& GetObejctsFlat();
 
 protected:
     // Only called through GameObject::
@@ -29,5 +32,6 @@ protected:
     static GameObjectManager* s_default;
 
     // string is the type of object
-    std::map< std::string, std::vector< GameObject* >> m_allGameObjects;
+    std::map< std::string, GameObjects> m_allGameObjects;
+    GameObjects m_allGameObjectsFlat;
 };

@@ -50,6 +50,16 @@ Vec3 Vec3::MakeFromXZ( const Vec2& vec2, float y )
     return Vec3( vec2.x, y, vec2.y );
 }
 
+Vec2 Vec3::ToVec2()
+{
+    return Vec2( *this );
+}
+
+Vec2 Vec3::ToVec2XZ()
+{
+    return Vec2::MakeFromXZ( *this );
+}
+
 const Vec3 Vec3::operator+( const Vec3& vecToAdd ) const
 {
     return Vec3( x + vecToAdd.x, y + vecToAdd.y, z + vecToAdd.z );

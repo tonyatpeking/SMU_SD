@@ -3,6 +3,11 @@
 #include "Game/RigidBody.hpp"
 #include "Game/GameCommon.hpp"
 
+RigidBody::RigidBody( std::string type )
+    : GameObject(type)
+{
+}
+
 void RigidBody::Update()
 {
     GameObject::Update();

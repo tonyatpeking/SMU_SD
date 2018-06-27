@@ -2,44 +2,34 @@
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/Core/GameObject.hpp"
 #include "Engine/Renderer/Renderable.hpp"
+#include "Engine/Core/GameObjectManager.hpp"
 
-RenderSceneGraph* RenderSceneGraph::s_currentScene = nullptr;
+RenderSceneGraph* RenderSceneGraph::s_default = nullptr;
 
-void RenderSceneGraph::AddGameObject( GameObject* gameObject )
+
+RenderSceneGraph* RenderSceneGraph::GetDefault()
 {
-    m_gameObjects.push_back( gameObject );
+    if( !s_default )
+        s_default = new RenderSceneGraph();
+
+    return s_default;
 }
 
-void RenderSceneGraph::AddLight( Light* light )
+RenderSceneGraph::RenderSceneGraph()
 {
-    m_lights.push_back( light );
+    m_manager = GameObjectManager::GetDefault();
 }
 
-void RenderSceneGraph::AddCamera( Camera* camera )
+std::vector<GameObject*>& RenderSceneGraph::GetGameObjects()
 {
-    m_cameras.push_back( camera );
-}
-
-void RenderSceneGraph::RemoveGameObject( GameObject* gameObject )
-{
-    ContainerUtils::EraseOneValue( m_gameObjects, gameObject );
-}
-
-void RenderSceneGraph::RemoveLight( Light* light )
-{
-    ContainerUtils::EraseOneValue( m_lights, light );
-}
-
-void RenderSceneGraph::RemoveCamera( Camera* camera )
-{
-    ContainerUtils::EraseOneValue( m_cameras, camera );
+    return m_manager->GetObejctsFlat();
 }
 
 std::vector<Renderable*>& RenderSceneGraph::GetRenderables()
 {
     m_renderables.clear();
-    m_renderables.reserve( m_gameObjects.size() );
-    for ( auto& gameObject : m_gameObjects )
+    m_renderables.reserve( GetGameObjects().size() );
+    for ( auto& gameObject : GetGameObjects() )
     {
         Renderable* renderable = gameObject->GetRenderable();
         if( renderable )
@@ -48,4 +38,18 @@ std::vector<Renderable*>& RenderSceneGraph::GetRenderables()
     return m_renderables;
 }
 
+std::vector<GameObject*>& RenderSceneGraph::GetLights()
+{
+    return m_manager->GetObjectsOfType( "Light" );
+}
+
+void RenderSceneGraph::RemoveCamera( Camera* camera )
+{
+    ContainerUtils::EraseOneValue( m_cameras, camera );
+}
+
+std::vector<Camera*>& RenderSceneGraph::GetCameras()
+{
+    return m_cameras;
+}
 

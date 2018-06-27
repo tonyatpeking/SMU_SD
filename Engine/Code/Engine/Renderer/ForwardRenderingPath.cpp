@@ -30,7 +30,7 @@ void ForwardRenderingPath::RenderSceneForCamera( Camera* camera )
 {
     m_renderer->UseCamera( camera );
 
-    for ( auto& go : m_scene->GetGameObjects() )
+    for( auto& go : m_scene->GetGameObjects() )
         go->PreRender( camera );
 
     //ClearBasedOnCameraOptions( camera );
@@ -113,11 +113,12 @@ void ForwardRenderingPath::ComputeMostContributingLights( const Vec3& pos,
 
 
     std::vector<LightSortStruct> lightsSorted;
-    std::vector<Light*>& lights = m_scene->GetLights();
+    std::vector<GameObject*>& lights = m_scene->GetLights();
     lightsSorted.reserve( lights.size() );
     for( uint lightIdx = 0; lightIdx < lights.size(); ++lightIdx )
     {
-        float contribution = lights[lightIdx]->GetContributionToPoint( pos );
+        Light* light = (Light*) lights[lightIdx];
+        float contribution = light->GetContributionToPoint( pos );
         lightsSorted.push_back( LightSortStruct{ lightIdx,contribution } );
     }
     std::sort( lightsSorted.begin(), lightsSorted.end(), ContributionCompare );
@@ -172,13 +173,13 @@ void ForwardRenderingPath::SortDrawCalls( std::vector<DrawCall>& out_drawCalls )
 void ForwardRenderingPath::EnableLightsForDrawCall( const DrawCall& drawCall )
 {
     m_renderer->DisableAllLights();
-    for (int lightSlot = 0; lightSlot < MAX_LIGHTS ; ++lightSlot)
+    for( int lightSlot = 0; lightSlot < MAX_LIGHTS; ++lightSlot )
     {
         int lightIdx = drawCall.m_lightIndices[lightSlot];
         if( lightIdx == -1 )
             continue;
 
-        Light* light = m_scene->GetLights()[lightIdx];
+        Light* light = (Light*) m_scene->GetLights()[lightIdx];
         m_renderer->SetLight( lightSlot, light );
     }
 }

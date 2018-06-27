@@ -1,5 +1,6 @@
 ﻿#include <stdarg.h>
 
+#include "Engine/Core/PythonInterpreter.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Core/Window.hpp"
@@ -11,10 +12,7 @@
 #include "Engine/IO/IOUtils.hpp"
 #include "Engine/Core/CommandSystem.hpp"
 
-
 Console* Console::s_defaultConsole = nullptr;
-
-
 
 Console::Console( Renderer* renderer, InputSystem* inputSys )
     : m_renderer( renderer )
@@ -339,8 +337,24 @@ void Console::OnEnterPressed()
     if( m_inputText != "" )
         m_previousInputText.push_back( m_inputText );
     ScrollToEnd();
-    CommandSystem::DefaultCommandSystem()->RunCommand( m_inputText );
+
+    if( m_usePython )
+    {
+        PythonInterpreter::GetInstance()->PushToShell( m_inputText );
+        String pythonOut = PythonInterpreter::GetInstance()->ReadFromShell();
+        Print( pythonOut );
+    }
+    else
+    {
+        CommandSystem::DefaultCommandSystem()->RunCommand( m_inputText );
+    }
+
     m_inputText.clear();
+}
+
+void Console::UsePython( bool use )
+{
+    m_usePython = use;
 }
 
 void Console::Clear()

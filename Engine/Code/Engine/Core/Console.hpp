@@ -6,8 +6,6 @@
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Input/InputObserver.hpp"
 
-
-
 class Renderer;
 class InputSystem;
 class BitmapFont;
@@ -57,6 +55,7 @@ public:
     void Clear();
     void ClearInput();
     void OnEnterPressed();  // called when 'Enter' is pressed
+    void UsePython( bool use );
 
     // the text will be split at each newline '\n'
     void Print( const String& text, const Rgba& color );
@@ -113,6 +112,7 @@ private:
 
     // Console state
     bool m_isActive = false;
+    bool m_usePython = false;
     int m_currentOutputLine = -1;
     float m_age = 0.f;
     int m_cursorPosition = 0;
@@ -124,4 +124,5 @@ private:
     std::vector<Rgba> m_allOutputColors;
     String m_inputText;
     BitmapFont* m_font = nullptr;
+
 };

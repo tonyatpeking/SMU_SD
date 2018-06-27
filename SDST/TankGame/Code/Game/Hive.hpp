@@ -4,6 +4,7 @@
 #include "Game/RigidBody.hpp"
 
 class Swarmer;
+class Timer;
 
 class Hive : public RigidBody
 {
@@ -12,6 +13,7 @@ public:
     virtual ~Hive();
 
     virtual void Update() override;
+    virtual void OnFirstUpdate() override;
 
     void CreateRenderable();
     void SpawnSwarmer();
@@ -20,8 +22,9 @@ public:
 private:
 
     std::vector< Swarmer* > m_swarmers;
-    int m_maxSwarmerCount = 20;
-    int m_initialSwarmerCount = 10;
+    int m_maxSwarmerCount = 40;
+    int m_initialSwarmerCount = 30;
     float m_spawnInterval = 0.5f;
     Vec3 m_hiveScale = Vec3( 10, 40, 10 );
+    Timer* m_spawnTimer = nullptr;
 };

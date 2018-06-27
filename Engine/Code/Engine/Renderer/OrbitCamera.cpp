@@ -2,6 +2,11 @@
 
 
 
+OrbitCamera::OrbitCamera()
+{
+
+}
+
 void OrbitCamera::SetTarget( const Vec3& target )
 {
     m_targetPos = target;

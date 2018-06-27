@@ -13,6 +13,7 @@
 Asteroid::Asteroid( float maxHealth )
     : m_maxHealth( maxHealth )
     , m_health( maxHealth )
+    , RigidBody( "Asteroid" )
 {
     SetUpRenderable();
 }

@@ -165,7 +165,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run_Win32"
-xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-3.6.0-embed-amd64" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-embed" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/debugSymbols" "$(SolutionDir)Run_Win32"
 xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(SolutionDir)Run_Win32"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -194,7 +195,8 @@ xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(So
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run_Win32"
-xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-3.6.0-embed-amd64" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-embed" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/debugSymbols" "$(SolutionDir)Run_Win32"
 xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(SolutionDir)Run_Win32"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -221,7 +223,8 @@ xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(So
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run_Win32"
-xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-3.6.0-embed-amd64" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-embed" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/debugSymbols" "$(SolutionDir)Run_Win32"
 xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(SolutionDir)Run_Win32"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -250,7 +253,8 @@ xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(So
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run_Win32"
-xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-3.6.0-embed-amd64" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-embed" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/debugSymbols" "$(SolutionDir)Run_Win32"
 xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(SolutionDir)Run_Win32"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -279,7 +283,8 @@ xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(So
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run_Win32"
-xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-3.6.0-embed-amd64" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-embed" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/debugSymbols" "$(SolutionDir)Run_Win32"
 xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(SolutionDir)Run_Win32"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -308,7 +313,8 @@ xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(So
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run_Win32"
-xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-3.6.0-embed-amd64" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/python-embed" "$(SolutionDir)Run_Win32"
+xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/python/debugSymbols" "$(SolutionDir)Run_Win32"
 xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(SolutionDir)Run_Win32"</Command>
     </PostBuildEvent>
     <PostBuildEvent>

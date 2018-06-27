@@ -18,6 +18,8 @@
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/Core/XmlUtils.hpp"
+#include "Engine/Core/GameObjectManager.hpp"
+#include "Engine/Core/GameObject.hpp"
 #include "Engine/Time/Clock.hpp"
 #include "Engine/Time/TweenSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -80,6 +82,9 @@ class ForwardRenderingPath;
 extern ForwardRenderingPath* g_forwardRenderingPath;
 class RenderSceneGraph;
 extern RenderSceneGraph* g_renderSceneGraph;
+class GameObjectManager;
+extern GameObjectManager* g_gameObjectManager;
+
 // Owned by Encounter
 class Actor;
 extern Actor* g_currentActor;

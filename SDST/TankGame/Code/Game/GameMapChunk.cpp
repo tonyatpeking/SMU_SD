@@ -13,6 +13,7 @@
 GameMapChunk::GameMapChunk( GameMap* map, IVec2 index )
     : m_map( map )
     , m_index( index )
+    , GameObject( "GameMapChunk" )
 {
     GenerateRenderable();
 }
@@ -24,7 +25,7 @@ GameMapChunk::~GameMapChunk()
 
 void GameMapChunk::GenerateRenderable()
 {
-    SetRenderable(new Renderable());
+    SetRenderable( new Renderable() );
 
     AABB2 chunkExtents = m_map->GetChunkExtentsAtCoord( m_index );
     AABB2 mapExtents = m_map->GetMapExtents();

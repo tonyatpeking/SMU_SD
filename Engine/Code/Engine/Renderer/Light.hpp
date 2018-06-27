@@ -10,8 +10,6 @@ public:
     Light();
     virtual ~Light();
 
-    virtual void SetScene( RenderSceneGraph* scene ) override;
-
     float GetContributionToPoint( Vec3 point );
 
     Rgba m_color = Rgba::WHITE;

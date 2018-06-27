@@ -9,7 +9,14 @@ class Transform
 {
 public:
     Transform() {};
-    ~Transform() {};
+    ~Transform();
+
+    // don't copy children
+    Transform( const Transform& copyFrom );
+
+    // don't copy children
+    void operator=( const Transform& copyFrom );
+
     void SetIdentity();
 
     Vec3 GetForward() const;
@@ -65,6 +72,7 @@ public:
     //-----------------------------------------------------------------------------------
     // Transform tree
     bool HasParent() const;
+    bool HasChildren() const;
     Transform* GetParent() { return m_parent; };
     std::vector<Transform*>& GetChildren() { return m_children; };
     // parent can be null

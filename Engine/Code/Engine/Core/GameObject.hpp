@@ -15,13 +15,13 @@ typedef std::function<void( GameObject* )> GameObjectCB;
 class GameObject
 {
 public:
-    // GameObject will default to RenderSceneGraph::GetCurrentScene()
+    // GameObject will default to RenderSceneGraph::GetDefault()
     GameObject( std::string type = "Unknown" );
     virtual ~GameObject();
 
-    virtual void Update() {};
+    virtual void Update();
+    virtual void OnFirstUpdate() {};
 
-    virtual void SetScene( RenderSceneGraph* scene );
     void SetGameObjectManager( GameObjectManager* manager );
 
     Transform& GetTransform();
@@ -60,4 +60,6 @@ protected:
     GameObjectManager* m_manager = nullptr;
 
     std::vector < GameObjectCB > m_deathCallbacks;
+
+    bool m_firstUpdateCalled = false;
 };

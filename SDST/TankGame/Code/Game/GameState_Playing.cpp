@@ -63,58 +63,20 @@ void GameState_Playing::Update()
     // switch phase before all updates, this is after process input
     GameState::Update();
 
-    for( auto& go : m_projectiles )
-        go->Update();
-
-    for( auto& go : m_asteroids )
-        go->Update();
+    g_gameObjectManager->Update();
 
     CheckCollisions();
 
-    for( int goIdx = (int) m_asteroids.size() - 1; goIdx >= 0; --goIdx )
-    {
-        Asteroid* asteroid = m_asteroids[goIdx];
-        if( asteroid->ShouldDie() )
-        {
-            if( asteroid->m_maxHealth > 2 )
-            {
-                MakeAsteroid( asteroid->m_maxHealth / 2.f,
-                              asteroid->GetTransform().GetWorldPosition() );
-                MakeAsteroid( asteroid->m_maxHealth / 2.f,
-                              asteroid->GetTransform().GetWorldPosition() );
-            }
-            delete asteroid;
-            ContainerUtils::EraseAtIndexFast( m_asteroids, goIdx );
-        }
-    }
-
-    for( int goIdx = (int) m_projectiles.size() - 1; goIdx >= 0; --goIdx )
-    {
-        if( m_projectiles[goIdx]->ShouldDie() )
-        {
-            delete m_projectiles[goIdx];
-            ContainerUtils::EraseAtIndexFast( m_projectiles, goIdx );
-        }
-    }
+    g_gameObjectManager->DeleteDeadGameObjects();
 
     UpdateLights();
 
     TestUpdate();
 
-    for( auto& emitter : m_emitters )
-        emitter->Update();
-
-    for( int emitterIdx = (int) m_emitters.size() - 1; emitterIdx >= 0; --emitterIdx )
-    {
-        if( m_emitters[emitterIdx]->ShouldDie() )
-        {
-            delete  m_emitters[emitterIdx];
-            ContainerUtils::EraseAtIndexFast( m_emitters, emitterIdx );
-        }
-    }
-
     LeaveBreadCrumbs();
     UpdateTurret();
+
+    SnapSwarmersToMap();
 }
 
 void GameState_Playing::Render() const
@@ -172,8 +134,6 @@ void GameState_Playing::ProcessInput()
     TestInput();
 }
 
-
-
 void GameState_Playing::MakeCamera()
 {
     delete g_mainCamera;
@@ -181,7 +141,7 @@ void GameState_Playing::MakeCamera()
     g_mainCamera->SetColorTarget( g_renderer->DefaultColorTarget() );
     g_mainCamera->SetDepthStencilTarget( g_renderer->DefaultDepthTarget() );
     g_mainCamera->SetProjection( m_fov, m_near, m_far ); //fov near far
-
+    g_renderSceneGraph->AddCamera( g_mainCamera );
 }
 
 void GameState_Playing::ProcessMovementInput()
@@ -212,7 +172,7 @@ void GameState_Playing::ProcessMovementInput()
         isMoving = true;
     }
 
-    SnapTransformToHeightmap( &shipTransform );
+    SnapTransformToHeightmap( &shipTransform, 4 );
 
     if( isMoving )
         SetExhaustSpawnRate( 60 );
@@ -674,9 +634,18 @@ void GameState_Playing::FireProjectile()
 
 
     proj->AddDeathCallback( deathCB );
-
-    m_projectiles.push_back( proj );
 }
+
+void GameState_Playing::SnapSwarmersToMap()
+{
+    GameObjects swarmers = g_gameObjectManager->GetObjectsOfType( "Swarmer" );
+    for ( auto& swarmer : swarmers )
+    {
+        Transform& trans = swarmer->GetTransform();
+        SnapTransformToHeightmap( &trans, 1 );
+    }
+}
+
 
 void GameState_Playing::CreateInitHives()
 {
@@ -707,17 +676,20 @@ void GameState_Playing::MakeAsteroid( float maxHealth, const Vec3& position )
     asteroid->GetTransform().SetWorldPosition( position );
     asteroid->m_velocity = Random::Vec3InRange( Vec3( -10, -10, -10 ), Vec3( 10, 10, 10 ) );
     asteroid->m_drag = 1;
-    m_asteroids.push_back( asteroid );
-
 }
 
 void GameState_Playing::CheckCollisions()
 {
-    for( auto& projectile : m_projectiles )
+    GameObjects& projectiles = g_gameObjectManager->GetObjectsOfType( "Projectile" );
+    GameObjects& asteroids = g_gameObjectManager->GetObjectsOfType( "Asteroid" );
+
+    for( auto& projectileGO : projectiles )
     {
+        Projectile* projectile = (Projectile*) projectileGO;
         Vec3 projectilePos = projectile->GetTransform().GetWorldPosition();
-        for( auto& asteroid : m_asteroids )
+        for( auto& go : asteroids )
         {
+            Asteroid* asteroid = (Asteroid*) go;
             Vec3 asteroidPos = asteroid->GetTransform().GetWorldPosition();
             float dist = ( projectilePos - asteroidPos ).GetLength();
             if( dist < asteroid->m_maxHealth )
@@ -752,7 +724,6 @@ void GameState_Playing::MakeCollisionParticles( const Vec3& position )
     emitter->SetSpawnRate( 0 );
     emitter->SetParticleSpawnCB( CollisionParticleSpawnCB );
     emitter->Burst( 40, 70 );
-    m_emitters.push_back( emitter );
 }
 
 // exhaust particles spawn callback
@@ -774,7 +745,6 @@ ParticleEmitter* GameState_Playing::MakeExhaustEmitter( const Vec3& offset )
     emitter->SetParticleSpawnCB( ExhaustParticleSpawnCB );
     emitter->SetParentWorldSpace( g_game->m_shipHull );
     emitter->m_spawnPointTransform.SetLocalPosition( offset );
-    m_emitters.push_back( emitter );
     return emitter;
 }
 
@@ -785,12 +755,12 @@ void GameState_Playing::SetExhaustSpawnRate( float rate )
 }
 
 
-void GameState_Playing::SnapTransformToHeightmap( Transform* transform )
+void GameState_Playing::SnapTransformToHeightmap( Transform* transform, float heightOffset )
 {
     Vec3 worldPos = transform->GetWorldPosition();
     Vec2 worldPos2D = Vec2::MakeFromXZ( worldPos );
     float height = g_game->m_map->GetHeightAtPos( worldPos2D );
-    height += 5;
+    height += heightOffset;
 
     Vec3 newWorldPos = worldPos;
     newWorldPos.y = height;

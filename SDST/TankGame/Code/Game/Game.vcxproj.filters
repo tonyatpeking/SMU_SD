@@ -79,9 +79,6 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Asteroid.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="GameMap.cpp">
       <Filter>Map</Filter>
     </ClCompile>
@@ -95,7 +92,10 @@
       <Filter>Entities</Filter>
     </ClCompile>
     <ClCompile Include="Hive.cpp">
-      <Filter>General</Filter>
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,7 +162,9 @@
     <ClInclude Include="Swarmer.hpp">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Hive.hpp" />
+    <ClInclude Include="Hive.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">

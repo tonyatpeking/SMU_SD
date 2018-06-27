@@ -3,27 +3,14 @@
 
 
 Light::Light()
+    : GameObject( "Light" )
 {
     // this is needed because only the base class SetScene will be called
-    if( m_scene )
-        m_scene->AddLight( this );
 }
 
 Light::~Light()
 {
-    if( m_scene )
-        m_scene->RemoveLight( this );
-}
 
-void Light::SetScene( RenderSceneGraph* scene )
-{
-    if( m_scene )
-        m_scene->RemoveLight( this );
-
-    GameObject::SetScene( scene );
-
-    if( m_scene )
-        m_scene->AddLight( this );
 }
 
 float Light::GetContributionToPoint( Vec3 point )

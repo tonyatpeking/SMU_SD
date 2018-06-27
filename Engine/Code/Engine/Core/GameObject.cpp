@@ -5,14 +5,9 @@
 #include "Engine/Core/GameObjectManager.hpp"
 
 
-
 GameObject::GameObject( std::string type )
 {
     SetType( type );
-    m_scene = RenderSceneGraph::GetCurrentScene();
-    if( m_scene )
-        m_scene->AddGameObject( this );
-
     m_manager = GameObjectManager::GetDefault();
     if( m_manager )
         m_manager->AddGameObject( this );
@@ -20,19 +15,17 @@ GameObject::GameObject( std::string type )
 
 GameObject::~GameObject()
 {
-    SetScene( nullptr );
+    SetGameObjectManager( nullptr );
     delete m_renderable;
 }
 
-void GameObject::SetScene( RenderSceneGraph* scene )
+void GameObject::Update()
 {
-    if( m_scene )
-        m_scene->RemoveGameObject( this );
-
-    m_scene = scene;
-
-    if( m_scene )
-        m_scene->AddGameObject( this );
+    if( !m_firstUpdateCalled )
+    {
+        m_firstUpdateCalled = true;
+        OnFirstUpdate();
+    }
 }
 
 void GameObject::SetGameObjectManager( GameObjectManager* manager )
@@ -121,6 +114,6 @@ void GameObject::ClearDeathCallbacks()
 
 void GameObject::SetType( std::string type )
 {
-
+    m_type = type;
 }
 

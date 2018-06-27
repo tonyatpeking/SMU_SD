@@ -67,6 +67,12 @@
     <Filter Include="Math\Solver">
       <UniqueIdentifier>{9fc657b6-3d5f-468e-a21b-5ae430ca47fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Python">
+      <UniqueIdentifier>{86be35fa-c061-4ed9-850b-029da99bff17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{dc54a8fc-fc98-432b-b3ad-c0e662a2fcde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Random.cpp">
@@ -231,9 +237,6 @@
     <ClCompile Include="Renderer\VertexLayout.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Core\GameObject.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\Vertex.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
@@ -369,7 +372,14 @@
     <ClCompile Include="Math\Solver.cpp">
       <Filter>Math\Solver</Filter>
     </ClCompile>
-    <ClCompile Include="Core\GameObjectManager.cpp" />
+    <ClCompile Include="Core\GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\GameObjectManager.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\PythonBindings.cpp" />
+    <ClCompile Include="Core\PythonInterpreter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -600,9 +610,6 @@
     <ClInclude Include="Renderer\VertexLayout.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Core\GameObject.hpp">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer\Vertex.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
@@ -744,7 +751,14 @@
     <ClInclude Include="Math\Solver.hpp">
       <Filter>Math\Solver</Filter>
     </ClInclude>
-    <ClInclude Include="Core\GameObjectManager.hpp" />
+    <ClInclude Include="Core\GameObject.hpp">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\GameObjectManager.hpp">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\PythonBindings.hpp" />
+    <ClInclude Include="Core\PythonInterpreter.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">

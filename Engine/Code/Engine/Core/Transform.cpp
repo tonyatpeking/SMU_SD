@@ -3,6 +3,33 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 
+Transform::~Transform()
+{
+    if( HasParent() )
+        m_parent->RemoveChild( this );
+
+    int childrenSize = (int) m_children.size();
+    // loop removes elements from vector!
+    for( int i = childrenSize - 1; i >= 0; --i )
+    {
+        m_children[i]->SetParent( nullptr );
+    }
+}
+
+Transform::Transform( const Transform& copyFrom )
+{
+    *this = copyFrom;
+}
+
+void Transform::operator=( const Transform& copyFrom )
+{
+    copyFrom.RegenLocalToWorldIfDirty();
+
+    SetParent( copyFrom.m_parent );
+
+    SetLocalToParent( copyFrom.GetLocalToParent() );
+}
+
 void Transform::SetIdentity()
 {
     m_localToParent = Mat4::IDENTITY;
@@ -270,6 +297,11 @@ void Transform::FaceCamera( const Camera* cam )
 bool Transform::HasParent() const
 {
     return m_parent != nullptr;
+}
+
+bool Transform::HasChildren() const
+{
+    return m_children.size() != 0;
 }
 
 void Transform::SetParent( Transform* parent )

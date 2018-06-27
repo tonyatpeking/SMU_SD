@@ -28,6 +28,9 @@ public:
     explicit Vec3( const Vec2& vec2, float appendZ = 0.f );
     explicit Vec3( const Vec4& vec4 );
     static Vec3 MakeFromXZ( const Vec2& vec2, float y = 0.f );
+    Vec2 ToVec2();
+    Vec2 ToVec2XZ();
+
 
     // Operators
     const Vec3 operator+( const Vec3& vecToAdd ) const;		// vec3 + vec3

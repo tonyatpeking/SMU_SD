@@ -150,12 +150,17 @@ float Vec2::GetLengthSquared() const
 float Vec2::NormalizeAndGetLength()
 {
     float length = GetLength();
-    if( length != 0 )
+    if( !AlmostZero( length ) )
     {
         x = x / length;
         y = y / length;
     }
     return length;
+}
+
+void Vec2::Normalize()
+{
+    NormalizeAndGetLength();
 }
 
 Vec2 Vec2::GetNormalized() const
@@ -222,6 +227,16 @@ float Vec2::GetValueOnAxis( Axis axis ) const
     default:
         return 0.f;
     }
+}
+
+Vec3 Vec2::ToVec3()
+{
+    return Vec3( *this );
+}
+
+Vec3 Vec2::ToVec3XZ()
+{
+    return Vec3::MakeFromXZ( *this );
 }
 
 Vec2 Vec2::MakeVectorOnAxis( Axis axis, float lengthOnAxis )
@@ -328,10 +343,11 @@ void Vec2::Scale( const Vec2& scale )
     y *= scale.y;
 }
 
-void Vec2::SnapToZero()
+bool Vec2::SnapToZero()
 {
     x = ::SnapToZero( x );
     y = ::SnapToZero( y );
+    return x == 0.f && y == 0.f;
 }
 
 Vec2 Vec2::Reflect( const Vec2& vectorToReflect, const Vec2& reflectionNormal )
@@ -370,6 +386,44 @@ float Dot( const Vec2 & v1, const Vec2 & v2 )
 float Cross( const Vec2 & v1, const Vec2 & v2 )
 {
     return ( v1.x * v2.y ) - ( v1.y * v2.x );
+}
+
+Vec2 Slerp( const Vec2& vecA, const Vec2& vecB, float t )
+{
+    float aLen = vecA.GetLength();
+    float bLen = vecB.GetLength();
+
+    float len = Lerp( aLen, bLen, t );
+    Vec2 unit = SlerpUnit( vecA / aLen, vecB / bLen, t );
+    return len * unit;
+}
+
+Vec2 SlerpUnit( const Vec2& vecA, const Vec2& vecB, float t )
+{
+    float cosAngle = Clampf( Dot( vecA, vecB ), -1.0f, 1.0f );
+    float angle = acosf( cosAngle );
+    if( angle < EPSILON )
+    {
+        return Lerp( vecA, vecB, t );
+    }
+    else
+    {
+        float posNum = sinf( t * angle );
+        float negNum = sinf( ( 1.0f - t ) * angle );
+        float den = sinf( angle );
+
+        return ( negNum / den ) * vecA + ( posNum / den ) * vecB;
+    }
+}
+
+Vec2 TurnToward( const Vec2& current, const Vec2& goal, float maxTurnDeg )
+{
+    float currentDeg = current.GetOrientationDegrees();
+    float goalDeg = goal.GetOrientationDegrees();
+
+    float newDeg = ::TurnToward( currentDeg, goalDeg, maxTurnDeg );
+
+    return Vec2::MakeDirectionAtDegrees( newDeg );
 }
 
 Vec2 Min( const Vec2& a, const Vec2& b )

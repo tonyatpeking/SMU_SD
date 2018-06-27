@@ -1,10 +1,11 @@
 #pragma once
+#include <string>
 #include "Engine/Core/GameObject.hpp"
 
 class RigidBody : public GameObject
 {
 public:
-	RigidBody(){};
+	RigidBody(std::string type);
 	virtual ~RigidBody(){};
     virtual void Update() override;
 

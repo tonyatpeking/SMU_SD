@@ -12,6 +12,17 @@
 void GameCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
+
+
+    commandSys->AddCommand( "python", []( String str )
+    {
+        CommandParameterParser parser( str );
+
+        g_console->Print( "Starting Python Shell" );
+        g_console->UsePython( true );
+
+    } );
+
     commandSys->AddCommand( "add", []( String str )
     {
         CommandParameterParser parser( str );

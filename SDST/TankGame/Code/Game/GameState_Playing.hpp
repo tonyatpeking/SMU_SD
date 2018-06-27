@@ -39,9 +39,6 @@ private:
 
     //debug assignment
     void MakePrimitiveShapes();
-    std::vector<Asteroid*> m_asteroids;
-    std::vector<Projectile*> m_projectiles;
-    std::vector<ParticleEmitter*> m_emitters;
     std::vector<Light*> m_lights;
     GameObject* m_shipCenter;
     GameObject* m_miku;
@@ -71,13 +68,14 @@ private:
     void MakeCollisionParticles( const Vec3& position );
     ParticleEmitter* MakeExhaustEmitter( const Vec3& offset );
     void SetExhaustSpawnRate( float rate );
-    void SnapTransformToHeightmap( Transform* transform );
+    void SnapTransformToHeightmap( Transform* transform, float heightOffset = 0 );
     void LeaveBreadCrumbs();
 
     void UpdateRaycastHitIndicator();
     void UpdateTurret();
     void FireProjectile();
 
+    void SnapSwarmersToMap();
     void CreateInitHives();
 
     GameObject* m_camRayIndicator = nullptr;
@@ -110,6 +108,4 @@ private:
 
     // Hives and Swarmers
     int m_initHiveCount = 5;
-    std::vector<Hive*> m_hives;
-    std::vector<Swarmer*> m_swarmers;
 };

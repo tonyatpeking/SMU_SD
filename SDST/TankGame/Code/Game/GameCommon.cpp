@@ -29,6 +29,7 @@ Actor* g_currentActor = nullptr;
 OrbitCamera* g_mainCamera = nullptr;
 ForwardRenderingPath* g_forwardRenderingPath = nullptr;
 RenderSceneGraph* g_renderSceneGraph = nullptr;
+GameObjectManager* g_gameObjectManager = nullptr;
 
 
 XMLDocument* g_configXML = nullptr;

@@ -59,17 +59,20 @@ public:
     float GetLength() const;
     float GetLengthSquared() const; // faster than GetLength() since it skips the sqrtf()
     float NormalizeAndGetLength(); // set my new length to 1.0f; keep my direction
+    void Normalize();
     Vec2 GetNormalized() const; // return a new vector, which is a normalized copy of me
     Vec2 GetOrthogonal() const; // return new vector, rotated 90 degrees
     Vec2 GetClosestCardinalDir();
     float GetOrientationDegrees() const; // return 0 for east (5,0), 90 for north (0,8), etc.
     float GetValueOnAxis( Axis axis ) const;
+    Vec3 ToVec3();
+    Vec3 ToVec3XZ();
 
     // Mutators
     void RotateDegrees( float degrees );
     ParseStatus SetFromText( const String& text, const String& delimiter = "," );
     void Scale( const Vec2& scale );
-    void SnapToZero();
+    bool SnapToZero();
 
     // Static
     static Vec2 Reflect( const Vec2& vectorToReflect, const Vec2& reflectionNormal );
@@ -133,6 +136,9 @@ public: // NOTE: this is one of the few cases where we break both the "m_" namin
 float Dot( const Vec2& v1, const Vec2& v2 );
 // not really a cross product but useful for determining if point is left or right of line
 float Cross( const Vec2& v1, const Vec2& v2 );
+Vec2 Slerp( const Vec2& vecA, const Vec2& vecB, float t );
+Vec2 SlerpUnit( const Vec2& vecA, const Vec2& vecB, float t );
+Vec2 TurnToward( const Vec2& vecA, const Vec2& vecB, float maxDeg );
 
 // component wise min
 Vec2 Min( const Vec2& vecA, const Vec2& vecB );
