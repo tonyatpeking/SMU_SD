@@ -186,14 +186,14 @@ void AABB2::SetCenter( const Vec2& center )
 
 //Accessors / queries:
 
-bool AABB2::IsPointInside( float x, float y ) const
+bool AABB2::ContainsPoint( float x, float y ) const
 {
     return ( x > mins.x ) && ( x < maxs.x ) && ( y > mins.y ) && ( y < maxs.y );
 }
 
-bool AABB2::IsPointInside( const Vec2& point ) const
+bool AABB2::ContainsPoint( const Vec2& point ) const
 {
-    return IsPointInside( point.x, point.y );
+    return ContainsPoint( point.x, point.y );
 }
 
 Vec2 AABB2::GetDimensions() const

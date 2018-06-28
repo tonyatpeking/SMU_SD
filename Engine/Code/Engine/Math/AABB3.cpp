@@ -197,16 +197,16 @@ bool AABB3::IsValid() const
     return maxs.x >= mins.x;
 }
 
-bool AABB3::IsPointInside( float x, float y, float z ) const
+bool AABB3::ContainsPoint( float x, float y, float z ) const
 {
     return ( x > mins.x ) && ( x < maxs.x )
         && ( y > mins.y ) && ( y < maxs.y )
         && ( z > mins.z ) && ( z < maxs.z );
 }
 
-bool AABB3::IsPointInside( const Vec3& point ) const
+bool AABB3::ContainsPoint( const Vec3& point ) const
 {
-    return IsPointInside( point.x, point.y, point.z );
+    return ContainsPoint( point.x, point.y, point.z );
 }
 
 Vec3 AABB3::GetDimensions() const
@@ -313,6 +313,58 @@ AABB3 AABB3::MakeBoundsFromDimensions( const Vec3& dimensions )
 AABB3 AABB3::MakeBoundsFromDimensions( const IVec3& dimensions )
 {
     return MakeBoundsFromDimensions( (Vec3) dimensions );
+}
+
+Vec3 AABB3::GetForwardTopRight() const
+{
+    return maxs;
+}
+
+Vec3 AABB3::GetForwardTopLeft() const
+{
+    Vec3 vec = maxs;
+    vec.x = mins.x;
+    return vec;
+}
+
+Vec3 AABB3::GetForwardBottomRight() const
+{
+    Vec3 vec = maxs;
+    vec.y = mins.y;
+    return vec;
+}
+
+Vec3 AABB3::GetForwardBottomLeft() const
+{
+    Vec3 vec = mins;
+    vec.z = maxs.z;
+    return vec;
+}
+
+Vec3 AABB3::GetBackwardTopRight() const
+{
+    Vec3 vec = maxs;
+    vec.z = mins.z;
+    return vec;
+}
+
+Vec3 AABB3::GetBackwardTopLeft() const
+{
+    Vec3 vec = mins;
+    vec.y = maxs.y;
+    return vec;
+}
+
+Vec3 AABB3::GetBackwardBottomRight() const
+{
+    Vec3 vec = mins;
+    vec.x = maxs.x;
+    return vec;
+}
+
+Vec3 AABB3::GetBackwardBottomLeft() const
+{
+    return mins;
 }
 
 void AABB3::operator+=( const Vec3& translation )

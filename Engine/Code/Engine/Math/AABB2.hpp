@@ -41,8 +41,8 @@ public:
     void SetCenter( const Vec2& center );
 
     // Accessors / queries:
-    bool IsPointInside( float x, float y ) const; // is "x,y" within box's interior?
-    bool IsPointInside( const Vec2& point ) const; // is "point" within box's interior?
+    bool ContainsPoint( float x, float y ) const; // is "x,y" within box's interior?
+    bool ContainsPoint( const Vec2& point ) const; // is "point" within box's interior?
     Vec2 GetDimensions() const; // return a Vec2 of ( width, height )
     Vec2 GetCenter() const; // return the center position of the box
     Vec2 RangeMap01ToBounds( const Vec2& localPoint ) const; // local point treats the AABB2 as a coord system, with mins = (0,0) and maxs = (1,1) in local

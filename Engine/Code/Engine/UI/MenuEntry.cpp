@@ -37,7 +37,7 @@ bool MenuEntry::ProcessMouseInput()
     InputSystem* input = m_parentMenu->m_input;
     Vec2 mousePos = (Vec2) input->GetCursorWindowPosFlipY();
 
-    if( m_bounds.IsPointInside( mousePos ) )
+    if( m_bounds.ContainsPoint( mousePos ) )
     {
         Select();
         mouseOver = true;

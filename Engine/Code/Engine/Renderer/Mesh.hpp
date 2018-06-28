@@ -8,6 +8,7 @@
 #include "Engine/Renderer/VertexBuffer.hpp"
 #include "Engine/Renderer/IndexBuffer.hpp"
 #include "Engine/Renderer/DrawInstruction.hpp"
+#include "Engine/Math/AABB3.hpp"
 
 class RenderBuffer;
 class Material;
@@ -34,11 +35,13 @@ public:
     void FromBuilder( const MeshBuilder& builder );
 
     static Mesh* CreateOrGetMesh( const String& filePath, bool generateNormals = false,
-                                  bool generateTangents = false, bool useMikkT = true);
+                                  bool generateTangents = false, bool useMikkT = true );
 
     DrawInstruction& GetSubMeshInstruction( uint subMeshId );
     uint GetSubMeshCount() { return (uint) m_subMeshInstuct.size(); };
 
+    AABB3 GetBounds() const { return m_localBounds; };
+    void SetBounds( AABB3& bounds ) { m_localBounds = bounds; };
 public:
     static std::map<String, Mesh*> s_loadedMeshes;
 
@@ -46,4 +49,5 @@ public:
     IndexBuffer m_indexBuffer;
     std::vector<DrawInstruction> m_subMeshInstuct;
     const VertexLayout* m_vertexLayout = nullptr;
+    AABB3 m_localBounds;
 };

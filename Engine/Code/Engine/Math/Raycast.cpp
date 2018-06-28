@@ -1,3 +1,4 @@
+#include "Engine/Math/OBB3.hpp"
 #include "Engine/Math/Raycast.hpp"
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/Plane.hpp"
@@ -87,9 +88,25 @@ RaycastHit3 ToAABB3( const Ray3& ray, const AABB3& bbox )
         normal = Vec3::FORWARD;
 
     return RaycastHit3( tmin, ray.Evaluate( tmin ), normal );
-
 }
 
+
+RaycastHit3 ToOBB3( const Ray3& ray, const OBB3& obb )
+{
+    const Mat4& invSpace = obb.GetWorldToLocal();
+    Vec3 rayStartLocal = invSpace.TransformPosition( ray.start );
+    Vec3 rayDirLocal = invSpace.TransformDisplacement( ray.direction );
+    Ray3 rayLocal = Ray3( rayStartLocal, rayDirLocal );
+    RaycastHit3 hit = Raycast::ToAABB3( rayLocal, obb.GetAABB3() );
+    if( hit.m_hit )
+    {
+        const Mat4& space = obb.GetLocalToWorld();
+        hit.m_normal = space.TransformDisplacement( hit.m_normal );
+        hit.m_position = space.TransformPosition( hit.m_position );
+    }
+
+    return hit;
+}
 
 }
 

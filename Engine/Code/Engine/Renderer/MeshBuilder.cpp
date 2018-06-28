@@ -282,8 +282,10 @@ void MeshBuilder::GenerateNormals()
 
 Mesh* MeshBuilder::MakeMesh()
 {
+    CalculateBounds();
     Mesh *mesh = new Mesh();
     mesh->FromBuilder( *this );
+    mesh->SetBounds( m_localBounds );
     return mesh;
 }
 
@@ -347,6 +349,14 @@ void MeshBuilder::TransformAllVerts( const Mat4& transform )
             tangent.w = sign;
             vert.m_tangent = tangent;
         }
+    }
+}
+
+void MeshBuilder::CalculateBounds()
+{
+    for (int i = 0; i < m_verts.size() ; ++i)
+    {
+        m_localBounds.StretchToIncludePoint( m_verts[i].m_position );
     }
 }
 

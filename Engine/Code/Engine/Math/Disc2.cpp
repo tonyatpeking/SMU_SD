@@ -69,12 +69,12 @@ ParseStatus Disc2::SetFromText( const String& text )
     return status;
 }
 
-bool Disc2::IsPointInside( float x, float y ) const
+bool Disc2::ContainsPoint( float x, float y ) const
 {
-    return IsPointInside( Vec2( x, y ) );
+    return ContainsPoint( Vec2( x, y ) );
 }
 
-bool Disc2::IsPointInside( const Vec2& point ) const
+bool Disc2::ContainsPoint( const Vec2& point ) const
 {
     float dist = Vec2::GetDistance( center, point );
     return dist < radius;

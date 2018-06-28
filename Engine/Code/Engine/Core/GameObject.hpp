@@ -9,6 +9,8 @@ class Camera;
 class RenderSceneGraph;
 class GameObject;
 class GameObjectManager;
+class AABB3;
+class OBB3;
 
 typedef std::function<void( GameObject* )> GameObjectCB;
 
@@ -47,6 +49,9 @@ public:
 
     void SetType( std::string type );
     std::string GetType() { return m_type; };
+
+    OBB3 GetWorldBounds() const;
+    AABB3 GetLocalBounds() const;
 
 protected:
     std::string m_type = "Unknown";

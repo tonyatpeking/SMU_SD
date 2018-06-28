@@ -96,7 +96,7 @@ float GameMap::GetHeightAtPos( const Vec2& pos )
     if( !m_heightMap || !m_surface )
         return m_minHeight;
 
-    if( !m_extents.IsPointInside( pos ) )
+    if( !m_extents.ContainsPoint( pos ) )
         return m_minHeight;
 
     Vec2 uv = m_extents.GetNormalizedPosition( pos );
@@ -111,7 +111,7 @@ Vec3 GameMap::GetNormalAtPos( const Vec2& pos )
     if( !m_heightMap || !m_surface )
         return Vec3::UP;
 
-    if( !m_extents.IsPointInside( pos ) )
+    if( !m_extents.ContainsPoint( pos ) )
         return Vec3::UP;
 
     Vec2 uv = m_extents.GetNormalizedPosition( pos );

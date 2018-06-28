@@ -23,8 +23,8 @@ public:
     ParseStatus SetFromText( const String& text );
 
     // Accessors / queries:
-    bool IsPointInside( float x, float y ) const; // is (x,y) within disc's interior?
-    bool IsPointInside( const Vec2& point ) const; // is "point" within disc's interior?
+    bool ContainsPoint( float x, float y ) const; // is (x,y) within disc's interior?
+    bool ContainsPoint( const Vec2& point ) const; // is "point" within disc's interior?
     bool LineIntersect( const Vec2& pointA, const Vec2& pointB, Vec2& out_A, Vec2& out_B, float& out_distance );
 
     // Operators:

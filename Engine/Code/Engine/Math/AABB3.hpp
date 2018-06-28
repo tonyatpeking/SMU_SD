@@ -51,8 +51,8 @@ public:
 
     // Accessors / queries:
     bool IsValid() const;
-    bool IsPointInside( float x, float y, float z ) const;
-    bool IsPointInside( const Vec3& point ) const;
+    bool ContainsPoint( float x, float y, float z ) const;
+    bool ContainsPoint( const Vec3& point ) const;
     Vec3 GetDimensions() const;
     Vec3 GetCenter() const;
     // local point treats the AABB3 as a coord system,
@@ -82,6 +82,16 @@ public:
     static bool IsOverlap( const AABB3& a, const AABB3& b );
     static AABB3 MakeBoundsFromDimensions( const Vec3& dimensions );
     static AABB3 MakeBoundsFromDimensions( const IVec3& dimensions );
+
+    // all corner points
+    Vec3 GetForwardTopRight() const;
+    Vec3 GetForwardTopLeft() const;
+    Vec3 GetForwardBottomRight() const;
+    Vec3 GetForwardBottomLeft() const;
+    Vec3 GetBackwardTopRight() const;
+    Vec3 GetBackwardTopLeft() const;
+    Vec3 GetBackwardBottomRight() const;
+    Vec3 GetBackwardBottomLeft() const;
 
 public:
     Vec3 mins = Vec3::POS_INFINITY;

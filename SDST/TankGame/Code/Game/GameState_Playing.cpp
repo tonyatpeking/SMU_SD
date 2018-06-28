@@ -7,6 +7,7 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/SurfacePatch.hpp"
 #include "Engine/Math/AABB3.hpp"
+#include "Engine/Math/OBB3.hpp"
 #include "Engine/Math/Intersection.hpp"
 #include "Engine/Math/Random.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
@@ -803,11 +804,35 @@ void GameState_Playing::UpdateRaycastHitIndicator()
 
     Vec2 dim = g_window->GetDimensions() / 2.f;
     Ray3 camRay = g_mainCamera->ScreenToPickRay( g_window->GetDimensions() / 2.f );
-    RaycastHit3 hit = g_game->m_map->RaycastMap( camRay );
+    RaycastHit3 hitMap = g_game->m_map->RaycastMap( camRay );
 
-    if( hit.m_hit )
+    AABB3 aabb = AABB3( Vec3::ZEROS, 4, 10, 3 );
+    Mat4 m = Mat4::MakeFromSRT( Vec3::ONES, Vec3( 45, 23, 41 ), Vec3(10,40,30) );
+    OBB3 obb = OBB3( aabb, m );
+    DebugRender::SetOptions( 0, Rgba::RED_MAGENTA, Rgba::RED_MAGENTA );
+    DebugRender::DrawOBB3( obb );
+
+    RaycastHit3 hitObb = Raycast::ToOBB3( camRay, obb );
+
+    if( hitObb.m_hit )
     {
-        Vec3 pos = hit.m_position;
+        Vec3 pos = hitObb.m_position;
+        m_camRayIndicator->GetTransform().SetLocalPosition( pos );
+        return;
+    }
+
+    GameObjects& hives = g_gameObjectManager->GetObjectsOfType( "Hive" );
+    for ( auto& hive : hives )
+    {
+
+    }
+    RaycastHit3 hitHive;
+
+
+
+    if( hitMap.m_hit )
+    {
+        Vec3 pos = hitMap.m_position;
         m_camRayIndicator->GetTransform().SetLocalPosition( pos );
     }
     else

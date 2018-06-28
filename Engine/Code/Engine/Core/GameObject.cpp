@@ -1,3 +1,7 @@
+#include "Engine/Math/OBB3.hpp"
+#include "Engine/Renderer/Renderable.hpp"
+#include "Engine/Renderer/Mesh.hpp"
+#include "Engine/Math/AABB3.hpp"
 #include "Engine/Core/GameObject.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Renderer/RenderSceneGraph.hpp"
@@ -115,5 +119,21 @@ void GameObject::ClearDeathCallbacks()
 void GameObject::SetType( std::string type )
 {
     m_type = type;
+}
+
+OBB3 GameObject::GetWorldBounds() const
+{
+    if( !m_renderable )
+        return OBB3{};
+
+    return OBB3( GetLocalBounds(), m_transform.GetLocalToWorld() );
+}
+
+AABB3 GameObject::GetLocalBounds() const
+{
+    if( !m_renderable )
+        return AABB3{};
+
+    return m_renderable->GetMesh()->GetBounds();
 }
 

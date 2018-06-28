@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/Vec2.hpp"
+#include "Engine/Math/AABB3.hpp"
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Renderer/RendererEnums.hpp"
 #include "Engine/Renderer/DrawInstruction.hpp"
@@ -80,7 +81,12 @@ public:
     VertexDataVec m_verts;
     const VertexLayout* m_vertexLayout = &VertexLit::s_vertexLayout;
     std::vector<DrawInstruction> m_subMeshInstuct;
-    //DrawInstruction m_drawInstruct;
+
+    void CalculateBounds();
+    AABB3 GetLocalBounds() const { return m_localBounds; };
+
 private:
     VertexBuilderData m_currentVert;
+    AABB3 m_localBounds;
+
 };

@@ -12,6 +12,7 @@ class Camera;
 class Clock;
 class AABB3;
 class AABB2;
+class OBB3;
 class Vec2;
 class Texture;
 class Renderable;
@@ -114,6 +115,7 @@ uint DrawLine( const Vec3& p0, const Vec3& p1, const Rgba& color0 = Rgba::WHITE,
 uint DrawBasis( const Mat4& basis = Mat4::IDENTITY );
 uint DrawSphere( const Vec3& pos, float radius = 1 );
 uint DrawAABB3( const AABB3& bounds );
+uint DrawOBB3( const OBB3& obb3 );
 uint DrawQuad( const AABB2& bounds, const Vec3& pos, const Vec3& euler = Vec3::ZEROS,
                Texture* texture = nullptr );
 uint DrawGrid( const Vec3& center, float gridSize = 1, float maxLength = 10 );

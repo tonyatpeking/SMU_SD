@@ -16,6 +16,7 @@
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Math/AABB3.hpp"
+#include "Engine/Math/OBB3.hpp"
 #include "Engine/Renderer/Mesh.hpp"
 
 namespace
@@ -402,6 +403,15 @@ uint DebugRender::DrawAABB3( const AABB3& bounds )
     Renderable* renderable = MakeRenderable3D();
     renderable->m_mesh = MeshPrimitive::MakeCube( bounds.GetDimensions() ).MakeMesh();
     renderable->SetModelMatrix( Mat4::MakeTranslation( bounds.GetCenter() ) );
+    return AddTask( renderable );
+}
+
+uint DebugRender::DrawOBB3( const OBB3& obb3 )
+{
+    Renderable* renderable = MakeRenderable3D();
+    renderable->m_mesh = MeshPrimitive::MakeCube(
+        obb3.GetAABB3().GetDimensions() ).MakeMesh();
+    renderable->SetModelMatrix( obb3.GetLocalToWorld() );
     return AddTask( renderable );
 }
 

@@ -378,8 +378,13 @@
     <ClCompile Include="Core\GameObjectManager.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Core\PythonBindings.cpp" />
-    <ClCompile Include="Core\PythonInterpreter.cpp" />
+    <ClCompile Include="Core\PythonBindings.cpp">
+      <Filter>Python</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\PythonInterpreter.cpp">
+      <Filter>Python</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\OBB3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -757,8 +762,13 @@
     <ClInclude Include="Core\GameObjectManager.hpp">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Core\PythonBindings.hpp" />
-    <ClInclude Include="Core\PythonInterpreter.hpp" />
+    <ClInclude Include="Core\PythonBindings.hpp">
+      <Filter>Python</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\PythonInterpreter.hpp">
+      <Filter>Python</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\OBB3.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">
