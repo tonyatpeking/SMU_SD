@@ -746,8 +746,8 @@ void GameState_Playing::CreateInitHives()
 void GameState_Playing::CheckVictory()
 {
     static bool won = false;
-    int hives =  g_gameObjectManager->GetObjectsOfType( "Hive" ).size();
-    int swarmers =  g_gameObjectManager->GetObjectsOfType( "Swarmer" ).size();
+    int hives =  (int) g_gameObjectManager->GetObjectsOfType( "Hive" ).size();
+    int swarmers = (int) g_gameObjectManager->GetObjectsOfType( "Swarmer" ).size();
 
     DebugRender::SetOptions( 0, Rgba::BLACK );
     DebugRender::DrawQuad2D( AABB2( 600, 10, 1400, 50 ) );
