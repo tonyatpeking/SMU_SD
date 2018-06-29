@@ -40,8 +40,8 @@ public:
     DrawInstruction& GetSubMeshInstruction( uint subMeshId );
     uint GetSubMeshCount() { return (uint) m_subMeshInstuct.size(); };
 
-    AABB3 GetBounds() const { return m_localBounds; };
-    void SetBounds( AABB3& bounds ) { m_localBounds = bounds; };
+    AABB3 GetLocalBounds() const { return m_localBounds; };
+    void SetLocalBounds( AABB3& bounds ) { m_localBounds = bounds; };
 public:
     static std::map<String, Mesh*> s_loadedMeshes;
 

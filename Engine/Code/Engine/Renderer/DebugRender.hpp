@@ -93,7 +93,6 @@ void SetOptions( float lifetime, const Rgba& startColor = Rgba::WHITE,
                  FillMode fillmode = FillMode::SOLID );
 
 
-
 // 2D
 uint DrawQuad2D( const AABB2& bounds, Texture* texture = nullptr );
 uint DrawLine2D( const Vec2& p0, const Vec2& p1,

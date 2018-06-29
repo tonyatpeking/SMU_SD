@@ -243,6 +243,8 @@ void DebugRender::SetOptions( float lifetime, const Rgba& startColor /*= Rgba::W
     g_options.m_lifetime = lifetime;
     g_options.m_startColor = startColor;
     g_options.m_endColor = endColor;
+    if( lifetime == 0.f )
+        g_options.m_endColor = startColor;
     g_options.m_mode = mode;
     g_options.m_fillmode = fillmode;
 }

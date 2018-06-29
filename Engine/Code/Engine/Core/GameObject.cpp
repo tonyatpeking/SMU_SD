@@ -89,7 +89,6 @@ void GameObject::RegenModelMatIfDirty() const
     //         m_modelMatDirty = false;
     //     }
     m_renderable->m_modelMatrix = m_transform.GetLocalToWorld();
-
 }
 
 void GameObject::SetShouldDie( bool shouldDie )
@@ -121,12 +120,18 @@ void GameObject::SetType( std::string type )
     m_type = type;
 }
 
-OBB3 GameObject::GetWorldBounds() const
+OBB3 GameObject::GetOBB3() const
 {
     if( !m_renderable )
         return OBB3{};
 
-    return OBB3( GetLocalBounds(), m_transform.GetLocalToWorld() );
+    // Don't want scale
+    Mat4 mat = Mat4::MakeFromSRT( Vec3::ONES,
+                                  m_transform.GetWorldEuler(),
+                                  m_transform.GetWorldPosition() );
+    AABB3 scaledBounds = GetLocalBounds();
+    scaledBounds.ScaleFromCenter( m_transform.GetWorldScale() );
+    return OBB3( scaledBounds, mat );
 }
 
 AABB3 GameObject::GetLocalBounds() const
@@ -134,6 +139,6 @@ AABB3 GameObject::GetLocalBounds() const
     if( !m_renderable )
         return AABB3{};
 
-    return m_renderable->GetMesh()->GetBounds();
+    return m_renderable->GetMesh()->GetLocalBounds();
 }
 

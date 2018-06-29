@@ -1,6 +1,7 @@
 #include "Engine/Math/Plane.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
+#include "Engine/Math/Distance.hpp"
 
 Plane::Plane( const Vec3& a, const Vec3& b, const Vec3& c )
 {
@@ -36,4 +37,24 @@ float Plane::GetDistance( const Vec3& pos ) const
 bool Plane::OnPositiveSide( const Vec3& pos ) const
 {
     return GetDistance( pos ) > 0.f;
+}
+
+bool Plane::IsSphereAllNegative( const Vec3& center, float radius ) const
+{
+    return -GetDistance( center ) > radius;
+}
+
+bool Plane::IsSphereAllPositive( const Vec3& center, float radius ) const
+{
+    return GetDistance( center ) > radius;
+}
+
+bool Plane::IsSphereIntersecting( const Vec3& center, float radius ) const
+{
+    return fabs( GetDistance( center ) ) <= radius;
+}
+
+Vec3 Plane::GetPoint() const
+{
+    return normal * distance;
 }

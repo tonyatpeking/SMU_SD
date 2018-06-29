@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Engine/Math/IVec2.hpp"
 #include "Engine/Math/IVec3.hpp"
+#include "Engine/Math/RaycastHit3.hpp"
 #include "Engine/Core/Rgba.hpp"
 #include "Game/GameState.hpp"
 #include "Game/GameplayEnums.hpp"
@@ -71,19 +72,31 @@ private:
     void SnapTransformToHeightmap( Transform* transform, float heightOffset = 0 );
     void LeaveBreadCrumbs();
 
+    // includes map and hives
+    RaycastHit3 RaycastWorld(const Ray3& ray);
     void UpdateRaycastHitIndicator();
     void UpdateTurret();
     void FireProjectile();
+    void MakeExplosion( const Vec3& position );
 
     void SnapSwarmersToMap();
     void CreateInitHives();
+
+    void CheckVictory();
+    void KillAllEnemies();
+    void KillPlayer();
+    void CheckRespawn();
+    void CheckDamagePlayer();
+
+
+    // works
+    void TestSphereBoxIntersection();
 
     GameObject* m_camRayIndicator = nullptr;
     GameObject* m_turretRayIndicator = nullptr;
     GameObject* m_turret = nullptr;
     GameObject* m_turretBarrel = nullptr;
-    float turretDegreesPerSec = 90.f;
-
+    float turretDegreesPerSec = 180.f;
 
     ParticleEmitter* m_leftThrustEmitter;
     ParticleEmitter* m_rightThrustEmitter;
@@ -108,4 +121,7 @@ private:
 
     // Hives and Swarmers
     int m_initHiveCount = 5;
+
+    float m_health = 1000.f;
+    float m_maxHealth = 1000.f;
 };

@@ -90,7 +90,8 @@ void Game::Update()
 
 void Game::Render() const
 {
-    g_forwardRenderingPath->Render( g_renderSceneGraph );
+    if( m_currentGameState->GetType() == GameStateType::PLAYING )
+        g_forwardRenderingPath->Render( g_renderSceneGraph );
 
     m_currentGameState->Render();
 

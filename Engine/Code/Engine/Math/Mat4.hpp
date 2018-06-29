@@ -4,7 +4,7 @@
 
 class Vec2;
 class Vec3;
-
+class Plane;
 
 class Mat4
 {
@@ -24,8 +24,9 @@ public:
     bool operator==( const Mat4& rhs ) const;
     bool operator!=( const Mat4& rhs ) const;
 
-    Vec3 TransformPosition( const Vec3& rhs ) const;
-    Vec3 TransformDisplacement( const Vec3& rhs ) const;
+    Vec3 TransformPosition( const Vec3& position ) const;
+    Vec3 TransformDisplacement( const Vec3& displacement ) const;
+    Plane TransformPlane( const Plane& plane ) const;
 
     // Accessors
     Vec2 TransformPosition2D( const Vec2& position2D ); // Written assuming z=0, w=1

@@ -1,5 +1,5 @@
 #include "Engine/Math/OBB3.hpp"
-
+#include "Engine/Math/Plane.hpp"
 
 // face vertex order
 //                7-------6
@@ -52,4 +52,34 @@ const Mat4& OBB3::GetWorldToLocal() const
         m_worldToLocalDirty = false;
     }
     return m_worldToLocal;
+}
+
+Plane OBB3::Right() const
+{
+    return m_localToWorld.TransformPlane( m_aabb3.Right() );
+}
+
+Plane OBB3::Left() const
+{
+    return m_localToWorld.TransformPlane( m_aabb3.Left() );
+}
+
+Plane OBB3::Top() const
+{
+    return m_localToWorld.TransformPlane( m_aabb3.Top() );
+}
+
+Plane OBB3::Bottom() const
+{
+    return m_localToWorld.TransformPlane( m_aabb3.Bottom() );
+}
+
+Plane OBB3::Forward() const
+{
+    return m_localToWorld.TransformPlane( m_aabb3.Forward() );
+}
+
+Plane OBB3::Backward() const
+{
+    return m_localToWorld.TransformPlane( m_aabb3.Backward() );
 }

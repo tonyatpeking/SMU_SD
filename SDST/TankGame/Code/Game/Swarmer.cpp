@@ -57,10 +57,10 @@ void Swarmer::Update()
 void Swarmer::CreateRenderable()
 {
     MeshBuilder mbBall =
-        MeshPrimitive::MakeUVSphere( 0.5f, 5, 8, Rgba::RED, Vec3::UP * 0.5f );
+        MeshPrimitive::MakeUVSphere( m_radius, 5, 8, Rgba::WHITE, Vec3::UP * 0.5f );
     MeshBuilder mbNose =
-        MeshPrimitive::MakeCube( Vec3( 0.2f, 0.2f, 0.7f ), Rgba::YELLOW,
-                                 Vec3( 0.0f, 0.5f, 0.7f ) );
+        MeshPrimitive::MakeCube( Vec3( 0.4f, 0.4f, 1.4f ), Rgba::YELLOW,
+                                 Vec3( 0.0f, 1.0f, 1.4f ) );
 
     MeshBuilder mb{};
     mb.BeginSubMesh();
@@ -71,7 +71,7 @@ void Swarmer::CreateRenderable()
     SetRenderable( new Renderable() );
     m_renderable->SetMesh( mb.MakeMesh() );
     m_renderable->GetMaterial( 0 )->SetShaderPass( 0, ShaderPass::GetLitShader() );
-    m_transform.SetLocalScale( m_scale );
+    //m_transform.SetLocalScale( m_scale );
 }
 
 void Swarmer::SetHive( Hive* hive )
@@ -83,6 +83,19 @@ void Swarmer::TellHiveIDied()
 {
     if( m_hive )
         m_hive->SwarmerDied( this );
+}
+
+void Swarmer::TakeDamage( float damage )
+{
+    m_health -= damage;
+
+    if( m_health < 0 )
+        SetShouldDie( true );
+
+    m_health = Clampf01( m_health );
+    Rgba tint = Lerp( Rgba::RED, Rgba::WHITE, m_health );
+    m_renderable->GetMaterial( 0 )->SetTint( tint );
+
 }
 
 void Swarmer::SetTargetFromSwarming()

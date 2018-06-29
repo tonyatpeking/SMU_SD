@@ -7,6 +7,8 @@
 #include "Engine/Math/AABB3.hpp"
 #include "Engine/Math/IVec2.hpp"
 
+#include <stdarg.h>
+
 namespace Raycast
 {
 
@@ -106,6 +108,14 @@ RaycastHit3 ToOBB3( const Ray3& ray, const OBB3& obb )
     }
 
     return hit;
+}
+
+
+RaycastHit3 GetClosest( const RaycastHit3& hit1, const RaycastHit3& hit2 )
+{
+    if( hit1.m_distance <= hit2.m_distance )
+        return hit1;
+    return hit2;
 }
 
 }

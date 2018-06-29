@@ -38,7 +38,7 @@ void GameState_Victory::Render() const
 
     Vec2 screenCenter = Vec2( g_config->orthoSysWidth / 2.f, g_config->orthoSysHeight / 2.f );
 
-    String text = Stringf("Team %i Wins!", g_game->m_victoryTeam);
+    String text = Stringf("You win!!! press esc");
     Vec2 textPosition = screenCenter + Vec2( 0.f, 250.f );
     float textHeight = 70.f;
     float interval = 2.f;

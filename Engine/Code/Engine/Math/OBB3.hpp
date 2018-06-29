@@ -20,11 +20,19 @@ public:
 
     Mat4& GetLocalToWorld();
     const Mat4& GetLocalToWorld() const;
-    void SetLocalToWorld(const Mat4& localToWorld);
+    void SetLocalToWorld( const Mat4& localToWorld );
 
     const Mat4& GetWorldToLocal() const;
 
     AABB3 GetAABB3() const { return m_aabb3; };
+
+    // all face planes, normals point outward
+    Plane Right() const;
+    Plane Left() const;
+    Plane Top() const;
+    Plane Bottom() const;
+    Plane Forward() const;
+    Plane Backward() const;
 
 private:
     AABB3 m_aabb3;

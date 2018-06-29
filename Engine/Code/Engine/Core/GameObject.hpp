@@ -50,8 +50,11 @@ public:
     void SetType( std::string type );
     std::string GetType() { return m_type; };
 
-    OBB3 GetWorldBounds() const;
+    OBB3 GetOBB3() const;
     AABB3 GetLocalBounds() const;
+
+    void SetVisible( bool visible ) { m_visible = visible; };
+    bool IsVisible() { return m_visible; };
 
 protected:
     std::string m_type = "Unknown";
@@ -67,4 +70,5 @@ protected:
     std::vector < GameObjectCB > m_deathCallbacks;
 
     bool m_firstUpdateCalled = false;
+    bool m_visible = true;
 };

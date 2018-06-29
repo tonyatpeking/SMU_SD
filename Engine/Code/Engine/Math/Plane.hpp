@@ -24,6 +24,16 @@ public:
     bool OnPositiveSide( const Vec3& pos ) const;
 
 
+    // Sphere plane tests
+
+    // Sphere is completely on negative side
+    bool IsSphereAllNegative( const Vec3& center, float radius ) const;
+    // Sphere is completely on positive side
+    bool IsSphereAllPositive( const Vec3& center, float radius ) const;
+    bool IsSphereIntersecting( const Vec3& center, float radius ) const;
+    Vec3 GetNormal() const { return normal; };
+    float GetDistanceToOrigin() const { return distance; };
+    Vec3 GetPoint() const;
 
     Vec3 normal = Vec3::UP;
     // distance to the origin

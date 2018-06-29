@@ -32,6 +32,7 @@ void Hive::Update()
             break;
         SpawnSwarmer();
     }
+
 }
 
 void Hive::OnFirstUpdate()
@@ -48,6 +49,7 @@ void Hive::CreateRenderable()
 {
     SetRenderable( Renderable::MakeCube() );
     m_renderable->GetMaterial( 0 )->SetShaderPass( 0, ShaderPass::GetLitShader() );
+    m_transform.RotateLocalEuler( Random::Vec3InRange(Vec3::ONES * -30, Vec3::ONES * 30) );
     m_transform.SetLocalScale( m_hiveScale );
 }
 
@@ -72,5 +74,17 @@ void Hive::TellSwarmersIDied()
     {
         m_swarmers[i]->SetHive( nullptr );
     }
+}
+
+void Hive::TakeDamage( float damage )
+{
+    m_health -= damage;
+
+    if( m_health < 0 )
+        SetShouldDie( true );
+
+    m_health = Clampf01( m_health );
+    Rgba tint = Lerp( Rgba::RED, Rgba::WHITE, m_health );
+    m_renderable->GetMaterial( 0 )->SetTint( tint );
 }
 

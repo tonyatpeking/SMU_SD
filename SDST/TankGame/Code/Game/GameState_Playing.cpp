@@ -1,4 +1,5 @@
-﻿#include "Engine/UI/Menu.hpp"
+﻿#include "Engine/Math/Distance.hpp"
+#include "Engine/UI/Menu.hpp"
 #include "Engine/Math/Random.hpp"
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/IVec2.hpp"
@@ -55,7 +56,7 @@ GameState_Playing::GameState_Playing()
 
 GameState_Playing::~GameState_Playing()
 {
-    delete g_mainCamera;
+    //delete g_mainCamera;
     g_encounterState = nullptr;
 }
 
@@ -78,6 +79,13 @@ void GameState_Playing::Update()
     UpdateTurret();
 
     SnapSwarmersToMap();
+
+    CheckDamagePlayer();
+
+    CheckRespawn();
+
+    //TestSphereBoxIntersection();
+    CheckVictory();
 }
 
 void GameState_Playing::Render() const
@@ -119,6 +127,7 @@ void GameState_Playing::OnEnter()
     FinalizeSpaceShip();
 
     CreateInitHives();
+
 }
 
 void GameState_Playing::OnExit()
@@ -131,7 +140,13 @@ void GameState_Playing::ProcessInput()
     GameState::ProcessInput();
     if( g_input->WasKeyJustPressed( InputSystem::KEYBOARD_ESCAPE ) )
         g_app->OnQuitRequested();
-    ProcessMovementInput();
+    if( g_input->IsKeyPressed( 'K' ) )
+        KillAllEnemies();
+    if( g_input->IsKeyPressed( 'L' ) )
+        KillPlayer();
+
+    if( m_health > 0 )
+        ProcessMovementInput();
     TestInput();
 }
 
@@ -631,16 +646,82 @@ void GameState_Playing::FireProjectile()
     trans.SetWorldPosition( barrelTransform.GetWorldPosition() );
 
     GameObjectCB deathCB = [this]( GameObject* gameObject ) {
-        this->MakeCollisionParticles( gameObject->GetTransform().GetWorldPosition() ); };
-
+        Vec3 pos = gameObject->GetTransform().GetWorldPosition();
+        this->MakeCollisionParticles( pos );
+        this->MakeExplosion( pos );
+    };
 
     proj->AddDeathCallback( deathCB );
 }
 
+
+
+
+void GameState_Playing::MakeExplosion( const Vec3& expPos )
+{
+    float expRadius = 4.f;
+    float swarmerRadius = 1.f;
+
+    float maxDist = -( expRadius + swarmerRadius );
+    DebugRender::SetOptions( 0.2f, Rgba::WHITE, Rgba::ORANGE );
+    DebugRender::DrawSphere( expPos, expRadius );
+
+    GameObjects& swarmers = g_gameObjectManager->GetObjectsOfType( "Swarmer" );
+    for( auto& go : swarmers )
+    {
+        Vec3 swarmerPos = go->GetTransform().GetWorldPosition();
+        float dist = Distance::SphereSphere( expPos, expRadius, swarmerPos, swarmerRadius );
+        if( dist > 0 )
+            continue;
+        float damage = RangeMapFloat( dist, 0, maxDist, 0, 1 );
+        Swarmer* swarmer = (Swarmer*) go;
+        swarmer->TakeDamage( damage );
+    }
+
+    GameObjects& hives = g_gameObjectManager->GetObjectsOfType( "Hive" );
+    for( auto& go : hives )
+    {
+        OBB3 hiveObb3 = go->GetOBB3();
+        bool hit = !Intersect::IsSphereOutsideOBB3( expPos, expRadius, hiveObb3 );
+        if( !hit )
+            continue;
+        Hive* hive = (Hive*) go;
+        hive->TakeDamage( 0.1f );
+    }
+
+}
+
+void GameState_Playing::CheckDamagePlayer()
+{
+    Vec3 playerPos = g_game->m_shipHull->GetTransform().GetWorldPosition();
+    float playerRadius = 10;
+    float swarmerRadius = 1;
+    GameObjects& swarmers = g_gameObjectManager->GetObjectsOfType( "Swarmer" );
+    for( auto& swarmer : swarmers )
+    {
+        Vec3 swarmerPos = swarmer->GetTransform().GetWorldPosition();
+        bool hit = Intersect::SphereSphere(
+            playerPos, playerRadius, swarmerPos, swarmerRadius );
+
+        if( hit )
+            m_health -= 0.01f;
+    }
+    float healthBarRight = RangeMapFloat( m_health, 0, m_maxHealth, 10, 500 );
+
+    DebugRender::SetOptions( 0, Rgba::RED );
+    DebugRender::DrawQuad2D( AABB2( 10, 10, 500, 50 ) );
+
+    DebugRender::SetOptions( 0, Rgba::GREEN );
+    DebugRender::DrawQuad2D( AABB2( 10, 10, healthBarRight, 50 ) );
+
+
+
+}
+
 void GameState_Playing::SnapSwarmersToMap()
 {
-    GameObjects swarmers = g_gameObjectManager->GetObjectsOfType( "Swarmer" );
-    for ( auto& swarmer : swarmers )
+    GameObjects& swarmers = g_gameObjectManager->GetObjectsOfType( "Swarmer" );
+    for( auto& swarmer : swarmers )
     {
         Transform& trans = swarmer->GetTransform();
         SnapTransformToHeightmap( &trans, 1 );
@@ -660,6 +741,123 @@ void GameState_Playing::CreateInitHives()
         Transform& transform = hive->GetTransform();
         transform.SetLocalPosition( pos3D );
     }
+}
+
+void GameState_Playing::CheckVictory()
+{
+    static bool won = false;
+    int hives =  g_gameObjectManager->GetObjectsOfType( "Hive" ).size();
+    int swarmers =  g_gameObjectManager->GetObjectsOfType( "Swarmer" ).size();
+
+    DebugRender::SetOptions( 0, Rgba::BLACK );
+    DebugRender::DrawQuad2D( AABB2( 600, 10, 1400, 50 ) );
+
+    DebugRender::SetOptions( 0, Rgba::BLUE_CYAN );
+    DebugRender::DrawText2D(
+        AABB2( 600, 10, 1400, 50 ), 30, Vec2::POINT_FIVES,
+        "Swarmers: %d Hives: %d", swarmers, hives );
+
+
+
+    if( hives > 0 )
+        return;
+
+    if( swarmers > 0 )
+        return;
+
+    if( won )
+        return;
+
+    won = true;
+
+    g_console->Print( "Victory!" );
+    g_game->ChangeState( GameStateType::VICTORY, 2.f );
+}
+
+void GameState_Playing::KillAllEnemies()
+{
+    GameObjects& hives = g_gameObjectManager->GetObjectsOfType( "Hive" );
+    for( auto& go : hives )
+    {
+        go->SetShouldDie( true );
+    }
+
+    GameObjects& swarmers = g_gameObjectManager->GetObjectsOfType( "Swarmer" );
+    for( auto& go : swarmers )
+    {
+        go->SetShouldDie( true );
+    }
+}
+
+void GameState_Playing::KillPlayer()
+{
+    m_health = 0;
+}
+
+void GameState_Playing::CheckRespawn()
+{
+    static bool s_isDead = false;
+    static Timer s_deathCounter = Timer( g_gameClock, 5 );
+    GameObject* player = g_game->m_shipHull;
+
+    if( m_health <= 0 && !s_isDead )
+    {
+        s_isDead = true;
+        player->SetVisible( false );
+        m_turret->SetVisible( false );
+        m_turretBarrel->SetVisible( false );
+        s_deathCounter.Reset();
+        return;
+    }
+
+    if( s_isDead )
+    {
+        DebugRender::SetOptions( 0, Rgba::RED );
+        DebugRender::DrawText2D(
+            AABB2( 500, 500, 1000, 1000 ), 100, Vec2::POINT_FIVES, "You Died!" );
+
+        int lap = s_deathCounter.PopOneLap();
+        if( lap == 0 )
+            return;
+
+        m_health = m_maxHealth;
+        s_isDead = false;
+        player->SetVisible( true );
+        m_turret->SetVisible( true );
+        m_turretBarrel->SetVisible( true );
+        return;
+    }
+}
+
+void GameState_Playing::TestSphereBoxIntersection()
+{
+    // Make obb3
+    AABB3 aabb3 = AABB3( Vec3::ZEROS, 60, 40, 40 );
+    Mat4 mat = Mat4::MakeFromSRT( Vec3::ONES, Vec3( 23, 41, 55 ), Vec3( 10, 20, 30 ) );
+    OBB3 obb3 = OBB3( aabb3, mat );
+    DebugRender::SetOptions( 0, Rgba::RED_MAGENTA );
+    DebugRender::DrawOBB3( obb3 );
+
+    DebugRender::SetOptions( 0, Rgba::BLUE_MAGENTA );
+    DebugRender::DrawAABB3( aabb3 );
+
+
+    // Make Sphere
+    Rgba color = Rgba::GREEN_YELLOW;
+    float radius = 7;
+    Vec3 pos = g_game->m_shipHull->GetTransform().GetWorldPosition();
+
+    // test intersection
+    bool intersect = Intersect::IsSphereIntersectAABB3( pos, radius, aabb3 );
+    if( intersect )
+        color = Rgba::PURPLE;
+
+    intersect = Intersect::IsSphereIntersectOBB3( pos, radius, obb3 );
+    if( intersect )
+        color = Rgba::PURPLE;
+
+    DebugRender::SetOptions( 0, color );
+    DebugRender::DrawSphere( pos, radius );
 }
 
 void GameState_Playing::MakeAsteroids()
@@ -792,6 +990,26 @@ void GameState_Playing::LeaveBreadCrumbs()
     }
 }
 
+RaycastHit3 GameState_Playing::RaycastWorld( const Ray3& ray )
+{
+    // Raycast to all hives
+    GameObjects& hives = g_gameObjectManager->GetObjectsOfType( "Hive" );
+    RaycastHit3 hitHiveBest;
+    for( auto& hive : hives )
+    {
+        RaycastHit3 hitHive = Raycast::ToOBB3( ray, hive->GetOBB3() );
+
+        hitHiveBest = Raycast::GetClosest( hitHiveBest, hitHive );
+    }
+
+    // Raycast to map
+    RaycastHit3 hitMap = g_game->m_map->RaycastMap( ray );
+
+    RaycastHit3 hitBest = Raycast::GetClosest( hitHiveBest, hitMap );
+
+    return hitBest;
+}
+
 void GameState_Playing::UpdateRaycastHitIndicator()
 {
     if( !m_camRayIndicator )
@@ -804,35 +1022,13 @@ void GameState_Playing::UpdateRaycastHitIndicator()
 
     Vec2 dim = g_window->GetDimensions() / 2.f;
     Ray3 camRay = g_mainCamera->ScreenToPickRay( g_window->GetDimensions() / 2.f );
-    RaycastHit3 hitMap = g_game->m_map->RaycastMap( camRay );
 
-    AABB3 aabb = AABB3( Vec3::ZEROS, 4, 10, 3 );
-    Mat4 m = Mat4::MakeFromSRT( Vec3::ONES, Vec3( 45, 23, 41 ), Vec3(10,40,30) );
-    OBB3 obb = OBB3( aabb, m );
-    DebugRender::SetOptions( 0, Rgba::RED_MAGENTA, Rgba::RED_MAGENTA );
-    DebugRender::DrawOBB3( obb );
 
-    RaycastHit3 hitObb = Raycast::ToOBB3( camRay, obb );
+    RaycastHit3 hit = RaycastWorld( camRay );
 
-    if( hitObb.m_hit )
+    if( hit.m_hit )
     {
-        Vec3 pos = hitObb.m_position;
-        m_camRayIndicator->GetTransform().SetLocalPosition( pos );
-        return;
-    }
-
-    GameObjects& hives = g_gameObjectManager->GetObjectsOfType( "Hive" );
-    for ( auto& hive : hives )
-    {
-
-    }
-    RaycastHit3 hitHive;
-
-
-
-    if( hitMap.m_hit )
-    {
-        Vec3 pos = hitMap.m_position;
+        Vec3 pos = hit.m_position;
         m_camRayIndicator->GetTransform().SetLocalPosition( pos );
     }
     else
@@ -868,8 +1064,6 @@ void GameState_Playing::UpdateTurret()
     Mat4 newMat4 = Mat4::LerpTransform( turretTransform.GetLocalToParent(),
                                         targetTransform.GetLocalToParent(), t );
 
-    if( newMat4.IsAnyInf() || newMat4.IsAnyNaN() )
-        int i = 0;
 
     turretTransform.SetLocalToParent( newMat4 );
     turretTransform.SetLocalScale( savedScale );
@@ -885,7 +1079,7 @@ void GameState_Playing::UpdateTurret()
 
     Transform& barrelTrans = m_turretBarrel->GetTransform();
     Ray3 turretRay = Ray3( barrelTrans.GetWorldPosition(), barrelTrans.GetForward() );
-    RaycastHit3 hit = g_game->m_map->RaycastMap( turretRay );
+    RaycastHit3 hit = RaycastWorld( turretRay );
     Vec3 pos;
 
     if( hit.m_hit )

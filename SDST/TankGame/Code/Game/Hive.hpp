@@ -19,6 +19,9 @@ public:
     void SpawnSwarmer();
     void SwarmerDied( Swarmer* swarmer );
     void TellSwarmersIDied();
+
+    void TakeDamage( float damage );
+
 private:
 
     std::vector< Swarmer* > m_swarmers;
@@ -27,4 +30,5 @@ private:
     float m_spawnInterval = 0.5f;
     Vec3 m_hiveScale = Vec3( 10, 40, 10 );
     Timer* m_spawnTimer = nullptr;
+    float m_health = 1.f;
 };

@@ -3,7 +3,7 @@
 #include "Engine/Math/Vec4.hpp"
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/MathUtils.hpp"
-
+#include "Engine/Math/Plane.hpp"
 
 const Mat4 Mat4::IDENTITY = Mat4();
 
@@ -367,6 +367,14 @@ Vec3 Mat4::TransformPosition( const Vec3& rhs ) const
 Vec3 Mat4::TransformDisplacement( const Vec3& rhs ) const
 {
     return Vec3( ( *this ) * Vec4( rhs, 0 ) );
+}
+
+Plane Mat4::TransformPlane( const Plane& plane ) const
+{
+    Vec3 point = plane.GetPoint();
+    Vec3 normal = plane.GetNormal();
+
+    return Plane( TransformDisplacement( normal ), TransformPosition( point ) );
 }
 
 Vec2 Mat4::TransformPosition2D( const Vec2& position2D )

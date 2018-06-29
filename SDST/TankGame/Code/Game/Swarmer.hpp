@@ -18,6 +18,8 @@ public:
 
     void SetHive( Hive* hive );
     void TellHiveIDied();
+    void TakeDamage( float damage );
+
 private:
 
     // Flocking behavior
@@ -29,7 +31,9 @@ private:
 
     Vec2 m_target;
     Vec2 m_facing = Vec2::ONE_ZERO;
-    Vec3 m_scale = Vec3( 2, 2, 2 );
+    //Vec3 m_scale = Vec3( 2, 2, 2 );
 
+    float m_radius = 1;
+    float m_health = 1.f;
 
 };

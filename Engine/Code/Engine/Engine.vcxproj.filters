@@ -384,7 +384,12 @@
     <ClCompile Include="Core\PythonInterpreter.cpp">
       <Filter>Python</Filter>
     </ClCompile>
-    <ClCompile Include="Math\OBB3.cpp" />
+    <ClCompile Include="Math\OBB3.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Distance.cpp">
+      <Filter>Math\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -768,7 +773,12 @@
     <ClInclude Include="Core\PythonInterpreter.hpp">
       <Filter>Python</Filter>
     </ClInclude>
-    <ClInclude Include="Math\OBB3.hpp" />
+    <ClInclude Include="Math\OBB3.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Distance.hpp">
+      <Filter>Math\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">

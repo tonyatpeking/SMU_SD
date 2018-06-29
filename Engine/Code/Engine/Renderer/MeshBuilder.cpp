@@ -285,7 +285,7 @@ Mesh* MeshBuilder::MakeMesh()
     CalculateBounds();
     Mesh *mesh = new Mesh();
     mesh->FromBuilder( *this );
-    mesh->SetBounds( m_localBounds );
+    mesh->SetLocalBounds( m_localBounds );
     return mesh;
 }
 

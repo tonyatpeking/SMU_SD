@@ -8,6 +8,7 @@
 
 class MeshBuilder;
 class Mat4;
+class Plane;
 
 class AABB3
 {
@@ -92,6 +93,15 @@ public:
     Vec3 GetBackwardTopLeft() const;
     Vec3 GetBackwardBottomRight() const;
     Vec3 GetBackwardBottomLeft() const;
+
+    // all face planes, normals point outward
+    Plane Right() const;
+    Plane Left() const;
+    Plane Top() const;
+    Plane Bottom() const;
+    Plane Forward() const;
+    Plane Backward() const;
+
 
 public:
     Vec3 mins = Vec3::POS_INFINITY;

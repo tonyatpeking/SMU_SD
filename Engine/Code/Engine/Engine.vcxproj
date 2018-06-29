@@ -294,6 +294,7 @@
     <ClCompile Include="Math\CubeSide.cpp" />
     <ClCompile Include="Math\CubicSpline.cpp" />
     <ClCompile Include="Math\Disc2.cpp" />
+    <ClCompile Include="Math\Distance.cpp" />
     <ClCompile Include="Math\GridStepper2D.cpp" />
     <ClCompile Include="Math\OBB3.cpp" />
     <ClCompile Include="Math\Plane.cpp" />
@@ -417,6 +418,7 @@
     <ClInclude Include="Math\Axis.hpp" />
     <ClInclude Include="Math\CubicSpline.hpp" />
     <ClInclude Include="Math\Disc2.hpp" />
+    <ClInclude Include="Math\Distance.hpp" />
     <ClInclude Include="Math\GridStepper2D.hpp" />
     <ClInclude Include="Math\OBB3.hpp" />
     <ClInclude Include="Math\Plane.hpp" />

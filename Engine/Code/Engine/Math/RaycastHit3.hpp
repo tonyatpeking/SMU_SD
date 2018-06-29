@@ -21,7 +21,7 @@ public:
 
     bool m_hit = false;
     GameObject* m_gameObject = nullptr;
-    float m_distance = 0;
+    float m_distance = INFINITY;
     Vec3 m_position;
     Vec3 m_normal;
 

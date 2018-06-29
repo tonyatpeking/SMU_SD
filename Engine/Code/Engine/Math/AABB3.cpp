@@ -1,3 +1,4 @@
+#include "Engine/Math/Plane.hpp"
 #include "Engine/Math/AABB3.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
@@ -365,6 +366,36 @@ Vec3 AABB3::GetBackwardBottomRight() const
 Vec3 AABB3::GetBackwardBottomLeft() const
 {
     return mins;
+}
+
+Plane AABB3::Right() const
+{
+    return Plane( Vec3::RIGHT, maxs );
+}
+
+Plane AABB3::Left() const
+{
+    return Plane( Vec3::LEFT, mins );
+}
+
+Plane AABB3::Top() const
+{
+    return Plane( Vec3::UP, maxs );
+}
+
+Plane AABB3::Bottom() const
+{
+    return Plane( Vec3::DOWN, mins );
+}
+
+Plane AABB3::Forward() const
+{
+    return Plane( Vec3::FORWARD, maxs );
+}
+
+Plane AABB3::Backward() const
+{
+    return Plane( Vec3::BACKWARD, mins );
 }
 
 void AABB3::operator+=( const Vec3& translation )

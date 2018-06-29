@@ -31,6 +31,8 @@ std::vector<Renderable*>& RenderSceneGraph::GetRenderables()
     m_renderables.reserve( GetGameObjects().size() );
     for ( auto& gameObject : GetGameObjects() )
     {
+        if( !gameObject->IsVisible() )
+            continue;
         Renderable* renderable = gameObject->GetRenderable();
         if( renderable )
             m_renderables.push_back( renderable );

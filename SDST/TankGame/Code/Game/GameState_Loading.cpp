@@ -64,7 +64,7 @@ void GameState_Loading::LoadResourcesOnSecondFrame()
         return;
     }
     MakeSpaceShip();
-    //MakeSkyBox();
+    MakeSkyBox();
     MakeNoiseImage();
     MakeMap();
 }
