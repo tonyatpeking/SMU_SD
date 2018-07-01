@@ -14,13 +14,14 @@ out vec3 passWorldNormal;
 out vec3 passWorldTangent;
 out vec3 passWorldBitangent;
 out vec3 passWorldPos;
+out vec3 passViewSpacePos;
 
 void main( void )
 {
     vec4 localPos = vec4( POSITION, 1 );
     vec4 worldPos = MODEL * localPos;
-    vec4 cameraPos = VIEW * worldPos;
-    vec4 clipPos = PROJECTION * cameraPos;
+    vec4 viewSpacePos4 = VIEW * worldPos;
+    vec4 clipPos = PROJECTION * viewSpacePos4;
 
     gl_Position = clipPos;
 
@@ -30,4 +31,6 @@ void main( void )
     passWorldTangent = ( MODEL * vec4( TANGENT.xyz, 0.0f )).xyz;
 	passWorldBitangent = cross( passWorldTangent, passWorldNormal ) * TANGENT.w;
     passWorldPos = worldPos.xyz;
+    passViewSpacePos = viewSpacePos4.xyz;
+
 }

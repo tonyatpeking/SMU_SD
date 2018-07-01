@@ -28,7 +28,17 @@ layout(binding=3, std140) uniform uboInstance
 
 layout(binding=5, std140) uniform uboGlobal
 {
+	// Fog
+	vec4 FOG_COLOR; 
+	float FOG_NEAR_PLANE;
+	float FOG_NEAR_FACTOR;
+	float FOG_FAR_PLANE;
+	float FOG_FAR_FACTOR;
+
 	vec2 WINDOW_SIZE;
+
+
+
 };
 
 struct Light

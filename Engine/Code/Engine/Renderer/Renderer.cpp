@@ -38,11 +38,20 @@
 #include "Engine/Renderer/DrawCall.hpp"
 #include "Engine/Renderer/Light.hpp"
 
+namespace{
+Renderer* s_defaultRenderer = nullptr;
+}
 
+Renderer* Renderer::GetDefault()
+{
+    return s_defaultRenderer;
+}
 
 Renderer::Renderer( Window* window )
     : m_window( window )
 {
+    s_defaultRenderer = this;
+
     Init();
     PostInit();
 }
@@ -53,7 +62,6 @@ Renderer::~Renderer()
         delete pathTexturePair.second;
 
     delete m_renderingContext;
-    delete m_pointSampler;
 }
 
 void Renderer::Init()
@@ -75,7 +83,6 @@ void Renderer::PostInit()
 
     GL_CHECK_ERROR();
 
-    m_pointSampler = new Sampler();
 
 
     // the default m_color and depth should match our output window
@@ -88,6 +95,7 @@ void Renderer::PostInit()
     m_defaultColorTarget = CreateRenderTarget( windowWidth, windowHeight );
     m_effectColorTarget = CreateRenderTarget( windowWidth, windowHeight );
     m_defaultDepthTarget = CreateDepthStencilTarget( windowWidth, windowHeight );
+    m_defaultShadowTarget = CreateDepthStencilTarget( 2048, 2048 );
 
     // init default camera
     m_defaultCamera  = new Camera();
@@ -104,8 +112,15 @@ void Renderer::PostInit()
     // init effect camera
     m_effectCamera = new Camera();
     m_effectCamera->SetColorTarget( m_effectColorTarget );
+    SetFog( Rgba::GRAY, 0, 0, 150, 1 );
 
+
+    m_shadowCamera = new Camera();
+    m_shadowCamera->SetDepthStencilTarget(
+        Renderer::GetDefault()->DefaultShadowTarget() );
 }
+
+
 
 void Renderer::BeginFrame()
 {
@@ -233,17 +248,17 @@ void Renderer::DrawRenderablePass( Renderable* renderable, uint subMeshID /*= 0*
 
     GL_CHECK_ERROR();
     BindTexture( TextureBindings::DIFFUSE, diffuseTexture );
-    BindSampler( TextureBindings::DIFFUSE, m_pointSampler );
+    BindSampler( TextureBindings::DIFFUSE, Sampler::GetTrilinearSampler() );
     GL_CHECK_ERROR();
 
     BindTexture( TextureBindings::NORMAL, normalTextue );
-    BindSampler( TextureBindings::NORMAL, m_pointSampler );
+    BindSampler( TextureBindings::NORMAL, Sampler::GetTrilinearSampler() );
 
     BindInstanceUBO( modelMatrix, mat );
     BindLightUBO();
 
-    if( m_debugShader )
-        shaderPass = m_debugShader;
+    if( m_overrideShader )
+        shaderPass = m_overrideShader;
 
     BindShader( shaderPass );
 
@@ -305,6 +320,18 @@ void Renderer::SetWindowUBO( Vec2 windowSize )
     GL_CHECK_ERROR();
 }
 
+
+void Renderer::SetFog( const Rgba& color, float nearPlane, float nearFactor, float farPlane, float farFactor )
+{
+    m_globalUBOData.fogColor = color.ToVec4();
+    m_globalUBOData.fogNearPlane = nearPlane;
+    m_globalUBOData.fogNearFactor = nearFactor;
+    m_globalUBOData.fogFarPlane = farPlane;
+    m_globalUBOData.fogFarFactor = farFactor;
+    m_globalUniformBuffer.Set( m_globalUBOData );
+    m_globalUniformBuffer.BindToSlot( UBO::GLOBAL_BINDING );
+    GL_CHECK_ERROR();
+}
 
 void Renderer::DrawLine( const Vec3& start, const Vec3& end, const Rgba& startColor,
                          const Rgba& endColor, float lineThickness )

@@ -46,6 +46,13 @@ struct InstanceData
 
 struct GlobalData
 {
+    // fog
+    Vec4 fogColor;
+    float fogNearPlane;
+    float fogNearFactor;
+    float fogFarPlane;
+    float fogFarFactor;
+
     Vec2 windowSize;
 };
 

@@ -31,7 +31,17 @@ layout(binding=3, std140) uniform uboInstance
 
 layout(binding=5, std140) uniform uboGlobal
 {
+	// Fog
+	vec4 FOG_COLOR; 
+	float FOG_NEAR_PLANE;
+	float FOG_NEAR_FACTOR;
+	float FOG_FAR_PLANE;
+	float FOG_FAR_FACTOR;
+
 	vec2 WINDOW_SIZE;
+
+
+
 };
 
 struct Light
@@ -59,7 +69,7 @@ layout(binding=6, std140) uniform uboLights
 {
 	vec4 AMBIENT;  // xyz color, w intensity
 	Light LIGHTS[MAX_LIGHTS];
-};                                                          
+};                                                                    
 //#include "Data/Shaders/Includes/RendererUniformBlocks.glsl"
 #define RangeMap(val, inStart, inEnd, outStart, outEnd) \
 (((val) - (inStart)) / ((inEnd) - (inStart)) * ((outEnd) - (outStart)) + (outStart))
@@ -106,6 +116,41 @@ vec4 NormalToColor( vec3 normal )
     
 //#include "Data/Shaders/Includes/Common.glsl"
 
+//--------------------------------------------------------------------------------------
+// FOG
+//--------------------------------------------------------------------------------------
+
+//#include "Data/Shaders/Includes/Common.glsl"
+//#include "Data/Shaders/Includes/Math.glsl"
+#define FOG 
+//--------------------------------------------------------------------------------------
+// DEFINES
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+// defined in common.glsl
+// vec4 FOG_COLOR; 
+// float FOG_NEAR_PLANE;
+// float FOG_FAR_PLANE;
+// float FOG_NEAR_FACTOR;
+// float FOG_FAR_FACTOR;
+
+//--------------------------------------------------------------------------------------
+// FUNCTIONS
+//--------------------------------------------------------------------------------------
+
+vec4 ApplyFog( vec4 color, float viewDepth )
+{
+   #if defined(FOG)
+      float fogFactor = smoothstep( FOG_NEAR_PLANE, FOG_FAR_PLANE, viewDepth ); 
+      fogFactor = FOG_NEAR_FACTOR + (FOG_FAR_FACTOR - FOG_NEAR_FACTOR) * fogFactor; 
+      //float fogFactor = RangeMap( viewDepth, FOG_NEAR_PLANE, FOG_FAR_PLANE, FOG_NEAR_FACTOR, FOG_FAR_FACTOR );
+      color = mix( color, FOG_COLOR, fogFactor ); 
+   #endif
+
+   return color; 
+}                                 
+//#include "Data/Shaders/Includes/Fog.glsl"
+
 // Textures
 layout(binding = 0) uniform sampler2D gTexDiffuse;
 layout(binding = 1) uniform sampler2D gTexNormal;
@@ -118,7 +163,7 @@ in vec3 passWorldPos;
 in vec3 passWorldNormal;
 in vec3 passWorldTangent;
 in vec3 passWorldBitangent;
-
+in vec3 passViewSpacePos;
 
 out vec4 outColor;
 
@@ -190,5 +235,9 @@ for ( int lightIdx = 0; lightIdx < MAX_LIGHTS; ++lightIdx)
     finalColor = clamp(finalColor, vec4(0), vec4(1) );
 
     outColor = finalColor;
-}                                                                                        
+
+    
+    outColor = ApplyFog( outColor, passViewSpacePos.z );
+
+}                                                                                             
 

@@ -1,6 +1,7 @@
 #version 420 core
 
 #include "Data/Shaders/Includes/Common.glsl"
+#include "Data/Shaders/Includes/Fog.glsl"
 
 // Textures
 layout(binding = 0) uniform sampler2D gTexDiffuse;
@@ -14,7 +15,7 @@ in vec3 passWorldPos;
 in vec3 passWorldNormal;
 in vec3 passWorldTangent;
 in vec3 passWorldBitangent;
-
+in vec3 passViewSpacePos;
 
 out vec4 outColor;
 
@@ -86,4 +87,8 @@ for ( int lightIdx = 0; lightIdx < MAX_LIGHTS; ++lightIdx)
     finalColor = clamp(finalColor, vec4(0), vec4(1) );
 
     outColor = finalColor;
+
+    
+    outColor = ApplyFog( outColor, passViewSpacePos.z );
+
 }

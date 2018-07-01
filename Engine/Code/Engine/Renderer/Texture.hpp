@@ -28,8 +28,8 @@ public:
     Image* MakeImageFromGPU();
     Texture() {};
     virtual ~Texture();
-    Texture( const String& imageFilePath ); // Use renderer->CreateOrGetTexture() instead!
-    Texture( Image* image );
+    Texture( const String& imageFilePath, bool useMipmaps = true ); // Use renderer->CreateOrGetTexture() instead!
+    Texture( Image* image, bool useMipmaps = true );
     bool Valid() const { return m_handle != NULL; };
 protected:
     static Texture* CreateCompatible( const Texture* textureSource );
@@ -38,6 +38,7 @@ protected:
     virtual void MakeFromImage( Image* image );
     bool CreateRenderTarget( uint width, uint height, TextureFormat format );
 
+    bool m_useMipmaps = true;
     uint			m_handle = 0;
     IVec2		m_dimensions = IVec2::ZEROS;
     TextureFormat   m_format = TextureFormat::RGBA8;

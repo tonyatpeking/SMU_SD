@@ -47,6 +47,7 @@ class Renderer
 {
     friend RenderingContext;
 public:		// Public methods
+    static Renderer* GetDefault();
     Renderer( Window* window );
     ~Renderer();
 
@@ -149,6 +150,7 @@ public:		// Public methods
     Texture* CreateDepthStencilTarget( uint width, uint height );
     Texture* DefaultColorTarget() { return m_defaultColorTarget; };
     Texture* DefaultDepthTarget() { return m_defaultDepthTarget; };
+    Texture* DefaultShadowTarget() { return m_defaultShadowTarget; };
     void TakeScreenshot();
 
     bool CopyFrameBuffer( FrameBuffer* dst, FrameBuffer* src );
@@ -236,9 +238,16 @@ public:		// Public methods
 
     // This shader will override all shaders
     // Set to null to turn off debug mode
-    void SetDebugShader( ShaderPass* shader ) { m_debugShader = shader; };
+    void SetDebugShader( ShaderPass* shader ) { m_overrideShader = shader; };
 
     void SetWindowUBO( Vec2 windowSize );
+
+    void SetFog( const Rgba& color, float nearPlane, float nearFactor,
+                 float farPlane, float farFactor );
+
+    // Shadows
+    Camera* GetShadowCamera() { return m_shadowCamera; };
+
 
 private:	// Private members
 
@@ -271,12 +280,13 @@ private:	// Private members
     Texture* m_defaultColorTarget = nullptr;
     Texture* m_defaultDepthTarget = nullptr;
     Texture* m_effectColorTarget = nullptr;
+    Texture* m_defaultShadowTarget = nullptr;
 
-    Sampler* m_pointSampler = nullptr;
     Camera* m_currentCamera = nullptr;
     Camera* m_defaultCamera = nullptr;
     Camera* m_UICamera = nullptr;
     Camera* m_effectCamera = nullptr;
+    Camera* m_shadowCamera = nullptr;
 
     RenderState m_currentRenderState;
 
@@ -301,8 +311,8 @@ private:	// Private members
     Clock* m_gameClock = nullptr;
     Clock* m_appClock = nullptr;
 
-    // Debug
-    ShaderPass* m_debugShader = nullptr;
+    // Debug and overriding effects shaders, depth shader
+    ShaderPass* m_overrideShader = nullptr;
 };
 
 

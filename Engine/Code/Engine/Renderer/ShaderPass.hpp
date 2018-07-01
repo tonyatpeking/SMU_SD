@@ -26,6 +26,7 @@ public:
     static ShaderPass* GetInvalidShader();
     static ShaderPass* GetLightingDebugShader();
     static ShaderPass* GetWireframeDebugShader();
+    static ShaderPass* GetDepthOnlyShader();
     static ShaderPass* GetAdditiveShader();
     static ShaderPass* GetSkyboxShader();
     static ShaderPass* GetLitShader();

@@ -23,20 +23,29 @@ bool FrameBuffer::Finalize()
 {
     glBindFramebuffer( GL_FRAMEBUFFER, m_handle );
 
-    // keep track of which outputs go to which attachments;
-    GLenum targets[1];
 
-    // Finalize a color target to an attachment point
-    // and keep track of which locations to to which attachments.
-    glFramebufferTexture( GL_FRAMEBUFFER,
-                          GL_COLOR_ATTACHMENT0 + 0,
-                          m_colorTarget->GetHandle(),
-                          0 );
-    // 0 to to attachment 0
-    targets[0] = GL_COLOR_ATTACHMENT0 + 0;
+    if( m_colorTarget )
+    {
+        // keep track of which outputs go to which attachments;
+        GLenum targets[1];
 
-    // Update target bindings
-    glDrawBuffers( 1, targets );
+        // Finalize a color target to an attachment point
+        // and keep track of which locations to to which attachments.
+        glFramebufferTexture( GL_FRAMEBUFFER,
+                              GL_COLOR_ATTACHMENT0 + 0,
+                              m_colorTarget->GetHandle(),
+                              0 );
+        // 0 to to attachment 0
+        targets[0] = GL_COLOR_ATTACHMENT0 + 0;
+
+        // Update target bindings
+        glDrawBuffers( 1, targets );
+    }
+    else
+    {
+        glDrawBuffer( GL_NONE );
+    }
+
 
     // Finalize depth if available;
     if( m_depthStencilTarget == nullptr )

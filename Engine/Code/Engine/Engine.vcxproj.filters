@@ -219,9 +219,6 @@
     <ClCompile Include="Renderer\FrameBuffer.cpp">
       <Filter>Renderer\GPUHandles</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Sampler.cpp">
-      <Filter>Renderer\GPUHandles</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\IndexBuffer.cpp">
       <Filter>Renderer\GPUHandles</Filter>
     </ClCompile>
@@ -389,6 +386,9 @@
     </ClCompile>
     <ClCompile Include="Math\Distance.cpp">
       <Filter>Math\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Sampler.cpp">
+      <Filter>Renderer\Textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -599,9 +599,6 @@
     <ClInclude Include="Renderer\FrameBuffer.hpp">
       <Filter>Renderer\GPUHandles</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Sampler.hpp">
-      <Filter>Renderer\GPUHandles</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer\IndexBuffer.hpp">
       <Filter>Renderer\GPUHandles</Filter>
     </ClInclude>
@@ -778,6 +775,9 @@
     </ClInclude>
     <ClInclude Include="Math\Distance.hpp">
       <Filter>Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Sampler.hpp">
+      <Filter>Renderer\Textures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -70,6 +70,23 @@ ShaderPass* ShaderPass::GetWireframeDebugShader()
     return s_wireframeDebugShader;
 }
 
+ShaderPass* ShaderPass::GetDepthOnlyShader()
+{
+    static ShaderPass* s_shader = nullptr;
+    if( !s_shader )
+    {
+        s_shader = new ShaderPass();
+        s_shader->SetProgram( ShaderProgram::CreateOrGetFromFiles(
+            "Data/Shaders/Skybox" ) );
+        s_shader->SetQueue( RenderQueue::SKY_BOX );
+        RenderState& state = s_shader->GetRenderState();
+        state.m_depthCompare = DepthCompareMode::LEQUAL;
+        state.m_depthWrite = false;
+        state.m_cullMode = CullMode::NONE;
+    }
+    return s_shader;
+}
+
 ShaderPass* ShaderPass::GetAdditiveShader()
 {
     static ShaderPass* s_additiveShader = nullptr;

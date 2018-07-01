@@ -21,7 +21,6 @@ public:
     Camera();
     virtual ~Camera();
 
-    // will be implemented later
     void SetColorTarget( Texture *colorTarget );
     void SetDepthStencilTarget( Texture *depthTarget );
 

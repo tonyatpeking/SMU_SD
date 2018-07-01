@@ -1,6 +1,32 @@
 ﻿#include "Engine/Renderer/Sampler.hpp"
 #include "Engine/Renderer/GLFunctions.hpp"
 
+Sampler* Sampler::GetPointSampler()
+{
+    static Sampler* s_sampler = nullptr;
+    if( !s_sampler )
+    {
+        s_sampler = new Sampler();
+        uint handle = s_sampler->m_samplerHandle;
+        glSamplerParameteri( handle, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+        glSamplerParameteri( handle, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    }
+    return s_sampler;
+}
+
+Sampler* Sampler::GetTrilinearSampler()
+{
+    static Sampler* s_sampler = nullptr;
+    if( !s_sampler )
+    {
+        s_sampler = new Sampler();
+        uint handle = s_sampler->m_samplerHandle;
+        glSamplerParameteri( handle, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+        glSamplerParameteri( handle, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    }
+    return s_sampler;
+}
+
 Sampler::Sampler()
 {
     Create();

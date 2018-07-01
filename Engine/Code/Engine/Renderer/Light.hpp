@@ -4,13 +4,18 @@
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Core/GameObject.hpp"
 
+class Camera;
+
 class Light : public GameObject
 {
 public:
     Light();
     virtual ~Light();
 
+    void SetCastShadow( bool castShadow );
     float GetContributionToPoint( Vec3 point );
+    bool GetCastShadow() { return m_castShadow; };
+    void RenderShadowMap();
 
     Rgba m_color = Rgba::WHITE;
     float m_intensity = 1;
@@ -23,4 +28,5 @@ public:
 
 private:
 
+    bool m_castShadow = false;
 };

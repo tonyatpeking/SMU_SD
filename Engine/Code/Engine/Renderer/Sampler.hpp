@@ -4,6 +4,10 @@
 class Sampler
 {
 public:
+
+    static Sampler* GetPointSampler();
+    static Sampler* GetTrilinearSampler();
+
     Sampler();
     ~Sampler();
     bool Create();
