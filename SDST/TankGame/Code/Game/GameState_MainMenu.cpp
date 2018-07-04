@@ -6,6 +6,7 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Time/TweenSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
+#include "Engine/Audio/AudioSystem.hpp"
 
 #include "Game/GameState_MainMenu.hpp"
 #include "Game/Game.hpp"
@@ -132,11 +133,15 @@ void GameState_MainMenu::OnEnter()
     Tween* tween = m_tweenSystem->MakeTween( m_textOffset, 0.f, 2.f );
     tween->SetTweenMode( TweenMode::PINGPONG );
     tween->SetEasing( Easing::BounceStop );
+
+    m_audioPlaybackID = g_audio->PlaySoundFromPath( "Data/Audio/Music/mainmenu.mp3", true, 1.f );
+
 }
 
 void GameState_MainMenu::OnExit()
 {
     GameState::OnExit();
+    g_audio->StopSound( m_audioPlaybackID );
 }
 
 void GameState_MainMenu::ProcessInput()

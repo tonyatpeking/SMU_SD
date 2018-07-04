@@ -1,4 +1,5 @@
-﻿#include "Engine/Renderer/ForwardRenderingPath.hpp"
+﻿#include "Engine/Audio/AudioSystem.hpp"
+#include "Engine/Renderer/ForwardRenderingPath.hpp"
 #include "Engine/Math/Distance.hpp"
 #include "Engine/UI/Menu.hpp"
 #include "Engine/Math/Random.hpp"
@@ -131,11 +132,14 @@ void GameState_Playing::OnEnter()
 
     //MakeTestCamera();
 
+    m_audioPlaybackID = g_audio->PlaySoundFromPath( "Data/Audio/Music/world.mp3", true, 0.5f );
+
 }
 
 void GameState_Playing::OnExit()
 {
     GameState::OnExit();
+    g_audio->StopSound( m_audioPlaybackID );
 }
 
 void GameState_Playing::ProcessInput()
@@ -677,6 +681,9 @@ void GameState_Playing::FireProjectile()
     };
 
     proj->AddDeathCallback( deathCB );
+
+    //Sound
+    g_audio->PlayOneOffSoundFromGroup( "player.cannon" );
 }
 
 
@@ -701,6 +708,9 @@ void GameState_Playing::MakeExplosion( const Vec3& expPos )
         float damage = RangeMapFloat( dist, 0, maxDist, 0, 1 );
         Swarmer* swarmer = (Swarmer*) go;
         swarmer->TakeDamage( damage );
+
+        g_audio->PlayOneOffSoundFromGroup( "enemy.hit" );
+
     }
 
     GameObjects& hives = g_gameObjectManager->GetObjectsOfType( "Hive" );

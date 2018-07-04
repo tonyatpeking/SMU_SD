@@ -44,6 +44,7 @@ public:
     void SetShouldDie( bool shouldDie );
     bool ShouldDie() { return m_shouldDie; };
     void CallDeathCallbacks();
+    virtual void OnDeath() {};
     void AddDeathCallback( GameObjectCB cb );
     void ClearDeathCallbacks();
 

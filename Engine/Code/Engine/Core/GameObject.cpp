@@ -95,6 +95,7 @@ void GameObject::SetShouldDie( bool shouldDie )
 {
     m_shouldDie = shouldDie;
     CallDeathCallbacks();
+    OnDeath();
 }
 
 void GameObject::CallDeathCallbacks()

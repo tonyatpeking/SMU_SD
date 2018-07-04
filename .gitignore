@@ -15,8 +15,9 @@
 *.dll
 !Engine/Code/ThirdParty/**
 !**/Run_Win32/*.dll
-**/Run_Win32/**
-!**/Run_Win32/Data/**
+**/Run_Win32/*
+!**/Run_Win32/Data/
+
 
 # Fortran module files
 *.mod

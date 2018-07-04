@@ -19,4 +19,5 @@ private:
     void StartGame();
     Menu* m_menu;
     float m_textOffset = -200;
+    size_t m_audioPlaybackID = -1;
 };

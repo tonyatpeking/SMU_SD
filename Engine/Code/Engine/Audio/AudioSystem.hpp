@@ -8,13 +8,17 @@
 #include <map>
 #include "Engine/Core/EngineCommon.hpp"
 
-
+typedef size_t GroupID;
 typedef size_t SoundID;
 typedef size_t PlaybackID;
 // for bad SoundIDs and SoundPlaybackIDs
 constexpr size_t MISSING_SOUND_ID = (size_t) ( -1 );
 
-
+struct AudioGroup
+{
+    std::vector<SoundID>soundIDs;
+    String name;
+};
 
 class AudioSystem;
 
@@ -52,6 +56,9 @@ public:
 
     void ValidateResult( FMOD_RESULT result );
 
+    // Audio groups
+    PlaybackID PlayOneOffSoundFromGroup( String groupName );
+    void LoadAudioGroups( String datafile );
 protected:
 
     bool MissingPlaybackID( PlaybackID playbackID );
@@ -59,6 +66,6 @@ protected:
     FMOD::System* m_fmodSystem;
     std::map< String, SoundID >	m_registeredSoundIDs;
     std::vector< FMOD::Sound* > m_registeredSounds;
-
+    std::map<String, AudioGroup> m_registeredGroups;
 };
 

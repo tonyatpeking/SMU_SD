@@ -18,5 +18,5 @@ protected:
     void MakeSkyBox();
     void MakeMap();
     void MakeNoiseImage();
-
+    void LoadAudio();
 };

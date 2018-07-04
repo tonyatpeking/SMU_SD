@@ -1,9 +1,10 @@
+#include "Engine/Math/Random.hpp"
 #include "Engine/Audio/AudioSystem.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/Core/StringUtils.hpp"
-
-
+#include "Engine/Core/XmlUtils.hpp"
+#include "Engine/Core/ContainerUtils.hpp"
 /*
 To disable audio entirely (and remove requirement for fmod.dll / fmod64.dll) for any
 game, #define ENGINE_DISABLE_AUDIO in your game's Code/Game/EngineBuildPreferences.hpp
@@ -227,6 +228,50 @@ void AudioSystem::ValidateResult( FMOD_RESULT result )
     }
 }
 
+
+PlaybackID AudioSystem::PlayOneOffSoundFromGroup( String groupName )
+{
+    if( ContainerUtils::Contains( m_registeredGroups, groupName ) )
+    {
+        AudioGroup& group = m_registeredGroups[groupName];
+        int numSounds = group.soundIDs.size();
+        if( numSounds == 0 )
+            return MISSING_SOUND_ID;
+        int soundToPlay = Random::IntInRange( 0, numSounds - 1 );
+        return PlaySound( group.soundIDs[soundToPlay] );
+    }
+    return MISSING_SOUND_ID;
+}
+
+void AudioSystem::LoadAudioGroups( String datafile )
+{
+    XMLDocument doc;
+    doc.LoadFromFile( datafile );
+    XMLElement root = doc.FirstChild();
+
+    // loop groups
+    for( XMLElement groupEl = root.FirstChild(); groupEl.Valid();
+         groupEl = groupEl.NextSibling() )
+    {
+        AudioGroup group{};
+        XMLAttribute nameAttr = groupEl.FirstAttribute();
+        group.name = nameAttr.Value();
+
+        // Loop clips
+        for( XMLElement clipEl = groupEl.FirstChild(); clipEl.Valid();
+             clipEl = clipEl.NextSibling() )
+        {
+            String soundPath = clipEl.FirstAttribute().Value();
+            SoundID soundID = CreateSound( soundPath );
+            group.soundIDs.push_back( soundID );
+        }
+        m_registeredGroups[group.name] = group;
+    }
+
+
+    int i = 1;
+    int o = i;
+}
 
 bool AudioSystem::MissingPlaybackID( PlaybackID playbackID )
 {

@@ -1,4 +1,5 @@
-﻿#include "Engine/Core/Window.hpp"
+﻿#include "Engine/Audio/AudioSystem.hpp"
+#include "Engine/Core/Window.hpp"
 #include "Engine/Core/Image.hpp"
 #include "Engine/Math/SmoothNoise.hpp"
 #include "Engine/Renderer/ShaderProgram.hpp"
@@ -67,6 +68,7 @@ void GameState_Loading::LoadResourcesOnSecondFrame()
     MakeSkyBox();
     MakeNoiseImage();
     MakeMap();
+    LoadAudio();
 }
 
 void GameState_Loading::MakeSpaceShip()
@@ -127,6 +129,11 @@ void GameState_Loading::MakeNoiseImage()
      //DebugRender::SetOptions( 100, Rgba::WHITE, Rgba::WHITE );
      //DebugRender::DrawQuad( AABB2::NEG_ONES_ONES * 2, Vec3::ZEROS, Vec3::ZEROS, g_game->m_noiseTexture );
 
+}
+
+void GameState_Loading::LoadAudio()
+{
+    g_audio->LoadAudioGroups( "Data/Audio/Audio.xml" );
 }
 
 void GameState_Loading::MakeMap()

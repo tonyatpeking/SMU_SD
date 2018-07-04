@@ -1,0 +1,35 @@
+<Audio>
+   <Group name="music.mainmenu">
+      <Clip src="Data/Audio/Music/mainmenu.mp3" stream="true" />
+   </Group>
+   <Group name="music.game">
+      <Clip src="Data/Audio/Music/world.mp3" />
+   </Group>
+   <Group name="player.cannon">
+      <Clip src="Data/Audio/Sfx/Gun_Pistol_Shot01.wav" />
+      <Clip src="Data/Audio/Sfx/Gun_Pistol_Shot02.wav" />
+      <Clip src="Data/Audio/Sfx/Gun_Pistol_Shot03.wav" />
+      <Clip src="Data/Audio/Sfx/Gun_Pistol_Shot04.wav" />
+      <Clip src="Data/Audio/Sfx/Gun_Pistol_Shot05.wav" />
+   </Group>
+   <Group name="enemy.hit">
+      <Clip src="Data/Audio/Sfx/Hit_GunButt_PistolWhip1.wav" />
+      <Clip src="Data/Audio/Sfx/Hit_GunButt_PistolWhip2.wav" />
+      <Clip src="Data/Audio/Sfx/Hit_GunButt_PistolWhip3.wav" />
+      <Clip src="Data/Audio/Sfx/Hit_GunButt_PistolWhip4.wav" />
+   </Group>
+   <Group name="enemy.die">
+      <Clip src="Data/Audio/Sfx/Explo_Medium_01.wav" />
+      <Clip src="Data/Audio/Sfx/Explo_Medium_02.wav" />
+      <Clip src="Data/Audio/Sfx/Explo_Medium_03.wav" />
+   </Group>
+   <Group name="menu.move">
+      <Clip src="Data/Audio/Sfx/menu.move.wav" />
+   </Group>
+   <Group name="menu.select">
+      <Clip src="Data/Audio/Sfx/menu.select.wav" />
+   </Group>
+   <Group name="menu.error">
+      <Clip src="Data/Audio/Sfx/menu.error.wav" />
+   </Group>
+</Audio>

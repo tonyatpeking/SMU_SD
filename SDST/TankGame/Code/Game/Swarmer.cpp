@@ -5,6 +5,7 @@
 #include "Engine/Time/Timer.hpp"
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Renderer/MeshPrimitive.hpp"
+#include "Engine/Audio/AudioSystem.hpp"
 
 #include "Game/GameCommon.hpp"
 #include "Game/Hive.hpp"
@@ -96,6 +97,12 @@ void Swarmer::TakeDamage( float damage )
     Rgba tint = Lerp( Rgba::RED, Rgba::WHITE, m_health );
     m_renderable->GetMaterial( 0 )->SetTint( tint );
 
+}
+
+void Swarmer::OnDeath()
+{
+    GameObject::OnDeath();
+    g_audio->PlayOneOffSoundFromGroup( "enemy.die" );
 }
 
 void Swarmer::SetTargetFromSwarming()

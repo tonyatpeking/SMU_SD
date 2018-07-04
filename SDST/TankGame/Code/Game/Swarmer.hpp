@@ -19,6 +19,7 @@ public:
     void SetHive( Hive* hive );
     void TellHiveIDied();
     void TakeDamage( float damage );
+    virtual void OnDeath() override;
 
 private:
 
