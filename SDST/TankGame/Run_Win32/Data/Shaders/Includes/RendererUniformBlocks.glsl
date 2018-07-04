@@ -35,6 +35,9 @@ layout(binding=5, std140) uniform uboGlobal
 	float FOG_FAR_PLANE;
 	float FOG_FAR_FACTOR;
 
+	mat4 SHADOW_MAP_VP;
+    mat4 SHADOW_MAP_INV_VP;
+
 	vec2 WINDOW_SIZE;
 
 

@@ -244,7 +244,7 @@ ShaderProgram* ShaderProgram::GetInvalidProgram()
             BUILTIN_SHADER_FILE, BUILTIN_SHADER_FILE,
             INVALID_VERTEX_SHADER_LINE, INVALID_FRAGMENT_SHADER_LINE,
             INVALID_GENERATE_PATH );
-        s_invalidProgram->m_isDebugProgram = true;
+        s_invalidProgram->m_isOverrideProgram = true;
     }
     return s_invalidProgram;
 }
@@ -261,7 +261,7 @@ ShaderProgram* ShaderProgram::GetDebugProgram()
             BUILTIN_SHADER_FILE, BUILTIN_SHADER_FILE,
             BUILTIN_VERTEX_SHADER_LINE, BUILTIN_FRAGMENT_SHADER_LINE,
             DEBUG_GENERATE_PATH );
-        s_debugProgram->m_isDebugProgram = true;
+        s_debugProgram->m_isOverrideProgram = true;
     }
     return s_debugProgram;
 }
@@ -275,6 +275,18 @@ ShaderProgram* ShaderProgram::GetLitProgram()
             "Data/Shaders/lit" );
     }
     return s_litProgram;
+}
+
+ShaderProgram* ShaderProgram::GetDepthOnlyProgram()
+{
+    static ShaderProgram* s_program = nullptr;
+    if( !s_program )
+    {
+        s_program = CreateOrGetFromFiles(
+            "Data/Shaders/DepthOnly" );
+        s_program->m_isOverrideProgram = true;
+    }
+    return s_program;
 }
 
 void ShaderProgram::Bind()

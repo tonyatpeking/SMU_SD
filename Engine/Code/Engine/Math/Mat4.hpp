@@ -36,8 +36,10 @@ public:
     Vec4 GetRowZ() const;
     Vec4 GetRowW() const;
     void DecomposeToSRT( Vec3& out_scale, Vec3& out_euler, Vec3& out_translation ) const;
+    Mat4 GetRotationalPart() const;
     // Rotation part must be pure rotation (no scale), translation is ignored
     Vec3 DecomposeEuler() const;
+    Vec3 DecomposeScale() const;
     bool IsAnyInf() const;
     bool IsAnyNaN() const;
 
@@ -51,8 +53,11 @@ public:
     bool Invert();
     Mat4 Inverse() const;
     void Transpose();
+    Mat4 Transposed();
     void InvertTranslation();
+    Mat4 InverseTranslation();
     void InvertRotation();
+    Mat4 InverseRotation();
     void SnapToZero();
 
     // 2d

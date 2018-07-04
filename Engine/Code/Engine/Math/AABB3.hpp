@@ -85,6 +85,16 @@ public:
     static AABB3 MakeBoundsFromDimensions( const IVec3& dimensions );
 
     // all corner points
+    // out_corners must be preallocated and holds 8 vec3's
+    // vertex order
+    //                7-------6
+    //               /|      /|
+    //              3-|-----2 |
+    //              | 4-----|-5
+    //              |/   o  |/
+    //              0-------1
+    void GetCorners( Vec3* out_corners ) const;
+
     Vec3 GetForwardTopRight() const;
     Vec3 GetForwardTopLeft() const;
     Vec3 GetForwardBottomRight() const;

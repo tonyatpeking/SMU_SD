@@ -1,12 +1,17 @@
-﻿#include "Engine/Renderer/Camera.hpp"
+﻿#include "Engine/Math/Frustum.hpp"
+#include "Engine/Renderer/MeshPrimitive.hpp"
+#include "Engine/Renderer/Camera.hpp"
 #include "Engine/Renderer/FrameBuffer.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Renderer/RenderSceneGraph.hpp"
-
+#include "Engine/Renderer/ShaderPass.hpp"
+#include "Engine/Renderer/Material.hpp"
+#include "Engine/Renderer/MeshBuilder.hpp"
+#include "Engine/Renderer/Mesh.hpp"
 
 Camera::Camera()
-    : GameObject("Camera")
+    : GameObject( "Camera" )
 {
 
 }
@@ -35,7 +40,7 @@ Vec2 Camera::WorldToScreen( Vec3 worldPos )
     Vec4 clip = GetVPMatrix() * Vec4( worldPos, 1.f );
     Vec3 ndc = Vec3( clip ) / clip.w;
     // point is behind us, hacky solution so that point is not transformed to screen
-    if( Dot( worldPos - m_transform.GetWorldPosition(), m_transform.GetForward()) < 0 )
+    if( Dot( worldPos - m_transform.GetWorldPosition(), m_transform.GetForward() ) < 0 )
     {
         return Vec2( -1000000, -1000000 );
     }
@@ -120,4 +125,26 @@ uint Camera::GetFrameBufferHandle()
 Mat4 Camera::GetVPMatrix()
 {
     return m_projMat * GetViewMatrix();
+}
+
+void Camera::SetFrustumVisible( bool visible, const Rgba& color )
+{
+    if( visible )
+    {
+        if( !m_renderable )
+        {
+            m_renderable = new Renderable();
+            Material* mat = m_renderable->GetMaterial( 0 );
+            mat->SetShaderPass( 0, ShaderPass::GetDoubleSidedWireframeDebugShader() );
+            mat->SetTint( color );
+            Frustum frustum = Frustum::FromMatrixAABB3( m_projMat );
+            Mesh* mesh = MeshPrimitive::MakeFrustum( frustum ).MakeMesh();
+            m_renderable->SetMesh( mesh );
+        }
+        SetVisible( true );
+    }
+    else
+    {
+        SetVisible( false );
+    }
 }

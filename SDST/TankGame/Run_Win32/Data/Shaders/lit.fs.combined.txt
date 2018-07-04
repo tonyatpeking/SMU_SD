@@ -38,6 +38,9 @@ layout(binding=5, std140) uniform uboGlobal
 	float FOG_FAR_PLANE;
 	float FOG_FAR_FACTOR;
 
+	mat4 SHADOW_MAP_VP;
+    mat4 SHADOW_MAP_INV_VP;
+
 	vec2 WINDOW_SIZE;
 
 
@@ -69,7 +72,7 @@ layout(binding=6, std140) uniform uboLights
 {
 	vec4 AMBIENT;  // xyz color, w intensity
 	Light LIGHTS[MAX_LIGHTS];
-};                                                                    
+};                                                                       
 //#include "Data/Shaders/Includes/RendererUniformBlocks.glsl"
 #define RangeMap(val, inStart, inEnd, outStart, outEnd) \
 (((val) - (inStart)) / ((inEnd) - (inStart)) * ((outEnd) - (outStart)) + (outStart))

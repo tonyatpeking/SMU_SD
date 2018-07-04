@@ -390,6 +390,7 @@
     <ClCompile Include="Renderer\Sampler.cpp">
       <Filter>Renderer\Textures</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Frustum.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -779,6 +780,7 @@
     <ClInclude Include="Renderer\Sampler.hpp">
       <Filter>Renderer\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Frustum.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">

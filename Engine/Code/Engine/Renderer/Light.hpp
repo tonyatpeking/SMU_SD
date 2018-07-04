@@ -14,8 +14,11 @@ public:
 
     void SetCastShadow( bool castShadow );
     float GetContributionToPoint( Vec3 point );
-    bool GetCastShadow() { return m_castShadow; };
-    void RenderShadowMap();
+
+    // Shadows
+    bool IsCastShadow() { return m_castShadow; };
+
+
 
     Rgba m_color = Rgba::WHITE;
     float m_intensity = 1;
@@ -27,6 +30,8 @@ public:
     float m_coneOuterDot = -2;
 
 private:
+
+
 
     bool m_castShadow = false;
 };

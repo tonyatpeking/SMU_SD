@@ -167,6 +167,7 @@ Renderable* MakeRenderable3D()
 void DebugRender::Startup( Renderer *renderer )
 {
     g_renderer = renderer;
+    g_3dCamera = renderer->GetMainCamera();
     g_2dCamera = renderer->GetUICamera();
 }
 

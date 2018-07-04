@@ -45,6 +45,8 @@ public:
     void PushPos( const Vec3& pos );
 
     // The following assume DrawPrimitive::TRIANGLES
+    void AddFace( const Vec3& p0, const Vec3& p1, const Vec3& p2 );
+    void AddFace( const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& p3 );
     void AddFaceIdx( uint idx0, uint idx1, uint idx2 );
     void AddFaceIdx( uint idx0, uint idx1, uint idx2, uint idx3 );
     void AddFaceIdxRange( uint startIdx, uint endIdx );

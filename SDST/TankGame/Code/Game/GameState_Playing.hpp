@@ -50,6 +50,7 @@ private:
     void TestRender() const;
     void TestUpdate();
     void TestInput();
+    void MakeTestCamera();
 
     void UpdateCameraToFollow();
     void LoadMiku();
@@ -92,6 +93,7 @@ private:
     // works
     void TestSphereBoxIntersection();
 
+    Light* m_sun = nullptr;
     GameObject* m_camRayIndicator = nullptr;
     GameObject* m_turretRayIndicator = nullptr;
     GameObject* m_turret = nullptr;
@@ -112,8 +114,8 @@ private:
     float m_camPitch = 0;
 
     float m_fov = 80;
-    float m_near = 0.001f;
-    float m_far = 1000;
+    float m_near = 1.f;
+    float m_far = 300;
 
     float m_moveSpeed = 15;
     float m_rollSpeed = 200;

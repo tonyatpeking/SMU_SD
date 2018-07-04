@@ -6,6 +6,7 @@
 
 class Mesh;
 class MeshBuilder;
+class Frustum;
 
 namespace MeshPrimitive
 {
@@ -32,5 +33,8 @@ MeshBuilder MakeUVSphere(
 MeshBuilder MakeLineStrip(
     const std::vector<Vec3>& points,
     const Rgba& startColor, const Rgba& endColor );
+
+MeshBuilder MakeFrustum( const Frustum& frustum );
+
 
 };

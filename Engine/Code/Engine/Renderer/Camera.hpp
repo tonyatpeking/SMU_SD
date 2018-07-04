@@ -6,6 +6,7 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/Transform.hpp"
 #include "Engine/Core/GameObject.hpp"
+#include "Engine/Core/Rgba.hpp"
 
 class Texture;
 class Vec3;
@@ -49,6 +50,12 @@ public:
     const Mat4& GetViewMatrix() { return m_transform.GetWorldToLocal(); };
     const Mat4& GetProjMatrix() const { return m_projMat; };
 
+    FrameBuffer* GetFrameBuffer() { return m_frameBuffer; };
+
+    // Debug
+    void SetFrustumVisible( bool visible, const Rgba& color = Rgba::RED_MAGENTA );
+
+
     // default all to identity
     //Mat4 m_camToWorld;  // where is the camera?
     //Mat4 m_viewMat;    // inverse of camera (used for shader)
@@ -56,6 +63,7 @@ public:
 
     FrameBuffer* m_frameBuffer = nullptr;
     std::vector<Material*> m_effects;
+
 
 private:
 

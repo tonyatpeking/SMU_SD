@@ -316,6 +316,19 @@ AABB3 AABB3::MakeBoundsFromDimensions( const IVec3& dimensions )
     return MakeBoundsFromDimensions( (Vec3) dimensions );
 }
 
+void AABB3::GetCorners( Vec3* out_corners ) const
+{
+    out_corners[0] = GetBackwardBottomLeft();
+    out_corners[1] = GetBackwardBottomRight();
+    out_corners[2] = GetBackwardTopRight();
+    out_corners[3] = GetBackwardTopLeft();
+    out_corners[4] = GetForwardBottomLeft();
+    out_corners[5] = GetForwardBottomRight();
+    out_corners[6] = GetForwardTopRight();
+    out_corners[7] = GetForwardTopLeft();
+
+}
+
 Vec3 AABB3::GetForwardTopRight() const
 {
     return maxs;

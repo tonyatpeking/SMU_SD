@@ -395,7 +395,7 @@ void Game::ToggleDebugRenderModes()
     switch( currentMode )
     {
     case 0:
-        g_renderer->SetDebugShader( nullptr );
+        g_renderer->SetOverrideShader( nullptr );
         break;
     case 1:
         g_renderer->SetDebugWireframeShader();
@@ -404,7 +404,7 @@ void Game::ToggleDebugRenderModes()
         g_renderer->SetDebugLightingShader();
         break;
     default:
-        g_renderer->SetDebugShader( nullptr );
+        g_renderer->SetOverrideShader( nullptr );
         break;
     }
 

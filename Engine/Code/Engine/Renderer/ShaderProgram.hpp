@@ -14,6 +14,7 @@ public:
     static ShaderProgram* GetInvalidProgram();
     static ShaderProgram* GetDebugProgram();
     static ShaderProgram* GetLitProgram();
+    static ShaderProgram* GetDepthOnlyProgram();
 
     // user of class must check for null and valid handle before calling bind
     void Bind();
@@ -48,7 +49,7 @@ public:
 
     static std::map < String, ShaderProgram* > s_loadedShaders;
 
-    bool m_isDebugProgram = false;
+    bool m_isOverrideProgram = false;
 
 private:
     ShaderProgram();

@@ -98,9 +98,9 @@ void Renderer::PostInit()
     m_defaultShadowTarget = CreateDepthStencilTarget( 2048, 2048 );
 
     // init default camera
-    m_defaultCamera  = new Camera();
-    m_defaultCamera->SetColorTarget( m_defaultColorTarget );
-    m_defaultCamera->SetDepthStencilTarget( m_defaultDepthTarget );
+    m_mainCamera  = new Camera();
+    m_mainCamera->SetColorTarget( m_defaultColorTarget );
+    m_mainCamera->SetDepthStencilTarget( m_defaultDepthTarget );
     UseCamera( nullptr );
 
     // init ui camera
@@ -129,7 +129,7 @@ void Renderer::BeginFrame()
     ClearDepth();
     //ClearImmediateRenderable();
     UpdateAndBindTimeUBO();
-    UseDefaultCamera();
+    UseMainCamera();
     // Disable vao attrib pointer
     GL_CHECK_ERROR();
 }
@@ -300,13 +300,13 @@ void Renderer::BindRenderState( const RenderState& rs, bool forced )
 
 void Renderer::SetDebugWireframeShader()
 {
-    SetDebugShader( ShaderPass::GetWireframeDebugShader() );
+    SetOverrideShader( ShaderPass::GetWireframeDebugShader() );
 }
 
 
 void Renderer::SetDebugLightingShader()
 {
-    SetDebugShader( ShaderPass::GetLightingDebugShader() );
+    SetOverrideShader( ShaderPass::GetLightingDebugShader() );
 }
 
 
@@ -328,6 +328,15 @@ void Renderer::SetFog( const Rgba& color, float nearPlane, float nearFactor, flo
     m_globalUBOData.fogNearFactor = nearFactor;
     m_globalUBOData.fogFarPlane = farPlane;
     m_globalUBOData.fogFarFactor = farFactor;
+    m_globalUniformBuffer.Set( m_globalUBOData );
+    m_globalUniformBuffer.BindToSlot( UBO::GLOBAL_BINDING );
+    GL_CHECK_ERROR();
+}
+
+void Renderer::SetShadowMapVP( const Mat4& vp )
+{
+    m_globalUBOData.shadowMapVP = vp;
+    m_globalUBOData.shadowMapInvVP = vp.Inverse();
     m_globalUniformBuffer.Set( m_globalUBOData );
     m_globalUniformBuffer.BindToSlot( UBO::GLOBAL_BINDING );
     GL_CHECK_ERROR();
@@ -1048,7 +1057,7 @@ void Renderer::UseCamera( Camera* camera )
 {
     if( camera == nullptr )
     {
-        camera = m_defaultCamera;
+        camera = m_mainCamera;
     }
 
     // make sure the framebuffer is finished being setup;
@@ -1063,6 +1072,9 @@ void Renderer::UseCamera( Camera* camera )
 
     m_cameraUniformBuffer.Set( m_cameraUBOData );
     m_cameraUniformBuffer.BindToSlot( UBO::CAMERA_BINDING );
+
+    IVec2 dim = m_currentCamera->GetFrameBuffer()->GetDimensions();
+    glViewport( 0, 0, dim.x, dim.y );
 
     glBindFramebuffer( GL_FRAMEBUFFER, m_currentCamera->GetFrameBufferHandle() );
 }
@@ -1090,14 +1102,24 @@ void Renderer::BindLightUBO()
     GL_CHECK_ERROR();
 }
 
-void Renderer::UseDefaultCamera()
+void Renderer::UseMainCamera()
 {
-    UseCamera( m_defaultCamera );
+    UseCamera( m_mainCamera );
 }
 
 void Renderer::UseUICamera()
 {
     UseCamera( m_UICamera );
+}
+
+void Renderer::SetMainCamera( Camera* camera )
+{
+    if( camera == m_mainCamera )
+        return;
+
+    if( m_mainCamera )
+        delete m_mainCamera;
+    m_mainCamera = camera;
 }
 
 void Renderer::BindSampler( uint textureUnitIdx, Sampler* sampler )

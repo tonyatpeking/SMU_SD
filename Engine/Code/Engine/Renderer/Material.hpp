@@ -23,6 +23,8 @@ public:
     ShaderPass* GetShaderPass( uint shaderPassID ) ;
     void SetShaderPass( uint shaderPassID, ShaderPass* shaderPass ) ;
     uint GetProgramHandle( uint shaderPassID );
+    bool IsOpaque() { return m_isOpaque; };
+    bool SetOpaque( bool opaque ) { m_isOpaque = opaque; };
     //#TODO parse material from file
     const Texture* m_diffuse = nullptr;
     const Texture* m_normal = nullptr;
@@ -31,4 +33,5 @@ public:
     float m_specularAmount = 0.7f;
     float m_specularPower = 30.f;
     bool m_isResource = true;
+    bool m_isOpaque = true;
 };

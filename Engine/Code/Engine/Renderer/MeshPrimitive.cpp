@@ -2,6 +2,7 @@
 #include "Engine/Renderer/Mesh.hpp"
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Math/Frustum.hpp"
 
 MeshBuilder MeshPrimitive::MakeCube( const Vec3& sideLengths /*= Vec3::ONES*/,
                                      const Rgba& tint /*= Rgba::WHITE*/,
@@ -240,4 +241,32 @@ MeshBuilder MeshPrimitive::MakeLineStrip( const std::vector<Vec3>& points,
     }
     mb.EndSubMesh();
     return mb;
+}
+
+MeshBuilder MeshPrimitive::MakeFrustum( const Frustum& frustum )
+{
+    // just make 6 planes, don't really care about efficiency
+
+    MeshBuilder mb{};
+    mb.BeginSubMesh();
+    mb.SetColor( Rgba::WHITE );
+    //                7-------6
+    //               /|      /|
+    //              3-|-----2 |
+    //              | 4-----|-5
+    //              |/   o  |/
+    //              0-------1
+    const Vec3* corners = frustum.GetCorners();
+    mb.AddFace( corners[1], corners[5], corners[6], corners[2] );
+    mb.AddFace( corners[4], corners[0], corners[3], corners[7] );
+    mb.AddFace( corners[3], corners[2], corners[6], corners[7] );
+    mb.AddFace( corners[4], corners[5], corners[1], corners[0] );
+    mb.AddFace( corners[7], corners[6], corners[5], corners[4] );
+    mb.AddFace( corners[0], corners[1], corners[2], corners[3] );
+    mb.EndSubMesh();
+
+    mb.GenerateNormals();
+
+    return mb;
+
 }

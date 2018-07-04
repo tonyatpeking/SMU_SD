@@ -13,4 +13,4 @@ typedef std::vector<unsigned int> Uints;
 
 typedef unsigned int uint;
 typedef unsigned char uchar;
-typedef char byte_t;
+typedef char Byte;

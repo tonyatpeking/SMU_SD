@@ -19,6 +19,12 @@ void FrameBuffer::SetColorTarget( Texture *colorTarget )
      m_dimensions = colorTarget->GetDimensions();
 }
 
+void FrameBuffer::SetDepthStencilTarget( Texture *depthTarget )
+{
+    m_depthStencilTarget = depthTarget;
+    m_dimensions = m_depthStencilTarget->GetDimensions();
+}
+
 bool FrameBuffer::Finalize()
 {
     glBindFramebuffer( GL_FRAMEBUFFER, m_handle );

@@ -319,6 +319,11 @@ Mat4 Mat4::Transpose( const Mat4& mat )
     return transpose;
 }
 
+Mat4 Mat4::Transposed()
+{
+    return Mat4::Transpose(*this);
+}
+
 Mat4 Mat4::LerpTransform( const Mat4& matA, const Mat4& matB, float t )
 {
     Vec3 aRight = (Vec3) matA.I;
@@ -345,11 +350,23 @@ void Mat4::InvertTranslation()
     Tz = -Tz;
 }
 
+Mat4 Mat4::InverseTranslation()
+{
+    Mat4 mat4 = *this;
+    mat4.InvertTranslation();
+    return mat4;
+}
+
 void Mat4::InvertRotation()
 {
     Transpose();
 }
 
+
+Mat4 Mat4::InverseRotation()
+{
+    return this->Transposed();
+}
 
 void Mat4::SnapToZero()
 {
@@ -420,9 +437,7 @@ Vec4 Mat4::GetRowW() const
 void Mat4::DecomposeToSRT( Vec3& out_scale, Vec3& out_euler, Vec3& out_translation ) const
 {
     out_translation = Vec3( T );
-    out_scale.x = Vec3( I ).GetLength();
-    out_scale.y = Vec3( J ).GetLength();
-    out_scale.z = Vec3( K ).GetLength();
+    out_scale = DecomposeScale();
     Mat4 rot = *this;
     if( 0 == out_scale.x || 0 == out_scale.y || 0 == out_scale.z )
     {
@@ -431,6 +446,20 @@ void Mat4::DecomposeToSRT( Vec3& out_scale, Vec3& out_euler, Vec3& out_translati
     }
     rot.Scale( Vec3::ONES / out_scale );
     out_euler = rot.DecomposeEuler();
+}
+
+Mat4 Mat4::GetRotationalPart() const
+{
+    Vec3 scale = DecomposeScale();
+    Mat4 rot = *this;
+    if( 0 == scale.x || 0 == scale.y || 0 == scale.z )
+    {
+        LOG_WARNING( "could not get rotational part, scale was 0" );
+        return rot;
+    }
+    rot.Scale( Vec3::ONES / scale );
+    rot.T = Vec4( 0, 0, 0, 1 );
+    return rot;
 }
 
 Vec3 Mat4::DecomposeEuler() const
@@ -452,6 +481,15 @@ Vec3 Mat4::DecomposeEuler() const
         euler.y = Atan2Deg( Jx, Jz );
     }
     return euler;
+}
+
+Vec3 Mat4::DecomposeScale() const
+{
+    Vec3 scale;
+    scale.x = Vec3( I ).GetLength();
+    scale.y = Vec3( J ).GetLength();
+    scale.z = Vec3( K ).GetLength();
+    return scale;
 }
 
 bool Mat4::IsAnyInf() const

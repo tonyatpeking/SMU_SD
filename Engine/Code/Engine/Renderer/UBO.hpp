@@ -53,6 +53,9 @@ struct GlobalData
     float fogFarPlane;
     float fogFarFactor;
 
+    Mat4 shadowMapVP;
+    Mat4 shadowMapInvVP;
+
     Vec2 windowSize;
 };
 

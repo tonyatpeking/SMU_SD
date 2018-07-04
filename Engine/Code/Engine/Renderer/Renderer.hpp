@@ -167,9 +167,14 @@ public:		// Public methods
 
     //Camera
     void UseCamera( Camera* camera );
-    void UseDefaultCamera();
+    void UseMainCamera();
     void UseUICamera();
+    void SetMainCamera( Camera* camera );
+
     Camera* GetUICamera() { return m_UICamera; };
+    Camera* GetShadowCamera() { return m_shadowCamera; };
+    Camera* GetMainCamera() { return m_mainCamera; };
+
 
     //Sampler
     void BindSampler( uint textureUnitIdx, Sampler* sampler );
@@ -237,16 +242,15 @@ public:		// Public methods
     void SetDebugLightingShader();
 
     // This shader will override all shaders
-    // Set to null to turn off debug mode
-    void SetDebugShader( ShaderPass* shader ) { m_overrideShader = shader; };
+    // Set to null to turn off override mode
+    void SetOverrideShader( ShaderPass* shader ) { m_overrideShader = shader; };
 
     void SetWindowUBO( Vec2 windowSize );
 
     void SetFog( const Rgba& color, float nearPlane, float nearFactor,
                  float farPlane, float farFactor );
 
-    // Shadows
-    Camera* GetShadowCamera() { return m_shadowCamera; };
+    void SetShadowMapVP( const Mat4& vp );
 
 
 private:	// Private members
@@ -283,7 +287,7 @@ private:	// Private members
     Texture* m_defaultShadowTarget = nullptr;
 
     Camera* m_currentCamera = nullptr;
-    Camera* m_defaultCamera = nullptr;
+    Camera* m_mainCamera = nullptr;
     Camera* m_UICamera = nullptr;
     Camera* m_effectCamera = nullptr;
     Camera* m_shadowCamera = nullptr;

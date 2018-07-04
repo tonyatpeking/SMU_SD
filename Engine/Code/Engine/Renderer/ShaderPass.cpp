@@ -53,7 +53,7 @@ ShaderPass* ShaderPass::GetLightingDebugShader()
         s_lightingDebugShader = new ShaderPass();
         s_lightingDebugShader->SetProgram( ShaderProgram::CreateOrGetFromFiles(
             LIGHTING_DEBUG_SHADER ) );
-        s_lightingDebugShader->GetProgram()->m_isDebugProgram = true;
+        s_lightingDebugShader->GetProgram()->m_isOverrideProgram = true;
     }
     return s_lightingDebugShader;
 }
@@ -70,19 +70,26 @@ ShaderPass* ShaderPass::GetWireframeDebugShader()
     return s_wireframeDebugShader;
 }
 
+ShaderPass* ShaderPass::GetDoubleSidedWireframeDebugShader()
+{
+    static ShaderPass* s_wireframeDebugShader = nullptr;
+    if( !s_wireframeDebugShader )
+    {
+        s_wireframeDebugShader = new ShaderPass();
+        s_wireframeDebugShader->SetProgram( ShaderProgram::GetDebugProgram() );
+        s_wireframeDebugShader->SetFillMode( FillMode::WIRE );
+        s_wireframeDebugShader->SetCullMode( CullMode::NONE );
+    }
+    return s_wireframeDebugShader;
+}
+
 ShaderPass* ShaderPass::GetDepthOnlyShader()
 {
     static ShaderPass* s_shader = nullptr;
     if( !s_shader )
     {
         s_shader = new ShaderPass();
-        s_shader->SetProgram( ShaderProgram::CreateOrGetFromFiles(
-            "Data/Shaders/Skybox" ) );
-        s_shader->SetQueue( RenderQueue::SKY_BOX );
-        RenderState& state = s_shader->GetRenderState();
-        state.m_depthCompare = DepthCompareMode::LEQUAL;
-        state.m_depthWrite = false;
-        state.m_cullMode = CullMode::NONE;
+        s_shader->SetProgram( ShaderProgram::GetDepthOnlyProgram() );
     }
     return s_shader;
 }

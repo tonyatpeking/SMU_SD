@@ -54,7 +54,7 @@ MeshBuilder MeshBuilder::FromSurfacePatch( SurfacePatch* sp,
         {
             // idx3 idx2
             // idx0 idx1
-            int idx0 = IVec2::CoordsToIndex( uIdx, vIdx, uGridCells + 1);
+            int idx0 = IVec2::CoordsToIndex( uIdx, vIdx, uGridCells + 1 );
             int idx1 = IVec2::CoordsToIndex( uIdx + 1, vIdx, uGridCells + 1 );
             int idx2 = IVec2::CoordsToIndex( uIdx + 1, vIdx + 1, uGridCells + 1 );
             int idx3 = IVec2::CoordsToIndex( uIdx, vIdx + 1, uGridCells + 1 );
@@ -119,6 +119,31 @@ void MeshBuilder::PushPos( const Vec3& pos )
 {
     m_currentVert.m_position = pos;
     m_verts.push_back( m_currentVert );
+}
+
+
+
+void MeshBuilder::AddFace( const Vec3& p0, const Vec3& p1, const Vec3& p2 )
+{
+    uint faceIdx0 = GetVertCount();
+
+    PushPos( p0 );
+    PushPos( p1 );
+    PushPos( p2 );
+
+    AddFaceIdx( faceIdx0, faceIdx0 + 1, faceIdx0 + 2 );
+}
+
+void MeshBuilder::AddFace( const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& p3 )
+{
+    uint faceIdx0 = GetVertCount();
+
+    PushPos( p0 );
+    PushPos( p1 );
+    PushPos( p2 );
+    PushPos( p3 );
+
+    AddFaceIdx( faceIdx0, faceIdx0 + 1, faceIdx0 + 2, faceIdx0 + 3 );
 }
 
 void MeshBuilder::AddFaceIdx( uint idx0, uint idx1, uint idx2 )
@@ -354,7 +379,7 @@ void MeshBuilder::TransformAllVerts( const Mat4& transform )
 
 void MeshBuilder::CalculateBounds()
 {
-    for (int i = 0; i < m_verts.size() ; ++i)
+    for( int i = 0; i < m_verts.size(); ++i )
     {
         m_localBounds.StretchToIncludePoint( m_verts[i].m_position );
     }

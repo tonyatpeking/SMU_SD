@@ -1,4 +1,5 @@
-﻿#include "Engine/Math/Distance.hpp"
+﻿#include "Engine/Renderer/ForwardRenderingPath.hpp"
+#include "Engine/Math/Distance.hpp"
 #include "Engine/UI/Menu.hpp"
 #include "Engine/Math/Random.hpp"
 #include "Engine/Math/Vec2.hpp"
@@ -105,7 +106,7 @@ void GameState_Playing::OnEnter()
 
     MakeCamera();
 
-    DebugRender::Set3DCamera( g_mainCamera );
+    DebugRender::Set3DCamera( g_renderer->GetMainCamera() );
 
     g_renderer->SetBackGroundColor( Rgba::BLACK );
 
@@ -127,6 +128,8 @@ void GameState_Playing::OnEnter()
     FinalizeSpaceShip();
 
     CreateInitHives();
+
+    MakeTestCamera();
 
 }
 
@@ -152,12 +155,14 @@ void GameState_Playing::ProcessInput()
 
 void GameState_Playing::MakeCamera()
 {
-    delete g_mainCamera;
-    g_mainCamera = new OrbitCamera();
-    g_mainCamera->SetColorTarget( g_renderer->DefaultColorTarget() );
-    g_mainCamera->SetDepthStencilTarget( g_renderer->DefaultDepthTarget() );
-    g_mainCamera->SetProjection( m_fov, m_near, m_far ); //fov near far
-    g_renderSceneGraph->AddCamera( g_mainCamera );
+    Camera* cam = new OrbitCamera();
+    cam->SetColorTarget( g_renderer->DefaultColorTarget() );
+    cam->SetDepthStencilTarget( g_renderer->DefaultDepthTarget() );
+    cam->SetProjection( m_fov, m_near, m_far ); //fov near far
+    g_renderer->SetMainCamera( cam );
+    g_renderSceneGraph->AddCamera( cam );
+
+
 }
 
 void GameState_Playing::ProcessMovementInput()
@@ -411,7 +416,7 @@ void GameState_Playing::TestInput()
         }
     }
 
-    const Vec3 camPos =  g_mainCamera->GetTransform().GetWorldPosition();
+    const Vec3 camPos =  g_renderer->GetMainCamera()->GetTransform().GetWorldPosition();
     // Sphere
     if( g_input->WasKeyJustPressed( 'V' ) )
     {
@@ -466,7 +471,7 @@ void GameState_Playing::TestInput()
     if( g_input->WasKeyJustPressed( 'V' ) )
     {
         DebugRender::SetOptions( -1, Rgba::GREEN, Rgba::RED );
-        Transform trans = g_mainCamera->GetTransform();
+        Transform trans = g_renderer->GetMainCamera()->GetTransform();
         trans.TranslateLocal( Vec3( -5, 0, 4 ) );
 
 
@@ -485,6 +490,20 @@ void GameState_Playing::TestInput()
     }
 }
 
+
+void GameState_Playing::MakeTestCamera()
+{
+    static Camera* s_testCamera = nullptr;
+    s_testCamera = new OrbitCamera();
+    s_testCamera->SetColorTarget( g_renderer->DefaultColorTarget() );
+    s_testCamera->SetDepthStencilTarget( g_renderer->DefaultDepthTarget() );
+    s_testCamera->SetProjection( m_fov, m_near, m_far ); //fov near far
+    s_testCamera->SetFrustumVisible( true );
+    s_testCamera->GetTransform().TranslateLocal( Vec3::UP * 20 );
+    s_testCamera->GetTransform().RotateLocalEuler( Vec3(0,33,0) );
+
+    g_forwardRenderingPath->UpdateShadowCamera( m_sun, s_testCamera );
+}
 
 void GameState_Playing::LoadMiku()
 {
@@ -595,15 +614,21 @@ void GameState_Playing::RenderLights() const
 
 void GameState_Playing::MakeSun()
 {
-    Light* light = m_lights[m_lightsToSpawn - 1];
-    light->m_color = Rgba::WHITE;
-    light->GetTransform().SetWorldEuler( Vec3( 45, 0, 0 ) );
+    m_sun = m_lights[0];
+    m_sun->SetCastShadow( true );
 
-    light->m_sourceRadius = 99999.f;
-    light->m_isPointLight = 0;
-    light->m_coneInnerDot = -2;
-    light->m_coneOuterDot = -2;
-    light->m_intensity = 1;
+    m_sun->m_color = Rgba::WHITE;
+    m_sun->GetTransform().SetWorldEuler( Vec3( 45, 90, 0 ) );
+    m_sun->GetTransform().SetWorldPosition( Vec3( 0, 30, 0 ) );
+
+    m_sun->m_sourceRadius = 99999.f;
+    m_sun->m_isPointLight = 0;
+    m_sun->m_coneInnerDot = -2;
+    m_sun->m_coneOuterDot = -2;
+    m_sun->m_intensity = 1;
+
+    DebugRender::SetOptions( 100 );
+    DebugRender::DrawBasis(m_sun->GetTransform().GetLocalToWorld());
 }
 
 
@@ -1021,7 +1046,7 @@ void GameState_Playing::UpdateRaycastHitIndicator()
     }
 
     Vec2 dim = g_window->GetDimensions() / 2.f;
-    Ray3 camRay = g_mainCamera->ScreenToPickRay( g_window->GetDimensions() / 2.f );
+    Ray3 camRay = g_renderer->GetMainCamera()->ScreenToPickRay( g_window->GetDimensions() / 2.f );
 
 
     RaycastHit3 hit = RaycastWorld( camRay );
@@ -1131,7 +1156,7 @@ void GameState_Playing::UpdateCameraToFollow()
 
     Vec3 camOrbitPoint = shipPos + Vec3::UP * camHeight;
 
-    g_mainCamera->SetTarget( camOrbitPoint );
-    g_mainCamera->SetSphericalCoord( camRadius, m_camPitch, m_camYaw );
+    ( (OrbitCamera*) g_renderer->GetMainCamera() )->SetTarget( camOrbitPoint );
+    ( (OrbitCamera*) g_renderer->GetMainCamera() )->SetSphericalCoord( camRadius, m_camPitch, m_camYaw );
 
 }

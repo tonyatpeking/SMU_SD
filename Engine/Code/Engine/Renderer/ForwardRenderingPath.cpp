@@ -1,5 +1,6 @@
 #include <algorithm>
-
+#include "Engine/Renderer/DebugRender.hpp"
+#include "Engine/Math/Frustum.hpp"
 #include "Engine/Renderer/ForwardRenderingPath.hpp"
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -15,6 +16,18 @@
 void ForwardRenderingPath::Render( RenderSceneGraph* scene )
 {
     m_scene = scene;
+
+    // Render ShadowMaps
+    auto& lights = scene->GetLights();
+    for( auto& go : lights )
+    {
+        Light* light = (Light*) go;
+        if( light->IsCastShadow() )
+        {
+            RenderShadowMapForLight( light );
+        }
+    }
+
     //Sort by camera draw order
     //scene->SortCameras();
     auto& cameras = scene->GetCameras();
@@ -24,6 +37,41 @@ void ForwardRenderingPath::Render( RenderSceneGraph* scene )
     }
     // optimization
     // - Sort by material and state... search radix sort rendering
+}
+
+void ForwardRenderingPath::RenderShadowMapForLight( Light* light )
+{
+    UpdateShadowCamera( light, m_renderer->GetMainCamera() );
+
+    Camera* shadowCamera = m_renderer->GetShadowCamera();
+
+    m_renderer->UseCamera( shadowCamera );
+
+    m_renderer->ClearDepth();
+
+    m_renderer->SetShadowMapVP( shadowCamera->GetVPMatrix() );
+
+    m_renderer->SetOverrideShader( ShaderPass::GetDepthOnlyShader() );
+
+    auto& renderables = m_scene->GetRenderables();
+    for( auto renderable : renderables )
+    {
+        if( !renderable->GetMesh() )
+            continue;
+        uint meshCount = renderable->GetMesh()->GetSubMeshCount();
+        // Loop sub-mesh/materials
+        for( uint subMeshID = 0; subMeshID < meshCount; ++subMeshID )
+        {
+            m_renderer->DrawRenderablePass( renderable,
+                                            subMeshID,
+                                            0 );
+
+        }
+    }
+
+    // end override
+    m_renderer->SetOverrideShader( nullptr );
+
 }
 
 void ForwardRenderingPath::RenderSceneForCamera( Camera* camera )
@@ -65,9 +113,6 @@ void ForwardRenderingPath::RenderSceneForCamera( Camera* camera )
             }
 
         }
-
-
-
     }
 
     // Sort draw calls by layer/queue
@@ -183,3 +228,54 @@ void ForwardRenderingPath::EnableLightsForDrawCall( const DrawCall& drawCall )
         m_renderer->SetLight( lightSlot, light );
     }
 }
+
+void ForwardRenderingPath::UpdateShadowCamera( Light* light, Camera* mainCamera )
+{
+    Vec4 pointInDistance = Vec4( 0.0f, 0.0f, 32.0f, 1.0f );
+    Vec4 clipPoint = mainCamera->GetProjMatrix() * pointInDistance;
+    Vec4 ndcPoint = clipPoint / clipPoint.w;
+
+    //float shadowMapCoverageNDC = 0.95f; // Range is [-1, 1]
+
+    Camera* shadowCam = Renderer::GetDefault()->GetShadowCamera();
+
+    Mat4 lightModel = light->GetTransform().GetLocalToParent();
+
+
+    Mat4 shadowCamRot = lightModel.GetRotationalPart();
+    Mat4 shadowCamRotInv = shadowCamRot.InverseRotation();
+
+    Frustum mainCamFrustum = Frustum::FromMatrixAABB3(
+        mainCamera->GetVPMatrix(),
+        AABB3( Vec3::NEG_ONES, Vec3( 1, 1, ndcPoint.z ) ) );
+
+    // transform frustum points to light's space
+    AABB3 lightSpaceAABB{};
+    const Vec3* frustumCorners = mainCamFrustum.GetCorners();
+
+    for( int cornerIdx = 0; cornerIdx < 8; ++cornerIdx )
+    {
+        Vec3 lightSpacePoint = shadowCamRotInv.TransformPosition(
+            frustumCorners[cornerIdx] );
+        lightSpaceAABB.StretchToIncludePoint( lightSpacePoint );
+
+    }
+
+    AABB2 orthoBounds = AABB2( Vec2::ZEROS, lightSpaceAABB.GetWidth(),
+                               lightSpaceAABB.GetHeight() );
+    float halfOrthoDepth = lightSpaceAABB.GetDepth() / 2.f;
+    float near = -halfOrthoDepth -100;
+    float far = halfOrthoDepth;
+    shadowCam->SetProjectionOrtho( orthoBounds, near, far );
+
+    Mat4 shadowCamView = shadowCamRot;
+    Vec3 lightSpaceLocalCenter = lightSpaceAABB.GetCenter();
+    Vec3 lightSpaceWorldCenter = shadowCamRot.TransformPosition( lightSpaceLocalCenter );
+
+    shadowCamView.T = Vec4( lightSpaceWorldCenter, 1 );
+    shadowCam->GetTransform().SetLocalToParent( shadowCamView );
+
+    //shadowCam->SetFrustumVisible( true, Rgba::BLUE_CYAN );
+
+}
+

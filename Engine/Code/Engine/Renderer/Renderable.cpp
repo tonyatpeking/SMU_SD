@@ -146,7 +146,7 @@ void Renderable::BindInputLayoutForProgram( ShaderProgram* program )
             return;
         }
     }
-    if( program->m_isDebugProgram )
+    if( program->m_isOverrideProgram )
     {
         InputLayout inputLayout = InputLayout::GetGlobalInputLayout();
         m_mesh->m_vertexBuffer.BindBuffer();

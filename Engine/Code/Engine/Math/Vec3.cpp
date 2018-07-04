@@ -434,10 +434,10 @@ Vec3 SlerpUnit( const Vec3& vecA, const Vec3& vecB, float t )
 
 Vec3 Min( const Vec3& a, const Vec3& b )
 {
-    return Vec3( Minf( a.x, b.y ), Minf( a.y, b.y ), Minf( a.z, b.z ) );
+    return Vec3( Minf( a.x, b.x ), Minf( a.y, b.y ), Minf( a.z, b.z ) );
 }
 
 Vec3 Max( const Vec3& a, const Vec3& b )
 {
-    return Vec3( Maxf( a.x, b.y ), Maxf( a.y, b.y ), Maxf( a.z, b.z ) );
+    return Vec3( Maxf( a.x, b.x ), Maxf( a.y, b.y ), Maxf( a.z, b.z ) );
 }

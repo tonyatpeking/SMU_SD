@@ -4,76 +4,6 @@
 #include "Engine/Math/OBB3.hpp"
 #include "Engine/Math/AABB3.hpp"
 
-namespace
-{
-
-// see http://theorangeduck.com/page/correct-box-sphere-intersection
-
-template <typename BoundingBox>
-bool IsSphereInsideBox( const Vec3& center, float radius, const BoundingBox& bbox )
-{
-    if( !bbox.Left().IsSphereAllNegative( center, radius ) )
-        return false;
-    if( !bbox.Right().IsSphereAllNegative( center, radius ) )
-        return false;
-    if( !bbox.Top().IsSphereAllNegative( center, radius ) )
-        return false;
-    if( !bbox.Bottom().IsSphereAllNegative( center, radius ) )
-        return false;
-    if( !bbox.Forward().IsSphereAllNegative( center, radius ) )
-        return false;
-    if( !bbox.Backward().IsSphereAllNegative( center, radius ) )
-        return false;
-
-    return true;
-}
-
-template <typename BoundingBox>
-bool IsSphereIntersectBox( const Vec3& center, float radius, const BoundingBox& bbox )
-{
-    // notOut = not outside includes inside or intersecting
-    bool notOutLeft       = !bbox.Left().IsSphereAllPositive( center, radius );
-    bool notOutRight      = !bbox.Right().IsSphereAllPositive( center, radius );
-    bool notOutTop        = !bbox.Top().IsSphereAllPositive( center, radius );
-    bool notOutBottom     = !bbox.Bottom().IsSphereAllPositive( center, radius );
-    bool notOutForward    = !bbox.Forward().IsSphereAllPositive( center, radius );
-    bool notOutBackward   = !bbox.Backward().IsSphereAllPositive( center, radius );
-
-    if( bbox.Left().IsSphereIntersecting( center, radius ) &&
-        notOutForward && notOutTop && notOutBackward && notOutBottom )
-        return true;
-
-    if( bbox.Right().IsSphereIntersecting( center, radius ) &&
-        notOutForward && notOutTop && notOutBackward && notOutBottom )
-        return true;
-
-    if( bbox.Top().IsSphereIntersecting( center, radius ) &&
-        notOutForward && notOutLeft && notOutBackward && notOutRight )
-        return true;
-
-    if( bbox.Bottom().IsSphereIntersecting( center, radius ) &&
-        notOutForward && notOutLeft && notOutBackward && notOutRight )
-        return true;
-
-    if( bbox.Forward().IsSphereIntersecting( center, radius ) &&
-        notOutLeft && notOutTop && notOutRight && notOutBottom )
-        return true;
-
-    if( bbox.Backward().IsSphereIntersecting( center, radius ) &&
-        notOutLeft && notOutTop && notOutRight && notOutBottom )
-        return true;
-
-    return false;
-}
-
-template <typename BoundingBox>
-bool IsSphereOutsideBox( const Vec3& center, float radius, const BoundingBox& bbox )
-{
-    return !( IsSphereInsideBox( center, radius, bbox )
-              || IsSphereIntersectBox( center, radius, bbox ) );
-}
-
-}
 
 namespace Intersect
 {
@@ -142,32 +72,32 @@ bool IsSphereInsideConvexPolyhedron( const Vec3& center, float radius,
 
 bool IsSphereInsideAABB3( const Vec3& center, float radius, const AABB3& aabb3 )
 {
-    return IsSphereInsideBox( center, radius, aabb3 );
+    return IsSphereInsideHexahedron( center, radius, aabb3 );
 }
 
 bool IsSphereOutsideAABB3( const Vec3& center, float radius, const AABB3& aabb3 )
 {
-    return IsSphereOutsideBox( center, radius, aabb3 );
+    return IsSphereOutsideHexahedron( center, radius, aabb3 );
 }
 
 bool IsSphereIntersectAABB3( const Vec3& center, float radius, const AABB3& aabb3 )
 {
-    return IsSphereIntersectBox( center, radius, aabb3 );
+    return IsSphereIntersectHexahedron( center, radius, aabb3 );
 }
 
 bool IsSphereInsideOBB3( const Vec3& center, float radius, const OBB3& obb3 )
 {
-    return IsSphereInsideBox( center, radius, obb3 );
+    return IsSphereInsideHexahedron( center, radius, obb3 );
 }
 
 bool IsSphereOutsideOBB3( const Vec3& center, float radius, const OBB3& obb3 )
 {
-    return IsSphereOutsideBox( center, radius, obb3 );
+    return IsSphereOutsideHexahedron( center, radius, obb3 );
 }
 
 bool IsSphereIntersectOBB3( const Vec3& center, float radius, const OBB3& obb3 )
 {
-    return IsSphereIntersectBox( center, radius, obb3 );
+    return IsSphereIntersectHexahedron( center, radius, obb3 );
 }
 
 

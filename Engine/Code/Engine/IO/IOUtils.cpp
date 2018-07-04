@@ -89,7 +89,7 @@ void* ReadFileToNewStringBuffer( char const* filename )
 
     fseek( fp, 0L, SEEK_SET );
 
-    byte_t *buffer = (byte_t*) malloc( size + 1U ); // space for NULL
+    Byte *buffer = (Byte*) malloc( size + 1U ); // space for NULL
 
     size_t read = fread( buffer, 1, size, fp );
     fclose( fp );
@@ -111,7 +111,7 @@ void* ReadFileToNewRawBuffer( char const* filename, size_t& out_byteCount )
 
     fseek( fp, 0L, SEEK_SET );
 
-    byte_t *buffer = (byte_t*) malloc( out_byteCount );
+    Byte *buffer = (Byte*) malloc( out_byteCount );
 
     fread( buffer, 1, out_byteCount, fp );
     fclose( fp );

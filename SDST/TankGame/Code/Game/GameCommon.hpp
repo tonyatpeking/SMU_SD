@@ -89,9 +89,7 @@ extern GameObjectManager* g_gameObjectManager;
 class Actor;
 extern Actor* g_currentActor;
 // Owned by GameState_Playing
-class OrbitCamera;
-//extern OrbitCamera* g_orbitCamera;
-extern OrbitCamera* g_mainCamera;
+
 
 class XMLDocument;
 extern XMLDocument* g_configXML;

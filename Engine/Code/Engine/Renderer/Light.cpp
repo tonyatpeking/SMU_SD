@@ -27,7 +27,3 @@ float Light::GetContributionToPoint( Vec3 point )
     return attenuation * m_intensity;
 }
 
-void Light::RenderShadowMap()
-{
-
-}

@@ -14,7 +14,7 @@ public:
     // should just update members
     // finalize does the actual binding
     void SetColorTarget( Texture *colorTarget );
-    void SetDepthStencilTarget( Texture *depthTarget ) { m_depthStencilTarget = depthTarget; };
+    void SetDepthStencilTarget( Texture *depthTarget );
 
     // setups the the GL framebuffer - called before us.
     // TODO: Make sure this only does work if the targets

@@ -70,6 +70,9 @@ file:2, line:65
 file:2, line:66
 file:2, line:67
 file:2, line:68
+file:2, line:69
+file:2, line:70
+file:2, line:71
 file:1, line:0
 file:3, line:0
 file:3, line:1
