@@ -56,7 +56,7 @@ struct Light
 
     float coneInnerDot;
     float coneOuterDot;
-    float pad1;
+    float usesShadow;
     float pad0;
 };
 
@@ -70,3 +70,8 @@ layout(binding=6, std140) uniform uboLights
 	vec4 AMBIENT;  // xyz color, w intensity
 	Light LIGHTS[MAX_LIGHTS];
 };
+
+// Textures
+layout(binding = 0) uniform sampler2D gTexDiffuse;
+layout(binding = 1) uniform sampler2D gTexNormal;
+layout(binding = 8) uniform sampler2DShadow gTexShadow;

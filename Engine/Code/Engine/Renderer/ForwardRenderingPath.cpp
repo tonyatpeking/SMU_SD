@@ -17,6 +17,7 @@ void ForwardRenderingPath::Render( RenderSceneGraph* scene )
 {
     m_scene = scene;
 
+
     // Render ShadowMaps
     auto& lights = scene->GetLights();
     for( auto& go : lights )
@@ -27,6 +28,8 @@ void ForwardRenderingPath::Render( RenderSceneGraph* scene )
             RenderShadowMapForLight( light );
         }
     }
+
+
 
     //Sort by camera draw order
     //scene->SortCameras();
@@ -41,6 +44,8 @@ void ForwardRenderingPath::Render( RenderSceneGraph* scene )
 
 void ForwardRenderingPath::RenderShadowMapForLight( Light* light )
 {
+    m_renderer->BindShadowTextureAsInput( false );
+
     UpdateShadowCamera( light, m_renderer->GetMainCamera() );
 
     Camera* shadowCamera = m_renderer->GetShadowCamera();
@@ -72,6 +77,7 @@ void ForwardRenderingPath::RenderShadowMapForLight( Light* light )
     // end override
     m_renderer->SetOverrideShader( nullptr );
 
+    m_renderer->BindShadowTextureAsInput( true );
 }
 
 void ForwardRenderingPath::RenderSceneForCamera( Camera* camera )

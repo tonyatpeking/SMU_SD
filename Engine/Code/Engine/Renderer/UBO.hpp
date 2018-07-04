@@ -71,7 +71,7 @@ struct Light
 
     float coneInnerDot;
     float coneOuterDot;
-    float padLight1;
+    float usesShadow;
     float padLight0;
 
 };

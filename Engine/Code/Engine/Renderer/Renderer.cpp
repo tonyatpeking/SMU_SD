@@ -38,7 +38,8 @@
 #include "Engine/Renderer/DrawCall.hpp"
 #include "Engine/Renderer/Light.hpp"
 
-namespace{
+namespace
+{
 Renderer* s_defaultRenderer = nullptr;
 }
 
@@ -340,6 +341,19 @@ void Renderer::SetShadowMapVP( const Mat4& vp )
     m_globalUniformBuffer.Set( m_globalUBOData );
     m_globalUniformBuffer.BindToSlot( UBO::GLOBAL_BINDING );
     GL_CHECK_ERROR();
+}
+
+void Renderer::BindShadowTextureAsInput( bool bind )
+{
+    if( bind )
+    {
+        BindTexture( TextureBindings::SHADOW_MAP, m_defaultShadowTarget );
+        BindSampler( TextureBindings::SHADOW_MAP, Sampler::GetShadowSampler() );
+    }
+    else
+    {
+        BindTexture( TextureBindings::SHADOW_MAP, nullptr );
+    }
 }
 
 void Renderer::DrawLine( const Vec3& start, const Vec3& end, const Rgba& startColor,
@@ -948,7 +962,8 @@ void Renderer::SetLight( uint idx, const Vec4& color, const Vec3& position,
                          float sourceRadius,
                          float isPointLight /*= 1*/,
                          const Vec3& direction,
-                         float coneInnerDot /*= -2 */, float coneOuterDot /*= -2 */ )
+                         float coneInnerDot /*= -2 */, float coneOuterDot /*= -2 */,
+                         bool usesShadow )
 {
     if( idx > MAX_LIGHTS - 1 )
     {
@@ -963,6 +978,7 @@ void Renderer::SetLight( uint idx, const Vec4& color, const Vec3& position,
     m_lightUBOData.lights[idx].coneInnerDot = coneInnerDot;
     m_lightUBOData.lights[idx].coneOuterDot = coneOuterDot;
     m_lightUBOData.lights[idx].sourceRadius = sourceRadius;
+    m_lightUBOData.lights[idx].usesShadow = usesShadow ? 1.f : 0.f;
 
 
 }
@@ -975,7 +991,8 @@ void Renderer::SetLight( uint idx, Light* light )
               light->m_isPointLight,
               light->GetTransform().GetForward(),
               light->m_coneInnerDot,
-              light->m_coneOuterDot );
+              light->m_coneOuterDot,
+              light->IsCastShadow());
 }
 
 void Renderer::SetPointLight( uint idx, const Vec4& color, const Vec3& position,

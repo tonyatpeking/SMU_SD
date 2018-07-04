@@ -3,9 +3,7 @@
 #include "Data/Shaders/Includes/Common.glsl"
 #include "Data/Shaders/Includes/Fog.glsl"
 
-// Textures
-layout(binding = 0) uniform sampler2D gTexDiffuse;
-layout(binding = 1) uniform sampler2D gTexNormal;
+
 
 
 // Attributes ============================================
@@ -56,6 +54,8 @@ void main( void )
 
 for ( int lightIdx = 0; lightIdx < MAX_LIGHTS; ++lightIdx)
 {
+    float shadowing = GetShadowFactor( passWorldPos, fragWorldNormal, LIGHTS[lightIdx] ); 
+
     vec3 dirPointLight = LIGHTS[lightIdx].position - passWorldPos;
     vec3 dirDirectionalLight = -LIGHTS[lightIdx].direction;
     vec3 dirToLight = normalize( mix( dirDirectionalLight, dirPointLight, LIGHTS[lightIdx].isPointLight )); // direction to light
@@ -66,10 +66,10 @@ for ( int lightIdx = 0; lightIdx < MAX_LIGHTS; ++lightIdx)
     float spotlightDropoff = smoothstep( LIGHTS[lightIdx].coneOuterDot, LIGHTS[lightIdx].coneInnerDot, coneDot );
 
     diffuseLight += ComputeDiffuse( dirToLight, LIGHTS[lightIdx].color, fragWorldNormal )
-        * attenuation * spotlightDropoff;
+        * attenuation * spotlightDropoff * shadowing;
 
     specLight += ComputeSpecular( dirToLight, LIGHTS[lightIdx].color, camDir, fragWorldNormal,
-        SPECULAR_AMOUNT, SPECULAR_POWER ) * attenuation * spotlightDropoff;
+        SPECULAR_AMOUNT, SPECULAR_POWER ) * attenuation * spotlightDropoff * shadowing;
 }
 
 

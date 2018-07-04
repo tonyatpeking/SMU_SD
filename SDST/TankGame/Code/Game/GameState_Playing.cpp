@@ -129,7 +129,7 @@ void GameState_Playing::OnEnter()
 
     CreateInitHives();
 
-    MakeTestCamera();
+    //MakeTestCamera();
 
 }
 

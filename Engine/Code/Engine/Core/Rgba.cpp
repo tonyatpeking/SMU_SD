@@ -151,6 +151,11 @@ void Rgba::GetAsFloats( float& out_normalizedRed, float& out_normalizedGreen,
     out_normalizedAlpha = ( (float) a ) / 255.f;
 }
 
+void Rgba::GetAsFloats( float* out_floats ) const
+{
+    GetAsFloats( out_floats[0], out_floats[1], out_floats[2], out_floats[3] );
+}
+
 Vec4 Rgba::ToVec4() const
 {
     return Vec4(

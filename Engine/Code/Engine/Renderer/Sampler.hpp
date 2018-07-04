@@ -7,6 +7,7 @@ public:
 
     static Sampler* GetPointSampler();
     static Sampler* GetTrilinearSampler();
+    static Sampler* GetShadowSampler();
 
     Sampler();
     ~Sampler();

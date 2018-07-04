@@ -51,8 +51,6 @@ R"(
 
 #include "Data/Shaders/Includes/Common.glsl"
 
-// layout binding = 0 is us binding it to texture slot 0.
-layout(binding = 0) uniform sampler2D gTexDiffuse;
 
 in vec4 passColor;
 in vec2 passUV;

@@ -36,6 +36,7 @@ public:
     // Accessors
     void GetAsFloats( float& out_normalizedRed, float& out_normalizedGreen,
                       float& out_normalizedBlue, float& out_normalizedAlpha ) const;
+    void GetAsFloats(float* out_floats) const;
     Vec4 ToVec4() const;
 
     // Ignores alpha

@@ -217,7 +217,8 @@ public:		// Public methods
                    float sourceRadius = 1,
                    float isPointLight = 1,
                    const Vec3& direction = Vec3( 1, 0, 0 ),
-                   float coneInnerDot = -2, float coneOuterDot = -2 );
+                   float coneInnerDot = -2, float coneOuterDot = -2,
+                   bool usesShadow = false );
 
     void SetLight( uint idx, Light* light );
 
@@ -251,11 +252,11 @@ public:		// Public methods
                  float farPlane, float farFactor );
 
     void SetShadowMapVP( const Mat4& vp );
-
+    void BindShadowTextureAsInput( bool bind );
 
 private:	// Private members
 
-     RenderState& GetCurrentRenderState();
+    RenderState & GetCurrentRenderState();
 
     // RenderState
     void SetCullModeGL( CullMode cull, bool forced = false );
