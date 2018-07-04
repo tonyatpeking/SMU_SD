@@ -127,8 +127,6 @@ void Texture::MakeFromData( unsigned char* imageData, const IVec2& texelSize, in
     if( numComponents == 3 )
         bufferFormat = GL_RGB;
 
-    GLenum internalFormat = bufferFormat; // the format we want the texture to be on the card; allows us to translate into a different texture format as we upload to OpenGL
-
 
                                           // Tell OpenGL that our pixel data is single-byte aligned
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );

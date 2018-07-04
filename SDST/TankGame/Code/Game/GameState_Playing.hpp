@@ -128,5 +128,5 @@ private:
     float m_maxHealth = 1000.f;
 
     // Sound
-    size_t m_audioPlaybackID = -1;
+    size_t m_audioPlaybackID = 0;
 };

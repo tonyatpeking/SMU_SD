@@ -234,7 +234,7 @@ PlaybackID AudioSystem::PlayOneOffSoundFromGroup( String groupName )
     if( ContainerUtils::Contains( m_registeredGroups, groupName ) )
     {
         AudioGroup& group = m_registeredGroups[groupName];
-        int numSounds = group.soundIDs.size();
+        int numSounds = (int)group.soundIDs.size();
         if( numSounds == 0 )
             return MISSING_SOUND_ID;
         int soundToPlay = Random::IntInRange( 0, numSounds - 1 );
@@ -268,9 +268,6 @@ void AudioSystem::LoadAudioGroups( String datafile )
         m_registeredGroups[group.name] = group;
     }
 
-
-    int i = 1;
-    int o = i;
 }
 
 bool AudioSystem::MissingPlaybackID( PlaybackID playbackID )
