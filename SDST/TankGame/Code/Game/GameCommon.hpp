@@ -31,6 +31,7 @@
 #include "Engine/Renderer/Texture.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Material.hpp"
+#include "Engine/Core/Profiler.hpp"
 
 #include "Game/GameState_Playing.hpp"
 

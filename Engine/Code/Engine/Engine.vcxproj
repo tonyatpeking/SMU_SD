@@ -276,6 +276,10 @@
     <ClCompile Include="Core\GameObject.cpp" />
     <ClCompile Include="Core\GameObjectManager.cpp" />
     <ClCompile Include="Core\Image.cpp" />
+    <ClCompile Include="Core\ProfileLogScoped.cpp" />
+    <ClCompile Include="Core\Profiler.cpp" />
+    <ClCompile Include="Core\ProfilerReport.cpp" />
+    <ClCompile Include="Core\ProfilerReportEntry.cpp" />
     <ClCompile Include="Core\PythonBindings.cpp" />
     <ClCompile Include="Core\PythonInterpreter.cpp" />
     <ClCompile Include="Core\Rgba.cpp" />
@@ -398,6 +402,10 @@
     <ClInclude Include="Core\GameObjectManager.hpp" />
     <ClInclude Include="Core\HeatMap.hpp" />
     <ClInclude Include="Core\Image.hpp" />
+    <ClInclude Include="Core\ProfileLogScoped.hpp" />
+    <ClInclude Include="Core\Profiler.hpp" />
+    <ClInclude Include="Core\ProfilerReport.hpp" />
+    <ClInclude Include="Core\ProfilerReportEntry.hpp" />
     <ClInclude Include="Core\PythonBindings.hpp" />
     <ClInclude Include="Core\PythonInterpreter.hpp" />
     <ClInclude Include="Core\Rgba.hpp" />

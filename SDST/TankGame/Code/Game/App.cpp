@@ -15,6 +15,7 @@
 #include "Engine/Renderer/TextMeshBuilder.hpp"
 #include "Engine/Renderer/DebugRender.hpp"
 
+
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
 #include "Game/GameCommon.hpp"
@@ -22,6 +23,8 @@
 
 App::App()
 {
+    Profiler::StartUp();
+
     g_realtimeClock = new Clock();
     g_appClock = new Clock();
     g_UIClock = new Clock( g_appClock );
@@ -70,14 +73,20 @@ App::~App()
 
     delete g_renderer;
     g_renderer = nullptr;
+
+    Profiler::ShutDown();
 }
 
 void App::RunFrame()
 {
+    Profiler::MarkFrame();
+    PROFILER_SCOPED();
+
     static float lastTime = (float) TimeUtils::GetCurrentTimeSeconds();
     float currentTime = (float) TimeUtils::GetCurrentTimeSeconds();
     float deltaSeconds = currentTime - lastTime;
     g_realtimeClock->Update( deltaSeconds );
+
 
     deltaSeconds = Clampf( deltaSeconds, 0.f, g_config->maxDeltaSeconds );
     lastTime = currentTime;

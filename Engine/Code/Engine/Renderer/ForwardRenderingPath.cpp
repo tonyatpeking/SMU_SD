@@ -12,12 +12,13 @@
 #include "Engine/Renderer/ShaderPass.hpp"
 #include "Engine/Renderer/Light.hpp"
 #include "Engine/Renderer/Renderable.hpp"
-
+#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/Profiler.hpp"
 void ForwardRenderingPath::Render( RenderSceneGraph* scene )
 {
     m_scene = scene;
 
-
+    PROFILER_PUSH( MakeShadowMap );
     // Render ShadowMaps
     auto& lights = scene->GetLights();
     for( auto& go : lights )
@@ -28,9 +29,9 @@ void ForwardRenderingPath::Render( RenderSceneGraph* scene )
             RenderShadowMapForLight( light );
         }
     }
+    PROFILER_POP();
 
-
-
+    PROFILER_PUSH( RenderSceneForCameras );
     //Sort by camera draw order
     //scene->SortCameras();
     auto& cameras = scene->GetCameras();
@@ -40,6 +41,8 @@ void ForwardRenderingPath::Render( RenderSceneGraph* scene )
     }
     // optimization
     // - Sort by material and state... search radix sort rendering
+    PROFILER_POP();
+
 }
 
 void ForwardRenderingPath::RenderShadowMapForLight( Light* light )

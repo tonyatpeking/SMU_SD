@@ -13,6 +13,20 @@ void GameCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
 
+    commandSys->AddCommand( "profilerPause", []( String str )
+    {
+        UNUSED( str );
+        g_console->Print( "Paused profiler" );
+        Profiler::Pause();
+    } );
+
+    commandSys->AddCommand( "profilerResume", []( String str )
+    {
+        UNUSED( str );
+        g_console->Print( "Resumed profiler" );
+        Profiler::Resume();
+    } );
+
 
     commandSys->AddCommand( "python", []( String str )
     {

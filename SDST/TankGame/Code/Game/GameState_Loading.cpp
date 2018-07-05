@@ -5,6 +5,7 @@
 #include "Engine/Renderer/ShaderProgram.hpp"
 #include "Engine/Renderer/CubeMap.hpp"
 #include "Engine/Renderer/DebugRender.hpp"
+#include "Engine/Core/Profiler.hpp"
 
 #include "Game/GameState_Loading.hpp"
 #include "Game/Game.hpp"
@@ -64,11 +65,29 @@ void GameState_Loading::LoadResourcesOnSecondFrame()
     {
         return;
     }
-    MakeSpaceShip();
-    MakeSkyBox();
-    MakeNoiseImage();
-    MakeMap();
-    LoadAudio();
+
+    PROFILE_LOG_SCOPE_FUNCTION();
+
+    {
+        PROFILE_LOG_SCOPE( MakeSpaceShip );
+        MakeSpaceShip();
+    }
+    {
+        PROFILE_LOG_SCOPE( MakeSkyBox );
+        MakeSkyBox();
+    }
+    {
+        PROFILE_LOG_SCOPE( MakeNoiseImage );
+        MakeNoiseImage();
+    }
+    {
+        PROFILE_LOG_SCOPE( MakeMap );
+        MakeMap();
+    }
+    {
+        PROFILE_LOG_SCOPE( LoadAudio );
+        LoadAudio();
+    }
 }
 
 void GameState_Loading::MakeSpaceShip()
@@ -126,8 +145,8 @@ void GameState_Loading::MakeNoiseImage()
 
     g_game->m_noiseTexture = new Texture( g_game->m_noiseImage );
 
-     //DebugRender::SetOptions( 100, Rgba::WHITE, Rgba::WHITE );
-     //DebugRender::DrawQuad( AABB2::NEG_ONES_ONES * 2, Vec3::ZEROS, Vec3::ZEROS, g_game->m_noiseTexture );
+    //DebugRender::SetOptions( 100, Rgba::WHITE, Rgba::WHITE );
+    //DebugRender::DrawQuad( AABB2::NEG_ONES_ONES * 2, Vec3::ZEROS, Vec3::ZEROS, g_game->m_noiseTexture );
 
 }
 

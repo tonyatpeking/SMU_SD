@@ -64,18 +64,21 @@ GameState_Playing::~GameState_Playing()
 
 void GameState_Playing::Update()
 {
+    PROFILER_SCOPED();
+
     // switch phase before all updates, this is after process input
     GameState::Update();
 
     g_gameObjectManager->Update();
 
-    CheckCollisions();
 
+    CheckCollisions();
     g_gameObjectManager->DeleteDeadGameObjects();
 
     UpdateLights();
 
     TestUpdate();
+
 
     LeaveBreadCrumbs();
     UpdateTurret();
@@ -99,6 +102,7 @@ void GameState_Playing::Render() const
 
 void GameState_Playing::OnEnter()
 {
+
     GameState::OnEnter();
 
     g_input->LockCursor( true );
@@ -504,7 +508,7 @@ void GameState_Playing::MakeTestCamera()
     s_testCamera->SetProjection( m_fov, m_near, m_far ); //fov near far
     s_testCamera->SetFrustumVisible( true );
     s_testCamera->GetTransform().TranslateLocal( Vec3::UP * 20 );
-    s_testCamera->GetTransform().RotateLocalEuler( Vec3(0,33,0) );
+    s_testCamera->GetTransform().RotateLocalEuler( Vec3( 0, 33, 0 ) );
 
     g_forwardRenderingPath->UpdateShadowCamera( m_sun, s_testCamera );
 }
@@ -632,7 +636,7 @@ void GameState_Playing::MakeSun()
     m_sun->m_intensity = 1;
 
     DebugRender::SetOptions( 100 );
-    DebugRender::DrawBasis(m_sun->GetTransform().GetLocalToWorld());
+    DebugRender::DrawBasis( m_sun->GetTransform().GetLocalToWorld() );
 }
 
 

@@ -73,6 +73,9 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{dc54a8fc-fc98-432b-b3ad-c0e662a2fcde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Profiling">
+      <UniqueIdentifier>{37b11870-498a-476a-9a8a-895d2e13eabe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Random.cpp">
@@ -390,7 +393,21 @@
     <ClCompile Include="Renderer\Sampler.cpp">
       <Filter>Renderer\Textures</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Frustum.cpp" />
+    <ClCompile Include="Math\Frustum.cpp">
+      <Filter>Math\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ProfileLogScoped.cpp">
+      <Filter>Profiling</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Profiler.cpp">
+      <Filter>Profiling</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ProfilerReportEntry.cpp">
+      <Filter>Profiling</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ProfilerReport.cpp">
+      <Filter>Profiling</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -780,7 +797,21 @@
     <ClInclude Include="Renderer\Sampler.hpp">
       <Filter>Renderer\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Frustum.hpp" />
+    <ClInclude Include="Math\Frustum.hpp">
+      <Filter>Math\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ProfileLogScoped.hpp">
+      <Filter>Profiling</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Profiler.hpp">
+      <Filter>Profiling</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ProfilerReportEntry.hpp">
+      <Filter>Profiling</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ProfilerReport.hpp">
+      <Filter>Profiling</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">
