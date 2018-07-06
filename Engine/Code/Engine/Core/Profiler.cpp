@@ -33,11 +33,11 @@ Measurement* CreateMeasurement( const char* id )
     for( int i = 0; i < MAX_STR_LEN - 1; ++i )
     {
         char c = id[i];
-        measure->m_id[i] = c;
+        measure->m_name[i] = c;
         if( c == '\0' )
             break;
     }
-    measure->m_id[MAX_STR_LEN - 1] = '\0';
+    measure->m_name[MAX_STR_LEN - 1] = '\0';
 
     // set time
     measure->m_startTime = TimeUtils::GetCurrentTimeSeconds();

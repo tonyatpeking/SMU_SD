@@ -8,6 +8,7 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
+#include "Engine/Core/Profiler.hpp"
 
 // static values
 const Vec2 Vec2::ONES       = Vec2( 1.f, 1.f );
@@ -36,7 +37,8 @@ Vec2::Vec2( const Vec2& copyFrom )
 Vec2::Vec2( float initialX, float initialY )
     : x( initialX )
     , y( initialY )
-{}
+{
+}
 
 Vec2::Vec2( const Vec3& vec3 )
     : x( vec3.x )

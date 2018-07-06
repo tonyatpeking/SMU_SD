@@ -33,11 +33,11 @@ public:
 };
 
 constexpr int MAX_STR_LEN = 64;
-constexpr int MAX_HISTORY_LEN = 10 * 60;
+constexpr int MAX_HISTORY_LEN = 60;
 
 struct Measurement
 {
-    char m_id[MAX_STR_LEN];
+    char m_name[MAX_STR_LEN];
     double m_startTime;
     double m_endTime;
 

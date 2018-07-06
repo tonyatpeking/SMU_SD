@@ -57,6 +57,7 @@ void Swarmer::Update()
 
 void Swarmer::CreateRenderable()
 {
+
     MeshBuilder mbBall =
         MeshPrimitive::MakeUVSphere( m_radius, 5, 8, Rgba::WHITE, Vec3::UP * 0.5f );
     MeshBuilder mbNose =
@@ -107,6 +108,8 @@ void Swarmer::OnDeath()
 
 void Swarmer::SetTargetFromSwarming()
 {
+    PROFILER_SCOPED();
+
     Vec2 attractVec, repulseVec, alignVec, seekVec;
 
     Vec2 posMe = Vec2::MakeFromXZ( GetTransform().GetWorldPosition() );

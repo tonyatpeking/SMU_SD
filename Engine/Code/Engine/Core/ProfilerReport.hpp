@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Core/EngineCommon.hpp"
 
 namespace Profiler
 {
@@ -9,7 +10,7 @@ class ProfilerReport
 {
 public:
     ProfilerReport() {};
-    ~ProfilerReport() {};
+    ~ProfilerReport();
 
     void GenerateReportTreeFromFrame( Profiler::Measurement *rootMeasure );
 
@@ -21,6 +22,7 @@ public:
 
     double GetTotalFrameTime();
 
+    String ToString();
 
 public:
     class ProfilerReportEntry* m_rootEntry;

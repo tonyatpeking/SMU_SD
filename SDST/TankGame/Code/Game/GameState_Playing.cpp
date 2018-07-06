@@ -148,6 +148,7 @@ void GameState_Playing::OnExit()
 
 void GameState_Playing::ProcessInput()
 {
+    PROFILER_SCOPED();
     GameState::ProcessInput();
     if( g_input->WasKeyJustPressed( InputSystem::KEYBOARD_ESCAPE ) )
         g_app->OnQuitRequested();
@@ -158,6 +159,8 @@ void GameState_Playing::ProcessInput()
 
     if( m_health > 0 )
         ProcessMovementInput();
+
+
     TestInput();
 }
 
@@ -175,6 +178,7 @@ void GameState_Playing::MakeCamera()
 
 void GameState_Playing::ProcessMovementInput()
 {
+    PROFILER_SCOPED();
     float ds = g_gameClock->GetDeltaSecondsF();
     Transform& shipTransform = g_game->m_shipHull->GetTransform();
 
@@ -201,7 +205,6 @@ void GameState_Playing::ProcessMovementInput()
         isMoving = true;
     }
 
-    SnapTransformToHeightmap( &shipTransform, 4 );
 
     if( isMoving )
         SetExhaustSpawnRate( 60 );
@@ -230,6 +233,8 @@ void GameState_Playing::ProcessMovementInput()
     shipTransform.RotateLocalEuler( Vec3( 0, deltaShipYaw, 0 ) );
     UpdateCameraToFollow();
     UpdateRaycastHitIndicator();
+
+    SnapTransformToHeightmap( &shipTransform, 4 );
 
     if( g_input->IsKeyPressed( InputSystem::MOUSE_LEFT ) )
     {
@@ -759,6 +764,7 @@ void GameState_Playing::CheckDamagePlayer()
 
 void GameState_Playing::SnapSwarmersToMap()
 {
+    PROFILER_SCOPED();
     GameObjects& swarmers = g_gameObjectManager->GetObjectsOfType( "Swarmer" );
     for( auto& swarmer : swarmers )
     {
@@ -995,6 +1001,7 @@ void GameState_Playing::SetExhaustSpawnRate( float rate )
 
 void GameState_Playing::SnapTransformToHeightmap( Transform* transform, float heightOffset )
 {
+    PROFILER_SCOPED();
     Vec3 worldPos = transform->GetWorldPosition();
     Vec2 worldPos2D = Vec2::MakeFromXZ( worldPos );
     float height = g_game->m_map->GetHeightAtPos( worldPos2D );
@@ -1031,6 +1038,7 @@ void GameState_Playing::LeaveBreadCrumbs()
 
 RaycastHit3 GameState_Playing::RaycastWorld( const Ray3& ray )
 {
+    PROFILER_SCOPED();
     // Raycast to all hives
     GameObjects& hives = g_gameObjectManager->GetObjectsOfType( "Hive" );
     RaycastHit3 hitHiveBest;
@@ -1051,6 +1059,7 @@ RaycastHit3 GameState_Playing::RaycastWorld( const Ray3& ray )
 
 void GameState_Playing::UpdateRaycastHitIndicator()
 {
+    PROFILER_SCOPED();
     if( !m_camRayIndicator )
     {
         m_camRayIndicator = new GameObject();
@@ -1079,6 +1088,7 @@ void GameState_Playing::UpdateRaycastHitIndicator()
 
 void GameState_Playing::UpdateTurret()
 {
+    PROFILER_SCOPED();
     if( !m_camRayIndicator )
         return;
     static Vec3 savedScale = m_turret->GetTransform().GetLocalScale();

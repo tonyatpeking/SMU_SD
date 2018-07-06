@@ -3,11 +3,15 @@
 #include "Engine/Core/Console.hpp"
 #include "Engine/IO/IOUtils.hpp"
 #include "Engine/Renderer/DebugRender.hpp"
+#include "Engine/Core/ProfilerReport.hpp"
+#include "Engine/Core/ProfilerReportEntry.hpp"
 
 #include "Game/GameCommands.hpp"
 #include "Game/GameCommon.hpp"
 #include "Game/Game.hpp"
 #include "Game/App.hpp"
+
+
 
 void GameCommands::RegisterAllCommands()
 {
@@ -27,6 +31,34 @@ void GameCommands::RegisterAllCommands()
         Profiler::Resume();
     } );
 
+    commandSys->AddCommand( "pr", []( String str )
+    {
+        CommandParameterParser parser( str );
+        size_t numParams = parser.NumOfParams();
+        bool useTreeMode = true;
+        if( numParams != 0 )
+        {
+            String param;
+            parser.GetNext( param );
+            if( "flat" == param || "Flat" == param )
+                useTreeMode = false;
+        }
+
+        Profiler::Measurement* lastFrame = Profiler::GetPreviousFrame();
+        ProfilerReport report;
+        if( useTreeMode )
+        {
+            report.GenerateReportTreeFromFrame( lastFrame );
+        }
+        else
+        {
+            report.GenerateReportFlatFromFrame( lastFrame );
+        }
+
+        String reportStr = report.ToString();
+        g_console->Print( reportStr );
+
+    } );
 
     commandSys->AddCommand( "python", []( String str )
     {
@@ -211,7 +243,7 @@ void GameCommands::RegisterAllCommands()
 
     commandSys->AddCommand( "debugHide", []( String str )
     {
-        DebugRender::SetHidden(true);
+        DebugRender::SetHidden( true );
     } );
 
     commandSys->AddCommand( "debugShow", []( String str )
