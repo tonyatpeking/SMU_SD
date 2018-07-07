@@ -8,6 +8,11 @@
 #include "Engine/Core/Window.hpp"
 #include "Engine/Math/IVec2.hpp"
 
+namespace
+{
+InputSystem* g_defaultInputSystem = nullptr;
+}
+
 const unsigned char	InputSystem::MOUSE_LEFT             = VK_LBUTTON;
 const unsigned char	InputSystem::MOUSE_RIGHT            = VK_RBUTTON;
 const unsigned char	InputSystem::MOUSE_MIDDLE           = VK_MBUTTON;
@@ -104,8 +109,14 @@ InputSystem::InputSystem( Window* window )
     , XboxController( 3 ) }
     , m_window( window )
 {
+    g_defaultInputSystem = this;
 }
 
+
+InputSystem* InputSystem::GetDefault()
+{
+    return g_defaultInputSystem;
+}
 
 void InputSystem::BeginFrame()
 {
@@ -126,7 +137,7 @@ void InputSystem::BeginFrame()
 
 void InputSystem::EndFrame()
 {
-    if( m_lockCursor )
+    if( m_cursorSettings.lock )
     {
         Vec2 winCenter = m_window->GetWindowCenterLocal();
         SetCursorWindowPos( winCenter );
@@ -237,18 +248,18 @@ void InputSystem::SetCursorWindowPos( const Vec2& pos )
 
 void InputSystem::LockCursor( bool lock )
 {
-    m_lockCursor = lock;
+    m_cursorSettings.lock = lock;
 }
 
 void InputSystem::ShowCursor( bool show )
 {
     ::ShowCursor( show );
-    m_showCursor = show;
+    m_cursorSettings.show = show;
 }
 
 void InputSystem::ClipCursor( bool clip )
 {
-    m_clipCursor = clip;
+    m_cursorSettings.clip = clip;
     if( !clip )
     {
         ::ClipCursor( nullptr ); // this unlock the mouse
@@ -274,28 +285,49 @@ void InputSystem::ClipCursor( bool clip )
     }
 }
 
+void InputSystem::ShowAndUnlockCursor()
+{
+    LockCursor( false );
+    ClipCursor( false );
+    ShowCursor( true );
+}
+
+void InputSystem::PushCursorSettings()
+{
+    m_cursorModeStack.push( m_cursorSettings );
+}
+
+void InputSystem::PopCursorSettings()
+{
+    if( m_cursorModeStack.empty() )
+    {
+        ShowAndUnlockCursor();
+        return;
+    }
+    m_cursorSettings = m_cursorModeStack.top();
+    m_cursorModeStack.pop();
+    LockCursor( m_cursorSettings.lock );
+    ShowCursor( m_cursorSettings.show );
+    ClipCursor( m_cursorSettings.clip );
+}
+
 void InputSystem::UpdateClipCursorAfterResize()
 {
-    if( m_clipCursor )
-        ClipCursor( m_clipCursor );
+    if( m_cursorSettings.clip )
+        ClipCursor( m_cursorSettings.clip );
 }
 
 void InputSystem::SetWindowHasFocus( bool focus )
 {
-    static bool saveLock = false;
-    static bool saveClip = false;
     if( !m_hasFocus && focus )
     {
         m_justGainedFocus = true;
-        LockCursor( saveLock );
-        ClipCursor( saveClip );
+        PopCursorSettings();
     }
     else if( m_hasFocus && !focus )
     {
-        saveLock = m_lockCursor;
-        saveClip = m_clipCursor;
-        LockCursor( false );
-        ClipCursor( false );
+        PushCursorSettings();
+        ShowAndUnlockCursor();
         m_justLostFocus = true;
     }
     m_hasFocus = focus;

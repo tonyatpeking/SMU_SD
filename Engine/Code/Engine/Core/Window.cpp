@@ -138,7 +138,7 @@ void Window::UnregisterHandler( WindowsMessageHandlerCallback cb )
     ContainerUtils::EraseValues( listeners, cb );
 }
 
-AABB2 Window::GetLocalBounds() const
+AABB2 Window::GetWindowBounds() const
 {
     return AABB2::MakeBoundsFromDimensions( m_windowDimensions );
 }

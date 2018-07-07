@@ -8,33 +8,39 @@ ProfilerReport::~ProfilerReport()
     delete m_rootEntry;
 }
 
-void ProfilerReport::GenerateReportTreeFromFrame( Profiler::Measurement *rootMeasure )
+void ProfilerReport::GenerateReportTreeFromFrame( Profiler::Measurement *frame )
 {
-    m_rootEntry = new ProfilerReportEntry( rootMeasure->m_name );
-    m_rootEntry->PopulateTreeR( rootMeasure );
-    m_rootEntry->FinalizeDataR( m_rootEntry->m_totalTime );
+    m_rootEntry = new ProfilerReportEntry( frame->m_name );
+    m_rootEntry->PopulateTreeR( frame );
+    m_rootEntry->FinalizeTimesR();
+    m_frameTime = m_rootEntry->m_totalTime;
+    m_rootEntry->FinalizePercentagesR( m_frameTime );
 }
 
-void ProfilerReport::GenerateReportFlatFromFrame( Profiler::Measurement *rootMeasure )
+void ProfilerReport::GenerateReportFlatFromFrame( Profiler::Measurement *frame )
 {
-    m_rootEntry = new ProfilerReportEntry( rootMeasure->m_name );
-    m_rootEntry->PopulateFlatR( rootMeasure, m_rootEntry );
-    m_rootEntry->FinalizeDataR( m_rootEntry->m_totalTime );
+    ProfilerReportEntry frameEntry = ProfilerReportEntry( frame->m_name );
+    frameEntry.PopulateTreeR( frame );
+    frameEntry.FinalizeTimesR();
+    m_rootEntry = new ProfilerReportEntry( "root" );
+    frameEntry.CollapesTreeToFlatR( m_rootEntry );
+    m_frameTime = frameEntry.m_totalTime;
+    m_rootEntry->FinalizePercentagesR( m_frameTime );
 }
 
 void ProfilerReport::SortBySelfTime()
 {
-
+    m_rootEntry->SortChildernSelfTimeR();
 }
 
 void ProfilerReport::SortByTotalTime()
 {
-
+    m_rootEntry->SortChildernTotalTimeR();
 }
 
 double ProfilerReport::GetTotalFrameTime()
 {
-    return m_rootEntry->m_totalTime;
+    return m_frameTime;
 }
 
 String ProfilerReport::ToString()

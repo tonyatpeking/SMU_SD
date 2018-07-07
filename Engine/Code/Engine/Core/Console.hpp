@@ -64,6 +64,7 @@ public:
     void Printf( const Rgba& color, const char* format, ... );
     void Printf( const char* format, ... );
 
+    float GetFontHeight() { return m_fontHeight; };
 private:
 
     // Drawing

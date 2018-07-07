@@ -2,6 +2,7 @@
 #include "Engine/Core/Profiler.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/Core/StringUtils.hpp"
+#include <algorithm>
 
 ProfilerReportEntry::ProfilerReportEntry( const String& name )
     : m_name( name )
@@ -42,23 +43,42 @@ void ProfilerReportEntry::AccumulateData( Profiler::Measurement *measurement )
     // m_percent_time = ?; // figure it out later;
 }
 
-void ProfilerReportEntry::FinalizeDataR( double frameTime )
+void ProfilerReportEntry::FinalizeTimesR()
 {
     double childrenTime = 0;
     for( auto& entryPair : m_children )
     {
         ProfilerReportEntry* child = entryPair.second;
         childrenTime += child->m_totalTime;
-        child->FinalizeDataR( frameTime );
+        child->FinalizeTimesR();
     }
-
-    m_totalPercentTime = m_totalTime / frameTime * 100;
 
     m_selfTime = m_totalTime - childrenTime;
     // this only happens for flat view root node
     if( m_selfTime < 0 )
         m_selfTime = 0;
+}
+
+void ProfilerReportEntry::FinalizePercentagesR( double frameTime )
+{
+    m_totalPercentTime = m_totalTime / frameTime * 100;
     m_selfPercentTime = m_selfTime / frameTime * 100;
+    for ( auto& entry : m_sortedChildren )
+    {
+        entry->FinalizePercentagesR(frameTime);
+    }
+}
+
+void ProfilerReportEntry::CollapesTreeToFlatR( ProfilerReportEntry *rootEntry )
+{
+    ProfilerReportEntry* entry = rootEntry->GetOrCreateChild( m_name );
+    entry->m_totalTime += m_totalTime;
+    entry->m_selfTime += m_selfTime;
+    entry->m_callCount += m_callCount;
+    for ( auto& child : m_sortedChildren )
+    {
+        child->CollapesTreeToFlatR( rootEntry );
+    }
 }
 
 void ProfilerReportEntry::PopulateFlatR( Profiler::Measurement *measurement,
@@ -73,15 +93,15 @@ void ProfilerReportEntry::PopulateFlatR( Profiler::Measurement *measurement,
     }
     else
     {
-        Profiler::Measurement* currentChild = firstChild;
+        Profiler::Measurement* currentChildMeasure = firstChild;
         do
         {
             ProfilerReportEntry *entry = rootEntry->
-                GetOrCreateChild( currentChild->m_name );
+                GetOrCreateChild( currentChildMeasure->m_name );
 
-            entry->PopulateFlatR( currentChild, rootEntry );
-            currentChild = currentChild->m_next;
-        } while( currentChild != firstChild );
+            entry->PopulateFlatR( currentChildMeasure, rootEntry );
+            currentChildMeasure = currentChildMeasure->m_next;
+        } while( currentChildMeasure != firstChild );
     }
 }
 
@@ -94,6 +114,7 @@ ProfilerReportEntry* ProfilerReportEntry::GetOrCreateChild( const String& id )
         m_children[id] = entry;
         entry->m_parent = this;
         entry->m_name = id;
+        m_sortedChildren.push_back( entry );
     }
 
     return m_children[id];
@@ -133,8 +154,45 @@ size_t ProfilerReportEntry::GetTotalStringSizeR()
 void ProfilerReportEntry::AppendToStringR( String& appendTo )
 {
     appendTo.append( m_reportString );
-    for( auto& pair : m_children )
+    for( auto& entry : m_sortedChildren )
     {
-        pair.second->AppendToStringR( appendTo );
+        entry->AppendToStringR( appendTo );
     }
+}
+
+// compare functions
+namespace
+{
+bool CompareTotalTime( ProfilerReportEntry* lhs, ProfilerReportEntry* rhs )
+{
+    return lhs->m_totalTime > rhs->m_totalTime;
+}
+
+bool CompareSelfTime( ProfilerReportEntry* lhs, ProfilerReportEntry* rhs )
+{
+    return lhs->m_selfTime > rhs->m_selfTime;
+}
+
+}
+
+void ProfilerReportEntry::SortChildrenR( std::function<bool( ProfilerReportEntry*, ProfilerReportEntry* )> comparer )
+{
+    if( 0 == m_sortedChildren.size()  )
+        return;
+    std::sort( m_sortedChildren.begin(), m_sortedChildren.end(), comparer );
+
+    for ( auto& entry : m_sortedChildren )
+    {
+        entry->SortChildrenR( comparer );
+    }
+}
+
+void ProfilerReportEntry::SortChildernTotalTimeR()
+{
+    SortChildrenR( CompareTotalTime );
+}
+
+void ProfilerReportEntry::SortChildernSelfTimeR()
+{
+    SortChildrenR( CompareSelfTime );
 }

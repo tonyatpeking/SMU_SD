@@ -33,7 +33,7 @@ public:
 };
 
 constexpr int MAX_STR_LEN = 64;
-constexpr int MAX_HISTORY_LEN = 60;
+constexpr int MAX_HISTORY_LEN = 60 * 5;
 
 struct Measurement
 {
@@ -59,12 +59,15 @@ void Push( const char* tag );
 void Pop();
 void MarkFrame();
 
+void SetVisible( bool visible );
+void ToggleVisible();
+void Render();
+void ProcessInput();
+
 Measurement* GetPreviousFrame( int skipCount = 0 ); // 0 is previous frame
 
 void Pause();
 void Resume();
-
-
 
 
 };

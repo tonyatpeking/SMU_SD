@@ -17,6 +17,12 @@ void GameCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
 
+    commandSys->AddCommand( "p", []( String str )
+    {
+        UNUSED( str );
+        Profiler::ToggleVisible();
+    } );
+
     commandSys->AddCommand( "profilerPause", []( String str )
     {
         UNUSED( str );
@@ -36,13 +42,22 @@ void GameCommands::RegisterAllCommands()
         CommandParameterParser parser( str );
         size_t numParams = parser.NumOfParams();
         bool useTreeMode = true;
-        if( numParams != 0 )
+        bool sortByTotalTime = true;
+        if( numParams > 0 )
         {
             String param;
             parser.GetNext( param );
             if( "flat" == param || "Flat" == param )
                 useTreeMode = false;
+            if( numParams > 1 )
+            {
+                parser.GetNext( param );
+                if( "self" == param || "Self" == param )
+                    sortByTotalTime = false;
+            }
         }
+
+
 
         Profiler::Measurement* lastFrame = Profiler::GetPreviousFrame();
         ProfilerReport report;
@@ -54,6 +69,16 @@ void GameCommands::RegisterAllCommands()
         {
             report.GenerateReportFlatFromFrame( lastFrame );
         }
+
+        if( sortByTotalTime )
+        {
+            report.SortByTotalTime();
+        }
+        else
+        {
+            report.SortBySelfTime();
+        }
+
 
         String reportStr = report.ToString();
         g_console->Print( reportStr );

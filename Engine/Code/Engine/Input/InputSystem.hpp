@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <stack>
 
 #include "Engine/Input/KeyButtonState.hpp"
 #include "Engine/Input/XboxController.hpp"
@@ -15,6 +16,8 @@ class InputSystem
 public:
     InputSystem( Window* window );
     ~InputSystem() {};
+
+    static InputSystem* GetDefault();
 
     void BeginFrame();
     void EndFrame();
@@ -39,9 +42,15 @@ public:
     Vec2 GetCursorWindowPosFlipY() const;// (0,0) is at bottom left
     void SetCursorScreenPos( const Vec2& pos );
     void SetCursorWindowPos( const Vec2& pos );
+
     void LockCursor( bool lock );
     void ShowCursor( bool show );
     void ClipCursor( bool clip );
+
+    void ShowAndUnlockCursor();
+    void PushCursorSettings();
+    void PopCursorSettings();
+
     void UpdateClipCursorAfterResize();
 
     void SetWindowHasFocus( bool focus );
@@ -132,10 +141,17 @@ public:
     static const unsigned char KEYBOARD_DOWN_ARROW;
     static const unsigned char KEYBOARD_RIGHT_ARROW;
 
+    struct CursorSettings
+    {
+        bool lock = false;
+        bool clip = false;
+        bool show = true;
+    };
 
-    bool m_lockCursor = false;
-    bool m_clipCursor = false;
-    bool m_showCursor = false;
+    CursorSettings m_cursorSettings;
+//     bool m_lockCursor = false;
+//     bool m_clipCursor = false;
+//     bool m_showCursor = true;
 
 protected:
     void ClearKeyboardJustChangedFlags();
@@ -157,4 +173,7 @@ protected:
     bool m_hasFocus = true;
     bool m_justLostFocus = false;
     bool m_justGainedFocus = false;
+
+
+    std::stack<CursorSettings> m_cursorModeStack;
 };

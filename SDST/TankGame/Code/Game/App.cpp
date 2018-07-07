@@ -102,6 +102,9 @@ void App::RunFrame()
     g_game->Update();
     g_game->Render();
 
+    Profiler::ProcessInput();
+    Profiler::Render();
+
     DebugRender::UpdateAndRender();
 
     g_console->Update( deltaSeconds );

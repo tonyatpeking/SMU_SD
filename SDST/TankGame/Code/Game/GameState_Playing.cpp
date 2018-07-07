@@ -161,7 +161,7 @@ void GameState_Playing::ProcessInput()
         ProcessMovementInput();
 
 
-    TestInput();
+    //TestInput();
 }
 
 void GameState_Playing::MakeCamera()

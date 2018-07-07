@@ -1,7 +1,15 @@
+#include "Engine/Input/InputSystem.hpp"
+#include "Engine/Core/Console.hpp"
+#include "Engine/Renderer/DebugRender.hpp"
 #include "Engine/Core/Profiler.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/Time/Time.hpp"
+#include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Core/Window.hpp"
+#include "Engine/Core/SmartEnum.hpp"
+#include "Engine/Core/ProfilerReport.hpp"
+#include "Engine/Core/ProfilerReportEntry.hpp"
 
 #include <deque>
 
@@ -13,6 +21,20 @@ namespace Profiler
 //--------------------------------------------------------------------------------------
 // internal
 
+SMART_ENUM(
+    DisplayHierarchy,
+
+    FLAT,
+    TREE
+)
+
+SMART_ENUM(
+    DisplaySortMode,
+
+    SELF,
+    TOTAL
+)
+
 Measurement* CreateMeasurement( const char* id );
 void DestroyMeasurementTreeR( Measurement* node );
 
@@ -20,9 +42,17 @@ Measurement* g_activeNode = nullptr;
 // newer frames are in the front
 std::deque<Measurement*> g_prevFrames;
 
-
 bool g_isPaused = false;
 bool g_shouldPauseNextFrame = false;
+
+bool g_visible = false;
+bool g_cursorSettingsPushed = false;
+
+float g_updateIntervalSeconds = 0.1f;
+
+DisplayHierarchy g_hierarchy = DisplayHierarchy::TREE;
+DisplaySortMode g_sortMode = DisplaySortMode::TOTAL;
+
 
 
 Measurement* CreateMeasurement( const char* id )
@@ -175,6 +205,131 @@ void MarkFrame()
     Push( "Frame" );
 }
 
+void SetVisible( bool visible )
+{
+    g_visible = visible;
+}
+
+void ToggleVisible()
+{
+    g_visible = !g_visible;
+}
+
+void RenderReport( int frameSkip = 0 )
+{
+    Renderer* renderer = Renderer::GetDefault();
+    Window* window = renderer->GetWindow();
+    AABB2 bounds = window->GetWindowBounds();
+    float fontHeight = Console::DefaultConsole()->GetFontHeight();
+
+    static float timeOfLastUpdate = 0.f;
+    static double frameTime = 0;
+    static double fps = 0;
+    bool shouldUpdateThisFrame = false;
+
+    float currentTime = (float)TimeUtils::GetCurrentTimeSeconds();
+    if( currentTime - timeOfLastUpdate > g_updateIntervalSeconds )
+    {
+        shouldUpdateThisFrame = true;
+    }
+
+    static String reportStr;
+
+    if( shouldUpdateThisFrame )
+    {
+        // Build Report
+        Profiler::Measurement* frame = Profiler::GetPreviousFrame( frameSkip );
+        ProfilerReport report;
+
+        if( g_hierarchy == DisplayHierarchy::TREE )
+            report.GenerateReportTreeFromFrame( frame );
+        else if( g_hierarchy == DisplayHierarchy::FLAT )
+            report.GenerateReportFlatFromFrame( frame );
+
+        if( g_sortMode == DisplaySortMode::TOTAL )
+            report.SortByTotalTime();
+        else if( g_sortMode == DisplaySortMode::SELF )
+            report.SortBySelfTime();
+
+        reportStr = report.ToString();
+
+        // update FPS and frame time
+        timeOfLastUpdate = currentTime;
+        frameTime = report.GetTotalFrameTime() * 1000;
+        fps = 1 / report.GetTotalFrameTime();
+    }
+
+    DebugRender::SetOptions( 0 );
+
+    // Draw Title
+    bounds.Translate( 10, -10 );
+    DebugRender::DrawText2D( bounds, fontHeight * 2, Vec2( 0, 1 ), "PROFILER" );
+
+    // Draw FPS and frame time
+    bounds.Translate( 0, -fontHeight * 2 );
+    DebugRender::DrawText2D(
+        bounds, fontHeight, Vec2( 0, 1 ),
+        "FPS: %.2f \nFrame Time: %.2f ms", fps, frameTime );
+
+    // Draw report
+    bounds.Translate( 0, -fontHeight * 10 );
+    DebugRender::DrawText2D(
+        bounds, fontHeight, Vec2( 0, 1 ),
+        reportStr );
+}
+
+void Render()
+{
+    if( !g_visible )
+        return;
+
+    Renderer* renderer = Renderer::GetDefault();
+    renderer->ClearDepth();
+    renderer->UseUICamera();
+
+    Window* window = renderer->GetWindow();
+    AABB2 bounds = window->GetWindowBounds();
+    renderer->DrawAABB( bounds, Rgba( 0, 0, 0, 200 ) );
+
+    RenderReport();
+}
+
+void ProcessInput()
+{
+    if( !g_visible )
+        return;
+
+    InputSystem* input = InputSystem::GetDefault();
+    if( input->WasKeyJustPressed( 'V' ) )
+    {
+        g_hierarchy = g_hierarchy + 1;
+        if( g_hierarchy >= DisplayHierarchy::COUNT )
+            g_hierarchy = 0;
+    }
+
+    if( input->WasKeyJustPressed( 'L' ) )
+    {
+        g_sortMode = g_sortMode + 1;
+        if( g_sortMode >= DisplaySortMode::COUNT )
+            g_sortMode = 0;
+    }
+
+    if( input->WasKeyJustPressed( 'M' ) )
+    {
+        if( !g_cursorSettingsPushed )
+        {
+            input->PushCursorSettings();
+            input->ShowAndUnlockCursor();
+            g_cursorSettingsPushed = true;
+        }
+        else
+        {
+            g_cursorSettingsPushed = false;
+            input->PopCursorSettings();
+        }
+    }
+}
+
 Profiler::Measurement* GetPreviousFrame( int skipCount )
 {
     if( skipCount >= g_prevFrames.size() )
@@ -212,6 +367,8 @@ void Push( const char* tag ) { (void) ( tag ); }
 void Pop() {}
 
 void MarkFrame() {}
+
+void Render() {}
 
 Profiler::Measurement* GetPreviousFrame( int skipCount ) { (void) ( skipCount ); }
 

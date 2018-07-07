@@ -408,6 +408,9 @@
     <ClCompile Include="Core\ProfilerReport.cpp">
       <Filter>Profiling</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\BarGraph.cpp">
+      <Filter>Renderer\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -811,6 +814,9 @@
     </ClInclude>
     <ClInclude Include="Core\ProfilerReport.hpp">
       <Filter>Profiling</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\BarGraph.hpp">
+      <Filter>Renderer\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

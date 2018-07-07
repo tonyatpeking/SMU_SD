@@ -34,7 +34,7 @@ public:
     std::vector<WindowsMessageHandlerCallback> listeners;
 
     Vec2 GetDimensions() const { return m_windowDimensions; };
-    AABB2 GetLocalBounds() const;
+    AABB2 GetWindowBounds() const;
     AABB2 GetWindowBoundsInScreen() const;
     float GetAspect() const { return m_aspect; };
     Vec2 GetWindowCenterInScreen();

@@ -88,7 +88,7 @@ int GetTaskCount();
 
 // set the options will affect future pushed commands
 Options& GetOptions();
-void SetOptions( float lifetime, const Rgba& startColor = Rgba::WHITE,
+void SetOptions( float lifetime = 0, const Rgba& startColor = Rgba::WHITE,
                  const Rgba& endColor = Rgba::WHITE, Mode mode = Mode::USE_DEPTH,
                  FillMode fillmode = FillMode::SOLID );
 
@@ -99,6 +99,8 @@ uint DrawLine2D( const Vec2& p0, const Vec2& p1,
                  const Rgba& colorP0 = Rgba::WHITE, const Rgba& colorP1 = Rgba::WHITE );
 uint DrawText2D( const AABB2& bounds, float fontSize, const Vec2& alignment,
                  const char* format, ... );
+uint DrawText2D( const AABB2& bounds, float fontSize, const Vec2& alignment,
+                 const String& str );
 uint Logf( const char* format, ... );
 // text that always faces camera, and is always the same size,
 // pos is world pos but draws in screen space

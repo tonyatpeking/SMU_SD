@@ -224,25 +224,15 @@ void Game::ProcessInput()
     {
         g_console->ToggleActive();
 
-        // save mouse state
-        static bool savedClip = false;
-        static bool savedLock = false;
-        static bool savedShow = true;
 
         if( g_console->IsActive() )
         {
-            savedClip = g_input->m_clipCursor;
-            savedLock = g_input->m_lockCursor;
-            savedShow = g_input->m_showCursor;
-            g_input->LockCursor( false );
-            g_input->ClipCursor( false );
-            g_input->ShowCursor( true );
+            g_input->PushCursorSettings();
+            g_input->ShowAndUnlockCursor();
         }
         else
         {
-            g_input->LockCursor( savedLock );
-            g_input->ClipCursor( savedClip );
-            g_input->ShowCursor( savedShow );
+            g_input->PopCursorSettings();
         }
     }
 

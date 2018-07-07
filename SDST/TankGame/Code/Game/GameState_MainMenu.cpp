@@ -123,7 +123,7 @@ void GameState_MainMenu::OnEnter()
     g_input->ShowCursor( true );
 
     m_menu = new Menu( g_renderer, g_input );
-    AABB2 windowBounds = g_window->GetLocalBounds();
+    AABB2 windowBounds = g_window->GetWindowBounds();
     m_menu->m_bounds = windowBounds.RangeMap01ToBounds( 0.5f, 0.f, 1.f, 0.6f );
     m_menu->AddEntry( "Start", [this]() { StartGame(); } );
     m_menu->AddEntry( "Exit", []() { g_app->OnQuitRequested(); } );

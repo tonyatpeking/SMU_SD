@@ -19,7 +19,7 @@ Console::Console( Renderer* renderer, InputSystem* inputSys )
     , m_inputSystem( inputSys )
 {
     SetFont( m_renderer->DefaultFont() );
-    SetScreenBounds( m_renderer->GetWindow()->GetLocalBounds() );
+    SetScreenBounds( m_renderer->GetWindow()->GetWindowBounds() );
 }
 
 

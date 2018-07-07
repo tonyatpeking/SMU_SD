@@ -24,8 +24,9 @@ public:
 
     String ToString();
 
-public:
-    class ProfilerReportEntry* m_rootEntry;
 private:
+    class ProfilerReportEntry* m_rootEntry;
 
+    bool m_isFlat = false;
+    double m_frameTime = 0;
 };

@@ -288,6 +288,16 @@ uint DebugRender::DrawLine2D( const Vec2& p0, const Vec2& p1, const Rgba& colorP
 uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& alignment,
                               const char* format, ... )
 {
+
+    va_list args;
+    va_start( args, format );
+    String text = Stringf( format, args );
+    uint id = DrawText2D( bounds, fontSize, alignment, text );
+    return id;
+}
+
+uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& alignment, const String& str )
+{
     g_options.m_screenspace = true;
     Renderable* renderable = new Renderable();
     renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
@@ -295,9 +305,7 @@ uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& a
     tmb.m_boundingBox = bounds;
     tmb.m_fontHeight = fontSize;
     tmb.m_alignment = alignment;
-    va_list args;
-    va_start( args, format );
-    tmb.m_text = Stringf( format, args );
+    tmb.m_text = str;
     tmb.Finalize();
     renderable->m_mesh = tmb.MakeMesh();
     renderable->GetMaterial( 0 )->m_diffuse = tmb.m_font->GetTexture();
