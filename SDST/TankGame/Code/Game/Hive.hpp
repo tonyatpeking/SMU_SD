@@ -25,7 +25,7 @@ public:
 private:
 
     std::vector< Swarmer* > m_swarmers;
-    int m_maxSwarmerCount = 40;
+    int m_maxSwarmerCount = 90;
     int m_initialSwarmerCount = 30;
     float m_spawnInterval = 0.5f;
     Vec3 m_hiveScale = Vec3( 10, 40, 10 );

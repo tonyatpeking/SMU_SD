@@ -65,16 +65,17 @@ bool GLSucceeded()
 
 //-----------------------------------------------------------------------------------------------
 
-
 PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = nullptr;
 PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
+PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
 
 void GLFunctions::BindNewWGLFunctions()
 {
     GL_BIND_FUNCTION( wglGetExtensionsStringARB );
     GL_BIND_FUNCTION( wglChoosePixelFormatARB );
     GL_BIND_FUNCTION( wglCreateContextAttribsARB );
+    GL_BIND_FUNCTION( wglSwapIntervalEXT );
 }
 
 void GLFunctions::LoadGLLibrary()

@@ -16,6 +16,7 @@
 #include "Engine/Core/Profiler.hpp"
 void ForwardRenderingPath::Render( RenderSceneGraph* scene )
 {
+    PROFILER_SCOPED();
     m_scene = scene;
 
     PROFILER_PUSH( MakeShadowMap );
@@ -85,15 +86,19 @@ void ForwardRenderingPath::RenderShadowMapForLight( Light* light )
 
 void ForwardRenderingPath::RenderSceneForCamera( Camera* camera )
 {
+    PROFILER_SCOPED();
     m_renderer->UseCamera( camera );
 
+    PROFILER_PUSH( PreRender );
     for( auto& go : m_scene->GetGameObjects() )
         go->PreRender( camera );
+    PROFILER_POP();
 
     //ClearBasedOnCameraOptions( camera );
 
     std::vector<DrawCall> drawCalls;
 
+    PROFILER_PUSH( GenerateDrawCalls );
     // Generate the draw calls
     auto& renderables = m_scene->GetRenderables();
     for( auto renderable : renderables )
@@ -123,11 +128,15 @@ void ForwardRenderingPath::RenderSceneForCamera( Camera* camera )
 
         }
     }
+    PROFILER_POP();
 
+    PROFILER_PUSH( SortDrawCalls );
     // Sort draw calls by layer/queue
     SortDrawCalls( drawCalls );
     // sort alpha by distance to camera - extra
+    PROFILER_POP();
 
+    PROFILER_PUSH( DrawAllRenderablePasses );
     for( DrawCall& drawCall : drawCalls )
     {
         EnableLightsForDrawCall( drawCall );
@@ -137,12 +146,15 @@ void ForwardRenderingPath::RenderSceneForCamera( Camera* camera )
 
 
     }
-
+    PROFILER_POP();
     //
+
+    PROFILER_PUSH( ApplyEffect );
     for( Material *effect : camera->m_effects )
     {
         m_renderer->ApplyEffect( effect );
     }
+    PROFILER_POP();
 
 }
 
@@ -165,7 +177,7 @@ void ForwardRenderingPath::ComputeMostContributingLights( const Vec3& pos,
                                                           int out_lightIndices[] )
 {
 
-
+    PROFILER_SCOPED();
     std::vector<LightSortStruct> lightsSorted;
     std::vector<GameObject*>& lights = m_scene->GetLights();
     lightsSorted.reserve( lights.size() );

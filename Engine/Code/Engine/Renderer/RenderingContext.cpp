@@ -54,6 +54,9 @@ bool RenderingContext::Init()
     // set the globals
     m_GLContext = realContext;
 
+    // Disable / Enable vsync
+    wglSwapIntervalEXT( 0 );
+
     return true;
 }
 

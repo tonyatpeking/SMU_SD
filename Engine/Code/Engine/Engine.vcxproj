@@ -326,7 +326,7 @@
     <ClCompile Include="Math\Vec4.cpp" />
     <ClCompile Include="Particles\Particle.cpp" />
     <ClCompile Include="Particles\ParticleEmitter.cpp" />
-    <ClCompile Include="Renderer\BarGraph.cpp" />
+    <ClCompile Include="Renderer\BarGraphBuilder.cpp" />
     <ClCompile Include="Renderer\BitmapFont.cpp" />
     <ClCompile Include="Renderer\Camera.cpp" />
     <ClCompile Include="Renderer\CubeMap.cpp" />
@@ -457,7 +457,7 @@
     <ClInclude Include="Math\Vec4.hpp" />
     <ClInclude Include="Particles\Particle.hpp" />
     <ClInclude Include="Particles\ParticleEmitter.hpp" />
-    <ClInclude Include="Renderer\BarGraph.hpp" />
+    <ClInclude Include="Renderer\BarGraphBuilder.hpp" />
     <ClInclude Include="Renderer\BitmapFont.hpp" />
     <ClInclude Include="Renderer\BuiltinShader.hpp" />
     <ClInclude Include="Renderer\Camera.hpp" />

@@ -92,8 +92,13 @@ void App::RunFrame()
     lastTime = currentTime;
     g_appClock->Update( deltaSeconds );
 
+    PROFILER_PUSH( Audio );
     g_audio->BeginFrame();
+    PROFILER_POP();
+
+    PROFILER_PUSH( g_renderer->BeginFrame() );
     g_renderer->BeginFrame();
+    PROFILER_POP();
     g_input->BeginFrame();
 
     g_gameTweenSystem->Update( g_gameClock->GetDeltaSecondsF() );
@@ -102,18 +107,22 @@ void App::RunFrame()
     g_game->Update();
     g_game->Render();
 
+    PROFILER_PUSH( Profiler );
     Profiler::ProcessInput();
     Profiler::Render();
+    PROFILER_POP();
 
     DebugRender::UpdateAndRender();
 
+    PROFILER_PUSH( Console );
     g_console->Update( deltaSeconds );
-
     g_console->Render();
+    PROFILER_POP();
 
     g_input->EndFrame();
     g_renderer->EndFrame();
     g_audio->EndFrame();
+
 }
 
 void App::OnQuitRequested()

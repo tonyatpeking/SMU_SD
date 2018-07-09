@@ -37,6 +37,7 @@ constexpr int MAX_HISTORY_LEN = 60 * 5;
 
 struct Measurement
 {
+    ~Measurement();
     char m_name[MAX_STR_LEN];
     double m_startTime;
     double m_endTime;

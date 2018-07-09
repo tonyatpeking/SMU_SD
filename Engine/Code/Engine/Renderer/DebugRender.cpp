@@ -18,6 +18,7 @@
 #include "Engine/Math/AABB3.hpp"
 #include "Engine/Math/OBB3.hpp"
 #include "Engine/Renderer/Mesh.hpp"
+#include "Engine/Core/Profiler.hpp"
 
 namespace
 {
@@ -178,7 +179,7 @@ void DebugRender::Shutdown()
 
 void DebugRender::UpdateAndRender()
 {
-
+    PROFILER_SCOPED();
     for( auto& task : g_tasks )
         task->Age();
 
@@ -295,6 +296,8 @@ uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& a
     uint id = DrawText2D( bounds, fontSize, alignment, text );
     return id;
 }
+
+
 
 uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& alignment, const String& str )
 {

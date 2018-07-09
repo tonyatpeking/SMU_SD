@@ -67,6 +67,7 @@ public:		// Public methods
                             uint* indices = nullptr, int numIndices = 0,
                             DrawPrimitive primitive = DrawPrimitive::TRIANGLES );
     void DrawMeshWithTexture( Mesh* mesh, const Texture* texture = nullptr );
+    void DrawUIMeshWithTexture( Mesh* mesh, const Texture* texture = nullptr );
     void DrawRenderable( Renderable* renderable );
 
     void DrawRenderablePass( Renderable* renderable,

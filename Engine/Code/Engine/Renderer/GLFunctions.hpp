@@ -20,10 +20,10 @@ bool GLCheckError( char const *file, char const *func, int line );
 bool GLFailed();
 bool GLSucceeded();
 
-
 extern PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
 extern PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
+extern PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
 
 
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;

@@ -1,5 +1,6 @@
 #include <vector>
 
+#include "Engine/Core/Profiler.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Renderer/RenderingContext.hpp"
 #include "Engine/Renderer/Sampler.hpp"
@@ -86,6 +87,7 @@ void Renderer::PostInit()
 
 
 
+
     // the default m_color and depth should match our output window
     // so get width/height however you need to.
     uint windowWidth = (uint) m_window->GetDimensions().x;
@@ -137,14 +139,17 @@ void Renderer::BeginFrame()
 
 void Renderer::EndFrame()
 {
+    PROFILER_SCOPED();
     GL_CHECK_ERROR();
     // copies the default camera's framebuffer to the "null" framebuffer,
     // also known as the back buffer.
     CopyFrameBuffer( nullptr, m_currentCamera->m_frameBuffer );
     HWND hWnd = GetActiveWindow();
     HDC hDC = GetDC( hWnd );
-    SwapBuffers( hDC );
 
+    PROFILER_PUSH( SwapBuffers );
+    SwapBuffers( hDC );
+    PROFILER_POP();
 }
 
 void Renderer::ClearScreen( const Rgba& clearColor )
@@ -212,6 +217,15 @@ void Renderer::DrawMeshWithTexture( Mesh* mesh, const Texture* texture )
     DrawRenderablePass( &renderable );
 }
 
+
+void Renderer::DrawUIMeshWithTexture( Mesh* mesh, const Texture* texture /*= nullptr */ )
+{
+    Renderable renderable{};
+    renderable.SetMesh( mesh );
+    renderable.GetMaterial( 0 )->SetDiffuse( texture );
+    renderable.GetMaterial( 0 )->SetShaderPass( 0, ShaderPass::GetDefaultUIShader() );
+    DrawRenderablePass( &renderable );
+}
 
 void Renderer::DrawRenderablePass( Renderable* renderable, uint subMeshID /*= 0*/,
                                    uint shaderPassID /*= 0 */ )
@@ -833,6 +847,8 @@ Texture* Renderer::GetTexture( const String& texturePath )
 
 bool Renderer::CopyFrameBuffer( FrameBuffer *dst, FrameBuffer *src )
 {
+    PROFILER_SCOPED();
+
     GL_CHECK_ERROR();
     // we need at least the src.
     if( src == nullptr )

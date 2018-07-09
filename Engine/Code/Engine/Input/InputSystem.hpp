@@ -46,6 +46,9 @@ public:
     void LockCursor( bool lock );
     void ShowCursor( bool show );
     void ClipCursor( bool clip );
+    bool IsCursorLocked() { return m_cursorSettings.lock; };
+    bool IsCursorVisible() { return m_cursorSettings.show; };
+    bool IsCursorCliped() { return m_cursorSettings.clip; };
 
     void ShowAndUnlockCursor();
     void PushCursorSettings();
@@ -141,6 +144,14 @@ public:
     static const unsigned char KEYBOARD_DOWN_ARROW;
     static const unsigned char KEYBOARD_RIGHT_ARROW;
 
+
+
+
+protected:
+    void ClearKeyboardJustChangedFlags();
+    void ClearControllerJustChangedFlags();
+    void UpdateController( int controllerID );
+
     struct CursorSettings
     {
         bool lock = false;
@@ -149,15 +160,6 @@ public:
     };
 
     CursorSettings m_cursorSettings;
-//     bool m_lockCursor = false;
-//     bool m_clipCursor = false;
-//     bool m_showCursor = true;
-
-protected:
-    void ClearKeyboardJustChangedFlags();
-    void ClearControllerJustChangedFlags();
-    void UpdateController( int controllerID );
-
 
     KeyButtonState m_keyStates[NUM_KEYS];
     XboxController m_controllers[NUM_CONTROLLERS];
