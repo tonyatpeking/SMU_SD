@@ -257,15 +257,15 @@ void Game::ProcessInput()
     if( IsPaused() )
         m_pauseMenu->ProcessMouseInput();
 
-    if( g_input->WasKeyJustPressed( g_config->keyPause )
-        || ( controller != nullptr && controller->WasKeyJustPressed( XboxController::XBOX_KEY_START ) )
-        )
-    {
-        if( IsPaused() )
-            SetIsPaused( false );
-        else
-            SetIsPaused( true );
-    }
+//     if( g_input->WasKeyJustPressed( g_config->keyPause )
+//         || ( controller != nullptr && controller->WasKeyJustPressed( XboxController::XBOX_KEY_START ) )
+//         )
+//     {
+//         if( IsPaused() )
+//             SetIsPaused( false );
+//         else
+//             SetIsPaused( true );
+//     }
 
     if( g_input->WasKeyJustPressed( g_config->keySlowTime ) )
         SetGameTimeScale( g_config->speedOfTimeSlow );
