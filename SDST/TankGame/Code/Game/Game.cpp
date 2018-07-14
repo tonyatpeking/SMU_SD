@@ -51,8 +51,6 @@ using namespace pybind11::literals;
 
 
 Game::Game()
-    : m_overlayMusicPlaybackID( MISSING_SOUND_ID )
-    , m_gameplayMusicPlaybackID( MISSING_SOUND_ID )
 {
     Initialize();
 }
@@ -164,11 +162,6 @@ void Game::CheckSwapToNewState()
     }
 }
 
-void Game::ToggleTests()
-{
-
-}
-
 void Game::LoadTextures()
 {
     //Texture* terrainTexture = g_renderer->CreateOrGetTexture( TERRAIN_IMG_PATH );
@@ -238,9 +231,6 @@ void Game::ProcessInput()
             g_input->PopCursorSettings();
         }
     }
-
-    if( g_input->WasKeyJustPressed( InputSystem::KEYBOARD_F7 ) )
-        ToggleTests();
 
     if( g_input->WasKeyJustPressed( InputSystem::KEYBOARD_ESCAPE )
         || ( controller != nullptr && controller->WasKeyJustPressed( XboxController::XBOX_KEY_BACK ) ) )

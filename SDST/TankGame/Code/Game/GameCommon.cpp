@@ -22,9 +22,6 @@ Config* g_config = nullptr;
 // Game systems
 Game* g_game = nullptr;
 //Camera* g_theCamera = nullptr;
-Encounter* g_encounter = nullptr;
-GameState_Playing* g_encounterState = nullptr;
-Actor* g_currentActor = nullptr;
 
 ForwardRenderingPath* g_forwardRenderingPath = nullptr;
 RenderSceneGraph* g_renderSceneGraph = nullptr;

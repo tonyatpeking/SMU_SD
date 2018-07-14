@@ -75,21 +75,12 @@ extern Config* g_config;
 // Game systems
 class  Game;
 extern Game* g_game;
-class Encounter;
-extern Encounter* g_encounter;
-class GameState_Playing;
-extern GameState_Playing* g_encounterState;
 class ForwardRenderingPath;
 extern ForwardRenderingPath* g_forwardRenderingPath;
 class RenderSceneGraph;
 extern RenderSceneGraph* g_renderSceneGraph;
 class GameObjectManager;
 extern GameObjectManager* g_gameObjectManager;
-
-// Owned by Encounter
-class Actor;
-extern Actor* g_currentActor;
-// Owned by GameState_Playing
 
 
 class XMLDocument;

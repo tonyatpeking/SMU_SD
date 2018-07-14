@@ -41,6 +41,9 @@ public:
     void SetMesh( Mesh* mesh );
     Mesh* GetMesh() { return m_mesh; };
 
+    // this should be removed after we have resource counting
+    void DeleteMesh();
+
     void CreateInputLayoutsIfDirty();
     void FreeInputLayouts();
     void BindInputLayoutForProgram( ShaderProgram* program );

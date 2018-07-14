@@ -43,7 +43,7 @@ void GameState_MainMenu::Render() const
 
     Vec2 screenCenter = (Vec2) g_window->GetDimensions() * 0.5f;
 
-    String text = "Tank Game";
+    String text = "Space Ship Builder";
     Vec2 textPosition = screenCenter + Vec2( 0.f, 250.f );
     float textHeight = 70.f;
     float time = g_UIClock->GetTimeSinceStartupF();
@@ -68,7 +68,7 @@ void GameState_MainMenu::Render() const
     String textLabel   = " F4 Debug shader                     ";
     String textMove    = " Move:       WASD                    ";
     String textAim     = " Look:       Mouse                   ";
-    String textShoot   = "'Z' 'X' 'C' 'V' for debug render demo";
+    String textShoot   = " ";
     String textAuthor  = "                        Tony Yu      ";
 
     textPosition = textPosition - Vec2( 300.f, 150.f );
@@ -134,14 +134,11 @@ void GameState_MainMenu::OnEnter()
     tween->SetTweenMode( TweenMode::PINGPONG );
     tween->SetEasing( Easing::BounceStop );
 
-    m_audioPlaybackID = g_audio->PlaySoundFromPath( "Data/Audio/Music/mainmenu.mp3", true, 1.f );
-
 }
 
 void GameState_MainMenu::OnExit()
 {
     GameState::OnExit();
-    g_audio->StopSound( m_audioPlaybackID );
 }
 
 void GameState_MainMenu::ProcessInput()
@@ -155,7 +152,7 @@ void GameState_MainMenu::ProcessInput()
 
 void GameState_MainMenu::StartGame()
 {
-    g_game->ChangeState( GameStateType::LOBBY );
+    g_game->ChangeState( GameStateType::PLAYING );
 }
 
 

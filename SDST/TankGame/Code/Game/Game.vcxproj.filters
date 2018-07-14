@@ -73,29 +73,11 @@
     <ClCompile Include="GameState_Playing.cpp">
       <Filter>GameStates</Filter>
     </ClCompile>
-    <ClCompile Include="Projectile.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
     <ClCompile Include="RigidBody.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="GameMap.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
     <ClCompile Include="GameState_Lobby.cpp">
       <Filter>GameStates</Filter>
-    </ClCompile>
-    <ClCompile Include="GameMapChunk.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
-    <ClCompile Include="Swarmer.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Hive.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Asteroid.cpp">
-      <Filter>Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -141,29 +123,11 @@
     <ClInclude Include="GameState_Playing.hpp">
       <Filter>GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile.hpp">
-      <Filter>Entities</Filter>
-    </ClInclude>
     <ClInclude Include="RigidBody.hpp">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="GameMap.hpp">
-      <Filter>Map</Filter>
-    </ClInclude>
-    <ClInclude Include="Asteroid.hpp">
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="GameState_Lobby.hpp">
       <Filter>GameStates</Filter>
-    </ClInclude>
-    <ClInclude Include="GameMapChunk.hpp">
-      <Filter>Map</Filter>
-    </ClInclude>
-    <ClInclude Include="Swarmer.hpp">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Hive.hpp">
-      <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -45,6 +45,12 @@ void Renderable::SetMesh( Mesh* mesh )
     SetDirty();
 }
 
+void Renderable::DeleteMesh()
+{
+    delete m_mesh;
+    m_mesh = nullptr;
+}
+
 void Renderable::CreateInputLayoutsIfDirty()
 {
     if( !m_isDirty )

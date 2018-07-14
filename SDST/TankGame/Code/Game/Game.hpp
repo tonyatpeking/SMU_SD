@@ -6,20 +6,12 @@
 #include "Game/GameStateType.hpp"
 #include "Game/GameCommon.hpp"
 
-class Map;
-class Image;
-class Entity;
-class Player;
-class Adventure;
 class MainMenu;
-class InventoryMenu;
-class CubicSpline2D;
 class GameObject;
 class GameMap;
 class Texture;
 class GameState;
 class Map;
-typedef size_t PlaybackID;
 
 
 
@@ -50,8 +42,6 @@ private:
 
     void CheckSwapToNewState();
 
-    void ToggleTests();
-
     void ProcessInput();
     void SetGameTimeScale( float timeSpeed );
 
@@ -68,16 +58,8 @@ private:
 
     void ToggleDebugRenderModes();
 public:
-    int m_victoryTeam = -1;
 
     // Game resources, #TODO Move to res manager
-    Image* m_noiseImage = nullptr;
-    Texture* m_noiseTexture = nullptr;
-    int m_noiseImageSize = 256;
-
-    GameMap* m_map = nullptr;
-
-    GameObject* m_shipHull;
     Texture* m_skybox = nullptr;
 
 
@@ -95,8 +77,5 @@ private:
 
     // UI
     MainMenu* m_mainMenu = nullptr;
-    InventoryMenu* m_inventoryMenu = nullptr;
 
-    PlaybackID m_overlayMusicPlaybackID;
-    PlaybackID m_gameplayMusicPlaybackID;
 };
