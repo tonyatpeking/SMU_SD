@@ -76,6 +76,9 @@
     <Filter Include="Profiling">
       <UniqueIdentifier>{37b11870-498a-476a-9a8a-895d2e13eabe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Thread">
+      <UniqueIdentifier>{caa595af-a89a-441b-b0af-083f9d3b8210}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Random.cpp">
@@ -411,6 +414,10 @@
     <ClCompile Include="Renderer\BarGraphBuilder.cpp">
       <Filter>Renderer\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Thread.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\EngineCommands.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -818,6 +825,10 @@
     <ClInclude Include="Renderer\BarGraphBuilder.hpp">
       <Filter>Renderer\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Thread.hpp">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\EngineCommands.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">

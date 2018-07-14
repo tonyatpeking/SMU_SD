@@ -51,6 +51,7 @@ void CommandSystem::RunCommand( String commandString )
 }
 
 
-
-
-
+CommandSelfRegister::CommandSelfRegister( String name, CommandCallback callback )
+{
+    CommandSystem::DefaultCommandSystem()->AddCommand( name, callback );
+}

@@ -39,6 +39,7 @@
 #include "Engine/Particles/ParticleEmitter.hpp"
 #include "Engine/Math/Raycast.hpp"
 #include "Engine/Math/Ray2.hpp"
+#include "Engine/Core/Thread.hpp"
 
 #include "Game/Projectile.hpp"
 #include "Game/GameState_Playing.hpp"
@@ -100,8 +101,15 @@ void GameState_Playing::Render() const
     TestRender();
 }
 
+void CB( int i, float f )
+{
+
+}
+
 void GameState_Playing::OnEnter()
 {
+
+    Thread::Create( CB, 2, 3.0f );
 
     GameState::OnEnter();
 

@@ -271,6 +271,7 @@
     <ClCompile Include="Core\Blob.cpp" />
     <ClCompile Include="Core\Console.cpp" />
     <ClCompile Include="Core\ContainerUtils.cpp" />
+    <ClCompile Include="Core\EngineCommands.cpp" />
     <ClCompile Include="Core\EngineCommon.cpp" />
     <ClCompile Include="Core\ErrorUtils.cpp" />
     <ClCompile Include="Core\GameObject.cpp" />
@@ -284,6 +285,7 @@
     <ClCompile Include="Core\PythonInterpreter.cpp" />
     <ClCompile Include="Core\Rgba.cpp" />
     <ClCompile Include="Core\StringUtils.cpp" />
+    <ClCompile Include="Core\Thread.cpp" />
     <ClCompile Include="Core\Transform.cpp" />
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Core\XmlUtils.cpp" />
@@ -397,6 +399,7 @@
     <ClInclude Include="Core\CommandSystem.hpp" />
     <ClInclude Include="Core\Console.hpp" />
     <ClInclude Include="Core\ContainerUtils.hpp" />
+    <ClInclude Include="Core\EngineCommands.hpp" />
     <ClInclude Include="Core\EngineCommon.hpp" />
     <ClInclude Include="Core\ErrorUtils.hpp" />
     <ClInclude Include="Core\GameObject.hpp" />
@@ -412,6 +415,7 @@
     <ClInclude Include="Core\Rgba.hpp" />
     <ClInclude Include="Core\SmartEnum.hpp" />
     <ClInclude Include="Core\StringUtils.hpp" />
+    <ClInclude Include="Core\Thread.hpp" />
     <ClInclude Include="Core\Transform.hpp" />
     <ClInclude Include="Core\Types.hpp" />
     <ClInclude Include="Core\Window.hpp" />

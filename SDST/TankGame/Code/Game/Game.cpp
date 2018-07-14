@@ -34,6 +34,7 @@
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Renderer/ForwardRenderingPath.hpp"
 #include "Engine/Core/PythonInterpreter.hpp"
+#include "Engine/Core/EngineCommands.hpp"
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
@@ -112,6 +113,8 @@ void Game::Initialize()
     g_gameObjectManager = GameObjectManager::GetDefault();
 
     LoadSounds();
+
+    EngineCommands::RegisterAllCommands();
 
     GameCommands::RegisterAllCommands();
 

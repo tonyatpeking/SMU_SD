@@ -5,7 +5,16 @@
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 
+
+
 typedef void( *CommandCallback )( String );
+
+// make a static variable of this to self register to the default command system
+class CommandSelfRegister
+{
+    CommandSelfRegister( String name, CommandCallback callback );
+    ~CommandSelfRegister() {};
+};
 
 struct CommandDef
 {
