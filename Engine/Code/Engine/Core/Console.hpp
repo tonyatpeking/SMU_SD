@@ -64,6 +64,8 @@ public:
     void Printf( const Rgba& color, const char* format, ... );
     void Printf( const char* format, ... );
 
+    String GetInputPrompt() const;
+
     float GetFontHeight() { return m_fontHeight; };
 private:
 
@@ -102,7 +104,6 @@ private:
     float m_lineSpacingRatio = 0.3f; // Ratio in terms of font height, 0 is no spacing
     float m_lineSpacing = 0.f;
     float m_cursorBlinkInterval = 1.f;
-    String m_inputPrompt = ">>> ";
     String m_outputFilePath;
     Rgba m_backgroundColor = Rgba( 0, 0, 0, 150 );
     Rgba m_defaultTextColor = Rgba::LIGHT_GRAY;

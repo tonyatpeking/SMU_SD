@@ -1,4 +1,10 @@
 #include "Engine/Core/PythonInterpreter.hpp"
+#include "Engine/Core/Console.hpp"
+
+PYBIND11_EMBEDDED_MODULE( zzzUtils, m ) {
+    // `m` is a `py::module` which is used to bind functions and classes
+    m.def( "quit", PythonInterpreter::CloseShell );
+}
 
 
 PythonInterpreter* PythonInterpreter::GetInstance()
@@ -13,6 +19,8 @@ void PythonInterpreter::Start()
     {
         py::initialize_interpreter();
         StartShell();
+        InitPath();
+        BindQuit();
         m_started = true;
     }
 }
@@ -28,12 +36,19 @@ void PythonInterpreter::Stop()
 
 void PythonInterpreter::PushToShell( std::string text )
 {
-    py::eval( "shell.push('" + text + "')" );
+    py::object pyText = py::cast( text );
+    m_shellPush( pyText );
 }
 
 std::string PythonInterpreter::ReadFromShell()
 {
     return py::eval( "outputCatcher.pop()" ).cast<std::string>();
+}
+
+void PythonInterpreter::CloseShell()
+{
+    Console::DefaultConsole()->UsePython( false );
+    Console::DefaultConsole()->Print( "Leaving Python" );
 }
 
 PythonInterpreter::~PythonInterpreter()
@@ -63,5 +78,26 @@ outputCatcher = OutputCatcher()
 sys.stdout = outputCatcher
 sys.stderr = outputCatcher
 
+    )" );
+
+    m_shellPush = py::globals()["shell"].attr( "push" );
+}
+
+void PythonInterpreter::InitPath()
+{
+    py::exec( R"(
+import sys
+import os
+
+sys.path.insert( 1, os.getcwd() + '\\Data\\Scripts' )
+
+    )" );
+}
+
+void PythonInterpreter::BindQuit()
+{
+    py::exec( R"(
+import zzzUtils
+quit = zzzUtils.quit
     )" );
 }

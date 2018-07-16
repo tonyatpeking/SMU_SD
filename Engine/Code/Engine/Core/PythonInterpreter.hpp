@@ -5,6 +5,8 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
+
+
 class PythonInterpreter
 {
 public:
@@ -16,13 +18,20 @@ public:
     void PushToShell(std::string text);
     std::string ReadFromShell();
 
+    static void CloseShell();
+
 private:
 
     PythonInterpreter() {};
     ~PythonInterpreter();
 
     void StartShell();
+    void InitPath();
+    void BindQuit();
 
     bool m_started = false;
 
+    py::object m_shellPush;
+
 };
+

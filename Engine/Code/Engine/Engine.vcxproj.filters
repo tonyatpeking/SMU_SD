@@ -417,7 +417,9 @@
     <ClCompile Include="Core\Thread.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
-    <ClCompile Include="Core\EngineCommands.cpp" />
+    <ClCompile Include="Core\EngineCommands.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -828,7 +830,9 @@
     <ClInclude Include="Core\Thread.hpp">
       <Filter>Thread</Filter>
     </ClInclude>
-    <ClInclude Include="Core\EngineCommands.hpp" />
+    <ClInclude Include="Core\EngineCommands.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">

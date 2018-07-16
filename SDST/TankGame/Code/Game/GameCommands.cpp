@@ -17,27 +17,7 @@ void GameCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
 
-    commandSys->AddCommand( "p", []( String str )
-    {
-        UNUSED( str );
-        Profiler::ToggleVisible();
-    } );
-
-    commandSys->AddCommand( "profilerPause", []( String str )
-    {
-        UNUSED( str );
-        g_console->Print( "Paused profiler" );
-        Profiler::Pause();
-    } );
-
-    commandSys->AddCommand( "profilerResume", []( String str )
-    {
-        UNUSED( str );
-        g_console->Print( "Resumed profiler" );
-        Profiler::Resume();
-    } );
-
-    commandSys->AddCommand( "pr", []( String str )
+    commandSys->AddCommand( "profilerReport", []( String str )
     {
         CommandParameterParser parser( str );
         size_t numParams = parser.NumOfParams();
@@ -56,8 +36,6 @@ void GameCommands::RegisterAllCommands()
                     sortByTotalTime = false;
             }
         }
-
-
 
         Profiler::Measurement* lastFrame = Profiler::GetPreviousFrame();
         ProfilerReport report;
@@ -85,14 +63,6 @@ void GameCommands::RegisterAllCommands()
 
     } );
 
-    commandSys->AddCommand( "python", []( String str )
-    {
-        CommandParameterParser parser( str );
-
-        g_console->Print( "Starting Python Shell" );
-        g_console->UsePython( true );
-
-    } );
 
     commandSys->AddCommand( "add", []( String str )
     {
@@ -135,20 +105,17 @@ void GameCommands::RegisterAllCommands()
         g_app->OnQuitRequested();
     } );
 
+    commandSys->AddCommand( "quit()", []( String str )
+    {
+        g_app->OnQuitRequested();
+    } );
+
     commandSys->AddCommand( "cls", []( String str )
     {
         g_console->Clear();
     } );
 
-    commandSys->AddCommand( "help", []( String str )
-    {
-        const std::map<String, CommandDef>& allCommandDefs =
-            CommandSystem::DefaultCommandSystem()->GetAllCommandDefs();
-        for( auto& CommandDef : allCommandDefs )
-        {
-            g_console->Print( CommandDef.second.m_name, Rgba::GREEN_CYAN );
-        }
-    } );
+
 
     commandSys->AddCommand( "dump", []( String str )
     {

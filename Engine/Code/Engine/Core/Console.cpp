@@ -188,7 +188,7 @@ void Console::DrawCursor()
         return;
 
     Vec2 pos = m_textBounds.mins;
-    pos.x += ( ( m_cursorPosition + m_inputPrompt.size() ) * m_fontHeight );
+    pos.x += ( ( m_cursorPosition + GetInputPrompt().size() ) * m_fontHeight );
     pos.y -= m_fontHeight * 0.3f;
     m_renderer->DrawText2D(
         "|", pos, m_fontHeight * 1.6f, m_font, Rgba::WHITE,
@@ -323,6 +323,14 @@ void Console::Printf( const char* format, ... )
     va_end( args );
 }
 
+String Console::GetInputPrompt() const
+{
+    if( m_usePython )
+        return ">>>";
+    else
+        return ">";
+}
+
 void Console::InputWithEnter( String text )
 {
     m_inputText = text;
@@ -332,7 +340,7 @@ void Console::InputWithEnter( String text )
 void Console::OnEnterPressed()
 {
     SetCursorPosition( 0 );
-    String text = m_inputPrompt + m_inputText;
+    String text = GetInputPrompt() + m_inputText;
     Print( text );
     if( m_inputText != "" )
         m_previousInputText.push_back( m_inputText );
@@ -375,7 +383,7 @@ void Console::ClearInput()
 void Console::DrawInputText( Vec2& out_nextPos ) const
 {
     Vec2 startPos = m_textBounds.mins;
-    DrawOneLine( m_inputPrompt + m_inputText, m_defaultTextColor, startPos );
+    DrawOneLine( GetInputPrompt() + m_inputText, m_defaultTextColor, startPos );
     out_nextPos = startPos;
     out_nextPos.y += m_fontHeight + m_padding;
 }

@@ -4,8 +4,10 @@
 #include "Engine/Core/Thread.hpp"
 #include "Engine/IO/IOUtils.hpp"
 #include "Engine/Math/Random.hpp"
+#include "Engine/Core/Profiler.hpp"
+#include "Engine/Core/PythonInterpreter.hpp"
+#include "Engine/Core/Console.hpp"
 #include <fstream>
-
 
 void ThreadTestWork()
 {
@@ -50,4 +52,47 @@ void EngineCommands::RegisterAllCommands()
         Thread::Join( handle );
     } );
 
+    commandSys->AddCommand( "p", []( String str )
+    {
+        UNUSED( str );
+        Profiler::ToggleVisible();
+    } );
+
+    commandSys->AddCommand( "pp", []( String str )
+    {
+        UNUSED( str );
+        Console::DefaultConsole()->Print( "Paused profiler" );
+        Profiler::Pause();
+    } );
+
+    commandSys->AddCommand( "pr", []( String str )
+    {
+        UNUSED( str );
+        Console::DefaultConsole()->Print( "Resumed profiler" );
+        Profiler::Resume();
+    } );
+
+    commandSys->AddCommand( "python", []( String str )
+    {
+        UNUSED( str );
+        Console::DefaultConsole()->Print( "Starting Python Shell" );
+        Console::DefaultConsole()->UsePython( true );
+    } );
+
+    commandSys->AddCommand( "py", []( String str )
+    {
+        UNUSED( str );
+        Console::DefaultConsole()->Print( "Starting Python Shell" );
+        Console::DefaultConsole()->UsePython( true );
+    } );
+
+    commandSys->AddCommand( "help", []( String str )
+    {
+        const std::map<String, CommandDef>& allCommandDefs =
+            CommandSystem::DefaultCommandSystem()->GetAllCommandDefs();
+        for( auto& CommandDef : allCommandDefs )
+        {
+            Console::DefaultConsole()->Print( CommandDef.second.m_name, Rgba::GREEN_CYAN );
+        }
+    } );
 }
