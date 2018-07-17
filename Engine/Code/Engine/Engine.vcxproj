@@ -285,6 +285,7 @@
     <ClCompile Include="Core\PythonBindings.cpp" />
     <ClCompile Include="Core\PythonInterpreter.cpp" />
     <ClCompile Include="Core\Rgba.cpp" />
+    <ClCompile Include="Core\ShapeRulesetLoader.cpp" />
     <ClCompile Include="Core\StringUtils.cpp" />
     <ClCompile Include="Core\Thread.cpp" />
     <ClCompile Include="Core\Transform.cpp" />
@@ -414,6 +415,7 @@
     <ClInclude Include="Core\PythonBindings.hpp" />
     <ClInclude Include="Core\PythonInterpreter.hpp" />
     <ClInclude Include="Core\Rgba.hpp" />
+    <ClInclude Include="Core\ShapeRulesetLoader.hpp" />
     <ClInclude Include="Core\SmartEnum.hpp" />
     <ClInclude Include="Core\StringUtils.hpp" />
     <ClInclude Include="Core\Thread.hpp" />

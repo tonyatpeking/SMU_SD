@@ -42,6 +42,7 @@ private:
     void MakeSun();
     void SetAmbient( float ambient );
 
+    void CheckForShipRuleChange();
     void BuildShipFromTree();
 
     // Ship

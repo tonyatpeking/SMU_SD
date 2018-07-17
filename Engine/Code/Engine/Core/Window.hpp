@@ -41,7 +41,7 @@ public:
     Vec2 GetWindowCenterLocal();
     Vec2 WindowToScreen( const Vec2& pos );
     Vec2 ScreenToWindow( const Vec2& pos );
-
+    void* GetWindowHWND() { return m_hwnd; };
 
 private:
 

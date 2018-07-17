@@ -2,6 +2,7 @@
 #include <string>
 
 #include "ThirdParty/pybind11/embed.h"
+
 namespace py = pybind11;
 using namespace pybind11::literals;
 
@@ -10,10 +11,13 @@ using namespace pybind11::literals;
 class PythonInterpreter
 {
 public:
+
     static PythonInterpreter* GetInstance();
 
     void Start();
     void Stop();
+
+    bool IsStarted() { return m_started; };
 
     void PushToShell(std::string text);
     std::string ReadFromShell();

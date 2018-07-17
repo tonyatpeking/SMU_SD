@@ -113,7 +113,7 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
     Initialize();
     while( !g_app->IsQuitting() )
     {
-        Sleep( 1 ); // give at least 1 millisecond (out of 16 per frame) back so that other processes can run
+        Sleep( 2 ); // give at least 1 millisecond (out of 16 per frame) back so that other processes can run
         g_app->RunFrame();
     }
     Shutdown();

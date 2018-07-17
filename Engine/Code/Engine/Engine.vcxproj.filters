@@ -79,6 +79,9 @@
     <Filter Include="Thread">
       <UniqueIdentifier>{caa595af-a89a-441b-b0af-083f9d3b8210}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ShapeGrammar">
+      <UniqueIdentifier>{4a3bcf37-4989-422e-a852-b0e3f31224c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Random.cpp">
@@ -419,6 +422,9 @@
     </ClCompile>
     <ClCompile Include="Core\EngineCommands.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ShapeRulesetLoader.cpp">
+      <Filter>ShapeGrammar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -832,6 +838,9 @@
     </ClInclude>
     <ClInclude Include="Core\EngineCommands.hpp">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ShapeRulesetLoader.hpp">
+      <Filter>ShapeGrammar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

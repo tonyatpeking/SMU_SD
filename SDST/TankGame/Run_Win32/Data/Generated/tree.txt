@@ -1,0 +1,19 @@
+Root
+└── Branch1
+    ├── Branch2
+    │   ├── Branch3
+    │   │   ├── Branch5
+    │   │   └── Branch4
+    │   │       ├── Branch5
+    │   │       ├── Branch5
+    │   │       └── Branch5
+    │   └── Branch4
+    │       ├── Branch5
+    │       ├── Branch5
+    │       └── Branch5
+    └── Branch3
+        ├── Branch5
+        └── Branch4
+            ├── Branch5
+            ├── Branch5
+            └── Branch5

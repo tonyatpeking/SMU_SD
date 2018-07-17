@@ -41,6 +41,7 @@
 #include "Engine/Math/Raycast.hpp"
 #include "Engine/Math/Ray2.hpp"
 #include "Engine/Core/Thread.hpp"
+#include "Engine/Core/ShapeRulesetLoader.hpp"
 
 #include "Game/GameState_Playing.hpp"
 #include "Game/GameCommon.hpp"
@@ -64,9 +65,12 @@ void GameState_Playing::Update()
     // switch phase before all updates, this is after process input
     GameState::Update();
 
+    CheckForShipRuleChange();
+
     g_gameObjectManager->Update();
 
     g_gameObjectManager->DeleteDeadGameObjects();
+
 }
 
 void GameState_Playing::Render() const
@@ -95,6 +99,10 @@ void GameState_Playing::OnEnter()
     SetAmbient( 0.1f );
 
     BuildShipFromTree();
+
+    ShapeRulesetLoader::Init();
+
+    ShapeRulesetLoader::Load( "example_ruleset" );
 }
 
 void GameState_Playing::OnExit()
@@ -112,6 +120,8 @@ void GameState_Playing::ProcessInput()
 
     ProcessMovementInput();
 }
+
+
 
 void GameState_Playing::MakeCamera()
 {
@@ -179,6 +189,12 @@ void GameState_Playing::SetAmbient( float ambient )
     g_renderer->SetAmbient( Vec4( 1, 1, 1, ambient ) );
 }
 
+
+void GameState_Playing::CheckForShipRuleChange()
+{
+    if( ShapeRulesetLoader::DidCurrentRuleChange() )
+        ShapeRulesetLoader::Load( "example_ruleset" );
+}
 
 void GameState_Playing::BuildShipFromTree()
 {

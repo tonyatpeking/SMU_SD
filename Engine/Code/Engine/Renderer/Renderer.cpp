@@ -144,7 +144,7 @@ void Renderer::EndFrame()
     // copies the default camera's framebuffer to the "null" framebuffer,
     // also known as the back buffer.
     CopyFrameBuffer( nullptr, m_currentCamera->m_frameBuffer );
-    HWND hWnd = GetActiveWindow();
+    HWND hWnd =(HWND) m_window->GetWindowHWND();
     HDC hDC = GetDC( hWnd );
 
     PROFILER_PUSH( SwapBuffers );
@@ -1008,7 +1008,7 @@ void Renderer::SetLight( uint idx, Light* light )
               light->GetTransform().GetForward(),
               light->m_coneInnerDot,
               light->m_coneOuterDot,
-              light->IsCastShadow());
+              light->IsCastShadow() );
 }
 
 void Renderer::SetPointLight( uint idx, const Vec4& color, const Vec3& position,
