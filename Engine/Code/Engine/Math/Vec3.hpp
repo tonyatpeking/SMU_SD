@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Engine/Math/Axis.hpp"
+#include "Engine/Core/Types.hpp"
 
 class Vec2;
 class Vec4;
@@ -28,9 +29,9 @@ public:
     explicit Vec3( const Vec2& vec2, float appendZ = 0.f );
     explicit Vec3( const Vec4& vec4 );
     static Vec3 MakeFromXZ( const Vec2& vec2, float y = 0.f );
-    Vec2 ToVec2();
-    Vec2 ToVec2XZ();
-
+    Vec2 ToVec2() const;
+    Vec2 ToVec2XZ() const;
+    String ToString() const;
 
     // Operators
     const Vec3 operator+( const Vec3& vecToAdd ) const;		// vec3 + vec3
@@ -40,12 +41,12 @@ public:
     const Vec3 operator-() const;								// -vec3
     const Vec3 operator*( const Vec3& vec3 ) const;			// component wise
     const Vec3 operator/( const Vec3& vec3 ) const;			// component wise
-    void operator+=( const Vec3& vecToAdd );						// vec3 += vec3
-    void operator-=( const Vec3& vecToSubtract );				// vec3 -= vec3
-    void operator*=( float uniformScale );					// vec3 *= float
+    const Vec3 operator+=( const Vec3& vecToAdd );						// vec3 += vec3
+    const Vec3 operator-=( const Vec3& vecToSubtract );				// vec3 -= vec3
+    const Vec3 operator*=( float uniformScale );					// vec3 *= float
     friend const Vec3 operator*( float uniformScale, const Vec3& vecToScale );	// float * vec3
-    void operator/=( float uniformDivisor );					// vec3 /= float
-    void operator=( const Vec3& copyFrom );						// vec3 = vec3
+    const Vec3 operator/=( float uniformDivisor );					// vec3 /= float
+    const Vec3 operator=( const Vec3& copyFrom );						// vec3 = vec3
     bool operator==( const Vec3& compare ) const;				// vec3 == vec3
     bool operator!=( const Vec3& compare ) const;				// vec3 != vec3
 

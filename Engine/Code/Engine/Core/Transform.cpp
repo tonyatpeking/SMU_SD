@@ -12,7 +12,7 @@ Transform::~Transform()
     // loop removes elements from vector!
     for( int i = childrenSize - 1; i >= 0; --i )
     {
-        m_children[i]->SetParent( nullptr );
+        m_children[i]->SetParentKeepWorldTransform( nullptr );
     }
 }
 
@@ -229,7 +229,7 @@ void Transform::SetLocalScale( const Vec3& scale )
     SetLocalToParentDirty( true );
 }
 
-void Transform::SetLocalScale( float uniformScale )
+void Transform::SetLocalScaleUniform( float uniformScale )
 {
     SetLocalScale( uniformScale * Vec3::ONES );
 }
@@ -304,7 +304,7 @@ bool Transform::HasChildren() const
     return m_children.size() != 0;
 }
 
-void Transform::SetParent( Transform* parent )
+void Transform::SetParentKeepWorldTransform( Transform* parent )
 {
     // Save world rotation and position
     Vec3 worldEuler = GetWorldEuler();
@@ -321,6 +321,21 @@ void Transform::SetParent( Transform* parent )
     // Add to new parent
     if( parent )
         parent->AddChild( this );
+}
+
+void Transform::SetParent( Transform* parent )
+{
+    // Remove from old parent
+    if( m_parent )
+        m_parent->RemoveChild( this );
+
+    m_parent = parent;
+
+    // Add to new parent
+    if( parent )
+        parent->AddChild( this );
+
+    SetLocalToParentDirty(true);
 }
 
 void Transform::SetChildrenLocalToWorldDirty( bool dirty ) const

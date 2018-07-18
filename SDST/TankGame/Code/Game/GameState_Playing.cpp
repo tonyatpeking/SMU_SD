@@ -48,6 +48,20 @@
 #include "Game/Game.hpp"
 #include "Game/App.hpp"
 
+#include "ThirdParty/pybind11/embed.h"
+#include "ThirdParty/pybind11/operators.h"
+#include "ThirdParty/pybind11/stl.h"
+
+namespace py = pybind11;
+using namespace pybind11::literals;
+
+PYBIND11_EMBEDDED_MODULE( zzzGame, m ) {
+    m.def( "SetRootGameObject", &GameState_Playing::SetRootGameObject );
+}
+
+GameObject* GameState_Playing::s_rootGameObject = nullptr;
+
+
 GameState_Playing::GameState_Playing()
     : GameState( GameStateType::PLAYING )
 {
@@ -123,6 +137,11 @@ void GameState_Playing::ProcessInput()
 
 
 
+void GameState_Playing::SetRootGameObject( GameObject* go )
+{
+    s_rootGameObject = go;
+}
+
 void GameState_Playing::MakeCamera()
 {
     Camera* cam = new OrbitCamera();
@@ -136,17 +155,27 @@ void GameState_Playing::MakeCamera()
 void GameState_Playing::ProcessMovementInput()
 {
     PROFILER_SCOPED();
-    float ds = g_gameClock->GetDeltaSecondsF();
-    Transform& shipTransform = m_ship->GetTransform();
+    if( !g_input->WindowHasFocus() )
+        return;
 
-    float deltaShipRoll = 0;
+    float ds = g_gameClock->GetDeltaSecondsF();
+
+    if( s_rootGameObject )
+    {
+        Transform& shipTransform = s_rootGameObject->GetTransform();
+        float deltaShipRoll = 0;
+
+        if( g_input->IsKeyPressed( 'Q' ) )
+            deltaShipRoll = ds * m_rollSpeed;
+        if( g_input->IsKeyPressed( 'E' ) )
+            deltaShipRoll = -ds * m_rollSpeed;
+        shipTransform.RotateLocalEuler( Vec3( 0, 0, deltaShipRoll ) );
+    }
+
     float deltaCamYaw = 0;
     float deltaCamPitch = 0;
 
-    if( g_input->IsKeyPressed( 'Q' ) )
-        deltaShipRoll = ds * m_rollSpeed;
-    if( g_input->IsKeyPressed( 'E' ) )
-        deltaShipRoll = -ds * m_rollSpeed;
+
 
     Vec2 cursorDelta = g_input->GetCursorDelta();
     if( cursorDelta.GetLengthSquared() > 0.01f )
@@ -158,7 +187,6 @@ void GameState_Playing::ProcessMovementInput()
     m_camPitch += deltaCamPitch;
     m_camPitch = Clampf( m_camPitch, -89, 89 );
 
-    shipTransform.RotateLocalEuler( Vec3( 0, 0, deltaShipRoll ) );
 
     UpdateCameraToFollow();
 }
@@ -198,29 +226,39 @@ void GameState_Playing::CheckForShipRuleChange()
 
 void GameState_Playing::BuildShipFromTree()
 {
-    if( m_ship )
-    {
-        m_ship->GetRenderable()->DeleteMesh();
-        delete m_ship;
-        m_ship = nullptr;
-    }
+//     if( s_rootGameObject )
+//     {
+//         s_rootGameObject->GetRenderable()->DeleteMesh();
+//         delete s_rootGameObject;
+//         s_rootGameObject = nullptr;
+//     }
 
-    m_ship = new GameObject();
-    Renderable* r = new Renderable();
-    m_ship->SetRenderable( r );
-    r->GetMaterial( 0 )->SetShaderPass( 0, ShaderPass::GetLitShader() );
-    r->SetMesh( MeshPrimitive::MakeCube().MakeMesh() );
+    //     s_rootGameObject = new GameObject();
+    //     Renderable* r = new Renderable();
+    //     s_rootGameObject->SetRenderable( r );
+    //     r->GetMaterial( 0 )->SetShaderPass( 0, ShaderPass::GetLitShader() );
+    //     r->SetMesh( MeshPrimitive::MakeCube().MakeMesh() );
+    //s_rootGameObject = GameObject::MakeCube();
+
 }
 
 void GameState_Playing::UpdateCameraToFollow()
 {
     float camHeight = 3;
     float camRadius = 20;
-    Transform& shipTrans = m_ship->GetTransform();
+    Vec3 camOrbitPoint;
+    if( s_rootGameObject )
+    {
+        Transform& shipTrans = s_rootGameObject->GetTransform();
 
-    Vec3 shipPos = shipTrans.GetWorldPosition();
+        Vec3 shipPos = shipTrans.GetWorldPosition();
+        camOrbitPoint = shipPos + Vec3::UP * camHeight;
+    }
+    else
+    {
+        camOrbitPoint = Vec3::ZEROS;
+    }
 
-    Vec3 camOrbitPoint = shipPos + Vec3::UP * camHeight;
 
     ( (OrbitCamera*) g_renderer->GetMainCamera() )->SetTarget( camOrbitPoint );
     ( (OrbitCamera*) g_renderer->GetMainCamera() )->SetSphericalCoord( camRadius, m_camPitch, m_camYaw );

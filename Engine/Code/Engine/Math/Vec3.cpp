@@ -50,14 +50,19 @@ Vec3 Vec3::MakeFromXZ( const Vec2& vec2, float y )
     return Vec3( vec2.x, y, vec2.y );
 }
 
-Vec2 Vec3::ToVec2()
+Vec2 Vec3::ToVec2() const
 {
     return Vec2( *this );
 }
 
-Vec2 Vec3::ToVec2XZ()
+Vec2 Vec3::ToVec2XZ() const
 {
     return Vec2::MakeFromXZ( *this );
+}
+
+String Vec3::ToString() const
+{
+    return ::ToString( *this );
 }
 
 const Vec3 Vec3::operator+( const Vec3& vecToAdd ) const
@@ -75,25 +80,28 @@ const Vec3 Vec3::operator-() const
     return Vec3( -x, -y, -z );
 }
 
-void Vec3::operator-=( const Vec3& vecToSubtract )
+const Vec3 Vec3::operator-=( const Vec3& vecToSubtract )
 {
     x -= vecToSubtract.x;
     y -= vecToSubtract.y;
     z -= vecToSubtract.z;
+    return *this;
 }
 
-void Vec3::operator+=( const Vec3& vecToAdd )
+const Vec3 Vec3::operator+=( const Vec3& vecToAdd )
 {
     x += vecToAdd.x;
     y += vecToAdd.y;
     z += vecToAdd.z;
+    return *this;
 }
 
-void Vec3::operator*=( float uniformScale )
+const Vec3 Vec3::operator*=( float uniformScale )
 {
     x *= uniformScale;
     y *= uniformScale;
     z *= uniformScale;
+    return *this;
 }
 
 const Vec3 operator*( float uniformScale, const Vec3& vecToScale )
@@ -329,18 +337,20 @@ void Vec3::DecomposeVectorIntoBasis( const Vec3& originalVector, const Vec3& new
     out_vectorAlongK = k * newBasisK;
 }
 
-void Vec3::operator=( const Vec3& copyFrom )
+const Vec3 Vec3::operator=( const Vec3& copyFrom )
 {
     x = copyFrom.x;
     y = copyFrom.y;
     z = copyFrom.z;
+    return *this;
 }
 
-void Vec3::operator/=( float uniformDivisor )
+const Vec3 Vec3::operator/=( float uniformDivisor )
 {
     x /= uniformDivisor;
     y /= uniformDivisor;
     z /= uniformDivisor;
+    return *this;
 }
 
 const Vec3 Vec3::operator/( float inverseScale ) const

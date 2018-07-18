@@ -1,19 +1,22 @@
 Root
-└── Branch1
-    ├── Branch2
-    │   ├── Branch3
-    │   │   ├── Branch5
-    │   │   └── Branch4
-    │   │       ├── Branch5
-    │   │       ├── Branch5
-    │   │       └── Branch5
-    │   └── Branch4
-    │       ├── Branch5
-    │       ├── Branch5
-    │       └── Branch5
-    └── Branch3
-        ├── Branch5
-        └── Branch4
-            ├── Branch5
-            ├── Branch5
-            └── Branch5
+└── MainMod
+    ├── WingBase
+    │   ├── Solar
+    │   ├── Solar
+    │   ├── Solar
+    │   ├── Solar
+    │   ├── SolarOld
+    │   └── SolarOld
+    ├── WingBase
+    │   ├── Solar
+    │   ├── Solar
+    │   ├── Solar
+    │   ├── Solar
+    │   ├── SolarOld
+    │   └── SolarOld
+    ├── SolarOld
+    ├── SolarOld
+    ├── SolarOld
+    ├── SolarOld
+    ├── SolarOld
+    └── SolarOld

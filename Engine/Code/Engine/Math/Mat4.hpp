@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/Vec4.hpp"
+#include "Engine/Core/Types.hpp"
 
 class Vec2;
 class Vec3;
@@ -42,6 +43,7 @@ public:
     Vec3 DecomposeScale() const;
     bool IsAnyInf() const;
     bool IsAnyNaN() const;
+    String ToString() const;
 
     // Mutators
     void SetIdentity();
@@ -67,7 +69,7 @@ public:
     void Scale2D( float scaleX, float scaleY );
 
     // 3d
-    void TranslateLocal( const Vec3& translation );
+    void Translate( const Vec3& translation );
     void Scale( const Vec3& scale );
 
 
@@ -88,7 +90,7 @@ public:
     static Mat4 MakeOrtho( float width, float height, float near, float far );
     static Mat4 MakeProjection( float fovVertDeg, float aspect,
                                 float near, float far );
-    static Mat4 Transpose( const Mat4& mat );
+
 
     static Mat4 LerpTransform( const Mat4& matA, const Mat4& matB, float t );
     // Matrix elements

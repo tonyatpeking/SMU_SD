@@ -7,9 +7,29 @@
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/Core/GameObjectManager.hpp"
+#include "Engine/Renderer/MeshPrimitive.hpp"
+#include "Engine/Renderer/MeshBuilder.hpp"
+#include "Engine/Renderer/ShaderPass.hpp"
+#include "Engine/Renderer/Material.hpp"
 
+GameObject* GameObject::MakeCube( const Vec3& sideLengths /*= Vec3::ONES*/,
+                                  const Vec3& pivot /*= Vec3::ZEROS */ )
+{
+    GameObject* go = new GameObject( "Cube" );
+    Vec3 centerPos = -( sideLengths / 2 ) * pivot;
 
-GameObject::GameObject( std::string type )
+    MeshBuilder mb = MeshPrimitive::MakeCube(
+        sideLengths, Rgba::WHITE, centerPos );
+
+    Renderable* r = new Renderable();
+    r->SetMesh( mb.MakeMesh() );
+    r->GetMaterial( 0 )->SetShaderPass( 0, ShaderPass::GetLitShader() );
+    go->SetRenderable( r );
+
+    return go;
+}
+
+GameObject::GameObject( const String& type )
 {
     SetType( type );
     m_manager = GameObjectManager::GetDefault();
@@ -20,6 +40,13 @@ GameObject::GameObject( std::string type )
 GameObject::~GameObject()
 {
     SetGameObjectManager( nullptr );
+
+    if( m_renderable )
+    {
+        Mesh* mesh = m_renderable->GetMesh();
+        delete mesh;
+    }
+
     delete m_renderable;
 }
 

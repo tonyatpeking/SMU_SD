@@ -62,7 +62,7 @@ public:
     // Scale
     Vec3 GetLocalScale() const;
     void SetLocalScale( const Vec3& scale );
-    void SetLocalScale( float uniformScale );
+    void SetLocalScaleUniform( float uniformScale );
     Vec3 GetWorldScale() const;
 
     void LookAt( const Vec3& target, const Vec3& worldUp = Vec3::UP );
@@ -76,6 +76,7 @@ public:
     Transform* GetParent() { return m_parent; };
     std::vector<Transform*>& GetChildren() { return m_children; };
     // parent can be null
+    void SetParentKeepWorldTransform( Transform* parent );
     void SetParent( Transform* parent );
 private:
     void SetChildrenLocalToWorldDirty( bool dirty ) const;

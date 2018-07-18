@@ -155,7 +155,7 @@ void ParticleEmitter::SetParticleSpawnCB( void( *particleSpawnCB )( Particle& ) 
 
 void ParticleEmitter::SetParentWorldSpace( GameObject* parent )
 {
-    m_spawnPointTransform.SetParent( &parent->GetTransform() );
+    m_spawnPointTransform.SetParentKeepWorldTransform( &parent->GetTransform() );
 }
 
 void ParticleEmitter::KillDeadParticles()

@@ -801,11 +801,7 @@ const String ToString( const Vec4& var )
 
 const String ToString( const Mat4& var )
 {
-    return Stringf( "\
-%.1f %.1f %.1f %.1f\
-%.1f %.1f %.1f %.1f\
-%.1f %.1f %.1f %.1f\
-%.1f %.1f %.1f %.1f",
+    return Stringf( "%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f",
 var.Ix, var.Jx, var.Kx, var.Tx,
 var.Iy, var.Jy, var.Ky, var.Ty,
 var.Iz, var.Jz, var.Kz, var.Tz,

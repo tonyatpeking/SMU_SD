@@ -4,6 +4,8 @@
 
 #include "Engine/Core/Transform.hpp"
 #include "Engine/Renderer/Renderable.hpp"
+#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Math/Vec3.hpp"
 
 class Camera;
 class RenderSceneGraph;
@@ -17,8 +19,12 @@ typedef std::function<void( GameObject* )> GameObjectCB;
 class GameObject
 {
 public:
-    // GameObject will default to RenderSceneGraph::GetDefault()
-    GameObject( std::string type = "Unknown" );
+    // pivot is in local space (-1,-1,-1) to (1,1,1) for cube min and max corners
+    static GameObject* MakeCube( const Vec3& sideLengths = Vec3::ONES,
+                                 const Vec3& pivot = Vec3::ZEROS );
+
+    // GameObject RenderSceneGraph will default to RenderSceneGraph::GetDefault()
+    GameObject( const String& type = "Unknown" );
     virtual ~GameObject();
 
     virtual void Update();
@@ -41,6 +47,12 @@ public:
         GetTransform().SetParent( &parent->GetTransform() );
     }
 
+    template <typename T>
+    void SetParentKeepWorldTransform( T* parent )
+    {
+        GetTransform().SetParentKeepWorldTransform( &parent->GetTransform() );
+    }
+
     void SetShouldDie( bool shouldDie );
     bool ShouldDie() { return m_shouldDie; };
     void CallDeathCallbacks();
@@ -49,13 +61,15 @@ public:
     void ClearDeathCallbacks();
 
     void SetType( std::string type );
-    std::string GetType() { return m_type; };
+    String GetType() { return m_type; };
 
     OBB3 GetOBB3() const;
     AABB3 GetLocalBounds() const;
 
     void SetVisible( bool visible ) { m_visible = visible; };
     bool IsVisible() { return m_visible; };
+
+
 
 protected:
     std::string m_type = "Unknown";

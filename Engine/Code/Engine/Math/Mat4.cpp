@@ -4,6 +4,7 @@
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/Plane.hpp"
+#include "Engine/Core/StringUtils.hpp"
 
 const Mat4 Mat4::IDENTITY = Mat4();
 
@@ -309,19 +310,11 @@ void Mat4::Transpose()
     T = rowW;
 }
 
-Mat4 Mat4::Transpose( const Mat4& mat )
-{
-    Mat4 transpose{};
-    transpose.I = mat.GetRowX();
-    transpose.J = mat.GetRowY();
-    transpose.K = mat.GetRowZ();
-    transpose.T = mat.GetRowW();
-    return transpose;
-}
-
 Mat4 Mat4::Transposed()
 {
-    return Mat4::Transpose(*this);
+    Mat4 transpose = *this;
+    transpose.Transpose();
+    return transpose;
 }
 
 Mat4 Mat4::LerpTransform( const Mat4& matA, const Mat4& matB, float t )
@@ -512,6 +505,11 @@ bool Mat4::IsAnyNaN() const
     return false;
 }
 
+String Mat4::ToString() const
+{
+    return ::ToString( *this );
+}
+
 void Mat4::SetIdentity()
 {
     *this = IDENTITY;
@@ -624,7 +622,7 @@ void Mat4::Scale2D( float sx, float sy )
     Jw = Jw * sy;
 }
 
-void Mat4::TranslateLocal( const Vec3& t )
+void Mat4::Translate( const Vec3& t )
 {
     //  Ix Jx Kx Tx     1  0  0  t.x
     //  Iy Jy Ky Ty  *  0  1  0  t.y

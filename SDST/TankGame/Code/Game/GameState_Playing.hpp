@@ -32,6 +32,8 @@ public:
     void OnExit() override;
     void ProcessInput() override;
 
+    static void SetRootGameObject( GameObject* go );
+
 private:
 
     void MakeCamera();
@@ -46,7 +48,7 @@ private:
     void BuildShipFromTree();
 
     // Ship
-    GameObject* m_ship = nullptr;
+    static GameObject* s_rootGameObject;
     float m_rollSpeed = 100.f;
     float m_cameraRotateSpeed = 0.3f;
 

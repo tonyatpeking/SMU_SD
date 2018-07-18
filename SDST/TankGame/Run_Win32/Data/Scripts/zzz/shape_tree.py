@@ -19,6 +19,10 @@ class ShapeTree:
     def SetRootNode(self, node):
         self.root = node
 
+    def DestroyGameObjects(self):
+        if self.root is not None:
+            self.root.DestroyGameObjectR()
+
     def GetCurrentNode(self):
         return self.current_node
 
