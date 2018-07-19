@@ -110,7 +110,7 @@ void GameState_Playing::OnEnter()
 
     MakeSun();
 
-    SetAmbient( 0.1f );
+    SetAmbient( 0.3f );
 
     BuildShipFromTree();
 
