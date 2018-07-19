@@ -14,16 +14,20 @@
 #include "Engine/Core/Window.hpp"
 #include "Engine/Renderer/TextMeshBuilder.hpp"
 #include "Engine/Renderer/DebugRender.hpp"
+#include "Engine/Core/Logger.hpp"
+#include "Engine/IO/IOUtils.hpp"
 
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
 #include "Game/GameCommon.hpp"
 
-
 App::App()
 {
     Profiler::StartUp();
+
+    Logger::GetDefault()->StartUp();
+    Logger::GetDefault()->AddFileHook( IOUtils::GetCurrentDir() + "/Logs/log.txt" );
 
     g_realtimeClock = new Clock();
     g_appClock = new Clock();
@@ -57,6 +61,8 @@ App::App()
 
 App::~App()
 {
+    Logger::GetDefault()->ShutDown();
+
     DebugRender::Shutdown();
 
     delete g_game;

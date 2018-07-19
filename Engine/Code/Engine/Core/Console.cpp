@@ -1,6 +1,4 @@
-﻿#include <stdarg.h>
-
-#include "Engine/Core/PythonInterpreter.hpp"
+﻿#include "Engine/Core/PythonInterpreter.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Core/Window.hpp"
@@ -11,6 +9,8 @@
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/IO/IOUtils.hpp"
 #include "Engine/Core/CommandSystem.hpp"
+
+#include <stdarg.h>
 
 Console* Console::s_defaultConsole = nullptr;
 

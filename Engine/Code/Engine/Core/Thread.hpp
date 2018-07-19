@@ -28,7 +28,7 @@ void CreateAndDetach( FuntionT&& cb, Args&&... args )
 // Control
 void SleepMS( int ms );
 void SleepS( float s );
-void Yield();
+void ThreadYield();
 
 
 

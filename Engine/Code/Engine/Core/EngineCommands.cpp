@@ -12,13 +12,14 @@
 void ThreadTestWork()
 {
     // Open a file and output about 50MB of random numbers to it;
-    std::fstream file( "garbage.dat" );
+    std::ofstream file;
+    file.open( "big.txt" );
     if( !file.is_open() )
     {
         return;
     }
 
-    for( uint i = 0; i < 12000000; ++i )
+    for( uint i = 0; i < 1200000; ++i )
     {
         int randInt = Random::IntInRange(0,99999);
         file << randInt;

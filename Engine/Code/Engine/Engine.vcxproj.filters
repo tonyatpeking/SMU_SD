@@ -82,6 +82,9 @@
     <Filter Include="ShapeGrammar">
       <UniqueIdentifier>{4a3bcf37-4989-422e-a852-b0e3f31224c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Logging">
+      <UniqueIdentifier>{827c875b-8de3-4969-8666-4d78cfb3ab44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Random.cpp">
@@ -426,6 +429,7 @@
     <ClCompile Include="Core\ShapeRulesetLoader.cpp">
       <Filter>ShapeGrammar</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -842,6 +846,11 @@
     <ClInclude Include="Core\ShapeRulesetLoader.hpp">
       <Filter>ShapeGrammar</Filter>
     </ClInclude>
+    <ClInclude Include="Core\ThreadSafeQueue.hpp">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Logger.hpp" />
+    <ClInclude Include="Core\LogEntry.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">

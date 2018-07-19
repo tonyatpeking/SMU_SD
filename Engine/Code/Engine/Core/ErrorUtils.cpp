@@ -12,6 +12,7 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Core/Rgba.hpp"
+#include "Engine/Core/Logger.hpp"
 
 
 bool IsDebuggerAvailable()
@@ -212,7 +213,11 @@ void Log(
     if( Console::DefaultConsole() )
         Console::DefaultConsole()->Print( fullMessageText, textColor );
 
+
     String severityString = SeverityToString( severity );
+
+    Logger::GetDefault()->LogTaggedPrintf( severityString.c_str(), fullMessageText.c_str() );
+
     DebuggerPrintf( "\n======================ERROR======================\n" );
     DebuggerPrintf( "RUN-TIME %s on line %i of %s, in %s()\n", severityString.c_str(),
                     lineNum, fileName, functionName );

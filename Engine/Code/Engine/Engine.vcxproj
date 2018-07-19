@@ -278,6 +278,7 @@
     <ClCompile Include="Core\GameObject.cpp" />
     <ClCompile Include="Core\GameObjectManager.cpp" />
     <ClCompile Include="Core\Image.cpp" />
+    <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\ProfileLogScoped.cpp" />
     <ClCompile Include="Core\Profiler.cpp" />
     <ClCompile Include="Core\ProfilerReport.cpp" />
@@ -408,6 +409,8 @@
     <ClInclude Include="Core\GameObjectManager.hpp" />
     <ClInclude Include="Core\HeatMap.hpp" />
     <ClInclude Include="Core\Image.hpp" />
+    <ClInclude Include="Core\LogEntry.hpp" />
+    <ClInclude Include="Core\Logger.hpp" />
     <ClInclude Include="Core\ProfileLogScoped.hpp" />
     <ClInclude Include="Core\Profiler.hpp" />
     <ClInclude Include="Core\ProfilerReport.hpp" />
@@ -419,6 +422,7 @@
     <ClInclude Include="Core\SmartEnum.hpp" />
     <ClInclude Include="Core\StringUtils.hpp" />
     <ClInclude Include="Core\Thread.hpp" />
+    <ClInclude Include="Core\ThreadSafeQueue.hpp" />
     <ClInclude Include="Core\Transform.hpp" />
     <ClInclude Include="Core\Types.hpp" />
     <ClInclude Include="Core\Window.hpp" />

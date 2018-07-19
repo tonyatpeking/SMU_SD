@@ -27,7 +27,7 @@ void SleepS( float s )
     SleepMS( (int) ( s * 1000.f ) );
 }
 
-void Yield()
+void ThreadYield()
 {
     std::this_thread::yield();
 }
