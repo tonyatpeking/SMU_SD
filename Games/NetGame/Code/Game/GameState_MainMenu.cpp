@@ -43,7 +43,7 @@ void GameState_MainMenu::Render() const
 
     Vec2 screenCenter = (Vec2) g_window->GetDimensions() * 0.5f;
 
-    String text = "Space Ship Builder";
+    String text = "Net Game";
     Vec2 textPosition = screenCenter + Vec2( 0.f, 250.f );
     float textHeight = 70.f;
     float time = g_UIClock->GetTimeSinceStartupF();
