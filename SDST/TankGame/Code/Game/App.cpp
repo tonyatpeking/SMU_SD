@@ -16,6 +16,7 @@
 #include "Engine/Renderer/DebugRender.hpp"
 #include "Engine/Core/Logger.hpp"
 #include "Engine/IO/IOUtils.hpp"
+#include "Engine/Net/Net.hpp"
 
 
 #include "Game/App.hpp"
@@ -41,6 +42,7 @@ App::App()
     DebugRender::Startup( g_renderer );
     DebugRender::SetClock( g_appClock );
 
+    Net::Startup();
 
     //instead of awkwardly asking renderer for the font, have a resource manager instead
     TextMeshBuilder::SetDefaultFont( g_renderer->DefaultFont() );
@@ -62,6 +64,8 @@ App::App()
 App::~App()
 {
     Logger::GetDefault()->ShutDown();
+
+    Net::Shutdown();
 
     DebugRender::Shutdown();
 

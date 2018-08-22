@@ -1,256 +1,573 @@
 Root
-└── BranchR
-    ├── BranchR
-    │   ├── BranchR
-    │   │   ├── BranchR
-    │   │   │   ├── BranchR
-    │   │   │   │   ├── BranchR
-    │   │   │   │   │   ├── BranchR
-    │   │   │   │   │   │   ├── BranchR
-    │   │   │   │   │   │   └── BranchR
-    │   │   │   │   │   └── BranchR
-    │   │   │   │   │       ├── BranchR
-    │   │   │   │   │       └── BranchR
-    │   │   │   │   └── BranchR
-    │   │   │   │       ├── BranchR
-    │   │   │   │       │   ├── BranchR
-    │   │   │   │       │   └── BranchR
-    │   │   │   │       └── BranchR
-    │   │   │   │           ├── BranchR
-    │   │   │   │           └── BranchR
-    │   │   │   └── BranchR
-    │   │   │       ├── BranchR
-    │   │   │       │   ├── BranchR
-    │   │   │       │   │   ├── BranchR
-    │   │   │       │   │   └── BranchR
-    │   │   │       │   └── BranchR
-    │   │   │       │       ├── BranchR
-    │   │   │       │       └── BranchR
-    │   │   │       └── BranchR
-    │   │   │           ├── BranchR
-    │   │   │           │   ├── BranchR
-    │   │   │           │   └── BranchR
-    │   │   │           └── BranchR
-    │   │   │               ├── BranchR
-    │   │   │               └── BranchR
-    │   │   └── BranchR
-    │   │       ├── BranchR
-    │   │       │   ├── BranchR
-    │   │       │   │   ├── BranchR
-    │   │       │   │   │   ├── BranchR
-    │   │       │   │   │   └── BranchR
-    │   │       │   │   └── BranchR
-    │   │       │   │       ├── BranchR
-    │   │       │   │       └── BranchR
-    │   │       │   └── BranchR
-    │   │       │       ├── BranchR
-    │   │       │       │   ├── BranchR
-    │   │       │       │   └── BranchR
-    │   │       │       └── BranchR
-    │   │       │           ├── BranchR
-    │   │       │           └── BranchR
-    │   │       └── BranchR
-    │   │           ├── BranchR
-    │   │           │   ├── BranchR
-    │   │           │   │   ├── BranchR
-    │   │           │   │   └── BranchR
-    │   │           │   └── BranchR
-    │   │           │       ├── BranchR
-    │   │           │       └── BranchR
-    │   │           └── BranchR
-    │   │               ├── BranchR
-    │   │               │   ├── BranchR
-    │   │               │   └── BranchR
-    │   │               └── BranchR
-    │   │                   ├── BranchR
-    │   │                   └── BranchR
-    │   └── BranchR
-    │       ├── BranchR
-    │       │   ├── BranchR
-    │       │   │   ├── BranchR
-    │       │   │   │   ├── BranchR
-    │       │   │   │   │   ├── BranchR
-    │       │   │   │   │   └── BranchR
-    │       │   │   │   └── BranchR
-    │       │   │   │       ├── BranchR
-    │       │   │   │       └── BranchR
-    │       │   │   └── BranchR
-    │       │   │       ├── BranchR
-    │       │   │       │   ├── BranchR
-    │       │   │       │   └── BranchR
-    │       │   │       └── BranchR
-    │       │   │           ├── BranchR
-    │       │   │           └── BranchR
-    │       │   └── BranchR
-    │       │       ├── BranchR
-    │       │       │   ├── BranchR
-    │       │       │   │   ├── BranchR
-    │       │       │   │   └── BranchR
-    │       │       │   └── BranchR
-    │       │       │       ├── BranchR
-    │       │       │       └── BranchR
-    │       │       └── BranchR
-    │       │           ├── BranchR
-    │       │           │   ├── BranchR
-    │       │           │   └── BranchR
-    │       │           └── BranchR
-    │       │               ├── BranchR
-    │       │               └── BranchR
-    │       └── BranchR
-    │           ├── BranchR
-    │           │   ├── BranchR
-    │           │   │   ├── BranchR
-    │           │   │   │   ├── BranchR
-    │           │   │   │   └── BranchR
-    │           │   │   └── BranchR
-    │           │   │       ├── BranchR
-    │           │   │       └── BranchR
-    │           │   └── BranchR
-    │           │       ├── BranchR
-    │           │       │   ├── BranchR
-    │           │       │   └── BranchR
-    │           │       └── BranchR
-    │           │           ├── BranchR
-    │           │           └── BranchR
-    │           └── BranchR
-    │               ├── BranchR
-    │               │   ├── BranchR
-    │               │   │   ├── BranchR
-    │               │   │   └── BranchR
-    │               │   └── BranchR
-    │               │       ├── BranchR
-    │               │       └── BranchR
-    │               └── BranchR
-    │                   ├── BranchR
-    │                   │   ├── BranchR
-    │                   │   └── BranchR
-    │                   └── BranchR
-    │                       ├── BranchR
-    │                       └── BranchR
-    └── BranchR
-        ├── BranchR
-        │   ├── BranchR
-        │   │   ├── BranchR
-        │   │   │   ├── BranchR
-        │   │   │   │   ├── BranchR
-        │   │   │   │   │   ├── BranchR
-        │   │   │   │   │   └── BranchR
-        │   │   │   │   └── BranchR
-        │   │   │   │       ├── BranchR
-        │   │   │   │       └── BranchR
-        │   │   │   └── BranchR
-        │   │   │       ├── BranchR
-        │   │   │       │   ├── BranchR
-        │   │   │       │   └── BranchR
-        │   │   │       └── BranchR
-        │   │   │           ├── BranchR
-        │   │   │           └── BranchR
-        │   │   └── BranchR
-        │   │       ├── BranchR
-        │   │       │   ├── BranchR
-        │   │       │   │   ├── BranchR
-        │   │       │   │   └── BranchR
-        │   │       │   └── BranchR
-        │   │       │       ├── BranchR
-        │   │       │       └── BranchR
-        │   │       └── BranchR
-        │   │           ├── BranchR
-        │   │           │   ├── BranchR
-        │   │           │   └── BranchR
-        │   │           └── BranchR
-        │   │               ├── BranchR
-        │   │               └── BranchR
-        │   └── BranchR
-        │       ├── BranchR
-        │       │   ├── BranchR
-        │       │   │   ├── BranchR
-        │       │   │   │   ├── BranchR
-        │       │   │   │   └── BranchR
-        │       │   │   └── BranchR
-        │       │   │       ├── BranchR
-        │       │   │       └── BranchR
-        │       │   └── BranchR
-        │       │       ├── BranchR
-        │       │       │   ├── BranchR
-        │       │       │   └── BranchR
-        │       │       └── BranchR
-        │       │           ├── BranchR
-        │       │           └── BranchR
-        │       └── BranchR
-        │           ├── BranchR
-        │           │   ├── BranchR
-        │           │   │   ├── BranchR
-        │           │   │   └── BranchR
-        │           │   └── BranchR
-        │           │       ├── BranchR
-        │           │       └── BranchR
-        │           └── BranchR
-        │               ├── BranchR
-        │               │   ├── BranchR
-        │               │   └── BranchR
-        │               └── BranchR
-        │                   ├── BranchR
-        │                   └── BranchR
-        └── BranchR
-            ├── BranchR
-            │   ├── BranchR
-            │   │   ├── BranchR
-            │   │   │   ├── BranchR
-            │   │   │   │   ├── BranchR
-            │   │   │   │   └── BranchR
-            │   │   │   └── BranchR
-            │   │   │       ├── BranchR
-            │   │   │       └── BranchR
-            │   │   └── BranchR
-            │   │       ├── BranchR
-            │   │       │   ├── BranchR
-            │   │       │   └── BranchR
-            │   │       └── BranchR
-            │   │           ├── BranchR
-            │   │           └── BranchR
-            │   └── BranchR
-            │       ├── BranchR
-            │       │   ├── BranchR
-            │       │   │   ├── BranchR
-            │       │   │   └── BranchR
-            │       │   └── BranchR
-            │       │       ├── BranchR
-            │       │       └── BranchR
-            │       └── BranchR
-            │           ├── BranchR
-            │           │   ├── BranchR
-            │           │   └── BranchR
-            │           └── BranchR
-            │               ├── BranchR
-            │               └── BranchR
-            └── BranchR
-                ├── BranchR
-                │   ├── BranchR
-                │   │   ├── BranchR
-                │   │   │   ├── BranchR
-                │   │   │   └── BranchR
-                │   │   └── BranchR
-                │   │       ├── BranchR
-                │   │       └── BranchR
-                │   └── BranchR
-                │       ├── BranchR
-                │       │   ├── BranchR
-                │       │   └── BranchR
-                │       └── BranchR
-                │           ├── BranchR
-                │           └── BranchR
-                └── BranchR
-                    ├── BranchR
-                    │   ├── BranchR
-                    │   │   ├── BranchR
-                    │   │   └── BranchR
-                    │   └── BranchR
-                    │       ├── BranchR
-                    │       └── BranchR
-                    └── BranchR
-                        ├── BranchR
-                        │   ├── BranchR
-                        │   └── BranchR
-                        └── BranchR
-                            ├── BranchR
-                            └── BranchR
+└── RandBranchR
+    ├── RandBranchR
+    │   ├── RandBranchR
+    │   │   └── RandBranchR
+    │   │       ├── RandBranchR
+    │   │       │   └── RandBranchR
+    │   │       │       ├── RandBranchR
+    │   │       │       │   └── RandBranchR
+    │   │       │       └── RandBranchR
+    │   │       │           └── RandBranchR
+    │   │       │               └── RandBranchR
+    │   │       │                   ├── RandBranchR
+    │   │       │                   └── RandBranchR
+    │   │       ├── RandBranchR
+    │   │       │   └── RandBranchR
+    │   │       │       ├── RandBranchR
+    │   │       │       │   ├── RandBranchR
+    │   │       │       │   │   ├── RandBranchR
+    │   │       │       │   │   ├── RandBranchR
+    │   │       │       │   │   └── RandBranchR
+    │   │       │       │   └── RandBranchR
+    │   │       │       │       ├── RandBranchR
+    │   │       │       │       └── RandBranchR
+    │   │       │       └── RandBranchR
+    │   │       │           ├── RandBranchR
+    │   │       │           │   ├── RandBranchR
+    │   │       │           │   ├── RandBranchR
+    │   │       │           │   └── RandBranchR
+    │   │       │           ├── RandBranchR
+    │   │       │           │   ├── SolarRod
+    │   │       │           │   │   ├── SolarPane
+    │   │       │           │   │   └── SolarPane
+    │   │       │           │   ├── RandBranchR
+    │   │       │           │   └── RandBranchR
+    │   │       │           └── RandBranchR
+    │   │       │               ├── SolarRod
+    │   │       │               │   ├── SolarPane
+    │   │       │               │   └── SolarPane
+    │   │       │               ├── RandBranchR
+    │   │       │               ├── RandBranchR
+    │   │       │               └── RandBranchR
+    │   │       └── RandBranchR
+    │   │           ├── RandBranchR
+    │   │           │   ├── RandBranchR
+    │   │           │   │   ├── RandBranchR
+    │   │           │   │   │   ├── RandBranchR
+    │   │           │   │   │   │   ├── RandBranchR
+    │   │           │   │   │   │   ├── RandBranchR
+    │   │           │   │   │   │   └── RandBranchR
+    │   │           │   │   │   ├── RandBranchR
+    │   │           │   │   │   │   └── RandBranchR
+    │   │           │   │   │   └── RandBranchR
+    │   │           │   │   │       └── RandBranchR
+    │   │           │   │   │           └── RandBranchR
+    │   │           │   │   └── RandBranchR
+    │   │           │   │       ├── RandBranchR
+    │   │           │   │       │   └── RandBranchR
+    │   │           │   │       ├── RandBranchR
+    │   │           │   │       │   ├── RandBranchR
+    │   │           │   │       │   └── RandBranchR
+    │   │           │   │       └── RandBranchR
+    │   │           │   │           ├── RandBranchR
+    │   │           │   │           ├── RandBranchR
+    │   │           │   │           └── RandBranchR
+    │   │           │   │               ├── RandBranchR
+    │   │           │   │               └── RandBranchR
+    │   │           │   └── RandBranchR
+    │   │           │       └── RandBranchR
+    │   │           │           ├── RandBranchR
+    │   │           │           │   ├── RandBranchR
+    │   │           │           │   └── RandBranchR
+    │   │           │           │       └── RandBranchR
+    │   │           │           └── RandBranchR
+    │   │           │               └── RandBranchR
+    │   │           │                   ├── RandBranchR
+    │   │           │                   ├── RandBranchR
+    │   │           │                   └── RandBranchR
+    │   │           ├── RandBranchR
+    │   │           │   ├── RandBranchR
+    │   │           │   │   ├── RandBranchR
+    │   │           │   │   │   ├── RandBranchR
+    │   │           │   │   │   └── RandBranchR
+    │   │           │   │   ├── RandBranchR
+    │   │           │   │   │   └── RandBranchR
+    │   │           │   │   │       ├── RandBranchR
+    │   │           │   │   │       ├── RandBranchR
+    │   │           │   │   │       └── RandBranchR
+    │   │           │   │   └── RandBranchR
+    │   │           │   │       └── RandBranchR
+    │   │           │   └── RandBranchR
+    │   │           │       ├── RandBranchR
+    │   │           │       │   ├── SolarRod
+    │   │           │       │   │   ├── SolarPane
+    │   │           │       │   │   └── SolarPane
+    │   │           │       │   ├── RandBranchR
+    │   │           │       │   │   └── RandBranchR
+    │   │           │       │   └── RandBranchR
+    │   │           │       │       └── RandBranchR
+    │   │           │       ├── RandBranchR
+    │   │           │       │   ├── RandBranchR
+    │   │           │       │   │   └── RandBranchR
+    │   │           │       │   ├── RandBranchR
+    │   │           │       │   │   ├── RandBranchR
+    │   │           │       │   │   └── RandBranchR
+    │   │           │       │   └── RandBranchR
+    │   │           │       │       ├── RandBranchR
+    │   │           │       │       ├── RandBranchR
+    │   │           │       │       └── RandBranchR
+    │   │           │       └── RandBranchR
+    │   │           │           ├── RandBranchR
+    │   │           │           │   ├── RandBranchR
+    │   │           │           │   │   └── RandBranchR
+    │   │           │           │   ├── RandBranchR
+    │   │           │           │   └── RandBranchR
+    │   │           │           ├── RandBranchR
+    │   │           │           │   └── RandBranchR
+    │   │           │           └── RandBranchR
+    │   │           │               ├── RandBranchR
+    │   │           │               └── RandBranchR
+    │   │           └── RandBranchR
+    │   │               ├── RandBranchR
+    │   │               │   ├── RandBranchR
+    │   │               │   ├── RandBranchR
+    │   │               │   │   ├── SolarRod
+    │   │               │   │   │   ├── SolarPane
+    │   │               │   │   │   └── SolarPane
+    │   │               │   │   ├── RandBranchR
+    │   │               │   │   └── RandBranchR
+    │   │               │   └── RandBranchR
+    │   │               ├── RandBranchR
+    │   │               │   ├── RandBranchR
+    │   │               │   ├── RandBranchR
+    │   │               │   └── RandBranchR
+    │   │               └── RandBranchR
+    │   │                   ├── SolarRod
+    │   │                   │   ├── SolarPane
+    │   │                   │   └── SolarPane
+    │   │                   ├── RandBranchR
+    │   │                   │   ├── RandBranchR
+    │   │                   │   ├── RandBranchR
+    │   │                   │   └── RandBranchR
+    │   │                   └── RandBranchR
+    │   │                       ├── RandBranchR
+    │   │                       ├── RandBranchR
+    │   │                       └── RandBranchR
+    │   │                           ├── RandBranchR
+    │   │                           └── RandBranchR
+    │   ├── RandBranchR
+    │   │   └── RandBranchR
+    │   │       └── RandBranchR
+    │   │           ├── RandBranchR
+    │   │           │   ├── RandBranchR
+    │   │           │   │   ├── RandBranchR
+    │   │           │   │   ├── RandBranchR
+    │   │           │   │   └── RandBranchR
+    │   │           │   └── RandBranchR
+    │   │           ├── RandBranchR
+    │   │           │   ├── RandBranchR
+    │   │           │   │   ├── RandBranchR
+    │   │           │   │   ├── RandBranchR
+    │   │           │   │   │   ├── RandBranchR
+    │   │           │   │   │   └── RandBranchR
+    │   │           │   │   └── RandBranchR
+    │   │           │   │       ├── RandBranchR
+    │   │           │   │       └── RandBranchR
+    │   │           │   ├── RandBranchR
+    │   │           │   │   ├── RandBranchR
+    │   │           │   │   │   └── RandBranchR
+    │   │           │   │   ├── RandBranchR
+    │   │           │   │   └── RandBranchR
+    │   │           │   └── RandBranchR
+    │   │           │       ├── RandBranchR
+    │   │           │       │   └── RandBranchR
+    │   │           │       └── RandBranchR
+    │   │           │           └── RandBranchR
+    │   │           └── RandBranchR
+    │   │               ├── RandBranchR
+    │   │               └── RandBranchR
+    │   └── RandBranchR
+    │       ├── RandBranchR
+    │       │   └── RandBranchR
+    │       │       ├── RandBranchR
+    │       │       │   ├── RandBranchR
+    │       │       │   │   └── RandBranchR
+    │       │       │   └── RandBranchR
+    │       │       │       ├── RandBranchR
+    │       │       │       ├── RandBranchR
+    │       │       │       └── RandBranchR
+    │       │       ├── RandBranchR
+    │       │       │   ├── RandBranchR
+    │       │       │   │   └── RandBranchR
+    │       │       │   │       ├── RandBranchR
+    │       │       │   │       ├── RandBranchR
+    │       │       │   │       └── RandBranchR
+    │       │       │   ├── RandBranchR
+    │       │       │   │   ├── RandBranchR
+    │       │       │   │   │   ├── RandBranchR
+    │       │       │   │   │   ├── RandBranchR
+    │       │       │   │   │   └── RandBranchR
+    │       │       │   │   └── RandBranchR
+    │       │       │   │       ├── RandBranchR
+    │       │       │   │       ├── RandBranchR
+    │       │       │   │       └── RandBranchR
+    │       │       │   │           └── SolarRod
+    │       │       │   │               ├── SolarPane
+    │       │       │   │               └── SolarPane
+    │       │       │   └── RandBranchR
+    │       │       │       ├── RandBranchR
+    │       │       │       │   ├── SolarRod
+    │       │       │       │   │   ├── SolarPane
+    │       │       │       │   │   └── SolarPane
+    │       │       │       │   └── RandBranchR
+    │       │       │       ├── RandBranchR
+    │       │       │       │   ├── RandBranchR
+    │       │       │       │   ├── RandBranchR
+    │       │       │       │   └── RandBranchR
+    │       │       │       └── RandBranchR
+    │       │       │           ├── RandBranchR
+    │       │       │           └── RandBranchR
+    │       │       │               └── SolarRod
+    │       │       │                   ├── SolarPane
+    │       │       │                   └── SolarPane
+    │       │       └── RandBranchR
+    │       │           └── RandBranchR
+    │       │               ├── RandBranchR
+    │       │               │   ├── RandBranchR
+    │       │               │   │   └── SolarRod
+    │       │               │   │       ├── SolarPane
+    │       │               │   │       └── SolarPane
+    │       │               │   ├── RandBranchR
+    │       │               │   └── RandBranchR
+    │       │               └── RandBranchR
+    │       │                   ├── RandBranchR
+    │       │                   └── RandBranchR
+    │       └── RandBranchR
+    │           └── RandBranchR
+    │               ├── RandBranchR
+    │               │   └── RandBranchR
+    │               │       ├── RandBranchR
+    │               │       └── RandBranchR
+    │               └── RandBranchR
+    │                   └── RandBranchR
+    ├── RandBranchR
+    │   ├── RandBranchR
+    │   │   └── RandBranchR
+    │   │       ├── RandBranchR
+    │   │       │   ├── RandBranchR
+    │   │       │   │   └── RandBranchR
+    │   │       │   │       ├── RandBranchR
+    │   │       │   │       │   ├── RandBranchR
+    │   │       │   │       │   ├── RandBranchR
+    │   │       │   │       │   └── RandBranchR
+    │   │       │   │       └── RandBranchR
+    │   │       │   │           ├── RandBranchR
+    │   │       │   │           └── RandBranchR
+    │   │       │   ├── RandBranchR
+    │   │       │   │   ├── RandBranchR
+    │   │       │   │   │   ├── RandBranchR
+    │   │       │   │   │   │   └── RandBranchR
+    │   │       │   │   │   ├── RandBranchR
+    │   │       │   │   │   │   └── RandBranchR
+    │   │       │   │   │   └── RandBranchR
+    │   │       │   │   └── RandBranchR
+    │   │       │   │       ├── RandBranchR
+    │   │       │   │       └── RandBranchR
+    │   │       │   │           ├── RandBranchR
+    │   │       │   │           └── RandBranchR
+    │   │       │   └── RandBranchR
+    │   │       │       └── RandBranchR
+    │   │       │           └── RandBranchR
+    │   │       └── RandBranchR
+    │   │           └── RandBranchR
+    │   │               ├── RandBranchR
+    │   │               │   ├── RandBranchR
+    │   │               │   ├── RandBranchR
+    │   │               │   └── RandBranchR
+    │   │               ├── RandBranchR
+    │   │               └── RandBranchR
+    │   │                   ├── RandBranchR
+    │   │                   └── RandBranchR
+    │   └── RandBranchR
+    │       ├── RandBranchR
+    │       │   ├── RandBranchR
+    │       │   │   └── RandBranchR
+    │       │   │       └── RandBranchR
+    │       │   │           ├── RandBranchR
+    │       │   │           │   └── RandBranchR
+    │       │   │           ├── RandBranchR
+    │       │   │           │   ├── RandBranchR
+    │       │   │           │   │   └── SolarRod
+    │       │   │           │   │       ├── SolarPane
+    │       │   │           │   │       └── SolarPane
+    │       │   │           │   └── RandBranchR
+    │       │   │           └── RandBranchR
+    │       │   │               ├── RandBranchR
+    │       │   │               │   ├── RandBranchR
+    │       │   │               │   ├── RandBranchR
+    │       │   │               │   └── RandBranchR
+    │       │   │               └── RandBranchR
+    │       │   │                   └── RandBranchR
+    │       │   └── RandBranchR
+    │       │       ├── RandBranchR
+    │       │       │   ├── RandBranchR
+    │       │       │   ├── RandBranchR
+    │       │       │   │   └── SolarRod
+    │       │       │   │       ├── SolarPane
+    │       │       │   │       └── SolarPane
+    │       │       │   └── RandBranchR
+    │       │       │       ├── RandBranchR
+    │       │       │       ├── RandBranchR
+    │       │       │       └── RandBranchR
+    │       │       ├── RandBranchR
+    │       │       │   ├── RandBranchR
+    │       │       │   │   ├── RandBranchR
+    │       │       │   │   └── RandBranchR
+    │       │       │   └── RandBranchR
+    │       │       │       └── RandBranchR
+    │       │       └── RandBranchR
+    │       │           ├── RandBranchR
+    │       │           │   └── RandBranchR
+    │       │           └── RandBranchR
+    │       │               └── RandBranchR
+    │       ├── RandBranchR
+    │       │   └── RandBranchR
+    │       │       ├── RandBranchR
+    │       │       │   └── RandBranchR
+    │       │       │       └── RandBranchR
+    │       │       │           ├── SolarRod
+    │       │       │           │   ├── SolarPane
+    │       │       │           │   └── SolarPane
+    │       │       │           ├── RandBranchR
+    │       │       │           └── RandBranchR
+    │       │       └── RandBranchR
+    │       │           ├── RandBranchR
+    │       │           │   ├── RandBranchR
+    │       │           │   └── RandBranchR
+    │       │           │       ├── RandBranchR
+    │       │           │       └── RandBranchR
+    │       │           └── RandBranchR
+    │       │               ├── RandBranchR
+    │       │               │   ├── RandBranchR
+    │       │               │   ├── RandBranchR
+    │       │               │   └── RandBranchR
+    │       │               └── RandBranchR
+    │       │                   ├── RandBranchR
+    │       │                   │   └── SolarRod
+    │       │                   │       ├── SolarPane
+    │       │                   │       └── SolarPane
+    │       │                   └── RandBranchR
+    │       └── RandBranchR
+    │           ├── RandBranchR
+    │           │   ├── SolarRod
+    │           │   │   ├── SolarPane
+    │           │   │   └── SolarPane
+    │           │   ├── RandBranchR
+    │           │   │   ├── RandBranchR
+    │           │   │   └── RandBranchR
+    │           │   ├── RandBranchR
+    │           │   │   └── RandBranchR
+    │           │   └── RandBranchR
+    │           │       ├── RandBranchR
+    │           │       │   └── RandBranchR
+    │           │       ├── RandBranchR
+    │           │       │   ├── RandBranchR
+    │           │       │   └── RandBranchR
+    │           │       └── RandBranchR
+    │           │           ├── RandBranchR
+    │           │           ├── RandBranchR
+    │           │           └── RandBranchR
+    │           ├── RandBranchR
+    │           │   ├── RandBranchR
+    │           │   │   ├── RandBranchR
+    │           │   │   ├── RandBranchR
+    │           │   │   └── RandBranchR
+    │           │   │       └── SolarRod
+    │           │   │           ├── SolarPane
+    │           │   │           └── SolarPane
+    │           │   └── RandBranchR
+    │           │       └── RandBranchR
+    │           │           ├── RandBranchR
+    │           │           └── RandBranchR
+    │           └── RandBranchR
+    │               ├── RandBranchR
+    │               │   └── RandBranchR
+    │               │       └── RandBranchR
+    │               └── RandBranchR
+    │                   ├── SolarRod
+    │                   │   ├── SolarPane
+    │                   │   └── SolarPane
+    │                   ├── RandBranchR
+    │                   └── RandBranchR
+    └── RandBranchR
+        ├── RandBranchR
+        │   └── RandBranchR
+        │       ├── RandBranchR
+        │       │   └── RandBranchR
+        │       │       ├── RandBranchR
+        │       │       │   ├── RandBranchR
+        │       │       │   ├── RandBranchR
+        │       │       │   └── RandBranchR
+        │       │       ├── RandBranchR
+        │       │       └── RandBranchR
+        │       │           └── RandBranchR
+        │       ├── RandBranchR
+        │       │   └── RandBranchR
+        │       │       ├── RandBranchR
+        │       │       │   └── RandBranchR
+        │       │       └── RandBranchR
+        │       │           ├── RandBranchR
+        │       │           ├── RandBranchR
+        │       │           └── RandBranchR
+        │       └── RandBranchR
+        │           ├── SolarRod
+        │           │   ├── SolarPane
+        │           │   └── SolarPane
+        │           ├── RandBranchR
+        │           │   └── RandBranchR
+        │           ├── RandBranchR
+        │           │   ├── RandBranchR
+        │           │   ├── RandBranchR
+        │           │   │   └── SolarRod
+        │           │   │       ├── SolarPane
+        │           │   │       └── SolarPane
+        │           │   └── RandBranchR
+        │           └── RandBranchR
+        │               ├── RandBranchR
+        │               │   └── RandBranchR
+        │               ├── RandBranchR
+        │               │   ├── RandBranchR
+        │               │   ├── RandBranchR
+        │               │   └── RandBranchR
+        │               └── RandBranchR
+        │                   ├── RandBranchR
+        │                   ├── RandBranchR
+        │                   └── RandBranchR
+        ├── RandBranchR
+        │   ├── RandBranchR
+        │   │   ├── RandBranchR
+        │   │   │   └── RandBranchR
+        │   │   │       └── RandBranchR
+        │   │   ├── RandBranchR
+        │   │   │   ├── RandBranchR
+        │   │   │   │   ├── RandBranchR
+        │   │   │   │   │   ├── RandBranchR
+        │   │   │   │   │   └── RandBranchR
+        │   │   │   │   ├── RandBranchR
+        │   │   │   │   │   └── RandBranchR
+        │   │   │   │   └── RandBranchR
+        │   │   │   └── RandBranchR
+        │   │   │       └── RandBranchR
+        │   │   └── RandBranchR
+        │   │       └── RandBranchR
+        │   │           └── RandBranchR
+        │   ├── RandBranchR
+        │   │   └── RandBranchR
+        │   │       ├── RandBranchR
+        │   │       │   └── RandBranchR
+        │   │       │       └── RandBranchR
+        │   │       └── RandBranchR
+        │   │           ├── RandBranchR
+        │   │           ├── RandBranchR
+        │   │           └── RandBranchR
+        │   │               └── RandBranchR
+        │   └── RandBranchR
+        │       ├── RandBranchR
+        │       │   ├── RandBranchR
+        │       │   │   └── RandBranchR
+        │       │   │       └── RandBranchR
+        │       │   └── RandBranchR
+        │       │       ├── RandBranchR
+        │       │       │   ├── RandBranchR
+        │       │       │   ├── RandBranchR
+        │       │       │   └── RandBranchR
+        │       │       └── RandBranchR
+        │       │           └── RandBranchR
+        │       ├── RandBranchR
+        │       │   ├── RandBranchR
+        │       │   │   └── RandBranchR
+        │       │   │       └── RandBranchR
+        │       │   ├── RandBranchR
+        │       │   │   └── RandBranchR
+        │       │   │       ├── RandBranchR
+        │       │   │       │   └── RandBranchR
+        │       │   │       ├── RandBranchR
+        │       │   │       │   ├── RandBranchR
+        │       │   │       │   └── RandBranchR
+        │       │   │       └── RandBranchR
+        │       │   │           ├── SolarRod
+        │       │   │           │   ├── SolarPane
+        │       │   │           │   └── SolarPane
+        │       │   │           ├── RandBranchR
+        │       │   │           ├── RandBranchR
+        │       │   │           │   └── SolarRod
+        │       │   │           │       ├── SolarPane
+        │       │   │           │       └── SolarPane
+        │       │   │           └── RandBranchR
+        │       │   └── RandBranchR
+        │       │       ├── RandBranchR
+        │       │       │   ├── RandBranchR
+        │       │       │   │   ├── RandBranchR
+        │       │       │   │   └── RandBranchR
+        │       │       │   ├── RandBranchR
+        │       │       │   │   ├── RandBranchR
+        │       │       │   │   ├── RandBranchR
+        │       │       │   │   └── RandBranchR
+        │       │       │   └── RandBranchR
+        │       │       └── RandBranchR
+        │       │           ├── RandBranchR
+        │       │           │   ├── RandBranchR
+        │       │           │   └── RandBranchR
+        │       │           ├── RandBranchR
+        │       │           │   └── RandBranchR
+        │       │           └── RandBranchR
+        │       │               ├── RandBranchR
+        │       │               └── RandBranchR
+        │       └── RandBranchR
+        │           └── RandBranchR
+        │               ├── RandBranchR
+        │               │   └── RandBranchR
+        │               └── RandBranchR
+        └── RandBranchR
+            └── RandBranchR
+                ├── RandBranchR
+                │   ├── RandBranchR
+                │   │   ├── RandBranchR
+                │   │   │   ├── RandBranchR
+                │   │   │   │   └── RandBranchR
+                │   │   │   └── RandBranchR
+                │   │   │       ├── SolarRod
+                │   │   │       │   ├── SolarPane
+                │   │   │       │   └── SolarPane
+                │   │   │       └── RandBranchR
+                │   │   │           ├── RandBranchR
+                │   │   │           ├── RandBranchR
+                │   │   │           └── RandBranchR
+                │   │   └── RandBranchR
+                │   │       └── RandBranchR
+                │   │           ├── RandBranchR
+                │   │           ├── RandBranchR
+                │   │           └── RandBranchR
+                │   └── RandBranchR
+                │       └── RandBranchR
+                │           ├── RandBranchR
+                │           ├── RandBranchR
+                │           │   └── RandBranchR
+                │           └── RandBranchR
+                │               ├── RandBranchR
+                │               ├── RandBranchR
+                │               │   └── SolarRod
+                │               │       ├── SolarPane
+                │               │       └── SolarPane
+                │               └── RandBranchR
+                ├── RandBranchR
+                │   └── RandBranchR
+                │       ├── RandBranchR
+                │       │   └── RandBranchR
+                │       │       ├── RandBranchR
+                │       │       ├── RandBranchR
+                │       │       └── RandBranchR
+                │       ├── RandBranchR
+                │       │   └── RandBranchR
+                │       └── RandBranchR
+                │           └── RandBranchR
+                │               ├── RandBranchR
+                │               └── RandBranchR
+                └── RandBranchR
+                    └── RandBranchR
+                        ├── RandBranchR
+                        │   └── RandBranchR
+                        └── RandBranchR
+                            ├── RandBranchR
+                            └── RandBranchR

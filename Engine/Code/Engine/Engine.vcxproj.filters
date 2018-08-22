@@ -85,6 +85,9 @@
     <Filter Include="Logging">
       <UniqueIdentifier>{827c875b-8de3-4969-8666-4d78cfb3ab44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{4df6bd60-e733-4ab7-987e-553669c9ec10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Random.cpp">
@@ -429,7 +432,12 @@
     <ClCompile Include="Core\ShapeRulesetLoader.cpp">
       <Filter>ShapeGrammar</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Logger.cpp" />
+    <ClCompile Include="Core\Logger.cpp">
+      <Filter>Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Net.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -849,8 +857,15 @@
     <ClInclude Include="Core\ThreadSafeQueue.hpp">
       <Filter>Thread</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Logger.hpp" />
-    <ClInclude Include="Core\LogEntry.hpp" />
+    <ClInclude Include="Core\LogEntry.hpp">
+      <Filter>Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Logger.hpp">
+      <Filter>Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Net.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">

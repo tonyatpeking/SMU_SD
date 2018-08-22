@@ -329,6 +329,7 @@
     <ClCompile Include="Math\Vec2.cpp" />
     <ClCompile Include="Math\Vec3.cpp" />
     <ClCompile Include="Math\Vec4.cpp" />
+    <ClCompile Include="Net\Net.cpp" />
     <ClCompile Include="Particles\Particle.cpp" />
     <ClCompile Include="Particles\ParticleEmitter.cpp" />
     <ClCompile Include="Renderer\BarGraphBuilder.cpp" />
@@ -466,6 +467,7 @@
     <ClInclude Include="Math\Vec2.hpp" />
     <ClInclude Include="Math\Vec3.hpp" />
     <ClInclude Include="Math\Vec4.hpp" />
+    <ClInclude Include="Net\Net.hpp" />
     <ClInclude Include="Particles\Particle.hpp" />
     <ClInclude Include="Particles\ParticleEmitter.hpp" />
     <ClInclude Include="Renderer\BarGraphBuilder.hpp" />

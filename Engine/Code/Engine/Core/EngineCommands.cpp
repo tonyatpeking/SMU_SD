@@ -7,7 +7,13 @@
 #include "Engine/Core/Profiler.hpp"
 #include "Engine/Core/PythonInterpreter.hpp"
 #include "Engine/Core/Console.hpp"
+#include "Engine/Net/Net.hpp"
 #include <fstream>
+
+#define WIN32_LEAN_AND_MEAN
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+#include <Windows.h>
 
 void ThreadTestWork()
 {
@@ -33,6 +39,32 @@ void ThreadTestWork()
 void EngineCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
+
+    commandSys->AddCommand( "netAddr", []( String str )
+    {
+        UNUSED( str );
+
+        sockaddr_storage out_sockaddr;
+        int addrlen;
+
+//         char *hostname = "10.8.139.114";
+//         char* service = "12345";
+
+        char *hostname = "neesarg.me";
+        char* service = "80";
+
+        Net::GetAddressForHost( (sockaddr*)(&out_sockaddr), &addrlen, hostname, service );
+
+        char out[256];
+        int i = 1;
+//         inet_ntop( ipv4->sin_family, &( ipv4->sin_addr ), out, 256 );
+//         LogTaggedPrintf( "net", "My Address: %s", out );
+
+
+        //void ConnectExample( net_address_t const &addr, char const *msg )
+
+
+    } );
 
     commandSys->AddCommand( "testThreaded", []( String str )
     {
