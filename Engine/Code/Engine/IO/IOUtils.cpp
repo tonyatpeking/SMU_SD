@@ -7,11 +7,13 @@
 
 
 #include "Engine/IO/IOUtils.hpp"
-
+#include "Engine/Core/ErrorUtils.hpp"
 
 
 namespace IOUtils
 {
+
+const String SEPARATORS = "\\/";
 
 String GetCurrentDir()
 {
@@ -41,9 +43,72 @@ bool FileExists( const String& path )
     return true;
 }
 
-bool MakeDir( const String& path )
+bool MakeDirR( const String& path )
 {
-    return CreateDirectoryA( path.c_str(), NULL );
+    DWORD fileAttr = ::GetFileAttributesA( path.c_str() );
+
+    if( fileAttr == INVALID_FILE_ATTRIBUTES )
+    {
+        std::size_t slashIdx = path.find_last_of( SEPARATORS );
+        if( slashIdx != std::wstring::npos )
+        {
+            bool parentResult = MakeDirR( path.substr( 0, slashIdx ) );
+            if( parentResult == false )
+                return false;
+        }
+
+        BOOL result = ::CreateDirectoryA( path.c_str(), NULL );
+
+        if( result == FALSE )
+        {
+            LOG_WARNING( "Could not create dir: " + path );
+            return false;
+        }
+    }
+    else
+    {
+        bool isDirectoryOrLink =
+            ( ( fileAttr & FILE_ATTRIBUTE_DIRECTORY ) != 0 ) ||
+            ( ( fileAttr & FILE_ATTRIBUTE_REPARSE_POINT ) != 0 );
+
+        if( !isDirectoryOrLink )
+        {
+            LOG_WARNING( "Could not create dir, file with same name exists: " + path );
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool MakeFileR( const String& path )
+{
+    DWORD fileAttr = ::GetFileAttributesA( path.c_str() );
+
+    if( fileAttr == FILE_ATTRIBUTE_DIRECTORY )
+    {
+        LOG_WARNING( "Could not create file, dir with same name exists: " + path );
+        return false;
+    }
+
+    if( fileAttr == INVALID_FILE_ATTRIBUTES )
+    {
+        std::size_t slashIdx = path.find_last_of( SEPARATORS );
+        if( slashIdx != std::wstring::npos )
+        {
+            bool parentResult = MakeDirR( path.substr( 0, slashIdx ) );
+            if( parentResult == false )
+                return false;
+        }
+        std::ofstream myfile;
+        myfile.open( path );
+        if( myfile.fail() )
+            return false;
+        myfile.close();
+        if( myfile.fail() )
+            return false;
+    }
+    return true;
 }
 
 bool WriteToFile( const String& path, const String& text )
@@ -56,6 +121,9 @@ bool WriteToFile( const String& path, const String& text )
 
 bool WriteToFile( const String& path, const Strings& text )
 {
+    if( MakeFileR( path ) == false )
+        return false;
+
     std::ofstream myfile;
     myfile.open( path );
     if( myfile.fail() )

@@ -2,26 +2,15 @@
 // Time.hpp
 //
 #pragma once
+#include "Engine/Time/DateTime.hpp"
+
+#define YEAR_TIME_STARTS_FROM 1900
+
 
 namespace TimeUtils
 {
-struct SysTime
-{
-    int year;
-    int month;
-    int dayOfWeek;
-    int day;
-    int hour;
-    int minute;
-    int second;
-    int milliseconds;
-};
 
 double GetCurrentTimeSeconds();
-
-SysTime GetDateTime();
-
-
 
 }
 

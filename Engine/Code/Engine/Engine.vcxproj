@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="DebugInline|Win32">
@@ -278,6 +278,7 @@
     <ClCompile Include="Core\GameObject.cpp" />
     <ClCompile Include="Core\GameObjectManager.cpp" />
     <ClCompile Include="Core\Image.cpp" />
+    <ClCompile Include="Core\LogFilter.cpp" />
     <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\ProfileLogScoped.cpp" />
     <ClCompile Include="Core\Profiler.cpp" />
@@ -330,6 +331,7 @@
     <ClCompile Include="Math\Vec3.cpp" />
     <ClCompile Include="Math\Vec4.cpp" />
     <ClCompile Include="Net\Net.cpp" />
+    <ClCompile Include="Net\NetAddress.cpp" />
     <ClCompile Include="Particles\Particle.cpp" />
     <ClCompile Include="Particles\ParticleEmitter.cpp" />
     <ClCompile Include="Renderer\BarGraphBuilder.cpp" />
@@ -372,6 +374,7 @@
     <ClCompile Include="Renderer\Vertex.cpp" />
     <ClCompile Include="Renderer\VertexLayout.cpp" />
     <ClCompile Include="Time\Clock.cpp" />
+    <ClCompile Include="Time\DateTime.cpp" />
     <ClCompile Include="Time\StopWatch.cpp" />
     <ClCompile Include="Time\Time.cpp" />
     <ClCompile Include="Time\Timer.cpp" />
@@ -411,6 +414,7 @@
     <ClInclude Include="Core\HeatMap.hpp" />
     <ClInclude Include="Core\Image.hpp" />
     <ClInclude Include="Core\LogEntry.hpp" />
+    <ClInclude Include="Core\LogFilter.hpp" />
     <ClInclude Include="Core\Logger.hpp" />
     <ClInclude Include="Core\ProfileLogScoped.hpp" />
     <ClInclude Include="Core\Profiler.hpp" />
@@ -427,6 +431,7 @@
     <ClInclude Include="Core\Transform.hpp" />
     <ClInclude Include="Core\Types.hpp" />
     <ClInclude Include="Core\Window.hpp" />
+    <ClInclude Include="Core\WindowsCommon.hpp" />
     <ClInclude Include="Core\XmlUtils.hpp" />
     <ClInclude Include="Input\AnalogJoystick.hpp" />
     <ClInclude Include="Input\InputObserver.hpp" />
@@ -468,6 +473,7 @@
     <ClInclude Include="Math\Vec3.hpp" />
     <ClInclude Include="Math\Vec4.hpp" />
     <ClInclude Include="Net\Net.hpp" />
+    <ClInclude Include="Net\NetAddress.hpp" />
     <ClInclude Include="Particles\Particle.hpp" />
     <ClInclude Include="Particles\ParticleEmitter.hpp" />
     <ClInclude Include="Renderer\BarGraphBuilder.hpp" />
@@ -516,6 +522,7 @@
     <ClInclude Include="Renderer\VertexBuffer.hpp" />
     <ClInclude Include="Renderer\VertexLayout.hpp" />
     <ClInclude Include="Time\Clock.hpp" />
+    <ClInclude Include="Time\DateTime.hpp" />
     <ClInclude Include="Time\StopWatch.hpp" />
     <ClInclude Include="Time\Time.hpp" />
     <ClInclude Include="Time\Timer.hpp" />
@@ -527,6 +534,7 @@
   <ItemGroup>
     <ClCompile Include="Core\CommandSystem.cpp" />
     <None Include="Core\ParseStatus.hpp" />
+    <None Include="Time\DateTime" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

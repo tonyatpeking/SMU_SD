@@ -4,8 +4,10 @@
 
 
 #include "Engine/Time/Time.hpp"
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+
+#include "Engine/Core/WindowsCommon.hpp"
+
+#include <ctime>
 
 
 
@@ -29,25 +31,5 @@ double TimeUtils::GetCurrentTimeSeconds()
 
     double currentSeconds = static_cast<double>( elapsedCountsSinceInitialTime ) * secondsPerCount;
     return currentSeconds;
-}
-
-TimeUtils::SysTime TimeUtils::GetDateTime()
-{
-    SYSTEMTIME lt;
-
-    GetLocalTime( &lt );
-
-    TimeUtils::SysTime sysTime;
-
-    sysTime.year = lt.wYear;
-    sysTime.month = lt.wMonth;
-    sysTime.dayOfWeek = lt.wDayOfWeek;
-    sysTime.day = lt.wDay;
-    sysTime.hour = lt.wHour;
-    sysTime.minute = lt.wMinute;
-    sysTime.second = lt.wSecond;
-    sysTime.milliseconds = lt.wMilliseconds;
-
-    return sysTime;
 }
 

@@ -66,6 +66,15 @@ void EngineCommands::RegisterAllCommands()
 
     } );
 
+    commandSys->AddCommand( "ping", []( String str )
+    {
+        UNUSED( str );
+
+        Net::ConnectDirectWithWinSock();
+
+
+    } );
+
     commandSys->AddCommand( "testThreaded", []( String str )
     {
         UNUSED( str );

@@ -9,6 +9,7 @@
 class Renderer;
 class InputSystem;
 class BitmapFont;
+class Logger;
 
 class Console : public InputObserver
 {
@@ -67,6 +68,12 @@ public:
     String GetInputPrompt() const;
 
     float GetFontHeight() { return m_fontHeight; };
+
+    // Logging
+    void HookToLogger( const Logger* logger );
+    void ShouldPrintLogRealtime( bool printLogRealtime );
+    void PrintLogsFilter();
+
 private:
 
     // Drawing

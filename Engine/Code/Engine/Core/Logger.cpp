@@ -28,7 +28,7 @@ void Logger::LoggerThreadWorker( Logger* logger )
 void Logger::WriteToFile( LogEntry* entry, void* logFile )
 {
     std::ofstream* file = ( std::ofstream* ) logFile;
-    (*file) << entry->m_tag << ": " << entry->m_text << '\n';
+    (*file) << entry->m_dateTime.ToString() << " " << entry->m_tag << ": " << entry->m_text << '\n';
 
 }
 
@@ -81,6 +81,7 @@ void Logger::LogTaggedPrintfv( char const *tag, char const *format, va_list args
     LogEntry* log = new LogEntry();
     log->m_tag = tag;
     log->m_text = Stringf( format, args );
+    log->m_dateTime = DateTime::GetLocalTime();
 
     m_logQueue.Push( log );
 }

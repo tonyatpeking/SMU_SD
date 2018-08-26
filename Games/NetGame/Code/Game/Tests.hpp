@@ -89,15 +89,21 @@ void main( void )
 void IOTests()
 {
 
-    String someDir = IOUtils::GetCurrentDir() + "\\somefolder";
-    String someFile = IOUtils::GetCurrentDir() + "\\somefile.txt";
+    String someDir = IOUtils::GetCurrentDir() + "/Tests/somefolder";
+    String someDeepDir = IOUtils::GetCurrentDir() + "/Tests/A/B/C/D";
+    String someDeepFile = IOUtils::GetCurrentDir() + "/Tests/B/C/D.txt";
+    String someFile = IOUtils::GetCurrentDir() + "/Tests/somefile.txt";
 
 
     g_console->Print( "dir exists: " + ::ToString( IOUtils::DirExists( someDir ) ) );
 
-    g_console->Print( "dir create: " + ::ToString( IOUtils::MakeDir( someDir ) ) );
+    g_console->Print( "dir create: " + ::ToString( IOUtils::MakeDirR( someDir ) ) );
 
     g_console->Print( "dir exists: " + ::ToString( IOUtils::DirExists( someDir ) ) );
+
+    g_console->Print( "dir recursive create: " + ::ToString( IOUtils::MakeDirR( someDeepDir ) ) );
+
+    g_console->Print( "file recursive write: " + ::ToString( IOUtils::WriteToFile( someDeepFile, "hi!\nhi!" ) ) );
 
     g_console->Print( "file exists: " + ::ToString( IOUtils::FileExists( someFile ) ) );
 

@@ -700,7 +700,7 @@ void Renderer::TakeScreenshot()
     Image* image = m_defaultColorTarget->MakeImageFromGPU();
     image->FlipYCoords();
     image->SaveToDisk( "Screenshots/screenshot.png" );
-    TimeUtils::SysTime sysTime = TimeUtils::GetDateTime();
+    DateTime sysTime = DateTime::GetLocalTime();
     String path = Stringf( "Screenshots/screenshot_%i.%i.%i_%i.%i.%i.png",
                            sysTime.year, sysTime.month, sysTime.day,
                            sysTime.hour, sysTime.minute, sysTime.second );

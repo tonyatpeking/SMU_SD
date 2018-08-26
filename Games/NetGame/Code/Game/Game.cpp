@@ -35,6 +35,8 @@
 #include "Engine/Renderer/ForwardRenderingPath.hpp"
 #include "Engine/Core/PythonInterpreter.hpp"
 #include "Engine/Core/EngineCommands.hpp"
+#include "Engine/Time/Time.hpp"
+#include "Engine/Core/Logger.hpp"
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
@@ -123,10 +125,10 @@ void Game::Initialize()
 
     MakePauseMenu();
 
-    //py::scoped_interpreter guard{}; // start the interpreter and keep it alive
-
     PythonInterpreter::GetInstance()->Start();
     PythonInterpreter* shell = PythonInterpreter::GetInstance();
+
+    Logger::GetDefault()->LogTaggedPrintf( "hi", "hiya" );
 
     UNUSED( shell );
 
