@@ -37,6 +37,8 @@
 #include "Engine/Core/EngineCommands.hpp"
 #include "Engine/Time/Time.hpp"
 #include "Engine/Core/Logger.hpp"
+#include "Engine/Net/Net.hpp"
+#include "Engine/Net/NetAddress.hpp"
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
@@ -129,6 +131,16 @@ void Game::Initialize()
     PythonInterpreter* shell = PythonInterpreter::GetInstance();
 
     Logger::GetDefault()->LogTaggedPrintf( "hi", "hiya" );
+
+    NetAddress local = NetAddress::GetLocal( "12345" );
+    String str = local.ToStringAll();
+
+    std::vector<NetAddress> locals = NetAddress::GetAllLocal( "123" );
+
+    for ( auto& addr : locals )
+    {
+        Logger::GetDefault()->LogTaggedPrintf( "addr", addr.ToStringAll().c_str() );
+    }
 
     UNUSED( shell );
 

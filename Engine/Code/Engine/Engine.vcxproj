@@ -332,6 +332,7 @@
     <ClCompile Include="Math\Vec4.cpp" />
     <ClCompile Include="Net\Net.cpp" />
     <ClCompile Include="Net\NetAddress.cpp" />
+    <ClCompile Include="Net\TCPSocket.cpp" />
     <ClCompile Include="Particles\Particle.cpp" />
     <ClCompile Include="Particles\ParticleEmitter.cpp" />
     <ClCompile Include="Renderer\BarGraphBuilder.cpp" />
@@ -474,6 +475,7 @@
     <ClInclude Include="Math\Vec4.hpp" />
     <ClInclude Include="Net\Net.hpp" />
     <ClInclude Include="Net\NetAddress.hpp" />
+    <ClInclude Include="Net\TCPSocket.hpp" />
     <ClInclude Include="Particles\Particle.hpp" />
     <ClInclude Include="Particles\ParticleEmitter.hpp" />
     <ClInclude Include="Renderer\BarGraphBuilder.hpp" />

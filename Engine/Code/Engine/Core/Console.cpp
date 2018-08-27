@@ -9,6 +9,7 @@
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/IO/IOUtils.hpp"
 #include "Engine/Core/CommandSystem.hpp"
+#include "Engine/Core/Logger.hpp"
 
 #include <stdarg.h>
 
@@ -277,6 +278,7 @@ void Console::SetScorllPosition( int lineNum )
 
 void Console::Print( const String& text, const Rgba& color /*= Rgba::LIGHT_GRAY */ )
 {
+    std::lock_guard<std::mutex> lock( m_printMutex );
     Strings out_SingleLines;
     String delimiter = "\n";
     bool removeWhiteSpace = false;
@@ -329,6 +331,17 @@ String Console::GetInputPrompt() const
         return ">>>";
     else
         return ">";
+}
+
+void Console::LoggerCB( LogEntry* entry, void* me )
+{
+    ( (Console*) me )->Printf( "%s %s %s", entry->m_dateTime.ToString().c_str()
+                               , entry->m_tag.c_str(), entry->m_text.c_str() );
+}
+
+void Console::HookToLogger( Logger* logger )
+{
+    logger->AddLogHook( LoggerCB, this );
 }
 
 void Console::InputWithEnter( String text )

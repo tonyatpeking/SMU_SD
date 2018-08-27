@@ -8,6 +8,7 @@
 #include "Engine/Core/PythonInterpreter.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Net/Net.hpp"
+#include "Engine/Net/NetAddress.hpp"
 #include <fstream>
 
 #define WIN32_LEAN_AND_MEAN
@@ -27,7 +28,7 @@ void ThreadTestWork()
 
     for( uint i = 0; i < 1200000; ++i )
     {
-        int randInt = Random::IntInRange(0,99999);
+        int randInt = Random::IntInRange( 0, 99999 );
         file << randInt;
     }
 
@@ -47,22 +48,85 @@ void EngineCommands::RegisterAllCommands()
         sockaddr_storage out_sockaddr;
         int addrlen;
 
-//         char *hostname = "10.8.139.114";
-//         char* service = "12345";
+        //         char *hostname = "10.8.139.114";
+        //         char* service = "12345";
 
         char *hostname = "neesarg.me";
         char* service = "80";
 
-        Net::GetAddressForHost( (sockaddr*)(&out_sockaddr), &addrlen, hostname, service );
+        Net::GetAddressForHost( (sockaddr*) ( &out_sockaddr ), &addrlen, hostname, service );
 
         char out[256];
         int i = 1;
-//         inet_ntop( ipv4->sin_family, &( ipv4->sin_addr ), out, 256 );
-//         LogTaggedPrintf( "net", "My Address: %s", out );
+        //         inet_ntop( ipv4->sin_family, &( ipv4->sin_addr ), out, 256 );
+        //         LogTaggedPrintf( "net", "My Address: %s", out );
 
 
-        //void ConnectExample( net_address_t const &addr, char const *msg )
+                //void ConnectExample( net_address_t const &addr, char const *msg )
 
+
+    } );
+
+    commandSys->AddCommand( "TestConnect", []( String str )
+    {
+        UNUSED( str );
+        CommandParameterParser parser( str );
+
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 2 )
+        {
+            LOG_WARNING( "TestConnect needs 2 params, IP:PORT and msg" );
+            return;
+        }
+
+        String addrStr;
+        parser.GetNext( addrStr );
+        NetAddress netAddr( addrStr );
+
+        String msg;
+        parser.GetNext( msg );
+
+        Net::ConnectionTest( netAddr, msg );
+
+    } );
+
+    commandSys->AddCommand( "TestHost", []( String str )
+    {
+        UNUSED( str );
+        CommandParameterParser parser( str );
+
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 1 )
+        {
+            LOG_WARNING( "TestHost needs 1 params, PORT" );
+            return;
+        }
+
+        int port;
+        parser.GetNext( port );
+
+        Net::HostTest( port );
+
+    } );
+
+    commandSys->AddCommand( "TestHostClose", []( String str )
+    {
+        UNUSED( str );
+
+        Net::HostTestClose();
+
+    } );
+
+    commandSys->AddCommand( "NetLocalIP", []( String str )
+    {
+        UNUSED( str );
+
+        std::vector<NetAddress> addresses = NetAddress::GetAllLocal( "12345" );
+
+        for( auto& addr : addresses )
+        {
+            Console::DefaultConsole()->Print( "Local IP: " + addr.ToStringIP() );
+        }
 
     } );
 

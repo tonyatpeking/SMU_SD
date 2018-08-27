@@ -5,11 +5,13 @@
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Input/InputObserver.hpp"
+#include <mutex>
 
 class Renderer;
 class InputSystem;
 class BitmapFont;
 class Logger;
+struct LogEntry;
 
 class Console : public InputObserver
 {
@@ -70,7 +72,8 @@ public:
     float GetFontHeight() { return m_fontHeight; };
 
     // Logging
-    void HookToLogger( const Logger* logger );
+    static void LoggerCB( LogEntry* entry, void* me );
+    void HookToLogger( Logger* logger );
     void ShouldPrintLogRealtime( bool printLogRealtime );
     void PrintLogsFilter();
 
@@ -133,5 +136,9 @@ private:
     std::vector<Rgba> m_allOutputColors;
     String m_inputText;
     BitmapFont* m_font = nullptr;
+
+    // Thread Safety
+    std::mutex m_printMutex;
+
 
 };

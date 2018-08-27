@@ -1,13 +1,13 @@
-﻿
-// add this to WindowsCommon.h
-
-#include "Engine/Core/WindowsCommon.hpp"
-
+﻿#include "Engine/Core/WindowsCommon.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Net/Net.hpp"
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/Core/Logger.hpp"
+#include "Engine/Net/Net.hpp"
+#include "Engine/Net/NetAddress.hpp"
+#include "Engine/Net/TCPSocket.hpp"
+#include "Engine/Core/Thread.hpp"
 
+#include <atomic>
 
 bool Net::Startup()
 {
@@ -25,6 +25,83 @@ bool Net::Shutdown()
 {
     ::WSACleanup();
     return true;
+}
+
+void Net::ConnectionTest( const NetAddress& addr, const String& msg )
+{
+    TCPSocket socket;
+    if( socket.Connect( addr ) )
+    {
+        socket.Send( msg.c_str(), (int) msg.size() + 1 );
+
+        char payload[256];
+        size_t recvd = socket.Receive( payload, 256 );
+        payload[recvd] = NULL;
+        Logger::GetDefault()->LogPrintf( "Received: %s", payload );
+        socket.Close();
+    }
+    else
+    {
+        Logger::GetDefault()->LogPrintf( "Could not connect" );
+    }
+
+}
+
+// HostTest internal
+namespace
+{
+std::atomic_bool s_shouldShutServer = false;
+}
+
+void Net::HostTest( int port )
+{
+    Thread::CreateAndDetach( HostTestServerThread, port );
+}
+
+void Net::HostTestClose()
+{
+    s_shouldShutServer = true;
+}
+
+void Net::HostTestServerThread( int port )
+{
+    TCPSocket host;
+    host.Listen( port );
+    while( !s_shouldShutServer )
+    {
+        TCPSocket *client = host.Accept();
+        if( client != nullptr )
+        {
+            // this thread does all the work and destroys the socket;
+            Thread::CreateAndDetach( HostTestServiceThread, client );
+        }
+    }
+    s_shouldShutServer = false;
+    host.Close();
+}
+
+void Net::HostTestServiceThread( TCPSocket* client )
+{
+    const int bufferSize = 256;
+    char buffer[bufferSize];
+    memset( buffer, 0, bufferSize );
+
+    int recvd = (int) client->Receive( buffer, bufferSize );
+
+
+    if( recvd != 0 )
+    {
+        buffer[recvd] = NULL; // just cause I'm printing it
+
+        Logger::GetDefault()->LogPrintf( "Received: %s", buffer );
+
+        String msg = "Tony's Shitty Server";
+        client->Send( msg.c_str(), (int) msg.size() + 1 );
+    }
+
+    client->Close();
+    delete client;
+
 }
 
 void Net::ConnectDirectWithWinSock()
@@ -76,11 +153,11 @@ void Net::ConnectDirectWithWinSock()
     // you send raw bytes over the network in whatever format you want;
     ::send( sock,
 
-           R"(
+            R"(
 Let's play a game.
 )"
 
-            , 440000, 0 );
+, 440000, 0 );
 
     // with TCP/IP, data sent together is not guaranteed to arrive together.
     // so make sure you check the return value.  This will return SOCKET_ERROR
@@ -101,8 +178,8 @@ bool Net::GetAddressForHost( sockaddr *out, int *out_addrlen, char const *hostna
 {
 
 
-//     if( SOCKET_ERROR == ::gethostname( hostname, 256 ) )
-//         return;
+    //     if( SOCKET_ERROR == ::gethostname( hostname, 256 ) )
+    //         return;
 
 
     if( &hostname == nullptr || hostname[0] == '\0' )

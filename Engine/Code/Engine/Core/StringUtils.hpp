@@ -99,6 +99,7 @@ const String RemovePrefix( const String& str );
 
 
 ParseStatus SetFromString( const String& str, int& out_int );
+ParseStatus SetFromString( const String& str, uint& out_int );
 ParseStatus SetFromString( const String& str, float& out_float );
 ParseStatus SetFromString( const String& str, bool& out_bool );
 // Set from string
@@ -117,6 +118,7 @@ const String Stringf( const int maxLength, const char* format, ... );
 
 // Convert to string
 const String ToString( int var );
+const String ToString( uint var );
 const String ToString( float var );
 const String ToString( bool var );
 const String ToString( unsigned char var );

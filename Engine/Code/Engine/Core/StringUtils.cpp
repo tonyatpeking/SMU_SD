@@ -730,6 +730,14 @@ ParseStatus SetFromString( const String& str, String& out_var )
 
 
 
+ParseStatus SetFromString( const String& str, uint& out_int )
+{
+    int i;
+    ParseStatus status = SetFromString( str, i );
+    out_int = (uint) i;
+    return status;
+}
+
 const String ToString( int var )
 {
     return std::to_string( var );
@@ -802,9 +810,14 @@ const String ToString( const Vec4& var )
 const String ToString( const Mat4& var )
 {
     return Stringf( "%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f",
-var.Ix, var.Jx, var.Kx, var.Tx,
-var.Iy, var.Jy, var.Ky, var.Ty,
-var.Iz, var.Jz, var.Kz, var.Tz,
-var.Iw, var.Jw, var.Kw, var.Tw
-);
+                    var.Ix, var.Jx, var.Kx, var.Tx,
+                    var.Iy, var.Jy, var.Ky, var.Ty,
+                    var.Iz, var.Jz, var.Kz, var.Tz,
+                    var.Iw, var.Jw, var.Kw, var.Tw
+    );
+}
+
+const String ToString( uint var )
+{
+    return ToString( (int) var );
 }

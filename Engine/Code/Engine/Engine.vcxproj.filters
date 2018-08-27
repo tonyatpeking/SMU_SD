@@ -438,8 +438,18 @@
     <ClCompile Include="Net\Net.cpp">
       <Filter>Net</Filter>
     </ClCompile>
-    <ClCompile Include="Core\LogFilter.cpp" />
-    <ClCompile Include="Time\DateTime.cpp" />
+    <ClCompile Include="Time\DateTime.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\LogFilter.cpp">
+      <Filter>Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\NetAddress.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\TCPSocket.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -868,14 +878,28 @@
     <ClInclude Include="Net\Net.hpp">
       <Filter>Net</Filter>
     </ClInclude>
-    <ClInclude Include="Core\LogFilter.hpp" />
-    <ClInclude Include="Time\DateTime.hpp" />
-    <ClInclude Include="Core\WindowsCommon.hpp" />
+    <ClInclude Include="Time\DateTime.hpp">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\LogFilter.hpp">
+      <Filter>Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\NetAddress.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\WindowsCommon.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\TCPSocket.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\ParseStatus.hpp">
       <Filter>Core</Filter>
     </None>
-    <None Include="Time\DateTime" />
+    <None Include="Time\DateTime">
+      <Filter>Time</Filter>
+    </None>
   </ItemGroup>
 </Project>

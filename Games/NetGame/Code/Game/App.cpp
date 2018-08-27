@@ -52,7 +52,7 @@ App::App()
     g_console = new Console( g_renderer, g_input );
     Console::SetDefaultConsole( g_console );
     g_console->SetSizeRatio( g_config->consoleHeightRatio );
-
+    g_console->HookToLogger( Logger::GetDefault() );
     g_audio = new AudioSystem();
 
     g_UITweenSystem = new TweenSystem();
