@@ -1,8 +1,8 @@
 #include "Engine/Renderer/TextMeshBuilder.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Material.hpp"
 namespace
@@ -100,7 +100,7 @@ bool TextMeshBuilder::HasValidFont()
 void TextMeshBuilder::ParseToLinesOfText()
 {
     m_linesOfText.clear();
-    StringUtils::ParseToTokens( m_text, m_linesOfText, "\n", false );
+    StringUtils::ParseToTokens( m_text, m_linesOfText, "\n", false, false );
 }
 
 void TextMeshBuilder::CalculateTextBlockHeight()

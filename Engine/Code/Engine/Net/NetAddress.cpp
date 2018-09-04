@@ -1,16 +1,33 @@
 #include "Engine/Net/NetAddress.hpp"
 #include "Engine/Core/WindowsCommon.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
-#include "Engine/Core/Logger.hpp"
+#include "Engine/String/StringUtils.hpp"
+#include "Engine/Log/Logger.hpp"
 
 
+
+bool NetAddress::ShouldIgnoreAddr( const NetAddress& addr )
+{
+    static NetAddress* s_ignore0 = nullptr;
+    if( s_ignore0 == nullptr )
+    {
+        s_ignore0 = new NetAddress( "192.168.137.1:12345" );
+    }
+
+    if( addr.m_ip4Address == s_ignore0->m_ip4Address )
+        return true;
+    return false;
+}
 
 NetAddress NetAddress::GetLocal( const String& service )
 {
-    std::vector<NetAddress> addresses = GetAllLocal( service, 1 );
-    if( addresses.size() > 0 )
-        return addresses[0];
+    std::vector<NetAddress> addresses = GetAllLocal( service );
+
+    for ( auto& addr : addresses )
+    {
+        if( !ShouldIgnoreAddr( addr ) )
+            return addr;
+    }
 
     return NetAddress{};
 }
@@ -133,9 +150,14 @@ bool NetAddress::FromSockAddr( const sockaddr* addr )
     return true;
 }
 
-bool NetAddress::IsEmpty()
+bool NetAddress::IsEmpty() const
 {
     return m_ip4Address == 0 && m_port == 0;
+}
+
+bool NetAddress::AreIPsSame( const NetAddress& addrA, const NetAddress& addrB )
+{
+    return addrA.m_ip4Address == addrB.m_ip4Address;
 }
 
 String NetAddress::ToStringAll() const
@@ -158,4 +180,6 @@ String NetAddress::ToStringPort() const
 {
     return ::ToString( m_port );
 }
+
+
 

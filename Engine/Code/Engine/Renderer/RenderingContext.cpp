@@ -7,11 +7,11 @@
 #include "Engine/Renderer/RenderBuffer.hpp"
 #include "Engine/Renderer/Sampler.hpp"
 #include "Engine/Renderer/Texture.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Renderer/Vertex.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Core/Window.hpp"
 
 

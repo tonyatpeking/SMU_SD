@@ -1,7 +1,9 @@
+#pragma once
+
 // winsock libraries
 #pragma comment(lib, "ws2_32.lib")
 
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 
 struct sockaddr;
 struct NetAddress;
@@ -17,11 +19,8 @@ public:
 
     static void HostTest(int port);
     static void HostTestClose();
-    static void HostTestServerThread( int port );
+    static void HostTestServerThread( const NetAddress& addr );
     static void HostTestServiceThread( TCPSocket* client );
-
-    static void ConnectDirectWithWinSock();
-
 
     static bool GetAddressForHost( sockaddr *out, int *out_addrlen, char const *hostname,
                                    char const *service = "12345" );

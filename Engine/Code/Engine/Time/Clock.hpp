@@ -5,6 +5,8 @@
 class Clock
 {
 public:
+    static Clock* GetRealTimeClock();
+    static void SetRealTimeClock( Clock* clock );
     Clock() {};
     Clock( Clock* parent );
     ~Clock();

@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <vector>
 #include <map>
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/Types.hpp"
 
 
 namespace ContainerUtils
@@ -18,7 +18,7 @@ template <typename ValueT>
 ValueT ValueFromIter(
     const std::vector<ValueT>& vector, typename std::vector<ValueT>::iterator iter )
 {
-    UNUSED( vector );
+    (void) ( vector );
     return *iter;
 }
 
@@ -26,7 +26,7 @@ template <typename KeyT, typename ValueT>
 ValueT ValueFromIter(
     const std::map<KeyT, ValueT>& map, typename std::map<KeyT, ValueT>::iterator iter )
 {
-    UNUSED( map );
+    (void) ( map );
     return ( *iter ).second;
 }
 }
@@ -152,7 +152,7 @@ template<typename ValueT>
 ValueT Sum( const std::vector<ValueT>& container )
 {
     ValueT sum{};
-    for ( auto& var : container )
+    for( auto& var : container )
     {
         sum = sum + var;
     }

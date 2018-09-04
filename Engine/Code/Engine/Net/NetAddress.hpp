@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include <vector>
 
 struct sockaddr_storage;
@@ -9,6 +9,8 @@ struct sockaddr;
 struct NetAddress
 {
 public:
+
+    static bool ShouldIgnoreAddr( const NetAddress& addr );
 
     static NetAddress GetLocal( const String& service );
 
@@ -33,7 +35,8 @@ public:
 
     bool ToSockAddr( sockaddr *out, size_t *outAddrLen ) const;
     bool FromSockAddr( const sockaddr* addr );
-    bool IsEmpty();
+    bool IsEmpty() const;
+    static bool AreIPsSame( const NetAddress& addrA, const NetAddress& addrB );
 
     String ToStringAll() const;
     String ToStringIP() const;

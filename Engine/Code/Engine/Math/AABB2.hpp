@@ -2,7 +2,7 @@
 #include <string>
 
 #include "Engine/Math/Vec2.hpp"
-#include "Engine/Core/ParseStatus.hpp"
+#include "Engine/String/ParseStatus.hpp"
 
 
 class AABB2

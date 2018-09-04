@@ -1,11 +1,11 @@
 ﻿#include "Engine/Audio/AudioSystem.hpp"
 #include "Engine/Core/Window.hpp"
-#include "Engine/Core/Image.hpp"
+#include "Engine/Image/Image.hpp"
 #include "Engine/Math/SmoothNoise.hpp"
 #include "Engine/Renderer/ShaderProgram.hpp"
 #include "Engine/Renderer/CubeMap.hpp"
 #include "Engine/Renderer/DebugRender.hpp"
-#include "Engine/Core/Profiler.hpp"
+#include "Engine/Profiler/Profiler.hpp"
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Renderer/MeshPrimitive.hpp"
 
@@ -38,7 +38,7 @@ void GameState_Loading::Render() const
     g_renderer->DrawAABB( AABB2::MakeBoundsFromDimensions( g_window->GetDimensions() ), g_config->overlayColor );
     Vec2 screenCenter = (Vec2) g_window->GetDimensions() * 0.5f;
     float textHeight = 70.f;
-    g_renderer->DrawText2D( "LOADING...", screenCenter, textHeight );
+    g_renderer->DrawText2D( "LOADING...", screenCenter + Vec2(-400, textHeight / 2), textHeight );
 
 }
 

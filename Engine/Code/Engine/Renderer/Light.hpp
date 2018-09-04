@@ -2,7 +2,7 @@
 
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Math/Vec3.hpp"
-#include "Engine/Core/GameObject.hpp"
+#include "Engine/GameObject/GameObject.hpp"
 
 class Camera;
 

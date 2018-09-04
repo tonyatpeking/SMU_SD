@@ -3,9 +3,9 @@
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Math/Ray3.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Transform.hpp"
-#include "Engine/Core/GameObject.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/GameObject/Transform.hpp"
+#include "Engine/GameObject/GameObject.hpp"
 #include "Engine/Core/Rgba.hpp"
 
 class Texture;

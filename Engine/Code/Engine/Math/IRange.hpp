@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include <string>
-#include "Engine/Core/ParseStatus.hpp"
+#include "Engine/String/ParseStatus.hpp"
 #include "Engine/Core/Types.hpp"
 
 class IRange

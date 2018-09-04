@@ -1,7 +1,7 @@
 ﻿#include "Engine/Renderer/SpriteAnimSetDefinition.hpp"
 #include "Engine/Renderer/SpriteAnimDefinition.hpp"
-#include "Engine/Core/XmlUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/FileIO/XmlUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 
 SpriteAnimSetDefinition::SpriteAnimSetDefinition( const XMLElement& xmlAnimSetDef, Renderer& renderer )

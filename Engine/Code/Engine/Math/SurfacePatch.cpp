@@ -3,7 +3,7 @@
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/IVec2.hpp"
-#include "Engine/Core/Image.hpp"
+#include "Engine/Image/Image.hpp"
 
 
 Vec3 SurfacePatch::EvalPosition( const Vec2& uv )

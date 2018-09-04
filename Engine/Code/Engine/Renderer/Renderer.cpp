@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "Engine/Core/Profiler.hpp"
+#include "Engine/Profiler/Profiler.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Renderer/RenderingContext.hpp"
 #include "Engine/Renderer/Sampler.hpp"
@@ -24,12 +24,12 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/Random.hpp"
 #include "Engine/Core/Types.hpp"
-#include "Engine/Core/Image.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Image/Image.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/Image.hpp"
+#include "Engine/Image/Image.hpp"
 #include "Engine/Renderer/Vertex.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Time/Time.hpp"
@@ -38,6 +38,7 @@
 #include "Engine/Renderer/TextureBindings.hpp"
 #include "Engine/Renderer/DrawCall.hpp"
 #include "Engine/Renderer/Light.hpp"
+#include "Engine/Renderer/TextMeshBuilder.hpp"
 
 namespace
 {
@@ -505,6 +506,7 @@ void Renderer::DrawTexturedAABB( const Texture* texture,
 }
 
 
+// Deprecated use TextRenderable instead
 void Renderer::DrawText2D( const String& text,
                            const Vec2& position,
                            float height,
@@ -515,26 +517,23 @@ void Renderer::DrawText2D( const String& text,
 {
     if( font == nullptr )
         font = m_defaultFont;
-
-    // Set starting position to bottom left corner
+    Renderable renderable{};
+    renderable.GetMaterial( 0 )->SetTint( color );
+    TextMeshBuilder tmb{};
     float aspectRatio = font->GetGlyphAspect( 0 ) * aspectScale;
     float textWidth = font->GetTextWidth( text, height, aspectRatio );
-    Vec2 offset = AlignmentOffsetFromReference( alignment, Alignment::BOTTOM_LEFT );
-    offset = Vec2( offset.x * textWidth, offset.y * height );
-    Vec2 startPos = position + offset;
+    AABB2 bounds( position.x, position.y - height, position.x + textWidth, position.y );
+    tmb.m_boundingBox = bounds;
+    tmb.m_fontHeight = height;
+    tmb.m_alignment = Vec2::ZEROS;
+    tmb.m_text = text;
+    tmb.Finalize();
+    renderable.SetMesh( tmb.MakeMesh());
+    renderable.GetMaterial( 0 )->m_diffuse = tmb.m_font->GetTexture();
+    renderable.GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
+    DrawRenderable( &renderable );
+    renderable.DeleteMesh();
 
-    float glyphWidth = height * aspectRatio;
-    AABB2 glyphBounds = AABB2( 0, 0, glyphWidth, height );
-    glyphBounds.Translate( startPos );
-
-    const Texture* texture = font->GetTexture();
-    for( unsigned int glyphIdx = 0; glyphIdx < text.length(); ++glyphIdx )
-    {
-        int glyphID = text[glyphIdx];
-        AABB2 glyphUVs = font->GetGlyphUVs( glyphID );
-        DrawTexturedAABB( texture, glyphBounds, glyphUVs, color );
-        glyphBounds.Translate( glyphWidth, 0 );
-    }
 }
 
 void Renderer::DrawTextInBox2D(

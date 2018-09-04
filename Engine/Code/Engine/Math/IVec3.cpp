@@ -1,7 +1,7 @@
 #include "Engine/Math/IVec3.hpp"
 #include "Engine/Math/IVec2.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 
 // static values

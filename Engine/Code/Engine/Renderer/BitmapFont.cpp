@@ -1,8 +1,8 @@
 ﻿#include <sstream>
 
 #include "BitmapFont.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/String/StringUtils.hpp"
 
 
 BitmapFont::BitmapFont( const Texture* texture, float bastAspect, const IVec2& layout )
@@ -19,7 +19,7 @@ AABB2 BitmapFont::GetGlyphUVs( int glyphID ) const
     coords.y = layout.y - 1 - coords.y;
     AABB2 uvs = GetUVsForSpriteCoords( coords );
     // shrink just a little so that the sampler never samples from above/below rows
-    uvs.ScaleHeightFromCenter( 0.999f );
+    uvs.ScaleHeightFromCenter( 0.98f );
     return uvs;
 }
 

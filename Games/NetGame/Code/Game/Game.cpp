@@ -1,12 +1,12 @@
 #include <functional>
 
 #include "Engine/Core/Rgba.hpp"
-#include "Engine/Core/HeatMap.hpp"
-#include "Engine/Core/StringUtils.hpp"
-#include "Engine/Core/XmlUtils.hpp"
+#include "Engine/Image/HeatMap.hpp"
+#include "Engine/String/StringUtils.hpp"
+#include "Engine/FileIO/XmlUtils.hpp"
 #include "Engine/Core/Console.hpp"
-#include "Engine/Core/Image.hpp"
-#include "Engine/Core/Blackboard.hpp"
+#include "Engine/Image/Image.hpp"
+#include "Engine/FileIO/Blackboard.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/Vec3.hpp"
@@ -24,7 +24,7 @@
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Renderer/ShaderProgram.hpp"
-#include "Engine/IO/IOUtils.hpp"
+#include "Engine/FileIO/IOUtils.hpp"
 #include "Engine/Math/Mat4.hpp"
 #include "Engine/Core/CommandSystem.hpp"
 #include "Engine/UI/Menu.hpp"
@@ -33,12 +33,13 @@
 #include "Engine/Renderer/UniformBuffer.hpp"
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Renderer/ForwardRenderingPath.hpp"
-#include "Engine/Core/PythonInterpreter.hpp"
+#include "Engine/Python/PythonInterpreter.hpp"
 #include "Engine/Core/EngineCommands.hpp"
 #include "Engine/Time/Time.hpp"
-#include "Engine/Core/Logger.hpp"
+#include "Engine/Log/Logger.hpp"
 #include "Engine/Net/Net.hpp"
 #include "Engine/Net/NetAddress.hpp"
+#include "Engine/Core/EngineCommonC.hpp"
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
@@ -72,8 +73,6 @@ void Game::Update()
 
     ProcessInput();
 
-    Tests::UpdateTests();
-
     m_currentGameState->Update();
 
     UpdatePause();
@@ -90,8 +89,6 @@ void Game::Render() const
 
     RenderPause();
 
-    if( GetFlag( GameFlag::runTests ) )
-        Tests::RenderTests();
 }
 
 void Game::Initialize()

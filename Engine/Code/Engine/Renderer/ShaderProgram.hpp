@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <string>
 #include <map>
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Math/IRange.hpp"
 
 class ShaderSourceBuilder;

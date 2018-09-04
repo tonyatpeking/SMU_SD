@@ -1,7 +1,7 @@
 
 #include "Engine/Core/WindowsCommon.hpp"
 #include "Engine/Time/DateTime.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 
 #define _SECOND ((__int64) 10000000)
 #define _MINUTE (60 * _SECOND)

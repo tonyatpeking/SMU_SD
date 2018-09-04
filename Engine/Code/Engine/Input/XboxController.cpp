@@ -1,5 +1,5 @@
 #include "Engine/Input/XboxController.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include <windows.h>			// #include this ( massive, platform-specific ) header in very few places
 #include <Xinput.h> // include the Xinput API
 #pragma comment( lib, "xinput9_1_0" ) // Link in the xinput.lib static library // #Eiserloh: Xinput 1_4 doesn't work in Windows 7; use 9_1_0 explicitly for broadest compatibility

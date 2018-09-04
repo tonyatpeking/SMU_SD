@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 
 
@@ -66,10 +66,11 @@ public:
     bool AllParseSuccess() { return m_allParseSuccess; };
     size_t NumOfParams() { return m_parameterTokens.size(); };
     String GetName() { return m_commandName; };
-
+    String GetOnlyParameters() { return m_justParams; };
 private:
     Strings m_parameterTokens;
     String m_commandName;
+    String m_justParams;
     size_t m_nextParamToGet = 0;
     bool m_suppressWarnings;
     bool m_allParseSuccess = true;
@@ -85,7 +86,9 @@ public:
     void RunCommand( String commandString );
 
     const std::map<String, CommandDef>& GetAllCommandDefs() const
-    { return m_commandDefs; };
+    {
+        return m_commandDefs;
+    };
 
 private:
 

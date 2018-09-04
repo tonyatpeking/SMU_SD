@@ -1,7 +1,7 @@
 ﻿#include "Engine/Math/IRange.hpp"
 #include "Engine/Math/Random.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 
 IRange::IRange( const IRange& copyFrom )

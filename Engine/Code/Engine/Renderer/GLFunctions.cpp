@@ -5,8 +5,8 @@
 
 #include "Engine/Renderer/GLFunctions.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/String/StringUtils.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 
 HMODULE gGLLibrary = NULL;
 

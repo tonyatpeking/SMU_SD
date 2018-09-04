@@ -10,6 +10,8 @@ CommandParameterParser::CommandParameterParser(
 {
     StringUtils::ParseFunctionName( commandString, m_commandName );
 
+    StringUtils::ExtractOnlyParameters( commandString, m_justParams );
+
     ParseStatus status = StringUtils::ParseParameters(
         commandString, m_parameterTokens );
     if( PARSE_SUCCESS != status )

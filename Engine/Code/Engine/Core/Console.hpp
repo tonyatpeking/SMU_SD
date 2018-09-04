@@ -13,13 +13,21 @@ class BitmapFont;
 class Logger;
 struct LogEntry;
 
+void Printf( const char* format, ... );
+void Printf( const Rgba& color, const char* format, ... );
+void Printfv(  const char* format, va_list args );
+void Printfv( const Rgba& color, const char* format, va_list args );
+
 class Console : public InputObserver
 {
 
 public:
 
     Console( Renderer* renderer, InputSystem* inputSys );
-    ~Console() {};
+    ~Console();
+
+    void ShutDown();
+
 
     void Render();
     void Update( float deltaSeconds );
@@ -38,6 +46,7 @@ public:
     // Accessors
     bool IsActive() const { return m_isActive; };
     bool HasInput() const { return !m_inputText.empty(); };
+    Rgba GetDefaultTextColor() { return m_defaultTextColor; };
 
     // Mutators
     void SetInputSystem( InputSystem* inputSys );
@@ -64,6 +73,7 @@ public:
     void Print( const String& text, const Rgba& color );
     void Print( const String& text );
     void Printfv( const Rgba& color, const char* format, va_list args );
+    void Printfv( const char* format, va_list args );
     void Printf( const Rgba& color, const char* format, ... );
     void Printf( const char* format, ... );
 
@@ -99,6 +109,17 @@ private:
     void DrawCursor();
     bool IsCursorBlinkOn();
 
+    // Command History
+    void LoadFromCommandHistoryFile();
+    void DumpToCommandHistoryFile();
+    //offset 1 is previous command, 2 is the one before that, 0 is no command selected
+    String GetCommandFromHistory(int offset);
+    void AppendToCommandHistory( const String& str );
+    void ClearCommandHistorySelector();
+    // 1 is up and -1 is down, wraps
+    void MoveCommandHistorySelector( int direction );
+
+
     // The default console
     static Console* s_defaultConsole;
 
@@ -109,13 +130,13 @@ private:
     float m_padding = 0.f;
     AABB2 m_bounds = AABB2::ZEROS_ONES;
     AABB2 m_textBounds = AABB2::ZEROS_ONES;
-    float m_fontHeightRatioOfScreenHeight = 0.015f;
+    float m_fontHeightRatioOfScreenHeight = 0.016f;
     float m_fontHeight = 0.f;
-    float m_lineSpacingRatio = 0.3f; // Ratio in terms of font height, 0 is no spacing
+    float m_lineSpacingRatio = 0.5f; // Ratio in terms of font height, 0 is no spacing
     float m_lineSpacing = 0.f;
     float m_cursorBlinkInterval = 1.f;
     String m_outputFilePath;
-    Rgba m_backgroundColor = Rgba( 0, 0, 0, 150 );
+    Rgba m_backgroundColor = Rgba( 0, 0, 0, 230 );
     Rgba m_defaultTextColor = Rgba::LIGHT_GRAY;
 
     // Dependent Engine Systems
@@ -140,5 +161,9 @@ private:
     // Thread Safety
     std::mutex m_printMutex;
 
-
+    // Command History
+    String m_historyFile = "Logs/command_history.txt";
+    int m_maxCommandHistoryLength = 10;
+    Strings m_commandHistory;
+    int m_commandHistorySelectorPos = 0;
 };

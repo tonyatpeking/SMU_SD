@@ -1,9 +1,9 @@
 #include "Engine/Math/Random.hpp"
 #include "Engine/Audio/AudioSystem.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
-#include "Engine/Core/XmlUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
+#include "Engine/FileIO/XmlUtils.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 /*
 To disable audio entirely (and remove requirement for fmod.dll / fmod64.dll) for any

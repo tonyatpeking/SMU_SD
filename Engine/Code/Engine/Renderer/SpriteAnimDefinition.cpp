@@ -1,5 +1,5 @@
-﻿#include "Engine/Core/StringUtils.hpp"
-#include "Engine/Core/XmlUtils.hpp"
+﻿#include "Engine/String/StringUtils.hpp"
+#include "Engine/FileIO/XmlUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/SpriteAnimDefinition.hpp"

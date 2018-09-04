@@ -3,7 +3,7 @@
 #include "Engine/Core/Types.hpp"
 #include "Engine/Renderer/Vertex.hpp"
 #include "Engine/Math/Mat4.hpp"
-#include "Engine/Core/Transform.hpp"
+#include "Engine/GameObject/Transform.hpp"
 #include "Engine/Renderer/RendererEnums.hpp"
 #include "Engine/Renderer/VertexBuffer.hpp"
 #include "Engine/Renderer/IndexBuffer.hpp"

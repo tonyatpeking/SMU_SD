@@ -8,11 +8,11 @@
 #include <iostream>
 
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/String/StringUtils.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Core/Rgba.hpp"
-#include "Engine/Core/Logger.hpp"
+#include "Engine/Log/Logger.hpp"
 
 
 bool IsDebuggerAvailable()

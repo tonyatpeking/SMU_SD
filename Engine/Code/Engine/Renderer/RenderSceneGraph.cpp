@@ -1,8 +1,8 @@
 #include "Engine/Renderer/RenderSceneGraph.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
-#include "Engine/Core/GameObject.hpp"
+#include "Engine/GameObject/GameObject.hpp"
 #include "Engine/Renderer/Renderable.hpp"
-#include "Engine/Core/GameObjectManager.hpp"
+#include "Engine/GameObject/GameObjectManager.hpp"
 
 RenderSceneGraph* RenderSceneGraph::s_default = nullptr;
 

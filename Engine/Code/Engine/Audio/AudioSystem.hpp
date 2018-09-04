@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 
 typedef size_t GroupID;
 typedef size_t SoundID;

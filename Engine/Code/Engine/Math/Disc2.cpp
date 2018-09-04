@@ -2,7 +2,7 @@
 
 #include "Engine/Math/Disc2.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 
 Disc2::Disc2( const Disc2& copyFrom )

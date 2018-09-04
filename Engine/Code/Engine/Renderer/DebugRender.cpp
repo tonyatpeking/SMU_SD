@@ -1,6 +1,6 @@
 #include <stdarg.h>
 #include "Engine/Core/ContainerUtils.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Renderer/DebugRender.hpp"
 #include "Engine/Renderer/Camera.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -11,14 +11,14 @@
 #include "Engine/Time/Clock.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/TextMeshBuilder.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Renderer/Texture.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Math/AABB3.hpp"
 #include "Engine/Math/OBB3.hpp"
 #include "Engine/Renderer/Mesh.hpp"
-#include "Engine/Core/Profiler.hpp"
+#include "Engine/Profiler/Profiler.hpp"
 
 namespace
 {
@@ -267,7 +267,7 @@ uint DebugRender::DrawQuad2D( const AABB2& bounds, Texture* texture )
     Renderable* renderable = new Renderable();
     renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
     renderable->GetMaterial( 0 )->SetDiffuse( texture );
-    renderable->m_mesh = MeshPrimitive::MakeQuad( bounds ).MakeMesh();
+    renderable->SetMesh( MeshPrimitive::MakeQuad( bounds ).MakeMesh() );
     renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
     return AddTask( renderable );
 }
@@ -281,7 +281,7 @@ uint DebugRender::DrawLine2D( const Vec2& p0, const Vec2& p1, const Rgba& colorP
     std::vector<Vec3> points;
     points.push_back( Vec3( p0 ) );
     points.push_back( Vec3( p1 ) );
-    renderable->m_mesh = MeshPrimitive::MakeLineStrip( points, colorP0, colorP1 ).MakeMesh();
+    renderable->SetMesh( MeshPrimitive::MakeLineStrip( points, colorP0, colorP1 ).MakeMesh() );
     renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
     return AddTask( renderable );
 }
@@ -310,7 +310,7 @@ uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& a
     tmb.m_alignment = alignment;
     tmb.m_text = str;
     tmb.Finalize();
-    renderable->m_mesh = tmb.MakeMesh();
+    renderable->SetMesh(tmb.MakeMesh());
     renderable->GetMaterial( 0 )->m_diffuse = tmb.m_font->GetTexture();
     renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
     return AddTask( renderable );
@@ -347,7 +347,7 @@ uint DebugRender::DrawPoint( const Vec3& pos, float size )
     mb.PushPos( pos + Vec3::UP * size );
     mb.PushPos( pos + Vec3::DOWN * size );
     mb.EndSubMesh();
-    renderable->m_mesh = mb.MakeMesh();
+    renderable->SetMesh( mb.MakeMesh());
     return AddTask( renderable );
 
 }
@@ -360,8 +360,8 @@ uint DebugRender::DrawLine( const Vec3& p0, const Vec3& p1, const Rgba& color0, 
     std::vector<Vec3> points;
     points.push_back( p0 );
     points.push_back( p1 );
-    renderable->m_mesh = MeshPrimitive::MakeLineStrip(
-        points, color0, color1 ).MakeMesh();
+    renderable->SetMesh( MeshPrimitive::MakeLineStrip(
+        points, color0, color1 ).MakeMesh());
     return AddTask( renderable );
 }
 
@@ -388,7 +388,7 @@ uint DebugRender::DrawBasis( const Mat4& basis )
     mb.PushPos( Vec3::FORWARD );
 
     mb.EndSubMesh();
-    renderable->m_mesh = mb.MakeMesh();
+    renderable->SetMesh( mb.MakeMesh());
     renderable->m_modelMatrix = basis;
 
 
@@ -407,7 +407,7 @@ uint DebugRender::DrawBasis( const Mat4& basis )
 uint DebugRender::DrawSphere( const Vec3& pos, float radius /*= 1 */ )
 {
     Renderable* renderable = MakeRenderable3D();
-    renderable->m_mesh = MeshPrimitive::MakeUVSphere( radius ).MakeMesh();
+    renderable->SetMesh( MeshPrimitive::MakeUVSphere( radius ).MakeMesh());
     renderable->SetModelMatrix( Mat4::MakeTranslation( pos ) );
     return AddTask( renderable );
 }
@@ -415,7 +415,7 @@ uint DebugRender::DrawSphere( const Vec3& pos, float radius /*= 1 */ )
 uint DebugRender::DrawAABB3( const AABB3& bounds )
 {
     Renderable* renderable = MakeRenderable3D();
-    renderable->m_mesh = MeshPrimitive::MakeCube( bounds.GetDimensions() ).MakeMesh();
+    renderable->SetMesh( MeshPrimitive::MakeCube( bounds.GetDimensions() ).MakeMesh());
     renderable->SetModelMatrix( Mat4::MakeTranslation( bounds.GetCenter() ) );
     return AddTask( renderable );
 }
@@ -423,8 +423,8 @@ uint DebugRender::DrawAABB3( const AABB3& bounds )
 uint DebugRender::DrawOBB3( const OBB3& obb3 )
 {
     Renderable* renderable = MakeRenderable3D();
-    renderable->m_mesh = MeshPrimitive::MakeCube(
-        obb3.GetAABB3().GetDimensions() ).MakeMesh();
+    renderable->SetMesh( MeshPrimitive::MakeCube(
+        obb3.GetAABB3().GetDimensions() ).MakeMesh());
     renderable->SetModelMatrix( obb3.GetLocalToWorld() );
     return AddTask( renderable );
 }
@@ -433,7 +433,7 @@ uint DebugRender::DrawQuad( const AABB2& bounds, const Vec3& pos, const Vec3& eu
                             Texture* texture /*= nullptr*/ )
 {
     Renderable* renderable = MakeRenderable3D();
-    renderable->m_mesh = MeshPrimitive::MakeQuad( bounds ).MakeMesh();
+    renderable->SetMesh( MeshPrimitive::MakeQuad( bounds ).MakeMesh());
     renderable->GetMaterial( 0 )->m_diffuse = texture;
     renderable->SetModelMatrix( Mat4::MakeFromSRT( Vec3::ONES, euler, pos ) );
     return AddTask( renderable );
@@ -488,7 +488,7 @@ uint DebugRender::DrawGrid( const Vec3& center, float gridSize, float maxLength 
     }
 
     mb.EndSubMesh();
-    renderable->m_mesh = mb.MakeMesh();
+    renderable->SetMesh( mb.MakeMesh());
 
     uint handle = AddTask( renderable );
 
@@ -509,7 +509,7 @@ uint DebugRender::DrawText( const AABB2& bounds, const Mat4& transform, float fo
     va_start( args, format );
     tmb.m_text = Stringf( format, args );
     tmb.Finalize();
-    renderable->m_mesh = tmb.MakeMesh();
+    renderable->SetMesh( tmb.MakeMesh());
     renderable->GetMaterial( 0 )->m_diffuse = tmb.m_font->GetTexture();
     renderable->GetMaterial( 0 )->m_shaderPass = new ShaderPass();
     renderable->GetMaterial( 0 )->m_shaderPass->EnableDepth( DepthCompareMode::LESS, false );
@@ -548,7 +548,7 @@ uint DebugRender::DrawTag( const AABB2& bounds, const Vec3& pos, float fontSize,
     va_start( args, format );
     tmb.m_text = Stringf( format, args );
     tmb.Finalize();
-    renderable->m_mesh = tmb.MakeMesh();
+    renderable->SetMesh( tmb.MakeMesh());
     renderable->GetMaterial( 0 )->m_diffuse = tmb.m_font->GetTexture();
     renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
     uint handle = AddTask( renderable );
@@ -571,7 +571,7 @@ uint DebugRender::DrawGlyph( const AABB2& bounds, const Vec3& pos, Texture* text
 {
     g_options.m_screenspace = true;
     Renderable* renderable = new Renderable();
-    renderable->m_mesh = MeshPrimitive::MakeQuad( bounds ).MakeMesh();
+    renderable->SetMesh( MeshPrimitive::MakeQuad( bounds ).MakeMesh());
     renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
     renderable->GetMaterial( 0 )->m_diffuse = texture;
     renderable->GetMaterial( 0 )->m_shaderPass = ShaderPass::GetDefaultUIShader();
@@ -598,7 +598,7 @@ DebugRender::Task::~Task()
 {
     if( m_onDeathFunc )
         m_onDeathFunc();
-    delete m_renderable->m_mesh;
+    m_renderable->DeleteMesh();
     delete m_renderable;
 }
 

@@ -3,7 +3,7 @@
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 
 const AABB2 AABB2::ZEROS_ONES = AABB2( 0, 0, 1, 1 );
 const AABB2 AABB2::NEG_ONES_ONES = AABB2( -1, -1, 1, 1 );

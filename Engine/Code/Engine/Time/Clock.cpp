@@ -1,6 +1,21 @@
 #include "Engine/Time/Clock.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 
+namespace
+{
+Clock* s_realtimeClock = nullptr;
+}
+
+Clock* Clock::GetRealTimeClock()
+{
+    return s_realtimeClock;
+}
+
+void Clock::SetRealTimeClock( Clock* clock )
+{
+    s_realtimeClock = clock;
+}
+
 Clock::Clock( Clock* parent )
 {
     SetParent( parent );

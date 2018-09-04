@@ -4,7 +4,7 @@
 #include "Engine/Renderer/Material.hpp"
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
-#include "Engine/IO/ObjLoader.hpp"
+#include "Engine/FileIO/ObjLoader.hpp"
 
 std::map<String, Mesh*> Mesh::s_loadedMeshes;
 

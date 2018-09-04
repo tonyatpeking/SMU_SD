@@ -1,14 +1,15 @@
 #include "Engine/Core/EngineCommands.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Core/CommandSystem.hpp"
-#include "Engine/Core/Thread.hpp"
-#include "Engine/IO/IOUtils.hpp"
+#include "Engine/Thread/Thread.hpp"
+#include "Engine/FileIO/IOUtils.hpp"
 #include "Engine/Math/Random.hpp"
-#include "Engine/Core/Profiler.hpp"
-#include "Engine/Core/PythonInterpreter.hpp"
+#include "Engine/Profiler/Profiler.hpp"
+#include "Engine/Python/PythonInterpreter.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Net/Net.hpp"
 #include "Engine/Net/NetAddress.hpp"
+#include "Engine/Net/RemoteCommandService.hpp"
 #include <fstream>
 
 #define WIN32_LEAN_AND_MEAN
@@ -41,29 +42,52 @@ void EngineCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
 
-    commandSys->AddCommand( "netAddr", []( String str )
+    commandSys->AddCommand( "rc", []( String str )
     {
-        UNUSED( str );
+        CommandParameterParser parser( str );
 
-        sockaddr_storage out_sockaddr;
-        int addrlen;
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 1 )
+        {
+            LOG_WARNING( "rc needs at least 1 param, (optional idx) and msg" );
+            return;
+        }
 
-        //         char *hostname = "10.8.139.114";
-        //         char* service = "12345";
-
-        char *hostname = "neesarg.me";
-        char* service = "80";
-
-        Net::GetAddressForHost( (sockaddr*) ( &out_sockaddr ), &addrlen, hostname, service );
-
-        char out[256];
-        int i = 1;
-        //         inet_ntop( ipv4->sin_family, &( ipv4->sin_addr ), out, 256 );
-        //         LogTaggedPrintf( "net", "My Address: %s", out );
+        String onlyParams = "";
 
 
-                //void ConnectExample( net_address_t const &addr, char const *msg )
+        int indexToSend = 0;
 
+        for (int idx = 0; idx < numParams; ++idx)
+        {
+            String param;
+            parser.GetNext( param );
+            if( idx == 0 )
+            {
+                if( StringUtils::IsPositiveInt( param ) )
+                {
+                    if( numParams < 2 )
+                    {
+                        LOG_WARNING( "rc needs at least 2 param if supplying idx, (optional idx) and msg" );
+                        return;
+                    }
+                    SetFromString( param, indexToSend );
+                }
+                else
+                {
+                    onlyParams = param;
+                }
+            }
+            else
+            {
+                if( onlyParams == "" )
+                    onlyParams = param;
+                else
+                    onlyParams = onlyParams + " " + param;
+            }
+        }
+
+        RemoteCommandService::GetDefault()->SendMsg( indexToSend, false, onlyParams.c_str() );
 
     } );
 
@@ -127,15 +151,6 @@ void EngineCommands::RegisterAllCommands()
         {
             Console::DefaultConsole()->Print( "Local IP: " + addr.ToStringIP() );
         }
-
-    } );
-
-    commandSys->AddCommand( "ping", []( String str )
-    {
-        UNUSED( str );
-
-        Net::ConnectDirectWithWinSock();
-
 
     } );
 

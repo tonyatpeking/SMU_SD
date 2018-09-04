@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Engine/Core/SmartEnum.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 
 SMART_ENUM
 (

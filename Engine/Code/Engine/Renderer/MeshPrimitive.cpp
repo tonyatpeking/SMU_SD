@@ -1,7 +1,7 @@
 #include "Engine/Renderer/MeshPrimitive.hpp"
 #include "Engine/Renderer/Mesh.hpp"
 #include "Engine/Renderer/MeshBuilder.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Math/Frustum.hpp"
 
 MeshBuilder MeshPrimitive::MakeCube( const Vec3& sideLengths /*= Vec3::ONES*/,

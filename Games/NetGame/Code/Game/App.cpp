@@ -8,15 +8,16 @@
 #include "Engine/Renderer/Camera.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Core/Blackboard.hpp"
+#include "Engine/FileIO/Blackboard.hpp"
 #include "Engine/Core/Console.hpp"
-#include "Engine/Core/XmlUtils.hpp"
+#include "Engine/FileIO/XmlUtils.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Renderer/TextMeshBuilder.hpp"
 #include "Engine/Renderer/DebugRender.hpp"
-#include "Engine/Core/Logger.hpp"
-#include "Engine/IO/IOUtils.hpp"
+#include "Engine/Log/Logger.hpp"
+#include "Engine/FileIO/IOUtils.hpp"
 #include "Engine/Net/Net.hpp"
+#include "Engine/Net/RemoteCommandService.hpp"
 
 
 #include "Game/App.hpp"
@@ -31,6 +32,7 @@ App::App()
     Logger::GetDefault()->AddFileHook( IOUtils::GetCurrentDir() + "/Logs/log.txt" );
 
     g_realtimeClock = new Clock();
+    Clock::SetRealTimeClock( g_realtimeClock );
     g_appClock = new Clock();
     g_UIClock = new Clock( g_appClock );
     g_gameClock = new Clock( g_appClock );
@@ -59,15 +61,21 @@ App::App()
     g_gameTweenSystem = new TweenSystem();
 
     g_game = new Game();
+
+    RemoteCommandService::GetDefault()->StartUp();
 }
 
 App::~App()
 {
+    RemoteCommandService::GetDefault()->ShutDown();
+
     Logger::GetDefault()->ShutDown();
 
     Net::Shutdown();
 
     DebugRender::Shutdown();
+
+    g_console->ShutDown();
 
     delete g_game;
     g_game = nullptr;
@@ -114,6 +122,8 @@ void App::RunFrame()
     g_gameTweenSystem->Update( g_gameClock->GetDeltaSecondsF() );
     g_UITweenSystem->Update( g_UIClock->GetDeltaSecondsF() );
 
+    RemoteCommandService::GetDefault()->Update();
+
     g_game->Update();
     g_game->Render();
 
@@ -127,6 +137,7 @@ void App::RunFrame()
     PROFILER_PUSH( Console );
     g_console->Update( deltaSeconds );
     g_console->Render();
+    RemoteCommandService::GetDefault()->RenderWidget();
     PROFILER_POP();
 
     g_input->EndFrame();

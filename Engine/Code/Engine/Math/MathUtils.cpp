@@ -2,9 +2,9 @@
 #include <cmath>
 
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/XmlUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/FileIO/XmlUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Math/Vec2.hpp"

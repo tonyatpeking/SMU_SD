@@ -5,10 +5,10 @@
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/Vec4.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/Profiler.hpp"
+#include "Engine/Profiler/Profiler.hpp"
 
 // static values
 const Vec2 Vec2::ONES       = Vec2( 1.f, 1.f );

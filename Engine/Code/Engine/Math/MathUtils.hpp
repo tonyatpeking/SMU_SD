@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 // Forward declaration
 class Vec2;
 class Vec3;
@@ -40,6 +40,19 @@ float MapDegreesToPlusMinus180( float degrees );
 
 float Minf( float a, float b );
 float Maxf( float a, float b );
+
+template<typename T>
+T Max( const T& a, const T& b )
+{
+    return a > b ? a : b;
+}
+
+template<typename T>
+T Min( const T& a, const T& b )
+{
+    return a < b ? a : b;
+}
+
 
 //ints and floats
 int RoundToInt( float inValue );			// 0.5 rounds up to 1; -0.5 rounds up to 0

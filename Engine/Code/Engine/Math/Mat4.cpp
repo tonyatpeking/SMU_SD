@@ -4,7 +4,7 @@
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/Plane.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 
 const Mat4 Mat4::IDENTITY = Mat4();
 

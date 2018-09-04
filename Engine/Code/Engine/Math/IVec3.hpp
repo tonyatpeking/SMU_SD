@@ -4,7 +4,7 @@
 
 #include "Engine/Math/Vec3.hpp"
 #include "Engine/Math/Axis.hpp"
-#include "Engine/Core/ParseStatus.hpp"
+#include "Engine/String/ParseStatus.hpp"
 
 class IVec3
 {

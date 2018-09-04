@@ -1,10 +1,10 @@
 ﻿
 #include "Engine/Core/CommandSystem.hpp"
 #include "Engine/Core/Console.hpp"
-#include "Engine/IO/IOUtils.hpp"
+#include "Engine/FileIO/IOUtils.hpp"
 #include "Engine/Renderer/DebugRender.hpp"
-#include "Engine/Core/ProfilerReport.hpp"
-#include "Engine/Core/ProfilerReportEntry.hpp"
+#include "Engine/Profiler/ProfilerReport.hpp"
+#include "Engine/Profiler/ProfilerReportEntry.hpp"
 
 #include "Game/GameCommands.hpp"
 #include "Game/GameCommon.hpp"
@@ -249,12 +249,12 @@ void GameCommands::RegisterAllCommands()
     commandSys->RunCommand( "echo Hello" );
 
     // All of these formats will work
-    g_console->InputWithEnter( "add(3,4)" );
-    g_console->InputWithEnter( "add 3,4" );
-    g_console->InputWithEnter( "add(3 4)" );
-    g_console->InputWithEnter( "add 3 4" );
-    g_console->InputWithEnter( "add    3  ,  4   " );
-    g_console->InputWithEnter( "add 1 2 3 4 5 6 7 8 9 10" );
+//     g_console->InputWithEnter( "add(3,4)" );
+//     g_console->InputWithEnter( "add 3,4" );
+//     g_console->InputWithEnter( "add(3 4)" );
+//     g_console->InputWithEnter( "add 3 4" );
+//     g_console->InputWithEnter( "add    3  ,  4   " );
+//     g_console->InputWithEnter( "add 1 2 3 4 5 6 7 8 9 10" );
 
     // These will fail with error output to console
 //     g_console->InputWithEnter( "add" );
@@ -262,15 +262,15 @@ void GameCommands::RegisterAllCommands()
 //     g_console->InputWithEnter( "add ,," );
 //     g_console->InputWithEnter( "add d a" );
 
-    g_console->InputWithEnter( "echo Hello" );
-    g_console->InputWithEnter( "echo Hello (255,111,111,255)" );
+//     g_console->InputWithEnter( "echo Hello" );
+//     g_console->InputWithEnter( "echo Hello (255,111,111,255)" );
     // this does not parse the color correctly, anything inside brackets need ','
     //g_console->InputWithEnter( "echo Hello (255 111 111 255)" );
 
     //g_console->InputWithEnter( "clear" );
-    g_console->InputWithEnter( "help" );
-
-    g_console->InputWithEnter( "dump log.txt" );
+//     g_console->InputWithEnter( "help" );
+//
+//     g_console->InputWithEnter( "dump log.txt" );
 
 
 

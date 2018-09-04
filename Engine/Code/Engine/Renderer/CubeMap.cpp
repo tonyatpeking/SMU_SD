@@ -1,6 +1,6 @@
 #include "Engine/Renderer/CubeMap.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/Image.hpp"
+#include "Engine/Image/Image.hpp"
 #include "Engine/Renderer/GLFunctions.hpp"
 #include "Engine/Core/Rgba.hpp"
 

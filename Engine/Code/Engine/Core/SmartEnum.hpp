@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 
 
 // This is an easy to use enum macro that allows automatic string conversion

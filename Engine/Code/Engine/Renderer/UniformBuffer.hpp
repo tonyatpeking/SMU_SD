@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Core/Types.hpp"
 #include "Engine/Renderer/RenderBuffer.hpp"
-#include "Engine/Core/Blob.hpp"
+#include "Engine/DataUtils/Blob.hpp"
 
 class UniformBuffer
 {

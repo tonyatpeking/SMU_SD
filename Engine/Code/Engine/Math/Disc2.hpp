@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Vec2.hpp"
-#include "Engine/Core/ParseStatus.hpp"
+#include "Engine/String/ParseStatus.hpp"
 
 class Disc2
 {

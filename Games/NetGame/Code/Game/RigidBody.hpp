@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "Engine/Core/GameObject.hpp"
+#include "Engine/GameObject/GameObject.hpp"
 
 class RigidBody : public GameObject
 {

@@ -1,4 +1,4 @@
-﻿#include "Engine/Core/PythonInterpreter.hpp"
+﻿#include "Engine/Python/PythonInterpreter.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Core/Window.hpp"
@@ -6,12 +6,15 @@
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Camera.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
-#include "Engine/IO/IOUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
+#include "Engine/FileIO/IOUtils.hpp"
 #include "Engine/Core/CommandSystem.hpp"
-#include "Engine/Core/Logger.hpp"
+#include "Engine/Log/Logger.hpp"
+#include "Engine/Core/ContainerUtils.hpp"
 
 #include <stdarg.h>
+
+
 
 Console* Console::s_defaultConsole = nullptr;
 
@@ -21,9 +24,19 @@ Console::Console( Renderer* renderer, InputSystem* inputSys )
 {
     SetFont( m_renderer->DefaultFont() );
     SetScreenBounds( m_renderer->GetWindow()->GetWindowBounds() );
+    LoadFromCommandHistoryFile();
 }
 
 
+
+Console::~Console()
+{
+}
+
+void Console::ShutDown()
+{
+    DumpToCommandHistoryFile();
+}
 
 void Console::Render()
 {
@@ -119,6 +132,12 @@ void Console::NotifyKeyPressedWithRepeat( unsigned char keyCode )
     if( keyCode == InputSystem::KEYBOARD_PAGEDOWN && controlDown )
         ScrollTextUp( m_linesToScroll );
 
+    // History
+    if( keyCode == InputSystem::KEYBOARD_UP_ARROW )
+        MoveCommandHistorySelector( 1 );
+    if( keyCode == InputSystem::KEYBOARD_DOWN_ARROW )
+        MoveCommandHistorySelector( -1 );
+
     // Cursor
     if( keyCode == InputSystem::KEYBOARD_LEFT_ARROW )
         TranslateCursorPosition( -1 );
@@ -189,8 +208,8 @@ void Console::DrawCursor()
         return;
 
     Vec2 pos = m_textBounds.mins;
-    pos.x += ( ( m_cursorPosition + GetInputPrompt().size() ) * m_fontHeight );
-    pos.y -= m_fontHeight * 0.3f;
+    pos.x += ( ( m_cursorPosition + GetInputPrompt().size() - 0.7f ) * m_fontHeight );
+    pos.y += m_fontHeight * 1.3f;
     m_renderer->DrawText2D(
         "|", pos, m_fontHeight * 1.6f, m_font, Rgba::WHITE,
         Alignment::BOTTOM_CENTER, 0.5f );
@@ -204,6 +223,70 @@ bool Console::IsCursorBlinkOn()
     return false;
 }
 
+void Console::LoadFromCommandHistoryFile()
+{
+    String fullPath = IOUtils::RelativeToFullPath( m_historyFile );
+    Strings strs = IOUtils::ReadFileToStrings( fullPath );
+    m_commandHistory.clear();
+    for ( auto& str : strs )
+    {
+        if( !StringUtils::IsAllWhitespace( str ) )
+            m_commandHistory.push_back( str );
+    }
+}
+
+void Console::DumpToCommandHistoryFile()
+{
+    String fullPath = IOUtils::RelativeToFullPath( m_historyFile );
+    IOUtils::WriteToFile( fullPath, m_commandHistory );
+}
+
+String Console::GetCommandFromHistory( int offset )
+{
+    if( offset == 0 )
+        return "";
+
+    size_t idx = m_commandHistory.size() - offset;
+    return m_commandHistory[idx];
+}
+
+void Console::AppendToCommandHistory( const String& str )
+{
+    // first check if str is already in commands
+    for (int idx = 0; idx < m_commandHistory.size() ; ++idx)
+    {
+        if( m_commandHistory[idx] == str )
+        {
+            ContainerUtils::EraseAtIndex( m_commandHistory, idx );
+            break;
+        }
+    }
+    if( m_commandHistory.size() == m_maxCommandHistoryLength )
+    {
+        ContainerUtils::EraseAtIndex( m_commandHistory, 0 );
+    }
+    m_commandHistory.push_back( str );
+}
+
+
+void Console::ClearCommandHistorySelector()
+{
+    m_commandHistorySelectorPos = 0;
+}
+
+void Console::MoveCommandHistorySelector( int direction )
+{
+    m_commandHistorySelectorPos += direction;
+
+    if( m_commandHistorySelectorPos < 0 )
+        m_commandHistorySelectorPos = (int)m_commandHistory.size();
+
+    if( m_commandHistorySelectorPos > m_commandHistory.size() )
+        m_commandHistorySelectorPos = 0;
+
+    m_inputText = GetCommandFromHistory( m_commandHistorySelectorPos );
+    TranslateCursorPosition( 999 );
+}
 
 
 void Console::SetInputSystem( InputSystem* inputSys )
@@ -309,6 +392,11 @@ void Console::Printfv( const Rgba& color, const char* format, va_list args )
     Print( str, color );
 }
 
+void Console::Printfv( const char* format, va_list args )
+{
+    Printfv( m_defaultTextColor, format, args );
+}
+
 void Console::Printf( const Rgba& color, const char* format, ... )
 {
     va_list args;
@@ -355,9 +443,12 @@ void Console::OnEnterPressed()
     SetCursorPosition( 0 );
     String text = GetInputPrompt() + m_inputText;
     Print( text );
+
     if( m_inputText != "" )
-        m_previousInputText.push_back( m_inputText );
+        AppendToCommandHistory( m_inputText );
+
     ScrollToEnd();
+    ClearCommandHistorySelector();
 
     if( m_usePython )
     {
@@ -382,7 +473,6 @@ void Console::Clear()
 {
     m_cursorPosition = 0;
     m_currentOutputLine = -1;
-    m_previousInputText.clear();
     m_allOutputText.clear();
     m_allOutputColors.clear();
 }
@@ -396,6 +486,7 @@ void Console::ClearInput()
 void Console::DrawInputText( Vec2& out_nextPos ) const
 {
     Vec2 startPos = m_textBounds.mins;
+    startPos.y += m_fontHeight;
     DrawOneLine( GetInputPrompt() + m_inputText, m_defaultTextColor, startPos );
     out_nextPos = startPos;
     out_nextPos.y += m_fontHeight + m_padding;
@@ -440,7 +531,7 @@ void Console::DrawOneLine(
         textCopy = textCopy.substr( 0, charsPerLine - 1 );
     }
     m_renderer->DrawText2D(
-        textCopy, startPos, m_fontHeight, m_font, color, Alignment::BOTTOM_LEFT );
+        textCopy, startPos, m_fontHeight, m_font, color );
 }
 
 float Console::GetStringDrawHeight( const String& text ) const
@@ -479,4 +570,30 @@ void Console::DrawOneOutputString(
     out_nextPos = lineStart;
 
 
+}
+
+void Printf( const char* format, ... )
+{
+    va_list args;
+    va_start( args, format );
+    Printfv( format, args );
+    va_end( args );
+}
+
+void Printf( const Rgba& color, const char* format, ... )
+{
+    va_list args;
+    va_start( args, format );
+    Printfv( color, format, args );
+    va_end( args );
+}
+
+void Printfv( const char* format, va_list args )
+{
+    Console::DefaultConsole()->Printfv( format, args );
+}
+
+void Printfv( const Rgba& color, const char* format, va_list args )
+{
+    Console::DefaultConsole()->Printfv( color, format, args );
 }

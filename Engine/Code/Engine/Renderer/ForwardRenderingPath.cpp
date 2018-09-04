@@ -12,8 +12,8 @@
 #include "Engine/Renderer/ShaderPass.hpp"
 #include "Engine/Renderer/Light.hpp"
 #include "Engine/Renderer/Renderable.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Profiler.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/Profiler/Profiler.hpp"
 void ForwardRenderingPath::Render( RenderSceneGraph* scene )
 {
     PROFILER_SCOPED();

@@ -2,7 +2,7 @@
 
 #include <string>
 #include "Engine/Math/Axis.hpp"
-#include "Engine/Core/ParseStatus.hpp"
+#include "Engine/String/ParseStatus.hpp"
 
 class Vec3;
 class Vec4;

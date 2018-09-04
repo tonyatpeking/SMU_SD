@@ -13,13 +13,13 @@
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Core/SmartEnum.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
-#include "Engine/Core/XmlUtils.hpp"
-#include "Engine/Core/GameObjectManager.hpp"
-#include "Engine/Core/GameObject.hpp"
+#include "Engine/String/StringUtils.hpp"
+#include "Engine/FileIO/XmlUtils.hpp"
+#include "Engine/GameObject/GameObjectManager.hpp"
+#include "Engine/GameObject/GameObject.hpp"
 #include "Engine/Time/Clock.hpp"
 #include "Engine/Time/TweenSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -31,7 +31,8 @@
 #include "Engine/Renderer/Texture.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Material.hpp"
-#include "Engine/Core/Profiler.hpp"
+#include "Engine/Profiler/Profiler.hpp"
+
 
 #include "Game/GameState_Playing.hpp"
 
@@ -99,6 +100,7 @@ extern Clock* g_gameClock;
 class TweenSystem;
 extern TweenSystem* g_UITweenSystem;
 extern TweenSystem* g_gameTweenSystem;
+
 
 
 

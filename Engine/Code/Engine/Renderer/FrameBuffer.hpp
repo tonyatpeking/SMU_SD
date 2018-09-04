@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Math/IVec2.hpp"
 
 class Texture;

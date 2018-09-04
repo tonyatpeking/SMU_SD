@@ -1,7 +1,7 @@
 #include "Engine/Renderer/ShaderSourceBuilder.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/IO/IOUtils.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/FileIO/IOUtils.hpp"
+#include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 

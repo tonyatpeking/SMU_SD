@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Particles/Particle.hpp"
 #include "Engine/Time/Timer.hpp"
-#include "Engine/Core/GameObject.hpp"
+#include "Engine/GameObject/GameObject.hpp"
 #include "Engine/Math/Range.hpp"
 #include "Engine/Math/IRange.hpp"
 #include "Engine/Renderer/MeshBuilder.hpp"

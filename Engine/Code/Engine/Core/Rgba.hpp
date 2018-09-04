@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "Engine/Core/ParseStatus.hpp"
+#include "Engine/String/ParseStatus.hpp"
 #include "Engine/Core/Types.hpp"
 #include "Engine/Math/Vec4.hpp"
 #include "Engine/Math/Vec3.hpp"

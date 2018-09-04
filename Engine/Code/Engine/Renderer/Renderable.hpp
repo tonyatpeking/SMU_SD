@@ -56,7 +56,6 @@ public:
     std::vector<Material*> m_materials;
     Mat4 m_modelMatrix;
 
-    Mesh* m_mesh = nullptr;
 
     //AKA VAO
     std::vector<InputLayout> m_inputLayouts;
@@ -64,6 +63,9 @@ public:
 private:
     void SetDirty();
     void ClearDirty();
+
+    Mesh* m_mesh = nullptr;
+
     bool m_isDirty = true;
     // internal use, assumes program and vertex buffer and already bound
     // binds index buffer inside

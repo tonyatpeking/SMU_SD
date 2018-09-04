@@ -2,9 +2,9 @@
 #include <cassert>
 #include <crtdbg.h>
 
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Input/InputSystem.hpp"
-#include "Engine/Core/Blackboard.hpp"
+#include "Engine/FileIO/Blackboard.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Core/Console.hpp"
