@@ -86,10 +86,96 @@ void EngineCommands::RegisterAllCommands()
                     onlyParams = onlyParams + " " + param;
             }
         }
-
         RemoteCommandService::GetDefault()->SendMsg( indexToSend, false, onlyParams.c_str() );
-
     } );
+
+
+    commandSys->AddCommand( "rca", []( String str )
+    {
+        CommandParameterParser parser( str );
+
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 1 )
+        {
+            LOG_WARNING( "rca needs at least 1 param" );
+            return;
+        }
+
+        String onlyParams = parser.GetOnlyParameters();
+
+        RemoteCommandService::GetDefault()->RemoteCommandAll( onlyParams.c_str() );
+    } );
+
+    commandSys->AddCommand( "rcb", []( String str )
+    {
+        CommandParameterParser parser( str );
+
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 1 )
+        {
+            LOG_WARNING( "rcb needs at least 1 param" );
+            return;
+        }
+
+        String onlyParams = parser.GetOnlyParameters();
+
+        RemoteCommandService::GetDefault()->RemoteCommandAllButMe( onlyParams.c_str() );
+    } );
+
+    commandSys->AddCommand( "rcs_host", []( String str )
+    {
+        CommandParameterParser parser( str );
+
+        size_t numParams = parser.NumOfParams();
+        if( numParams > 1 )
+        {
+            LOG_WARNING( "rcs_host needs at most 1 param, [service]" );
+            return;
+        }
+
+        String onlyParams = parser.GetOnlyParameters();
+
+        RemoteCommandService::GetDefault()->ShouldHost( onlyParams.c_str() );
+    } );
+
+    commandSys->AddCommand( "rcs_join", []( String str )
+    {
+        CommandParameterParser parser( str );
+
+        size_t numParams = parser.NumOfParams();
+        if( numParams != 1 )
+        {
+            LOG_WARNING( "rcs_join needs 1 param, [ipAddress:port]" );
+            return;
+        }
+
+        String onlyParams = parser.GetOnlyParameters();
+
+        RemoteCommandService::GetDefault()->ShouldJoin( onlyParams.c_str() );
+    } );
+
+    commandSys->AddCommand( "rcs_echo", []( String str )
+    {
+        CommandParameterParser parser( str );
+
+        size_t numParams = parser.NumOfParams();
+        if( numParams != 1 )
+        {
+            LOG_WARNING( "rcs_echo needs 1 param, [true/false]" );
+            return;
+        }
+
+
+        bool on;
+
+        parser.GetNext( on );
+
+        Console::DefaultConsole()->Printf( "rcs echo is %s", ToString(on).c_str() );
+
+        RemoteCommandService::GetDefault()->SetEchoOn( on );
+    } );
+
+
 
     commandSys->AddCommand( "TestConnect", []( String str )
     {

@@ -30,11 +30,19 @@ public:
     void RenderWidget();
 
 
-    void ShouldHost();
+    void ShouldHost( const String& service = "" );
 
     void ShouldJoin( const NetAddress& addr );
 
+    void ShouldJoin( const String& addr );
+
     bool SendMsg( int idx, bool isEcho, const char* str );
+
+    void RemoteCommandAll( const char* str );
+
+    void RemoteCommandAllButMe( const char* str );
+
+    void SetEchoOn( bool echoOn );
 
 private:
 
@@ -67,9 +75,10 @@ private:
 
     void RemoveClosedConnections();
 
-
+    bool m_echoOn = true;
     bool m_shouldDisconnect = false;
     bool m_shouldHost = false;
+    const String m_defautService = "29283";
     String m_service = "29283";
     float m_failDelay = 1.f;
 

@@ -125,8 +125,13 @@ void RemoteCommandService::RenderWidget()
 
 }
 
-void RemoteCommandService::ShouldHost()
+void RemoteCommandService::ShouldHost( const String& service )
 {
+    if( !service.empty() )
+        m_service = service;
+    else
+        m_service = m_defautService;
+
     m_shouldHost = true;
     m_shouldDisconnect = true;
 }
@@ -136,6 +141,12 @@ void RemoteCommandService::ShouldJoin( const NetAddress& addr )
     m_shouldHost = false;
     m_hostAddress = addr;
     m_shouldDisconnect = true;
+}
+
+void RemoteCommandService::ShouldJoin( const String& addr )
+{
+    NetAddress netAddr( addr );
+    ShouldJoin( netAddr );
 }
 
 void RemoteCommandService::InitialState_Update()
@@ -149,6 +160,7 @@ void RemoteCommandService::InitialState_Update()
         }
         else
         {
+            m_service = m_defautService;
             StartDelayTimer();
             SetState( RCS_State::HOST_FAILED );
         }
@@ -164,9 +176,14 @@ void RemoteCommandService::InitialState_Update()
         else
         {
             if( IsHostAddrLocal() ) // host if could not join local host
+            {
                 m_shouldHost = true;
+            }
             else // it's a cruel world, come back to mommy
+            {
+                m_service = m_defautService;
                 m_hostAddress = GetLocalHostAddr();
+            }
         }
     }
 }
@@ -302,6 +319,25 @@ bool RemoteCommandService::SendMsg( int idx, bool isEcho, const char* str )
 
     sockToSend->Send( packer.GetBuffer(), (int) len );
     return true;
+}
+
+void RemoteCommandService::RemoteCommandAll( const char* str )
+{
+    RemoteCommandAllButMe( str );
+    CommandSystem::DefaultCommandSystem()->RunCommand( str );
+}
+
+void RemoteCommandService::RemoteCommandAllButMe( const char* str )
+{
+    for (int idx = 0; idx < m_connectedSockets.size() ; ++idx)
+    {
+        SendMsg( idx, false, str );
+    }
+}
+
+void RemoteCommandService::SetEchoOn( bool echoOn )
+{
+    m_echoOn = echoOn;
 }
 
 void RemoteCommandService::ProcessReceives()
