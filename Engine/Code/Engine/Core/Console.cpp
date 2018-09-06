@@ -11,6 +11,7 @@
 #include "Engine/Core/CommandSystem.hpp"
 #include "Engine/Log/Logger.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
+#include "Engine/Core/IConsoleObserver.hpp"
 
 #include <stdarg.h>
 
@@ -289,6 +290,14 @@ void Console::MoveCommandHistorySelector( int direction )
 }
 
 
+void Console::NotifyObservers( const String& text )
+{
+    for ( auto& ob : m_observers )
+    {
+        ob->OnConsolePrint( text );
+    }
+}
+
 void Console::SetInputSystem( InputSystem* inputSys )
 {
     m_inputSystem = inputSys;
@@ -361,6 +370,8 @@ void Console::SetScorllPosition( int lineNum )
 
 void Console::Print( const String& text, const Rgba& color /*= Rgba::LIGHT_GRAY */ )
 {
+    NotifyObservers( text );
+
     std::lock_guard<std::mutex> lock( m_printMutex );
     Strings out_SingleLines;
     String delimiter = "\n";
@@ -430,6 +441,17 @@ void Console::LoggerCB( LogEntry* entry, void* me )
 void Console::HookToLogger( Logger* logger )
 {
     logger->AddLogHook( LoggerCB, this );
+}
+
+void Console::AddObserver( IConsoleObserver* ob )
+{
+    RemoveObserver( ob );
+    m_observers.push_back( ob );
+}
+
+void Console::RemoveObserver( IConsoleObserver* ob )
+{
+    ContainerUtils::EraseOneValue( m_observers, ob );
 }
 
 void Console::InputWithEnter( String text )

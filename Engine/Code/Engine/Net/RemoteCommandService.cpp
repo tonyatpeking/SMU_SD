@@ -149,6 +149,11 @@ void RemoteCommandService::ShouldJoin( const String& addr )
     ShouldJoin( netAddr );
 }
 
+void RemoteCommandService::OnConsolePrint( const String& str )
+{
+    SendMsg( m_echoToSocket, true, str.c_str() );
+}
+
 void RemoteCommandService::InitialState_Update()
 {
     if( m_shouldHost ) // host
@@ -247,6 +252,7 @@ bool RemoteCommandService::TryHost()
     if( !m_hostListenSocket->Listen( m_hostAddress ) )
     {
         delete m_hostListenSocket;
+        m_hostListenSocket = nullptr;
         return false;
     }
     m_hostListenSocket->SetBlocking( false );
@@ -302,10 +308,15 @@ TCPSocket* RemoteCommandService::GetSocketByIndex( int idx )
 
 bool RemoteCommandService::SendMsg( int idx, bool isEcho, const char* str )
 {
-    TCPSocket* sockToSend = GetSocketByIndex( idx );
-    if( sockToSend == nullptr || sockToSend->IsClosed() )
+    TCPSocket* sock = GetSocketByIndex( idx );
+    return SendMsg( sock, isEcho, str );
+}
+
+bool RemoteCommandService::SendMsg( TCPSocket* sock, bool isEcho, const char* str )
+{
+    if( sock == nullptr || sock->IsClosed() )
         return false;
-    BytePacker packer( (Endianness)Endianness::BIG );
+    BytePacker packer( (Endianness) Endianness::BIG );
     packer.Write( isEcho );
     packer.WriteString( str );
 
@@ -315,9 +326,9 @@ bool RemoteCommandService::SendMsg( int idx, bool isEcho, const char* str )
 
     uint16_t uslen = (uint16_t) len;
     EndianUtils::ToEndianness( &uslen, Endianness::BIG );
-    sockToSend->Send( &uslen, 2 );
+    sock->Send( &uslen, 2 );
 
-    sockToSend->Send( packer.GetBuffer(), (int) len );
+    sock->Send( packer.GetBuffer(), (int) len );
     return true;
 }
 
@@ -329,7 +340,7 @@ void RemoteCommandService::RemoteCommandAll( const char* str )
 
 void RemoteCommandService::RemoteCommandAllButMe( const char* str )
 {
-    for (int idx = 0; idx < m_connectedSockets.size() ; ++idx)
+    for( int idx = 0; idx < m_connectedSockets.size(); ++idx )
     {
         SendMsg( idx, false, str );
     }
@@ -352,20 +363,39 @@ bool RemoteCommandService::ProcessReceive( TCPSocket* sock )
 {
     bool out_isEcho;
     String out_msg;
-    size_t byteCount = sock->ReceiveMessage( out_isEcho, out_msg );
-    if( byteCount != 0 && byteCount != (size_t) -1 )
+    size_t byteCount = 1;
+    int failCount = 0;
+    while( failCount < 2 )
     {
-        Logger::GetDefault()->LogPrintf( out_msg.c_str() );
+        byteCount = sock->ReceiveMessage( out_isEcho, out_msg );
+        if( byteCount == 0 || byteCount == (size_t) -1 )
+        {
+            ++failCount;
+            continue;
+        }
+
+        failCount = 0;
+
+        if( !out_isEcho || m_echoOn )
+        {
+            Console::DefaultConsole()->Printf( Rgba::YELLOW, "[%s] %s",
+                                               sock->m_address.ToStringAll().c_str(),
+                                               out_msg.c_str() );
+        }
+
         if( out_isEcho )
         {
             ;
         }
         else
         {
+            m_echoToSocket = sock;
+            Console::DefaultConsole()->AddObserver( this );
             CommandSystem::DefaultCommandSystem()->RunCommand( out_msg );
+            Console::DefaultConsole()->RemoveObserver( this );
         }
-        return true;
     }
+
     return false;
 }
 

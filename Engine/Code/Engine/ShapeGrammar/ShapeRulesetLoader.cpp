@@ -1,6 +1,5 @@
 #include "Engine/ShapeGrammar/ShapeRulesetLoader.hpp"
 #include "Engine/Core/Console.hpp"
-#include "Engine/Python/PythonBindings.hpp"
 #include "Engine/Python/PythonInterpreter.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/GameObject/GameObject.hpp"

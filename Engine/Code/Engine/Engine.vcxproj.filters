@@ -204,9 +204,6 @@
     <ClCompile Include="Math\RaycastHit3.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Segment3.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Math\SmoothNoise.cpp">
       <Filter>Math</Filter>
     </ClCompile>
@@ -251,9 +248,6 @@
     </ClCompile>
     <ClCompile Include="Profiler\ProfilerReportEntry.cpp">
       <Filter>Profiler</Filter>
-    </ClCompile>
-    <ClCompile Include="Python\PythonBindings.cpp">
-      <Filter>Python</Filter>
     </ClCompile>
     <ClCompile Include="Python\PythonInterpreter.cpp">
       <Filter>Python</Filter>
@@ -342,9 +336,6 @@
     <ClCompile Include="Renderer\ShaderSourceBuilder.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\ShaderString.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\SpriteAnim.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
@@ -418,12 +409,10 @@
     <ClCompile Include="..\ThirdParty\mikktspace\mikktspace.c" />
     <ClCompile Include="..\ThirdParty\pugixml\pugixml.cpp" />
     <ClCompile Include="DataUtils\BytePacker.cpp" />
-    <ClCompile Include="Core\EngineCommonH.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Core\EngineCommonC.cpp" />
     <ClCompile Include="Net\RemoteCommandService.cpp" />
     <ClCompile Include="Renderer\TextRenderable.cpp" />
+    <ClCompile Include="Core\SystemUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioSystem.hpp">
@@ -639,9 +628,6 @@
     <ClInclude Include="Profiler\ProfilerReportEntry.hpp">
       <Filter>Profiler</Filter>
     </ClInclude>
-    <ClInclude Include="Python\PythonBindings.hpp">
-      <Filter>Python</Filter>
-    </ClInclude>
     <ClInclude Include="Python\PythonInterpreter.hpp">
       <Filter>Python</Filter>
     </ClInclude>
@@ -733,9 +719,6 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\ShaderSourceBuilder.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\ShaderString.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Sprite.hpp">
@@ -832,5 +815,7 @@
     <ClInclude Include="Core\EngineCommonC.hpp" />
     <ClInclude Include="Net\RemoteCommandService.hpp" />
     <ClInclude Include="Renderer\TextRenderable.hpp" />
+    <ClInclude Include="Core\IConsoleObserver.hpp" />
+    <ClInclude Include="Core\SystemUtils.hpp" />
   </ItemGroup>
 </Project>

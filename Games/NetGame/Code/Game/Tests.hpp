@@ -16,6 +16,7 @@
 #include "Engine/Net/Net.hpp"
 #include "Engine/Net/TCPSocket.hpp"
 #include "Engine/Math/Random.hpp"
+#include "Engine/Core/SystemUtils.hpp"
 
 #include "Game/GameCommon.hpp"
 
@@ -227,6 +228,13 @@ void NetworkCourseTests()
     free( someStr );
     free( outStr );
 
+    // Process Spawning
+
+    PrintfTest( true,
+                "My process path is %s", SystemUtils::GetExePath().c_str() );
+    // lol infinite loop
+//    SystemUtils::CloneProcess();
+    //SystemUtils::SpawnProcess( "python" );
 }
 
 void RunTests()

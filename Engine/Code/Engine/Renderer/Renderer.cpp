@@ -515,6 +515,7 @@ void Renderer::DrawText2D( const String& text,
                            Alignment alignment /*= Alignment::CENTER_CENTER*/,
                            float aspectScale /*= 1.f */ )
 {
+    UNUSED( alignment );
     if( font == nullptr )
         font = m_defaultFont;
     Renderable renderable{};

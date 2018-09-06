@@ -36,10 +36,10 @@
     <ClCompile Include="Core\ContainerUtils.cpp" />
     <ClCompile Include="Core\EngineCommands.cpp" />
     <ClCompile Include="Core\EngineCommonC.cpp" />
-    <ClCompile Include="Core\EngineCommonH.cpp" />
     <ClCompile Include="Core\ErrorUtils.cpp" />
     <ClCompile Include="Core\Rgba.cpp" />
     <ClCompile Include="Core\Window.cpp" />
+    <ClCompile Include="Core\SystemUtils.cpp" />
     <ClCompile Include="DataUtils\Blob.cpp" />
     <ClCompile Include="DataUtils\BytePacker.cpp" />
     <ClCompile Include="DataUtils\EndianUtils.cpp" />
@@ -81,7 +81,6 @@
     <ClCompile Include="Math\Ray3.cpp" />
     <ClCompile Include="Math\Raycast.cpp" />
     <ClCompile Include="Math\RaycastHit3.cpp" />
-    <ClCompile Include="Math\Segment3.cpp" />
     <ClCompile Include="Math\SmoothNoise.cpp" />
     <ClCompile Include="Math\Solver.cpp" />
     <ClCompile Include="Math\SurfacePatch.cpp" />
@@ -98,7 +97,6 @@
     <ClCompile Include="Profiler\Profiler.cpp" />
     <ClCompile Include="Profiler\ProfilerReport.cpp" />
     <ClCompile Include="Profiler\ProfilerReportEntry.cpp" />
-    <ClCompile Include="Python\PythonBindings.cpp" />
     <ClCompile Include="Python\PythonInterpreter.cpp" />
     <ClCompile Include="Renderer\BarGraphBuilder.cpp" />
     <ClCompile Include="Renderer\BitmapFont.cpp" />
@@ -128,7 +126,6 @@
     <ClCompile Include="Renderer\ShaderPass.cpp" />
     <ClCompile Include="Renderer\ShaderProgram.cpp" />
     <ClCompile Include="Renderer\ShaderSourceBuilder.cpp" />
-    <ClCompile Include="Renderer\ShaderString.cpp" />
     <ClCompile Include="Renderer\SpriteAnim.cpp" />
     <ClCompile Include="Renderer\SpriteAnimDefinition.cpp" />
     <ClCompile Include="Renderer\SpriteAnimSet.cpp" />
@@ -163,11 +160,13 @@
     <ClInclude Include="Core\EngineCommonC.hpp" />
     <ClInclude Include="Core\EngineCommonH.hpp" />
     <ClInclude Include="Core\ErrorUtils.hpp" />
+    <ClInclude Include="Core\IConsoleObserver.hpp" />
     <ClInclude Include="Core\Rgba.hpp" />
     <ClInclude Include="Core\SmartEnum.hpp" />
     <ClInclude Include="Core\Types.hpp" />
     <ClInclude Include="Core\Window.hpp" />
     <ClInclude Include="Core\WindowsCommon.hpp" />
+    <ClInclude Include="Core\SystemUtils.hpp" />
     <ClInclude Include="DataUtils\Blob.hpp" />
     <ClInclude Include="DataUtils\BytePacker.hpp" />
     <ClInclude Include="DataUtils\EndianUtils.hpp" />
@@ -230,7 +229,6 @@
     <ClInclude Include="Profiler\Profiler.hpp" />
     <ClInclude Include="Profiler\ProfilerReport.hpp" />
     <ClInclude Include="Profiler\ProfilerReportEntry.hpp" />
-    <ClInclude Include="Python\PythonBindings.hpp" />
     <ClInclude Include="Python\PythonInterpreter.hpp" />
     <ClInclude Include="Renderer\BarGraphBuilder.hpp" />
     <ClInclude Include="Renderer\BitmapFont.hpp" />
@@ -262,7 +260,6 @@
     <ClInclude Include="Renderer\ShaderPass.hpp" />
     <ClInclude Include="Renderer\ShaderProgram.hpp" />
     <ClInclude Include="Renderer\ShaderSourceBuilder.hpp" />
-    <ClInclude Include="Renderer\ShaderString.hpp" />
     <ClInclude Include="Renderer\Sprite.hpp" />
     <ClInclude Include="Renderer\SpriteAnim.hpp" />
     <ClInclude Include="Renderer\SpriteAnimDefinition.hpp" />

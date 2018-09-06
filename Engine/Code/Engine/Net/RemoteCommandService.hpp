@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Net/NetAddress.hpp"
+#include "Engine/Core/IConsoleObserver.hpp"
 
 SMART_ENUM(
     RCS_State,
@@ -14,7 +15,7 @@ SMART_ENUM(
 class Timer;
 class TCPSocket;
 
-class RemoteCommandService
+class RemoteCommandService : IConsoleObserver
 {
 public:
     static RemoteCommandService* GetDefault();
@@ -38,6 +39,8 @@ public:
 
     bool SendMsg( int idx, bool isEcho, const char* str );
 
+    bool SendMsg( TCPSocket* sock, bool isEcho, const char* str );
+
     void RemoteCommandAll( const char* str );
 
     void RemoteCommandAllButMe( const char* str );
@@ -45,6 +48,9 @@ public:
     void SetEchoOn( bool echoOn );
 
 private:
+
+    // Console will call this when RCS is observing
+    void OnConsolePrint( const String& str ) override;
 
     void InitialState_Update();
     void HostState_Update();
@@ -88,6 +94,8 @@ private:
     TCPSocket* m_hostListenSocket = nullptr;
 
     std::vector<TCPSocket*> m_connectedSockets;
+
+    TCPSocket* m_echoToSocket = nullptr;
 
     Timer* m_delayTimer = nullptr;
 

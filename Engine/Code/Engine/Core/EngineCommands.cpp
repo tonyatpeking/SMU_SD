@@ -10,6 +10,7 @@
 #include "Engine/Net/Net.hpp"
 #include "Engine/Net/NetAddress.hpp"
 #include "Engine/Net/RemoteCommandService.hpp"
+#include "Engine/Core/SystemUtils.hpp"
 #include <fstream>
 
 #define WIN32_LEAN_AND_MEAN
@@ -58,7 +59,7 @@ void EngineCommands::RegisterAllCommands()
 
         int indexToSend = 0;
 
-        for (int idx = 0; idx < numParams; ++idx)
+        for( int idx = 0; idx < numParams; ++idx )
         {
             String param;
             parser.GetNext( param );
@@ -122,14 +123,14 @@ void EngineCommands::RegisterAllCommands()
         RemoteCommandService::GetDefault()->RemoteCommandAllButMe( onlyParams.c_str() );
     } );
 
-    commandSys->AddCommand( "rcs_host", []( String str )
+    commandSys->AddCommand( "rc_host", []( String str )
     {
         CommandParameterParser parser( str );
 
         size_t numParams = parser.NumOfParams();
         if( numParams > 1 )
         {
-            LOG_WARNING( "rcs_host needs at most 1 param, [service]" );
+            LOG_WARNING( "rc_host needs at most 1 param, [service]" );
             return;
         }
 
@@ -138,14 +139,14 @@ void EngineCommands::RegisterAllCommands()
         RemoteCommandService::GetDefault()->ShouldHost( onlyParams.c_str() );
     } );
 
-    commandSys->AddCommand( "rcs_join", []( String str )
+    commandSys->AddCommand( "rc_join", []( String str )
     {
         CommandParameterParser parser( str );
 
         size_t numParams = parser.NumOfParams();
         if( numParams != 1 )
         {
-            LOG_WARNING( "rcs_join needs 1 param, [ipAddress:port]" );
+            LOG_WARNING( "rc_join needs 1 param, [ipAddress:port]" );
             return;
         }
 
@@ -154,14 +155,14 @@ void EngineCommands::RegisterAllCommands()
         RemoteCommandService::GetDefault()->ShouldJoin( onlyParams.c_str() );
     } );
 
-    commandSys->AddCommand( "rcs_echo", []( String str )
+    commandSys->AddCommand( "rc_echo", []( String str )
     {
         CommandParameterParser parser( str );
 
         size_t numParams = parser.NumOfParams();
         if( numParams != 1 )
         {
-            LOG_WARNING( "rcs_echo needs 1 param, [true/false]" );
+            LOG_WARNING( "rc_echo needs 1 param, [true/false]" );
             return;
         }
 
@@ -170,12 +171,62 @@ void EngineCommands::RegisterAllCommands()
 
         parser.GetNext( on );
 
-        Console::DefaultConsole()->Printf( "rcs echo is %s", ToString(on).c_str() );
+        Console::DefaultConsole()->Printf( "rc echo is %s", ToString( on ).c_str() );
 
         RemoteCommandService::GetDefault()->SetEchoOn( on );
     } );
 
+    commandSys->AddCommand( "clone_process", []( String str )
+    {
+        CommandParameterParser parser( str );
 
+        size_t numParams = parser.NumOfParams();
+        if( numParams == 0 )
+        {
+            SystemUtils::CloneProcess();
+            return;
+        }
+        if( numParams == 1 )
+        {
+            int count;
+            parser.GetNext( count );
+            if( count > 20 )
+                count = 20;
+            for( int idx = 0; idx < count; ++idx )
+            {
+                SystemUtils::CloneProcess();
+            }
+            return;
+        }
+    } );
+
+    commandSys->AddCommand( "spawn_process", []( String str )
+    {
+        CommandParameterParser parser( str );
+
+        size_t numParams = parser.NumOfParams();
+        if( numParams == 1 )
+        {
+            String path;
+            parser.GetNext( path );
+            SystemUtils::SpawnProcess( path );
+            return;
+        }
+        if( numParams == 2 )
+        {
+            int count;
+            parser.GetNext( count );
+            if( count > 20 )
+                count = 20;
+            String path;
+            parser.GetNext( path );
+            for( int idx = 0; idx < count; ++idx )
+            {
+                SystemUtils::SpawnProcess( path );
+            }
+            return;
+        }
+    } );
 
     commandSys->AddCommand( "TestConnect", []( String str )
     {

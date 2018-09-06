@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Core/Rgba.hpp"
@@ -11,7 +12,9 @@ class Renderer;
 class InputSystem;
 class BitmapFont;
 class Logger;
+class IConsoleObserver;
 struct LogEntry;
+
 
 void Printf( const char* format, ... );
 void Printf( const Rgba& color, const char* format, ... );
@@ -87,6 +90,10 @@ public:
     void ShouldPrintLogRealtime( bool printLogRealtime );
     void PrintLogsFilter();
 
+    // Observers
+    void AddObserver( IConsoleObserver* ob );
+    void RemoveObserver( IConsoleObserver* ob );
+
 private:
 
     // Drawing
@@ -118,6 +125,8 @@ private:
     void ClearCommandHistorySelector();
     // 1 is up and -1 is down, wraps
     void MoveCommandHistorySelector( int direction );
+
+    void NotifyObservers( const String& text );
 
 
     // The default console
@@ -166,4 +175,7 @@ private:
     int m_maxCommandHistoryLength = 10;
     Strings m_commandHistory;
     int m_commandHistorySelectorPos = 0;
+
+    // Observers
+    std::vector<IConsoleObserver*> m_observers;
 };
