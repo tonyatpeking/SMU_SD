@@ -15,6 +15,8 @@ public:
     double SecondsSince( const DateTime& sinceThisTime ) const;
 
     String ToString();
+    String ToStringTimeOnly();
+    String ToStringFileFriendly();
 
     bool operator>( const DateTime& rhs ) const;
     bool operator>=( const DateTime& rhs ) const;

@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/Vec4.hpp"
 #include "Engine/Core/Types.hpp"
+#include "Engine/Math/Vec2.hpp"
 
 class Vec2;
 class Vec3;

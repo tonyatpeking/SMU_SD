@@ -209,13 +209,13 @@ void ShaderProgram::LogShaderError( uint shaderId, const ShaderSourceBuilder& bu
         if( combinedFilepath.empty() )
             combinedFilepath = originFile;
         combinedFilepath =  IOUtils::GetCurrentDir() + "/" + combinedFilepath + ".combined.txt";
-        Log( combinedFilepath.c_str(), "", errorFileLine, errorMsg, SEVERITY_WARNING );
+        Log( combinedFilepath, "", errorFileLine, LOG_LEVEL_WARNING, "", errorMsg );
     }
 
     if( m_fromFile )
         realFilepath = IOUtils::GetCurrentDir() + "/" + realFilepath;
 
-    Log( realFilepath.c_str(), "", realFileLine, errorMsg, SEVERITY_WARNING );
+    Log( realFilepath.c_str(), "", realFileLine, LOG_LEVEL_WARNING, "", errorMsg );
     // free up the memory we used.
     delete buffer;
 }

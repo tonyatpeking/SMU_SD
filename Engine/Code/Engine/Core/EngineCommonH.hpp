@@ -5,7 +5,6 @@
 #include <math.h>
 
 #include "Engine/Core/Types.hpp"
-#include "Engine/Core/SmartEnum.hpp"
 
 
 enum class ErrorStatus

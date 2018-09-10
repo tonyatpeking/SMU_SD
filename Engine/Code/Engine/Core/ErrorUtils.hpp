@@ -1,31 +1,23 @@
 #pragma once
 
-// ErrorWarningAssert.hpp
-//
-// Summary of error and assertion macros:
-//	#define ERROR_AND_DIE( errorText )						// "MUST not reach this point"; Show error dialogue, then shut down the app
-//	#define ERROR_RECOVERABLE( errorText )					// "SHOULD not reach this point"; Show warning dialogue, then proceed
-//	#define GUARANTEE_OR_DIE( condition, errorText )		// "MUST be true"; If condition is false, show error dialogue then shut down the app
-//	#define GUARANTEE_RECOVERABLE( condition, errorText )	// "SHOULD be true"; If condition is false, show warning dialogue then proceed
-//	#define ASSERT_OR_DIE( condition, errorText )			// Same as GUARANTEE_OR_DIE, but removed if DISABLE_ASSERTS is #defined
-//	#define ASSERT_RECOVERABLE( condition, errorText )		// Same as GUARANTEE_RECOVERABLE, but removed if DISABLE_ASSERTS is #defined
-//
-
-
 #include "Engine/Core/Types.hpp"
+#include "Engine/Log/LogLevel.hpp"
 
 class Rgba;
+class Logger;
+struct LogEntry;
 
+void Log( const String& filePath, const String& functionName, int lineNum,
+          LogLevel logLevel, const String& tag, const String& messageText );
 
-enum SeverityLevel
-{
-    SEVERITY_INFORMATION,
-    SEVERITY_QUESTION,
-    SEVERITY_WARNING,
-    SEVERITY_FATAL
-};
+void Log( const String& filePath, const String& functionName, int lineNum,
+           LogLevel logLevel, const String& tag, const char* format, ... );
 
+void Logfv( const String& filePath, const String& functionName, int lineNum,
+            LogLevel logLevel, const String& tag, const char* format, va_list args );
 
+void DebuggerLoggerCB( LogEntry* entry, void* _ );
+void HookDebuggerToLogger( Logger* logger );
 
 void DebuggerPrintf( const char* messageFormat, ... );
 
@@ -39,24 +31,17 @@ void RecoverableWarning(
     const String& reasonForWarning, const char* conditionText=nullptr );
 
 void SystemDialogue_Okay(
-    const String& messageTitle, const String& messageText, SeverityLevel severity );
+    const String& messageTitle, const String& messageText, LogLevel logLevel );
 
 bool SystemDialogue_OkayCancel(
-    const String& messageTitle, const String& messageText, SeverityLevel severity );
+    const String& messageTitle, const String& messageText, LogLevel logLevel );
 
 bool SystemDialogue_YesNo(
-    const String& messageTitle, const String& messageText, SeverityLevel severity );
+    const String& messageTitle, const String& messageText, LogLevel logLevel );
 
 int SystemDialogue_YesNoCancel(
-    const String& messageTitle, const String& messageText, SeverityLevel severity );
+    const String& messageTitle, const String& messageText, LogLevel logLevel );
 
-
-void Log(
-    const char* filePath, const char* functionName, int lineNum,
-    const String& messageText, SeverityLevel severity );
-
-Rgba SeverityLevelToColor( SeverityLevel severity );
-String SeverityToString( SeverityLevel severity );
 
 // ERROR_AND_DIE
 //
@@ -92,7 +77,6 @@ String SeverityToString( SeverityLevel severity );
 {																						\
 	RecoverableWarning( __FILE__,  __FUNCTION__, __LINE__, errorMessageText );			\
 }
-
 
 
 // GUARANTEE_OR_DIE
@@ -136,7 +120,6 @@ String SeverityToString( SeverityLevel severity );
 }
 
 
-
 // ASSERT_OR_DIE
 //
 // Removed if DISABLE_ASSERTS is defined, typically in a Final build configuration.
@@ -159,7 +142,6 @@ String SeverityToString( SeverityLevel severity );
 	}																				    \
 }
 #endif
-
 
 
 // ASSERT_RECOVERABLE
@@ -186,78 +168,52 @@ String SeverityToString( SeverityLevel severity );
 #endif
 
 
-
 #if defined( DISABLE_LOGGING )
-#define LOG(  errorMessageText ) { (void)( errorMessageText ); }
+#define LOG_TAG(  params ) { (void)( params ); }
 #else
-#define LOG( errorMessageText )											                \
-{																						\
-	Log(__FILE__,  __FUNCTION__, __LINE__, errorMessageText, SEVERITY_INFORMATION );	\
-}
+#define LOG_TAG( logLevel, tag, ... )\
+{ Log(__FILE__,  __FUNCTION__, __LINE__, logLevel, tag , __VA_ARGS__ ); }
 #endif
 
-#if defined( DISABLE_LOGGING )
-#define LOG_QUESTION(  errorMessageText ) { (void)( errorMessageText ); }
+
+#define LOG( logLevel, ... ) { LOG_TAG( logLevel, "", __VA_ARGS__ );	}
+
+
+#define LOG_INFO( ... ) { LOG(LOG_LEVEL_INFO, __VA_ARGS__); }
+#define LOG_WARNING( ... ) { LOG(LOG_LEVEL_WARNING, __VA_ARGS__); }
+#define LOG_ERROR( ... ) { LOG(LOG_LEVEL_ERROR, __VA_ARGS__); }
+#define LOG_FATAL( ... ) { LOG(LOG_LEVEL_FATAL, __VA_ARGS__); }
+
+#define LOG_INFO_TAG( tag, ... ) { LOG_TAG(LOG_LEVEL_INFO, tag, __VA_ARGS__); }
+#define LOG_WARNING_TAG( tag, ... ) { LOG_TAG(LOG_LEVEL_WARNING, tag, __VA_ARGS__); }
+#define LOG_ERROR_TAG( tag, ... ) { LOG_TAG(LOG_LEVEL_ERROR, tag, __VA_ARGS__); }
+#define LOG_FATAL_TAG( tag, ... ) { LOG_TAG(LOG_LEVEL_FATAL, tag, __VA_ARGS__); }
+
+
+#if defined( _DEBUG )
+#define LOG_DEBUG( ... ) { LOG(LOG_LEVEL_DEBUG, __VA_ARGS__); }
 #else
-#define LOG_QUESTION( errorMessageText )											    \
-{																						\
-	Log(__FILE__,  __FUNCTION__, __LINE__, errorMessageText, SEVERITY_QUESTION );       \
-}
+#define LOG_DEBUG( params ) { (void)( params ); }
 #endif
 
-#if defined( DISABLE_LOGGING )
-#define LOG_WARNING(  errorMessageText ) { (void)( errorMessageText ); }
+#if defined( _DEBUG )
+#define LOG_DEBUG_TAG( tag, ... ) { LOG_TAG(LOG_LEVEL_DEBUG, tag, __VA_ARGS__); }
 #else
-#define LOG_WARNING( errorMessageText )                                                 \
-{																			            \
-	Log(__FILE__,  __FUNCTION__, __LINE__, errorMessageText, SEVERITY_WARNING );        \
-}
+#define LOG_DEBUG_TAG( params ) { (void)( params ); }
 #endif
 
-#if defined( DISABLE_LOGGING )
-#define LOG_FATAL(  errorMessageText ) { (void)( errorMessageText ); }
-#else
-#define LOG_FATAL( errorMessageText )											        \
-{																						\
-	Log(__FILE__,  __FUNCTION__, __LINE__, errorMessageText, SEVERITY_FATAL );			\
-}
-#endif
 
-#if defined( DISABLE_LOGGING )
-#define LOG_ASSET_LOAD_FAILED(  errorMessageText ) { (void)( errorMessageText ); }
-#else
-#define LOG_ASSET_LOAD_FAILED( errorMessageText )							            \
-{													                                    \
-	LOG_WARNING( "Asset failed to load:  [" + errorMessageText + "]  ");	            \
-}
-#endif
+#define LOG_ASSET_LOAD_FAILED( errorMessageText )\
+{ LOG_WARNING( "Asset failed to load: [%s]", errorMessageText); }
 
-#if defined( DISABLE_LOGGING )
-#define LOG_MISSING_ASSET(  errorMessageText ) { (void)( errorMessageText ); }
-#else
-#define LOG_MISSING_ASSET( errorMessageText )											\
-{																						\
-	LOG_WARNING( "Using unloaded asset:  [" + String(errorMessageText) + "]  ");	    \
-}
-#endif
+#define LOG_ASSET_NOT_LOADED( errorMessageText )\
+{ LOG_WARNING( "Trying to use asset that was not loaded: [%s]", errorMessageText); }
 
-#if defined( DISABLE_LOGGING )
-#define LOG_NULL_POINTER(  errorMessageText ) { (void)( errorMessageText ); }
-#else
-#define LOG_NULL_POINTER( errorMessageText )										    \
-{																						\
-	LOG_WARNING( "Using null pointer  :  [" + String(errorMessageText) + "]  ");	    \
-}
-#endif
+#define LOG_NULL_POINTER( errorMessageText )\
+{ LOG_WARNING( "Using null pointer: [%s]", errorMessageText); }
 
-#if defined( DISABLE_LOGGING )
-#define LOG_INVALID_PARAMETERS(  errorMessageText ) { (void)( errorMessageText ); }
-#else
-#define LOG_INVALID_PARAMETERS( errorMessageText )										\
-{																						\
-	LOG_WARNING( "Invalid parameters on:  [" + String(errorMessageText) + "]  ");	    \
-}
-#endif
+#define LOG_INVALID_PARAMETERS( errorMessageText )\
+{ LOG_WARNING( "Invalid parameters on: [%s]", errorMessageText); }
 
 
 // "TODO" Macro
@@ -279,3 +235,8 @@ String SeverityToString( SeverityLevel severity );
 // "UNIMPLEMENTED" Macro
 #define UNIMPLEMENTED()  TODO( "IMPLEMENT: " QUOTE(__FILE__) " (" QUOTE(__LINE__) ")" );\
 ERROR_RECOVERABLE("UNIMPLEMENTED")
+
+
+
+
+

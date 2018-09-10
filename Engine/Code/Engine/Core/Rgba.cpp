@@ -3,6 +3,8 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
+#include "Engine/Math/Vec4.hpp"
+#include "Engine/Math/Vec3.hpp"
 
 
 // Color wheel

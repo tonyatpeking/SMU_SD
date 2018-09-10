@@ -1,14 +1,17 @@
 #pragma once
 #include "Engine/Thread/Thread.hpp"
 #include "Engine/Thread/ThreadSafeQueue.hpp"
-#include "Engine/Log/LogEntry.hpp"
+#include "Engine/Log/LogLevel.hpp"
 #include <shared_mutex>
 #include <functional>
 #include <iostream>
 #include <fstream>
 
+struct LogEntry;
+
 typedef std::function<void( LogEntry*, void* )> LogCB;
 typedef std::function<void( void* )> FlushCB;
+
 
 struct LogHook
 {
@@ -31,7 +34,6 @@ public:
 };
 
 
-
 class Logger
 {
 public:
@@ -51,10 +53,12 @@ public:
     void LogTaggedPrintf( char const *tag, char const *format, ... );
     void AddLogHook( LogCB cb, void *userArg );
     void AddFlushHook( FlushCB cb, void *userArg );
-    void AddFileHook( const String& filePath );
+    void AddFileHook( const String& filePath = "" );
 
     void LogPrintf( char const *format, ... );
-    void DebuggerPrintf( char const *format, ... );
+    void Log( const String& filePath, const String& functionName,
+              int lineNum, LogLevel logLevel, const String& tag,
+              const String& messageText );
 private:
     bool m_isRunning = false;
     Thread::Handle m_thread = nullptr;

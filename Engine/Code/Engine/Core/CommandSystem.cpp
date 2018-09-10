@@ -17,7 +17,7 @@ CommandParameterParser::CommandParameterParser(
     if( PARSE_SUCCESS != status )
     {
         if( !m_suppressWarnings )
-            LOG_INVALID_PARAMETERS( m_commandName );
+            LOG_INVALID_PARAMETERS( m_commandName.c_str() );
         m_allParseSuccess = false;
     }
 }
@@ -34,7 +34,10 @@ void CommandSystem::AddCommand( String name, CommandCallback callback )
 {
     if( m_commandDefs.find( name ) != m_commandDefs.end() )
     {
-        LOG_WARNING( "command already exists: " + name );
+        LOG_ERROR_TAG(
+            "Command",
+            "Cannot add Command, Command already exists: %s",
+            name.c_str() );
         return;
     }
     m_commandDefs[name] = CommandDef( name, callback );
@@ -46,7 +49,7 @@ void CommandSystem::RunCommand( String commandString )
     StringUtils::ParseFunctionName( commandString, commandName );
     if( m_commandDefs.find( commandName ) == m_commandDefs.end() )
     {
-        Console::DefaultConsole()->Print( "INVALID COMMAND: " + commandName, Rgba::RED );
+        Printf( Rgba::RED, "INVALID COMMAND: %s", commandName.c_str() );
         return;
     }
     m_commandDefs[commandName].m_callback( commandString );

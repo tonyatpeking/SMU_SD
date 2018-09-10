@@ -28,7 +28,7 @@ TCPSocket::TCPSocket()
     m_sock = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
     if( INVALID_SOCKET == m_sock )
     {
-        Logger::GetDefault()->LogPrintf( "Could not create socket" );
+        LOG_WARNING_TAG( "Net", "Could not create socket" );
     }
 }
 
@@ -50,14 +50,14 @@ void TCPSocket::SetBlocking( bool block )
     u_long nonBlocking = m_blocking ? 0 : 1;
     int result = ioctlsocket( m_sock, FIONBIO, &nonBlocking );
     if( result != NO_ERROR )
-        Logger::GetDefault()->LogPrintf( "ioctlsocket failed with error: %ld\n", result );
+        LOG_WARNING_TAG( "Net", "ioctlsocket failed with error: %ld\n", result );
 }
 
 bool TCPSocket::Listen( const NetAddress& localAddr, uint maxQueued )
 {
     if( localAddr.IsEmpty() )
     {
-        Logger::GetDefault()->LogPrintf( "Could not find local address" );
+        LOG_WARNING_TAG( "Net", "Could not find local address"  );
         Close();
         return false;
     }
@@ -70,6 +70,7 @@ bool TCPSocket::Listen( const NetAddress& localAddr, uint maxQueued )
     if( result == SOCKET_ERROR )
     {
         // failed to bind - if you want to know why, call WSAGetLastError()
+        LOG_WARNING_TAG( "Net", "failed to bind socket" );
         Close();
         return false;
     }
@@ -81,7 +82,7 @@ bool TCPSocket::Listen( const NetAddress& localAddr, uint maxQueued )
         Close();
         return false;
     }
-    Logger::GetDefault()->LogPrintf( "Listening at, %s", localAddr.ToStringAll().c_str() );
+    LOG_INFO_TAG( "Net", "Listening at, %s", localAddr.ToStringAll().c_str() );
     m_address = localAddr;
     return true;
 }
@@ -95,7 +96,7 @@ TCPSocket* TCPSocket::Accept()
     {
         if( HasFatalError() )
         {
-            Logger::GetDefault()->LogPrintf( "Could not accept" );
+            LOG_INFO_TAG( "Net", "Could not accept" );
         }
         return nullptr;
     }
@@ -116,19 +117,19 @@ bool TCPSocket::Connect( const NetAddress& addr )
     {
         if( HasFatalError() )
         {
-            Logger::GetDefault()->LogPrintf( "Could not connect" );
+            LOG_INFO_TAG( "Net", "Could not connect" );
             Close();
         }
         return false;
     }
     m_address = addr;
-    Logger::GetDefault()->LogPrintf( "Connected" );
+    LOG_INFO_TAG( "Net", "Connected" );
     return true;
 }
 
 void TCPSocket::Close()
 {
-    Logger::GetDefault()->LogPrintf( "Connection closed %s", m_address.ToStringAll().c_str() );
+    LOG_INFO_TAG( "Net", "Connection closed %s", m_address.ToStringAll().c_str() );
     ::closesocket( (SOCKET) m_sock );
     m_isClosed = true;
 }
@@ -140,7 +141,7 @@ size_t TCPSocket::Send( void const *data, int dataByteSize )
     {
         if( HasFatalError() )
         {
-            Logger::GetDefault()->LogPrintf( "Could not Send" );
+            LOG_INFO_TAG( "Net", "Could not Send" );
             Close();
         }
     }
@@ -154,7 +155,7 @@ size_t TCPSocket::Receive( void *buffer, int maxByteSize )
     {
         if( HasFatalError() )
         {
-            Logger::GetDefault()->LogPrintf( "Could not Receive" );
+            LOG_INFO_TAG( "Net", "Could not Receive" );
             Close();
         }
     }
@@ -189,7 +190,7 @@ size_t TCPSocket::BufferIncomming( size_t bufferUpTo )
 
     if( bufferUpTo > m_bufferSize )
     {
-        Logger::GetDefault()->LogPrintf( "m_receiveBuffer too small" );
+        LOG_WARNING_TAG( "Net", "m_receiveBuffer too small" );
         return 0;
     }
 
@@ -215,7 +216,7 @@ size_t TCPSocket::ReceiveExact( void *buffer, size_t exactByteSize )
 
     if( bufferedByteCount > exactByteSize )
     {
-        Logger::GetDefault()->LogPrintf( "bufferedByteCount > exactByteSize something went wrong" );
+        LOG_ERROR_TAG( "Net", "bufferedByteCount > exactByteSize something went wrong" );
         return 0;
     }
 
@@ -277,7 +278,7 @@ bool TCPSocket::HasFatalError() const
     int err = WSAGetLastError();
     if( err == WSAEWOULDBLOCK || err == WSAEMSGSIZE || err == WSAECONNRESET )
         return false;
-    Logger::GetDefault()->LogPrintf( "winsock error: %d", err );
+    LOG_WARNING_TAG( "Net", "winsock error: %d", err );
     return true;
 }
 

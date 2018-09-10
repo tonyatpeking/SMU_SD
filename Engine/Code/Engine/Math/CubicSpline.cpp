@@ -2,6 +2,7 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 
+
 CubicSpline2D::CubicSpline2D( const Vec2* positionsArray, int numPoints, const Vec2* velocitiesArray/*=nullptr */ )
 {
     AppendPoints( positionsArray, numPoints, velocitiesArray );
@@ -92,7 +93,7 @@ int CubicSpline2D::GetPositions( std::vector<Vec2>& out_positions ) const
     return (int) m_positions.size();
 }
 
-int CubicSpline2D::GetVelocities( std::vector<Vec2>& out_velocities ) const 
+int CubicSpline2D::GetVelocities( std::vector<Vec2>& out_velocities ) const
 {
     out_velocities = m_velocities;
     return (int) m_velocities.size();

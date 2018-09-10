@@ -119,8 +119,8 @@ bool ShaderSourceBuilder::InsertIncludesToShaderSource()
             String errorMsg = "Could not include file [" + includeFilePath + "]";
             String realFile;
             int realLine = GetRealFileLine( (int) includeLine + 1, realFile );
-            Log( ( IOUtils::GetCurrentDir() + "/" + realFile ).c_str(),
-                 "", realLine, errorMsg, SEVERITY_WARNING );
+            Log( ( IOUtils::GetCurrentDir() + "/" + realFile ),
+                 "", realLine, LOG_LEVEL_WARNING, "", errorMsg );
             return false;
         }
 

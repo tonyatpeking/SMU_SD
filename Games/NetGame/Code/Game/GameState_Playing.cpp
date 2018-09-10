@@ -120,12 +120,6 @@ void GameState_Playing::OnEnter()
 
     ShapeRulesetLoader::Load( "example_ruleset" );
 
-    LOG( "HI" );
-    LOG_WARNING( "this is a warning" );
-
-    Logger::GetDefault()->LogPrintf( "this is a log" );
-    Logger::GetDefault()->DebuggerPrintf( "this is a debug message" );
-
 
 }
 

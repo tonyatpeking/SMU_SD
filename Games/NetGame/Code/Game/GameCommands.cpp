@@ -59,7 +59,7 @@ void GameCommands::RegisterAllCommands()
 
 
         String reportStr = report.ToString();
-        g_console->Print( reportStr );
+        Print( reportStr );
 
     } );
 
@@ -84,7 +84,7 @@ void GameCommands::RegisterAllCommands()
         }
 
         if( parser.AllParseSuccess() )
-            g_console->Print( ToString( sum ) );
+            Print( ToString( sum ) );
     } );
 
     commandSys->AddCommand( "echo", []( String str )
@@ -97,7 +97,7 @@ void GameCommands::RegisterAllCommands()
             parser.GetNext( color );
 
         if( parser.AllParseSuccess() )
-            g_console->Print( msg, color );
+            Print( msg, color );
     } );
 
     commandSys->AddCommand( "quit", []( String str )
@@ -129,9 +129,9 @@ void GameCommands::RegisterAllCommands()
         g_console->SetOutputFilePath( path );
         bool dumpSuccess = g_console->OutputToFile();
         if( dumpSuccess )
-            g_console->Print( "log dumped to file: " + path, Rgba::CYAN );
+            Print( "log dumped to file: " + path, Rgba::CYAN );
         else
-            g_console->Print( "failed to dump to file: " + path, Rgba::YELLOW );
+            Print( "failed to dump to file: " + path, Rgba::YELLOW );
     } );
 
     commandSys->AddCommand( "health", []( String str )
@@ -150,8 +150,7 @@ void GameCommands::RegisterAllCommands()
         else if( mode == "normal" )
             g_config->healthBarRenderMode = RenderMode::NORMAL;
         else
-            LOG( "wrong format for command, supported modes are always, normal, "
-                 "never e.g \"health always\"" );
+            LOG_WARNING( "wrong format for command, supported modes are always, normal, never e.g \"health always\"" );
     } );
 
     commandSys->AddCommand( "echoFile", []( String str )
@@ -166,12 +165,12 @@ void GameCommands::RegisterAllCommands()
         bool canOpenFile = IOUtils::CanOpenFile( filePath.c_str() );
         if( !canOpenFile )
         {
-            g_console->Print( "Could not open file: " + filePath );
+            Print( "Could not open file: " + filePath );
             return;
         }
 
         String fileContents = IOUtils::ReadFileToString( filePath.c_str() );
-        g_console->Print( fileContents );
+        Print( fileContents );
     } );
 
     commandSys->AddCommand( "get", []( String str )
@@ -181,7 +180,7 @@ void GameCommands::RegisterAllCommands()
         parser.GetNext( flag );
         if( !parser.AllParseSuccess() )
             return;
-        g_console->Print( ToString( GetFlag( flag ) ) );
+        Print( ToString( GetFlag( flag ) ) );
     } );
 
     commandSys->AddCommand( "set", []( String str )
@@ -192,7 +191,7 @@ void GameCommands::RegisterAllCommands()
         if( !parser.AllParseSuccess() )
             return;
         SetFlag( flag );
-        g_console->Print( "set flag [" + flag + "] to true" );
+        Print( "set flag [" + flag + "] to true" );
     } );
 
     commandSys->AddCommand( "clear", []( String str )
@@ -203,7 +202,7 @@ void GameCommands::RegisterAllCommands()
         if( !parser.AllParseSuccess() )
             return;
         SetFlag( flag, false );
-        g_console->Print( "cleared flag [" + flag + "] to false" );
+        Print( "cleared flag [" + flag + "] to false" );
     } );
 
     commandSys->AddCommand( "toggle", []( String str )
@@ -215,8 +214,8 @@ void GameCommands::RegisterAllCommands()
             return;
         bool before = GetFlag( flag );
         ToggleFlag( flag );
-        g_console->Print( "flag [" + flag + "] was " + ToString( before ) );
-        g_console->Print( "set flag [" + flag + "] to " + ToString( !before ) );
+        Print( "flag [" + flag + "] was " + ToString( before ) );
+        Print( "set flag [" + flag + "] to " + ToString( !before ) );
     } );
 
     commandSys->AddCommand( "flags", []( String str )
@@ -224,7 +223,7 @@ void GameCommands::RegisterAllCommands()
         auto allFlags = GameFlag::AllValues();
         for( auto& flag : allFlags )
         {
-            g_console->Print( flag.ToString() + " " + ToString( GetFlag( flag ) ) );
+            Print( flag.ToString() + " " + ToString( GetFlag( flag ) ) );
         }
     } );
 
@@ -244,9 +243,9 @@ void GameCommands::RegisterAllCommands()
     } );
 
     // Console printf
-    g_console->Printf( Rgba::RED, "this is an int: %d, this is a float: %f  Lets see what happens when I type a really loooooooooooooooooooooooooooooooooooooooooooong line. Oh look it wraps around", 12, 123.3 );
+    //Printf( Rgba::RED, "this is an int: %d, this is a float: %f  Lets see what happens when I type a really loooooooooooooooooooooooooooooooooooooooooooong line. Oh look it wraps around", 12, 123.3 );
 
-    commandSys->RunCommand( "echo Hello" );
+    //commandSys->RunCommand( "echo Hello" );
 
     // All of these formats will work
 //     g_console->InputWithEnter( "add(3,4)" );

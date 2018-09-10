@@ -16,23 +16,20 @@ public:
 
     TCPSocket* Accept();
 
-    // for joining
     bool Connect( const NetAddress& addr );
 
-    // when finished
     void Close();
 
-    // - - - - - -
     // TRAFFIC
-    // - - - - - -
     // returns how much sent
     size_t Send( void const *data, int dataByteSize );
     // returns how much received
     size_t Receive( void *buffer, int maxByteSize );
 
-
+    // will destroy buffered data
     void SetBufferSize( size_t bufferSize );
 
+    // will destroy buffered data
     void MakeBuffer();
 
     size_t BufferIncomming( size_t bufferUpTo );

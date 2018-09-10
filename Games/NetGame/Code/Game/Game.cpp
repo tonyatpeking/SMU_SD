@@ -127,17 +127,6 @@ void Game::Initialize()
     PythonInterpreter::GetInstance()->Start();
     PythonInterpreter* shell = PythonInterpreter::GetInstance();
 
-    Logger::GetDefault()->LogTaggedPrintf( "hi", "hiya" );
-
-    NetAddress local = NetAddress::GetLocal( "12345" );
-    String str = local.ToStringAll();
-
-    std::vector<NetAddress> locals = NetAddress::GetAllLocal( "123" );
-
-    for ( auto& addr : locals )
-    {
-        Logger::GetDefault()->LogTaggedPrintf( "addr", addr.ToStringAll().c_str() );
-    }
 
     UNUSED( shell );
 
@@ -182,10 +171,10 @@ void Game::LoadTextures()
 
 void Game::LoadSounds()
 {
-    g_audio->CreateSound( g_config->soundAttract );
-    g_audio->CreateSound( g_config->soundGameplay );
-    g_audio->CreateSound( g_config->soundPause );
-    g_audio->CreateSound( g_config->soundVictory );
+//     g_audio->CreateSound( g_config->soundAttract );
+//     g_audio->CreateSound( g_config->soundGameplay );
+//     g_audio->CreateSound( g_config->soundPause );
+//     g_audio->CreateSound( g_config->soundVictory );
 }
 
 void Game::LoadConfigs()

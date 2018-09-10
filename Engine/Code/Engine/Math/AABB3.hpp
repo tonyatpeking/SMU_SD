@@ -2,13 +2,13 @@
 #include <string>
 
 #include "Engine/Math/Vec3.hpp"
-#include "Engine/Math/IVec3.hpp"
 #include "Engine/String/ParseStatus.hpp"
 #include "Engine/Core/Types.hpp"
 
 class MeshBuilder;
 class Mat4;
 class Plane;
+class IVec3;
 
 class AABB3
 {

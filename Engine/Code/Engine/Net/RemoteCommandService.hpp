@@ -2,6 +2,7 @@
 #include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Net/NetAddress.hpp"
 #include "Engine/Core/IConsoleObserver.hpp"
+#include "Engine/Core/SmartEnum.hpp"
 
 SMART_ENUM(
     RCS_State,

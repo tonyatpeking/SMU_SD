@@ -5,6 +5,9 @@
 #include "Engine/String/StringUtils.hpp"
 #include "Engine/FileIO/XmlUtils.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
+
+#include "ThirdParty/fmod/fmod.hpp"
+
 /*
 To disable audio entirely (and remove requirement for fmod.dll / fmod64.dll) for any
 game, #define ENGINE_DISABLE_AUDIO in your game's Code/Game/EngineBuildPreferences.hpp
@@ -87,7 +90,7 @@ SoundID AudioSystem::CreateSound( const String& soundFilePath )
         }
         else
         {
-            LOG_ASSET_LOAD_FAILED( soundFilePath );
+            LOG_ASSET_LOAD_FAILED( soundFilePath.c_str() );
             return MISSING_SOUND_ID;
         }
     }
@@ -102,7 +105,7 @@ SoundID AudioSystem::GetSound( const String& soundFilePath )
     }
     else
     {
-        LOG_MISSING_ASSET( soundFilePath );
+        LOG_ASSET_NOT_LOADED( soundFilePath.c_str() );
         return MISSING_SOUND_ID;
     }
 }
@@ -220,7 +223,7 @@ void AudioSystem::SetSoundPlaybackSpeed( PlaybackID playbackID, float speed )
 
 
 
-void AudioSystem::ValidateResult( FMOD_RESULT result )
+void AudioSystem::ValidateResult( int result )
 {
     if( result != FMOD_OK )
     {

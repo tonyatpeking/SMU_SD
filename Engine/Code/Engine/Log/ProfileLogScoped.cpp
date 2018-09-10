@@ -1,7 +1,7 @@
 #include "Engine/Log/ProfileLogScoped.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Time/Time.hpp"
-
+#include "Engine/Core/ErrorUtils.hpp"
 
 ProfileLogScoped::ProfileLogScoped( const char* tag )
 {
@@ -12,5 +12,5 @@ ProfileLogScoped::ProfileLogScoped( const char* tag )
 ProfileLogScoped::~ProfileLogScoped()
 {
     double timeUsed = TimeUtils::GetCurrentTimeSeconds() - m_timeStart;
-    Console::DefaultConsole()->Printf( "[PROFILER] [%s]:[%f ms]", m_tag, timeUsed * 1000 );
+    LOG_INFO_TAG( "Profiler", "[%s]:[%f ms]", m_tag, timeUsed * 1000 );
 }

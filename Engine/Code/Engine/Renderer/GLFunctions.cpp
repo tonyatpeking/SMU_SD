@@ -40,7 +40,7 @@ bool GLCheckError( char const *file, char const *func, int line )
     uint error = glGetError();
     if( error != GL_NO_ERROR )
     {
-        Log( file, func, line, Stringf( "GL ERROR [0x%04x]", error ), SEVERITY_WARNING );
+        LOG_ERROR( Stringf( "GL ERROR [0x%04x]", error ) );
         return true;
     }
 #endif

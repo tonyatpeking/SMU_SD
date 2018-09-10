@@ -46,9 +46,6 @@ void GameState_Loading::OnEnter()
 {
     GameState::OnEnter();
     g_game->ChangeState( GameStateType::MAIN_MENU, 1.f );
-
-    g_console->Printf( " char: %d, char*: %d", sizeof( char ), sizeof( char* ) );
-
 }
 
 void GameState_Loading::OnExit()

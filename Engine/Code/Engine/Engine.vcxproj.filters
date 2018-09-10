@@ -413,6 +413,7 @@
     <ClCompile Include="Net\RemoteCommandService.cpp" />
     <ClCompile Include="Renderer\TextRenderable.cpp" />
     <ClCompile Include="Core\SystemUtils.cpp" />
+    <ClCompile Include="Log\LogLevel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioSystem.hpp">
@@ -817,5 +818,6 @@
     <ClInclude Include="Renderer\TextRenderable.hpp" />
     <ClInclude Include="Core\IConsoleObserver.hpp" />
     <ClInclude Include="Core\SystemUtils.hpp" />
+    <ClInclude Include="Log\LogLevel.hpp" />
   </ItemGroup>
 </Project>

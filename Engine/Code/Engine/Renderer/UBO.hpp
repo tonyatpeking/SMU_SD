@@ -2,6 +2,7 @@
 #include "Engine/Math/Mat4.hpp"
 #include "Engine/Math/Vec4.hpp"
 #include "Engine/Math/Vec3.hpp"
+#include "Engine/Math/Vec2.hpp"
 #include "RendererEnums.hpp"
 
 namespace UBO

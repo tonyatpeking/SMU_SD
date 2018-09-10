@@ -1,13 +1,14 @@
 #pragma once
 #include <vector>
-#include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/MathUtils.hpp"
+#include "Engine/Math/Vec2.hpp"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // Standalone curve utility functions
 //
 // Note: Quadratic Bezier functions (only) specify an actual midpoint, not a Bezier guide point
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 template< typename T >
 T EvaluateQuadraticBezier( const T& startPos, const T& actualCurveMidPos, const T& endPos, float t )

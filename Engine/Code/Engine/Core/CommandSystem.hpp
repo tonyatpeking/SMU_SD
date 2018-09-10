@@ -56,7 +56,7 @@ public:
         if( m_allParseSuccess )
         {
             if( !m_suppressWarnings )
-                LOG_INVALID_PARAMETERS( m_commandName );
+                LOG_INVALID_PARAMETERS( m_commandName.c_str() );
             m_allParseSuccess = false;
         }
 

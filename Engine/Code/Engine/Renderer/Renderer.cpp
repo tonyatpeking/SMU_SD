@@ -839,7 +839,7 @@ Texture* Renderer::GetTexture( const String& texturePath )
 {
     if( m_loadedTextures.find( texturePath ) == m_loadedTextures.end() )
     {
-        LOG_MISSING_ASSET( texturePath );
+        LOG_ASSET_NOT_LOADED( texturePath.c_str() );
         return nullptr;
     }
     return m_loadedTextures[texturePath];
@@ -924,7 +924,7 @@ BitmapFont* Renderer::GetBitmapFont( const String& bitmapFontPath )
 {
     if( m_loadedFonts.find( bitmapFontPath ) == m_loadedFonts.end() )
     {
-        LOG_MISSING_ASSET( bitmapFontPath );
+        LOG_ASSET_NOT_LOADED( bitmapFontPath.c_str() );
         return nullptr;
     }
     return m_loadedFonts[bitmapFontPath];
@@ -950,7 +950,7 @@ SpriteSheet* Renderer::GetSpriteSheet( const String& spriteSheetPath )
 {
     if( m_loadedSpriteSheets.find( spriteSheetPath ) == m_loadedSpriteSheets.end() )
     {
-        LOG_MISSING_ASSET( spriteSheetPath );
+        LOG_ASSET_NOT_LOADED( spriteSheetPath.c_str() );
         return nullptr;
     }
     return m_loadedSpriteSheets[spriteSheetPath];

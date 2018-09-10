@@ -29,7 +29,9 @@ App::App()
     Profiler::StartUp();
 
     Logger::GetDefault()->StartUp();
+    Logger::GetDefault()->AddFileHook();
     Logger::GetDefault()->AddFileHook( IOUtils::GetCurrentDir() + "/Logs/log.txt" );
+    HookDebuggerToLogger( Logger::GetDefault() );
 
     g_realtimeClock = new Clock();
     Clock::SetRealTimeClock( g_realtimeClock );

@@ -55,42 +55,5 @@
       soundVictory="Data/Audio/TestSound.mp3"
     />
 
-    <LPCAnimSet spritePath="Data/Images/PlayerBody.png" spriteLayout="13,21" fps="6">
-        <SpriteAnim animType="CAST_NORTH"	spriteIndexRange="0~6"/>
-        <SpriteAnim animType="CAST_WEST"	spriteIndexRange="13~19"/>
-        <SpriteAnim animType="CAST_SOUTH"	spriteIndexRange="26~32"/>
-        <SpriteAnim animType="CAST_EAST"	spriteIndexRange="39~45"/>
-
-        <SpriteAnim animType="THRUST_NORTH"	spriteIndexRange="112~105"/>
-        <SpriteAnim animType="THRUST_WEST"	spriteIndexRange="125~118"/>
-        <SpriteAnim animType="THRUST_SOUTH"	spriteIndexRange="138~131"/>
-        <SpriteAnim animType="THRUST_EAST"	spriteIndexRange="151~144"/>
-
-        <SpriteAnim animType="SLASH_NORTH"	spriteIndexRange="112~105"/>
-        <SpriteAnim animType="SLASH_WEST"	spriteIndexRange="125~118"/>
-        <SpriteAnim animType="SLASH_SOUTH"	spriteIndexRange="138~131"/>
-        <SpriteAnim animType="SLASH_EAST"	spriteIndexRange="151~144"/>
-
-        <SpriteAnim animType="MOVE_NORTH"	spriteIndexRange="112~105"/>
-        <SpriteAnim animType="MOVE_WEST"	spriteIndexRange="125~118"/>
-        <SpriteAnim animType="MOVE_SOUTH"	spriteIndexRange="138~131"/>
-        <SpriteAnim animType="MOVE_EAST"	spriteIndexRange="151~144"/>
-
-        <SpriteAnim animType="SLASH_NORTH"	spriteIndexRange="112~105"/>
-        <SpriteAnim animType="SLASH_WEST"	spriteIndexRange="125~118"/>
-        <SpriteAnim animType="SLASH_SOUTH"	spriteIndexRange="138~131"/>
-        <SpriteAnim animType="SLASH_EAST"	spriteIndexRange="151~144"/>
-
-        <SpriteAnim animType="SHOOT_NORTH"	spriteIndexRange="212~220" fps="26"/>
-        <SpriteAnim animType="SHOOT_WEST"	spriteIndexRange="225~233" fps="26"/>
-        <SpriteAnim animType="SHOOT_SOUTH"	spriteIndexRange="238~246" fps="26"/>
-        <SpriteAnim animType="SHOOT_EAST"	spriteIndexRange="251~259" fps="26"/>
-
-        <SpriteAnim animType="IDLE"		    spriteIndices="143"/>
-        <SpriteAnim animType="IDLE_NORTH"	spriteIndices="105"/>
-        <SpriteAnim animType="IDLE_WEST"	spriteIndices="117"/>
-        <SpriteAnim animType="IDLE_SOUTH"	spriteIndices="130"/>
-        <SpriteAnim animType="IDLE_EAST"	spriteIndices="143"/>
-    </LPCAnimSet>
 
 </GameConfig>

@@ -13,8 +13,8 @@
 
 #else
 
-#define PROFILER_PUSH_TAG(tag) { (void)( #tag ); }
-#define PROFILER_PUSH() ;
+#define PROFILER_PUSH(tag) { (void)( #tag ); }
+#define PROFILER_PUSH_FUNCTION() ;
 #define PROFILER_POP() ;
 #define PROFILER_SCOPED() ;
 

@@ -47,11 +47,11 @@ void SolverTests()
 
 void TrajectoryTests()
 {
-    g_console->Print( "Trajectory::Evaluate" );
+    Print( "Trajectory::Evaluate" );
     for( float time = 0; time < 2.f; time += 0.1f )
     {
         Vec2 pos = Trajectory::Evaluate( 10, 90, time );
-        g_console->Print( ToString( pos ) );
+        Print( ToString( pos ) );
     }
 }
 
@@ -98,7 +98,7 @@ void main( void )
 )";
 
     StringUtils::ReplaceComments( mockShader );
-    g_console->Print( mockShader );
+    Print( mockShader );
 
 }
 
@@ -111,17 +111,17 @@ void IOTests()
     String someFile = IOUtils::GetCurrentDir() + "/Tests/somefile.txt";
 
 
-    g_console->Print( "dir exists: " + ::ToString( IOUtils::DirExists( someDir ) ) );
+    Print( "dir exists: " + ::ToString( IOUtils::DirExists( someDir ) ) );
 
-    g_console->Print( "dir create: " + ::ToString( IOUtils::MakeDirR( someDir ) ) );
+    Print( "dir create: " + ::ToString( IOUtils::MakeDirR( someDir ) ) );
 
-    g_console->Print( "dir exists: " + ::ToString( IOUtils::DirExists( someDir ) ) );
+    Print( "dir exists: " + ::ToString( IOUtils::DirExists( someDir ) ) );
 
-    g_console->Print( "dir recursive create: " + ::ToString( IOUtils::MakeDirR( someDeepDir ) ) );
+    Print( "dir recursive create: " + ::ToString( IOUtils::MakeDirR( someDeepDir ) ) );
 
-    g_console->Print( "file recursive write: " + ::ToString( IOUtils::WriteToFile( someDeepFile, "hi!\nhi!" ) ) );
+    Print( "file recursive write: " + ::ToString( IOUtils::WriteToFile( someDeepFile, "hi!\nhi!" ) ) );
 
-    g_console->Print( "file exists: " + ::ToString( IOUtils::FileExists( someFile ) ) );
+    Print( "file exists: " + ::ToString( IOUtils::FileExists( someFile ) ) );
 
 }
 
@@ -237,6 +237,18 @@ void NetworkCourseTests()
     //SystemUtils::SpawnProcess( "python" );
 }
 
+void LoggerTests()
+{
+    LOG_DEBUG("LOG_DEBUG");
+    LOG_INFO( "LOG_INFO" );
+    LOG_WARNING( "LOG_WARNING" );
+    LOG_ERROR( "LOG_ERROR" );
+    LOG_FATAL( "LOG_FATAL" );
+
+    LOG_INFO_TAG( "TestTag", "LOG_INFO_TAG" );
+
+}
+
 void RunTests()
 {
 
@@ -248,6 +260,9 @@ void RunTests()
     //IOTests();
     Printf( Rgba::CYAN, "\nNetwork Course Tests:" );
     NetworkCourseTests();
+
+    Printf( Rgba::CYAN, "\nLogger Tests:" );
+    LoggerTests();
 
     Printf( Rgba::CYAN, "\n---End of Tests---\n" );
 

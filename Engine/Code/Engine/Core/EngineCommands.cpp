@@ -171,7 +171,7 @@ void EngineCommands::RegisterAllCommands()
 
         parser.GetNext( on );
 
-        Console::DefaultConsole()->Printf( "rc echo is %s", ToString( on ).c_str() );
+        Printf( "rc echo is %s", ToString( on ).c_str() );
 
         RemoteCommandService::GetDefault()->SetEchoOn( on );
     } );
@@ -286,7 +286,7 @@ void EngineCommands::RegisterAllCommands()
 
         for( auto& addr : addresses )
         {
-            Console::DefaultConsole()->Print( "Local IP: " + addr.ToStringIP() );
+            Print( "Local IP: " + addr.ToStringIP() );
         }
 
     } );
@@ -319,28 +319,28 @@ void EngineCommands::RegisterAllCommands()
     commandSys->AddCommand( "pp", []( String str )
     {
         UNUSED( str );
-        Console::DefaultConsole()->Print( "Paused profiler" );
+        Print( "Paused profiler" );
         Profiler::Pause();
     } );
 
     commandSys->AddCommand( "pr", []( String str )
     {
         UNUSED( str );
-        Console::DefaultConsole()->Print( "Resumed profiler" );
+        Print( "Resumed profiler" );
         Profiler::Resume();
     } );
 
     commandSys->AddCommand( "python", []( String str )
     {
         UNUSED( str );
-        Console::DefaultConsole()->Print( "Starting Python Shell" );
+        Print( "Starting Python Shell" );
         Console::DefaultConsole()->UsePython( true );
     } );
 
     commandSys->AddCommand( "py", []( String str )
     {
         UNUSED( str );
-        Console::DefaultConsole()->Print( "Starting Python Shell" );
+        Print( "Starting Python Shell" );
         Console::DefaultConsole()->UsePython( true );
     } );
 
@@ -350,7 +350,7 @@ void EngineCommands::RegisterAllCommands()
             CommandSystem::DefaultCommandSystem()->GetAllCommandDefs();
         for( auto& CommandDef : allCommandDefs )
         {
-            Console::DefaultConsole()->Print( CommandDef.second.m_name, Rgba::GREEN_CYAN );
+            Print( CommandDef.second.m_name, Rgba::GREEN_CYAN );
         }
     } );
 }

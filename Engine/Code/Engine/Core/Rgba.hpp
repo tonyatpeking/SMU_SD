@@ -2,8 +2,10 @@
 #include <string>
 #include "Engine/String/ParseStatus.hpp"
 #include "Engine/Core/Types.hpp"
-#include "Engine/Math/Vec4.hpp"
-#include "Engine/Math/Vec3.hpp"
+
+
+class Vec3;
+class Vec4;
 
 class Rgba
 {

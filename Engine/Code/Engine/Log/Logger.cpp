@@ -1,5 +1,10 @@
 #include "Engine/Log/Logger.hpp"
 #include "Engine/String/StringUtils.hpp"
+#include "Engine/Log/LogEntry.hpp"
+#include "Engine/Log/LogLevel.hpp"
+#include "Engine/Time/DateTime.hpp"
+#include "Engine/Math/Random.hpp"
+#include "Engine/FileIO/IOUtils.hpp"
 
 #include <stdarg.h>
 
@@ -28,8 +33,30 @@ void Logger::LoggerThreadWorker( Logger* logger )
 void Logger::WriteToFile( LogEntry* entry, void* logFile )
 {
     std::ofstream* file = ( std::ofstream* ) logFile;
-    (*file) << entry->m_dateTime.ToString() << " " << entry->m_tag << ": " << entry->m_text << '\n';
 
+    String entryLine = Stringf(
+        "%s %-7s %-10s %s",
+        entry->m_dateTime.ToStringTimeOnly().c_str(),
+        LogLevelToString( entry->m_level ).c_str(),
+        entry->m_tag.c_str(),
+        entry->m_text.c_str()
+        );
+
+
+    ( *file ) << entryLine;
+
+    if( entry->m_level >= LOG_LEVEL_WARNING )
+    {
+        String errorInfo = Stringf(
+            " [%s(%d) %s()]",
+            entry->m_file.c_str(),
+            entry->m_line,
+            entry->m_function.c_str()
+        );
+        ( *file ) << errorInfo;
+    }
+
+    ( *file ) << '\n';
 }
 
 void Logger::FlushFile( void* logFile )
@@ -110,10 +137,16 @@ void Logger::AddFlushHook( FlushCB cb, void *userArg )
 
 void Logger::AddFileHook( const String& filePath )
 {
-
+    String path = filePath;
+    if( path.empty() )
+        path = Stringf(
+            "%s/Logs/log_%s.txt",
+            IOUtils::GetCurrentDir().c_str(),
+            DateTime::GetLocalTime().ToStringFileFriendly().c_str() );
     // file
     std::ofstream* file = new std::ofstream();
-    file->open( filePath );
+    IOUtils::MakeFileR( path );
+    file->open( path );
     if( file->fail() )
     {
         delete file;
@@ -134,10 +167,19 @@ void Logger::LogPrintf( char const *format, ... )
     va_end( args );
 }
 
-void Logger::DebuggerPrintf( char const *format, ... )
+void Logger::Log( const String& fileName, const String& functionName, int lineNum,
+                  LogLevel logLevel, const String& tag, const String& messageText )
 {
-    va_list args;
-    va_start( args, format );
-    LogTaggedPrintfv( "Debug", format, args );
-    va_end( args );
+    LogEntry* log = new LogEntry();
+    log->m_tag = tag;
+    log->m_level = logLevel;
+    log->m_file = fileName;
+    log->m_function = functionName;
+    log->m_line = lineNum;
+    log->m_dateTime = DateTime::GetLocalTime();
+
+    log->m_text = messageText;
+    m_logQueue.Push( log );
 }
+
+

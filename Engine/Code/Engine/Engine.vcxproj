@@ -57,6 +57,7 @@
     <ClCompile Include="Input\XboxController.cpp" />
     <ClCompile Include="Log\LogFilter.cpp" />
     <ClCompile Include="Log\Logger.cpp" />
+    <ClCompile Include="Log\LogLevel.cpp" />
     <ClCompile Include="Log\ProfileLogScoped.cpp" />
     <ClCompile Include="Math\AABB2.cpp" />
     <ClCompile Include="Math\AABB3.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="Log\LogEntry.hpp" />
     <ClInclude Include="Log\LogFilter.hpp" />
     <ClInclude Include="Log\Logger.hpp" />
+    <ClInclude Include="Log\LogLevel.hpp" />
     <ClInclude Include="Log\ProfileLogScoped.hpp" />
     <ClInclude Include="Math\AABB2.hpp" />
     <ClInclude Include="Math\AABB3.hpp" />
@@ -409,6 +411,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)../../Engine/Code/;$(SolutionDir)Code/;$(SolutionDir)../../Engine/Code/ThirdParty/python/include;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -431,6 +434,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -451,6 +455,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)../../Engine/Code/;$(SolutionDir)Code/;$(SolutionDir)../../Engine/Code/ThirdParty/python/include;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -473,6 +478,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -494,6 +500,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)../../Engine/Code/;$(SolutionDir)Code/;$(SolutionDir)../../Engine/Code/ThirdParty/python/include;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -517,6 +524,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)../../Engine/Code/;$(SolutionDir)Code/;$(SolutionDir)../../Engine/Code/ThirdParty/python/include;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

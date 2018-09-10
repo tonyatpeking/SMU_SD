@@ -614,11 +614,12 @@ const String RemovePrefix( const String& str )
     return str;
 }
 
-
-
 }
 
 
+//--------------------------------------------------------------------------------------
+// End of namespace StringUtils
+//--------------------------------------------------------------------------------------
 
 const String Stringf( const char* format, ... )
 {

@@ -13,7 +13,97 @@
 #include "Engine/Core/Console.hpp"
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Log/Logger.hpp"
+#include "Engine/Log/LogEntry.hpp"
 
+
+void Log( const String& filePath, const String& functionName, int lineNum,
+          LogLevel logLevel, const String& tag, const String& messageText )
+{
+    Logger::GetDefault()->Log( filePath, functionName, lineNum, logLevel, tag, messageText );
+}
+
+
+void Log( const String& filePath, const String& functionName, int lineNum,
+           LogLevel logLevel, const String& tag, const char* format, ... )
+{
+    va_list args;
+    va_start( args, format );
+    Logfv( filePath, functionName, lineNum, logLevel, tag, format, args );
+    va_end( args );
+}
+
+
+void Logfv( const String& filePath, const String& functionName, int lineNum,
+            LogLevel logLevel, const String& tag, const char* format, va_list args )
+{
+    Log( filePath, functionName, lineNum, logLevel, tag, Stringf( format, args ) );
+}
+//
+//  void Log(
+//      const String& filePath, const String& functionName, int lineNum,
+//      LogLevel logLevel, const String& tag,
+//      const String& messageText )
+//  {
+//       String fullMessageText = messageText;
+//       fullMessageText += Stringf( " line %i of %s, in %s()\n",
+//                                                lineNum, fileName, functionName );
+//       Rgba textColor = LogLevelToColor( logLevel );
+//       if( Console::DefaultConsole() )
+//           Console::DefaultConsole()->Print( fullMessageText, textColor );
+//
+//
+//      String logLevelString = LogLevelToString( logLevel );
+//
+//      Logger::GetDefault()->LogTaggedPrintf( logLevelString.c_str(), fullMessageText.c_str() );
+//       DebuggerPrintf( "\n======================ERROR======================\n" );
+//       DebuggerPrintf( "RUN-TIME %s on line %i of %s, in %s()\n", logLevelString.c_str(),
+//                       lineNum, fileName, functionName );
+//       // Use this format so VS users can double-click to jump to file-and-line of error
+//       DebuggerPrintf( "%s(%d): %s\n", filePath, lineNum, messageText.c_str() );
+//  }
+
+
+
+const char* FindStartOfFileNameWithinFilePath( const char* filePath )
+{
+    if( filePath == nullptr )
+        return nullptr;
+
+    size_t pathLen = strlen( filePath );
+    // start with null terminator after last character
+    const char* scan = filePath + pathLen;
+    while( scan > filePath )
+    {
+        --scan;
+
+        if( *scan == '/' || *scan == '\\' )
+        {
+            ++scan;
+            break;
+        }
+    }
+    return scan;
+}
+
+void DebuggerLoggerCB( LogEntry* entry, void* _ )
+{
+    UNUSED( _ );
+    if( entry->m_level < LOG_LEVEL_WARNING )
+        return;
+    const char* fileName = FindStartOfFileNameWithinFilePath( entry->m_file.c_str() );
+    String logLevelStr = LogLevelToString( entry->m_level );
+
+    DebuggerPrintf( "\n====================== %s ======================\n", logLevelStr.c_str() );
+    DebuggerPrintf( "RUN-TIME %s on line %i of %s, in %s()\n", logLevelStr.c_str(),
+                    entry->m_line, fileName, entry->m_function.c_str() );
+    // Use this format so VS users can double-click to jump to file-and-line of error
+    DebuggerPrintf( "%s(%d): %s\n", entry->m_file.c_str(), entry->m_line, entry->m_text.c_str());
+}
+
+void HookDebuggerToLogger( Logger* logger )
+{
+    logger->AddLogHook( DebuggerLoggerCB, 0 );
+}
 
 bool IsDebuggerAvailable()
 {
@@ -67,17 +157,18 @@ void DebuggerPrintf( const char* messageFormat, ... )
 
 
 
-// Converts a SeverityLevel to a Windows MessageBox icon type (MB_etc)
+// Converts a LogLevel to a Windows MessageBox icon type (MB_etc)
 //
 #if defined( PLATFORM_WINDOWS )
-UINT GetWindowsMessageBoxIconFlagForSeverityLevel( SeverityLevel severity )
+UINT GetWindowsMessageBoxIconFlagForSeverityLevel( LogLevel logLevel )
 {
-	switch( severity )
+	switch( logLevel )
 	{
-		case SEVERITY_INFORMATION:  return MB_ICONASTERISK;	  //blue circle with 'i' in Win7
-		case SEVERITY_QUESTION:	    return MB_ICONQUESTION;   //blue circle with '?' in Win7
-		case SEVERITY_WARNING:		return MB_ICONEXCLAMATION;//yellow triangle with '!' in Win7
-		case SEVERITY_FATAL:		return MB_ICONHAND;		  //red circle with 'x' in Win7
+        case LOG_LEVEL_DEBUG:       return MB_ICONASTERISK;	  //blue circle with 'i' in Win7
+        case LOG_LEVEL_INFO:        return MB_ICONASTERISK;	  //blue circle with 'i' in Win7
+		case LOG_LEVEL_WARNING:		return MB_ICONEXCLAMATION;//yellow triangle with '!' in Win7
+        case LOG_LEVEL_ERROR:		return MB_ICONHAND;		  //red circle with 'x' in Win7
+        case LOG_LEVEL_FATAL:		return MB_ICONHAND;		  //red circle with 'x' in Win7
 		default:					return MB_ICONEXCLAMATION;
 	}
 }
@@ -85,38 +176,16 @@ UINT GetWindowsMessageBoxIconFlagForSeverityLevel( SeverityLevel severity )
 
 
 
-const char* FindStartOfFileNameWithinFilePath( const char* filePath )
-{
-	if( filePath == nullptr )
-		return nullptr;
-
-	size_t pathLen = strlen( filePath );
-    // start with null terminator after last character
-	const char* scan = filePath + pathLen;
-	while( scan > filePath )
-	{
-		-- scan;
-
-		if( *scan == '/' || *scan == '\\' )
-		{
-			++ scan;
-			break;
-		}
-	}
-
-	return scan;
-}
-
 
 
 void SystemDialogue_Okay(
-    const String& messageTitle, const String& messageText, SeverityLevel severity )
+    const String& messageTitle, const String& messageText, LogLevel logLevel )
 {
 	#if defined( PLATFORM_WINDOWS )
 	{
 		ShowCursor( TRUE );
 		UINT dialogueIconTypeFlag
-            = GetWindowsMessageBoxIconFlagForSeverityLevel( severity );
+            = GetWindowsMessageBoxIconFlagForSeverityLevel( logLevel );
 		MessageBoxA(
             NULL, messageText.c_str(), messageTitle.c_str(),
             MB_OK | dialogueIconTypeFlag | MB_TOPMOST );
@@ -130,7 +199,7 @@ void SystemDialogue_Okay(
 // Returns true if OKAY was chosen, false if CANCEL was chosen.
 //
 bool SystemDialogue_OkayCancel(
-    const String& messageTitle, const String& messageText, SeverityLevel severity )
+    const String& messageTitle, const String& messageText, LogLevel logLevel )
 {
 	bool isAnswerOkay = true;
 
@@ -138,7 +207,7 @@ bool SystemDialogue_OkayCancel(
 	{
 		ShowCursor( TRUE );
 		UINT dialogueIconTypeFlag
-            = GetWindowsMessageBoxIconFlagForSeverityLevel( severity );
+            = GetWindowsMessageBoxIconFlagForSeverityLevel( logLevel );
 		int buttonClicked = MessageBoxA(
             NULL, messageText.c_str(), messageTitle.c_str(),
             MB_OKCANCEL | dialogueIconTypeFlag | MB_TOPMOST );
@@ -155,7 +224,7 @@ bool SystemDialogue_OkayCancel(
 // Returns true if YES was chosen, false if NO was chosen.
 //
 bool SystemDialogue_YesNo(
-    const String& messageTitle, const String& messageText, SeverityLevel severity )
+    const String& messageTitle, const String& messageText, LogLevel logLevel )
 {
 	bool isAnswerYes = true;
 
@@ -163,7 +232,7 @@ bool SystemDialogue_YesNo(
 	{
 		ShowCursor( TRUE );
 		UINT dialogueIconTypeFlag
-            = GetWindowsMessageBoxIconFlagForSeverityLevel( severity );
+            = GetWindowsMessageBoxIconFlagForSeverityLevel( logLevel );
 		int buttonClicked = MessageBoxA(
             NULL, messageText.c_str(), messageTitle.c_str(),
             MB_YESNO | dialogueIconTypeFlag | MB_TOPMOST );
@@ -180,7 +249,7 @@ bool SystemDialogue_YesNo(
 // Returns 1 if YES was chosen, 0 if NO was chosen, -1 if CANCEL was chosen.
 //
 int SystemDialogue_YesNoCancel(
-    const String& messageTitle, const String& messageText, SeverityLevel severity )
+    const String& messageTitle, const String& messageText, LogLevel logLevel )
 {
 	int answerCode = 1;
 
@@ -188,7 +257,7 @@ int SystemDialogue_YesNoCancel(
 	{
 		ShowCursor( TRUE );
 		UINT dialogueIconTypeFlag
-            = GetWindowsMessageBoxIconFlagForSeverityLevel( severity );
+            = GetWindowsMessageBoxIconFlagForSeverityLevel( logLevel );
 		int buttonClicked = MessageBoxA(
             NULL, messageText.c_str(), messageTitle.c_str(),
             MB_YESNOCANCEL | dialogueIconTypeFlag | MB_TOPMOST );
@@ -201,64 +270,8 @@ int SystemDialogue_YesNoCancel(
 }
 
 
-void Log(
-    const char* filePath, const char* functionName, int lineNum,
-    const String& messageText, SeverityLevel severity )
-{
-    const char* fileName = FindStartOfFileNameWithinFilePath( filePath );
-    String fullMessageText = messageText;
-    fullMessageText += Stringf( " line %i of %s, in %s()\n",
-                                             lineNum, fileName, functionName );
-    Rgba textColor = SeverityLevelToColor( severity );
-    if( Console::DefaultConsole() )
-        Console::DefaultConsole()->Print( fullMessageText, textColor );
 
 
-    String severityString = SeverityToString( severity );
-
-    Logger::GetDefault()->LogTaggedPrintf( severityString.c_str(), fullMessageText.c_str() );
-
-    DebuggerPrintf( "\n======================ERROR======================\n" );
-    DebuggerPrintf( "RUN-TIME %s on line %i of %s, in %s()\n", severityString.c_str(),
-                    lineNum, fileName, functionName );
-    // Use this format so VS users can double-click to jump to file-and-line of error
-    DebuggerPrintf( "%s(%d): %s\n", filePath, lineNum, messageText.c_str() );
-}
-
-
-Rgba SeverityLevelToColor( SeverityLevel severity )
-{
-    switch( severity )
-    {
-    case SEVERITY_INFORMATION:
-        return Rgba::CYAN;
-    case SEVERITY_QUESTION:
-        return Rgba::GREEN_CYAN;
-    case SEVERITY_WARNING:
-        return Rgba::YELLOW;
-    case SEVERITY_FATAL:
-        return Rgba::RED;
-    default:
-        return Rgba::WHITE;
-    }
-}
-
-String SeverityToString( SeverityLevel severity )
-{
-    switch( severity )
-    {
-    case SEVERITY_INFORMATION:
-        return "INFORMATION";
-    case SEVERITY_QUESTION:
-        return "QUESTION";
-    case SEVERITY_WARNING:
-        return "WARNING";
-    case SEVERITY_FATAL:
-        return "FATAL ERROR";
-    default:
-        return "UNKNOWN ERROR";
-    }
-}
 
 __declspec( noreturn ) void FatalError(
     const char* filePath, const char* functionName, int lineNum,
@@ -305,7 +318,7 @@ __declspec( noreturn ) void FatalError(
 	if( isDebuggerPresent )
 	{
 		bool isAnswerYes = SystemDialogue_YesNo(
-            fullMessageTitle, fullMessageText, SEVERITY_FATAL );
+            fullMessageTitle, fullMessageText, LOG_LEVEL_FATAL );
 		ShowCursor( TRUE );
 		if( isAnswerYes )
 		{
@@ -314,7 +327,7 @@ __declspec( noreturn ) void FatalError(
 	}
 	else
 	{
-		SystemDialogue_Okay( fullMessageTitle, fullMessageText, SEVERITY_FATAL );
+		SystemDialogue_Okay( fullMessageTitle, fullMessageText, LOG_LEVEL_FATAL );
 		ShowCursor( TRUE );
 	}
 
@@ -372,7 +385,7 @@ void RecoverableWarning(
 	if( isDebuggerPresent )
 	{
 		int answerCode = SystemDialogue_YesNoCancel(
-            fullMessageTitle, fullMessageText, SEVERITY_WARNING );
+            fullMessageTitle, fullMessageText, LOG_LEVEL_WARNING );
 		ShowCursor( TRUE );
 		if( answerCode == 0 ) // "NO"
 		{
@@ -386,7 +399,7 @@ void RecoverableWarning(
 	else
 	{
 		bool isAnswerYes = SystemDialogue_YesNo(
-            fullMessageTitle, fullMessageText, SEVERITY_WARNING );
+            fullMessageTitle, fullMessageText, LOG_LEVEL_WARNING );
 		ShowCursor( TRUE );
 		if( !isAnswerYes )
 		{

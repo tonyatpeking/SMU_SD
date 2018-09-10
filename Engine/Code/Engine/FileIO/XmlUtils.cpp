@@ -254,7 +254,7 @@ void XMLDocument::LoadFromFile( const String& filePath )
     pugi::xml_parse_result result = m_document.load_file( filePath.c_str() );
 
     if( !result )
-        LOG_ASSET_LOAD_FAILED( filePath );
+        LOG_ASSET_LOAD_FAILED( filePath.c_str() );
 }
 
 int ParseXmlAttribute( const XMLElement& element, const char* attributeName, int defaultValue )

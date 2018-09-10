@@ -1,8 +1,6 @@
 #pragma once
 
 
-
-#include "ThirdParty/fmod/fmod.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -21,6 +19,12 @@ struct AudioGroup
 };
 
 class AudioSystem;
+
+namespace FMOD
+{
+class Sound;
+class System;
+}
 
 
 class AudioSystem
@@ -54,7 +58,7 @@ public:
     void SetSoundPlaybackSpeed(
         PlaybackID soundPlaybackID, float speed );
 
-    void ValidateResult( FMOD_RESULT result );
+    void ValidateResult( int result );
 
     // Audio groups
     PlaybackID PlayOneOffSoundFromGroup( String groupName );

@@ -439,25 +439,25 @@ void Resume()
 
 void Measurement::AddChild( Measurement* newChild ) { (void) ( newChild ); }
 
-void Measurement::SetParent( Measurement* parent ) { (void) ( newChild ); }
+void Measurement::SetParent( Measurement* parent ) { (void) ( parent ); }
 
 void Measurement::Finish() {}
 
 double Measurement::GetElapsedTime() { return 0; }
 
 void StartUp() {}
-
 void ShutDown() {}
 
 void Push( const char* tag ) { (void) ( tag ); }
-
 void Pop() {}
-
 void MarkFrame() {}
 
+void SetVisible( bool visible ) { (void) ( visible ); }
+void ToggleVisible() {}
 void Render() {}
+void ProcessInput() {}
 
-Profiler::Measurement* GetPreviousFrame( int skipCount ) { (void) ( skipCount ); }
+Profiler::Measurement* GetPreviousFrame( int skipCount ) { (void) ( skipCount ); return nullptr; }
 
 void Pause() {}
 

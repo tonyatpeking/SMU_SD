@@ -17,8 +17,6 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 
-
-
 //Internal
 namespace
 {
@@ -44,7 +42,6 @@ from zzz.ruleset_loader import LoadRuleset, DidFileChange
 
     py::exec( R"(
 from zzzEngine import *
-
     )" );
     ;
 }
@@ -52,13 +49,12 @@ from zzzEngine import *
 void ShapeRulesetLoader::Load( const String& file )
 {
     String msg = LoadRuleset( file ).cast<String>();
-    Console::DefaultConsole()->Print( msg );
+    LOG_INFO_TAG("ShapeRule", msg.c_str() )
 }
 
 bool ShapeRulesetLoader::DidCurrentRuleChange()
 {
     return DidFileChange().cast<bool>();
-
 }
 
 
@@ -165,8 +161,6 @@ PYBIND11_EMBEDDED_MODULE( zzzEngine, m ) {
 
         .def( "SetParentKeepWorldTransform", &Transform::SetParentKeepWorldTransform )
         .def( "SetParent", &Transform::SetParent );
-
-
 
 
 }

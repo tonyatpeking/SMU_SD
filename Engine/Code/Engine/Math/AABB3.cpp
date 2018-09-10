@@ -5,6 +5,8 @@
 #include "Engine/String/StringUtils.hpp"
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Math/Mat4.hpp"
+#include "Engine/Math/IVec3.hpp"
+
 
 const AABB3 AABB3::ZEROS_ONES = AABB3( 0, 0, 0, 1, 1, 1 );
 

@@ -15,7 +15,7 @@ class Logger;
 class IConsoleObserver;
 struct LogEntry;
 
-
+void Print( const String& str, const Rgba& color = Rgba::WHITE );
 void Printf( const char* format, ... );
 void Printf( const Rgba& color, const char* format, ... );
 void Printfv(  const char* format, va_list args );
@@ -87,8 +87,6 @@ public:
     // Logging
     static void LoggerCB( LogEntry* entry, void* me );
     void HookToLogger( Logger* logger );
-    void ShouldPrintLogRealtime( bool printLogRealtime );
-    void PrintLogsFilter();
 
     // Observers
     void AddObserver( IConsoleObserver* ob );

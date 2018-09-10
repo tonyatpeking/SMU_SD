@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/DataUtils/EndianUtils.hpp"
+#include "Engine/Core/SmartEnum.hpp"
 
 SMART_ENUM(
     Endianness,

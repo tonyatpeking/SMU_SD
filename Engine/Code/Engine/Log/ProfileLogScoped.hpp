@@ -10,7 +10,7 @@
 #else
 
 #define PROFILE_LOG_SCOPE(tag) { (void)( #tag ); }
-#define PROFILE_LOG_SCOPE_FUNCTION(tag) { (void)( #tag ); }
+#define PROFILE_LOG_SCOPE_FUNCTION() { ; }
 
 #endif
 

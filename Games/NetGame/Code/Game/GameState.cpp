@@ -58,8 +58,7 @@ void GameState::Render() const
 void GameState::OnEnter()
 {
     m_UITimeOfEnter = g_UIClock->GetTimeSinceStartupF();
-    g_console->Print( ToString() );
-
+    LOG_INFO_TAG("GameState", ToString().c_str() )
 }
 
 void GameState::OnExit()

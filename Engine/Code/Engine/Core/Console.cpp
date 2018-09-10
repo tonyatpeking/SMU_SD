@@ -12,6 +12,7 @@
 #include "Engine/Log/Logger.hpp"
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/Core/IConsoleObserver.hpp"
+#include "Engine/Log/LogEntry.hpp"
 
 #include <stdarg.h>
 
@@ -229,7 +230,7 @@ void Console::LoadFromCommandHistoryFile()
     String fullPath = IOUtils::RelativeToFullPath( m_historyFile );
     Strings strs = IOUtils::ReadFileToStrings( fullPath );
     m_commandHistory.clear();
-    for ( auto& str : strs )
+    for( auto& str : strs )
     {
         if( !StringUtils::IsAllWhitespace( str ) )
             m_commandHistory.push_back( str );
@@ -254,7 +255,7 @@ String Console::GetCommandFromHistory( int offset )
 void Console::AppendToCommandHistory( const String& str )
 {
     // first check if str is already in commands
-    for (int idx = 0; idx < m_commandHistory.size() ; ++idx)
+    for( int idx = 0; idx < m_commandHistory.size(); ++idx )
     {
         if( m_commandHistory[idx] == str )
         {
@@ -280,7 +281,7 @@ void Console::MoveCommandHistorySelector( int direction )
     m_commandHistorySelectorPos += direction;
 
     if( m_commandHistorySelectorPos < 0 )
-        m_commandHistorySelectorPos = (int)m_commandHistory.size();
+        m_commandHistorySelectorPos = (int) m_commandHistory.size();
 
     if( m_commandHistorySelectorPos > m_commandHistory.size() )
         m_commandHistorySelectorPos = 0;
@@ -292,7 +293,7 @@ void Console::MoveCommandHistorySelector( int direction )
 
 void Console::NotifyObservers( const String& text )
 {
-    for ( auto& ob : m_observers )
+    for( auto& ob : m_observers )
     {
         ob->OnConsolePrint( text );
     }
@@ -434,8 +435,11 @@ String Console::GetInputPrompt() const
 
 void Console::LoggerCB( LogEntry* entry, void* me )
 {
-    ( (Console*) me )->Printf( "%s %s %s", entry->m_dateTime.ToString().c_str()
-                               , entry->m_tag.c_str(), entry->m_text.c_str() );
+    Rgba color = LogLevelToColor( entry->m_level );
+    String logLevel = LogLevelToString( entry->m_level );
+    ( (Console*) me )->Printf(
+        color, "%-10s %s",
+        entry->m_tag.c_str(), entry->m_text.c_str() );
 }
 
 void Console::HookToLogger( Logger* logger )
@@ -464,7 +468,7 @@ void Console::OnEnterPressed()
 {
     SetCursorPosition( 0 );
     String text = GetInputPrompt() + m_inputText;
-    Print( text );
+    Print( text, Rgba::GREEN_YELLOW );
 
     if( m_inputText != "" )
         AppendToCommandHistory( m_inputText );
@@ -619,3 +623,10 @@ void Printfv( const Rgba& color, const char* format, va_list args )
 {
     Console::DefaultConsole()->Printfv( color, format, args );
 }
+
+void Print( const String& str, const Rgba& color /*= Rgba::WHITE */ )
+{
+    Printf( color, str.c_str() );
+}
+
+

@@ -376,11 +376,18 @@ bool RemoteCommandService::ProcessReceive( TCPSocket* sock )
 
         failCount = 0;
 
-        if( !out_isEcho || m_echoOn )
+        if( !out_isEcho )
         {
-            Console::DefaultConsole()->Printf( Rgba::YELLOW, "[%s] %s",
-                                               sock->m_address.ToStringAll().c_str(),
-                                               out_msg.c_str() );
+            Printf( Rgba::CYAN, "RCS_Cmd  [%s] %s",
+                    sock->m_address.ToStringAll().c_str(),
+                    out_msg.c_str() );
+
+        }
+        else if( m_echoOn )
+        {
+            Printf( Rgba::MAGENTA, "RCS_Echo [%s] %s",
+                    sock->m_address.ToStringAll().c_str(),
+                    out_msg.c_str() );
         }
 
         if( out_isEcho )
