@@ -36,7 +36,7 @@ public:
     void Update( float deltaSeconds );
 
     // Default console
-    static Console* DefaultConsole();
+    static Console* GetDefault();
     static void SetDefaultConsole( Console* console );
 
     // Subscriptions
@@ -170,7 +170,7 @@ private:
 
     // Command History
     String m_historyFile = "Logs/command_history.txt";
-    int m_maxCommandHistoryLength = 10;
+    int m_maxCommandHistoryLength = 20;
     Strings m_commandHistory;
     int m_commandHistorySelectorPos = 0;
 

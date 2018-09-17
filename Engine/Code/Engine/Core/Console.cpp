@@ -63,7 +63,7 @@ void Console::Update( float deltaSeconds )
 }
 
 
-Console* Console::DefaultConsole()
+Console* Console::GetDefault()
 {
     return s_defaultConsole;
 }
@@ -616,17 +616,16 @@ void Printf( const Rgba& color, const char* format, ... )
 
 void Printfv( const char* format, va_list args )
 {
-    Console::DefaultConsole()->Printfv( format, args );
+    Console::GetDefault()->Printfv( format, args );
 }
 
 void Printfv( const Rgba& color, const char* format, va_list args )
 {
-    Console::DefaultConsole()->Printfv( color, format, args );
+    Console::GetDefault()->Printfv( color, format, args );
 }
 
 void Print( const String& str, const Rgba& color /*= Rgba::WHITE */ )
 {
     Printf( color, str.c_str() );
 }
-
 

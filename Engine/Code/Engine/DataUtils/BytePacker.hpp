@@ -22,15 +22,13 @@ class BytePacker
 {
 public:
     // owns and can grow memory
-    BytePacker( Endianness byteOrder = Endianness::LITTLE );
+    BytePacker();
 
     // owns with set memory size
-    BytePacker( size_t bufferSize,
-                Endianness byteOrder = Endianness::LITTLE );
+    BytePacker( size_t bufferSize );
 
     // does not own memory with set size
-    BytePacker( size_t bufferSize, void* buffer,
-                Endianness byteOrder = Endianness::LITTLE );
+    BytePacker( size_t bufferSize, void* buffer );
 
     // only releases memory if it owns it
     ~BytePacker();
@@ -107,6 +105,8 @@ public:
     Byte* GetWriteHeadPtr();
 
     Byte* GetBuffer();
+
+    const Byte* GetBuffer() const;
 
 private:
     // Caution, may or may not own this memory, check BytePackerOptions

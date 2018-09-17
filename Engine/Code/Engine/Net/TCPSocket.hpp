@@ -1,24 +1,22 @@
 #pragma once
 #include "Engine/Net/NetAddress.hpp"
+#include "Engine/Net/Socket.hpp"
 
-class TCPSocket
+class TCPSocket : public Socket
 {
 public:
-	TCPSocket();
-    // used for accept
-    TCPSocket( unsigned __int64 socket );
 
-	~TCPSocket();
+    TCPSocket();
 
-    void SetBlocking( bool block );
+    TCPSocket( unsigned __int64 socket ) : Socket( socket ) {}
+
+    ~TCPSocket();
 
     bool Listen( const NetAddress& localAddr, uint maxQueued = 5 );
 
     TCPSocket* Accept();
 
     bool Connect( const NetAddress& addr );
-
-    void Close();
 
     // TRAFFIC
     // returns how much sent
@@ -41,26 +39,13 @@ public:
     // return 0 for disconnect -1 for error/non-fatal
     size_t ReceiveMessage( bool& out_isEcho, String& out_msg );
 
-    // - - - - - -
-    // HELPERS
-    // - - - - - -
-    bool IsClosed() const;
-
-    bool HasFatalError() const;
-
 
 public:
-    unsigned __int64 m_sock;
 
-    // if you're a listening, the address is YOUR address
-    // if you are connecting (or socket is from an accept)
-    // this address is THEIR address;  (do not listen AND connect on the same socket)
-    NetAddress m_address;
-    bool m_isClosed = false;
-    bool m_blocking = true;
     size_t m_bufferSize = 0xFFFF;
     Byte* m_receiveBuffer = nullptr;
     size_t m_bufferWriteHead = 0;
 
     unsigned short m_msgSize = 0;
 };
+

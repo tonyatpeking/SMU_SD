@@ -22,8 +22,6 @@ public:
     static void HostTestServerThread( const NetAddress& addr );
     static void HostTestServiceThread( TCPSocket* client );
 
-    static bool GetAddressForHost( sockaddr *out, int *out_addrlen, char const *hostname,
-                                   char const *service = "12345" );
 
 
 };

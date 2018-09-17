@@ -48,8 +48,8 @@ void Logfv( const String& filePath, const String& functionName, int lineNum,
 //       fullMessageText += Stringf( " line %i of %s, in %s()\n",
 //                                                lineNum, fileName, functionName );
 //       Rgba textColor = LogLevelToColor( logLevel );
-//       if( Console::DefaultConsole() )
-//           Console::DefaultConsole()->Print( fullMessageText, textColor );
+//       if( Console::GetDefault() )
+//           Console::GetDefault()->Print( fullMessageText, textColor );
 //
 //
 //      String logLevelString = LogLevelToString( logLevel );
@@ -272,6 +272,14 @@ int SystemDialogue_YesNoCancel(
 
 
 
+
+void AssertBreakpoint( bool condition )
+{
+    if( !condition && IsDebuggerAvailable() )
+    {
+        __debugbreak();
+    }
+}
 
 __declspec( noreturn ) void FatalError(
     const char* filePath, const char* functionName, int lineNum,

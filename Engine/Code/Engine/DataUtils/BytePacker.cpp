@@ -2,27 +2,24 @@
 #include "Engine/Core/EngineCommonC.hpp"
 
 
-BytePacker::BytePacker( Endianness byteOrder /*= Endianness::LITTLE */ )
+BytePacker::BytePacker()
 {
-    m_endianness = byteOrder;
     m_bytePackerOptions = BYTEPACKER_OWNS_MEMORY | BYTEPACKER_CAN_GROW;
 
     m_bufferSize = 0;
     m_buffer = nullptr;
 }
 
-BytePacker::BytePacker( size_t bufferSize, Endianness byteOrder /*= Endianness::LITTLE */ )
+BytePacker::BytePacker( size_t bufferSize )
 {
-    m_endianness = byteOrder;
     m_bytePackerOptions = BYTEPACKER_OWNS_MEMORY;
 
     m_bufferSize = bufferSize;
     m_buffer = (Byte*) malloc( bufferSize );
 }
 
-BytePacker::BytePacker( size_t bufferSize, void* buffer, Endianness byteOrder /*= Endianness::LITTLE */ )
+BytePacker::BytePacker( size_t bufferSize, void* buffer )
 {
-    m_endianness = byteOrder;
     m_bytePackerOptions = 0;
 
     m_bufferSize = bufferSize;
@@ -274,6 +271,11 @@ Byte* BytePacker::GetWriteHeadPtr()
 }
 
 Byte* BytePacker::GetBuffer()
+{
+    return m_buffer;
+}
+
+const Byte* BytePacker::GetBuffer() const
 {
     return m_buffer;
 }

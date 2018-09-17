@@ -230,7 +230,7 @@ void RenderReport( int frameSkip = 0 )
     Renderer* renderer = Renderer::GetDefault();
     Window* window = renderer->GetWindow();
     AABB2 bounds = window->GetWindowBounds();
-    float fontHeight = Console::DefaultConsole()->GetFontHeight();
+    float fontHeight = Console::GetDefault()->GetFontHeight();
 
     static float timeOfLastUpdate = 0.f;
     static double frameTime = 0;

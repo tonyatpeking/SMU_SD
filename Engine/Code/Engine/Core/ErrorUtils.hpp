@@ -42,6 +42,7 @@ bool SystemDialogue_YesNo(
 int SystemDialogue_YesNoCancel(
     const String& messageTitle, const String& messageText, LogLevel logLevel );
 
+void AssertBreakpoint( bool condition );
 
 // ERROR_AND_DIE
 //

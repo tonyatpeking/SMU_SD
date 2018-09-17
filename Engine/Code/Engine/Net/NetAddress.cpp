@@ -69,7 +69,7 @@ std::vector<NetAddress> NetAddress::GetAllForHost(
     status = ::getaddrinfo( addr.c_str(), service.c_str(), &hints, &servinfo );
     if( status != 0 )
     {
-        Logger::GetDefault()->LogPrintf(
+        LOG_WARNING_TAG( "Net",
             "net, Failed to find addresses for \\[%s:%s]. Error\\[%s]",
             addr.c_str(), service.c_str(), ::gai_strerror( status ) );
         return addresses;

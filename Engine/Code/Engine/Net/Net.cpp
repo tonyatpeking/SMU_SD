@@ -37,12 +37,12 @@ void Net::ConnectionTest( const NetAddress& addr, const String& msg )
         char payload[256];
         size_t recvd = socket.Receive( payload, 256 );
         payload[recvd] = NULL;
-        Logger::GetDefault()->LogPrintf( "Received: %s", payload );
+        LOG_INFO( "Received: %s", payload );
         socket.Close();
     }
     else
     {
-        Logger::GetDefault()->LogPrintf( "Could not connect" );
+        LOG_INFO( "Could not connect" );
     }
 
 }
@@ -72,7 +72,7 @@ void Net::HostTestServerThread( const NetAddress& addr )
 {
     TCPSocket host;
     if( !host.Listen( addr ) )
-        Logger::GetDefault()->LogPrintf( "Can not listen on %s", addr.ToStringAll().c_str() );
+        LOG_INFO( "Can not listen on %s", addr.ToStringAll().c_str() );
 
     while( !s_shouldShutServer )
     {
@@ -101,15 +101,15 @@ void Net::HostTestServiceThread( TCPSocket* client )
 
         buffer[recvd] = NULL; // just cause I'm printing it
 
-        Logger::GetDefault()->LogPrintf( "Received from %s: %s",
-                                         client->m_address.ToStringAll().c_str(),
-                                         buffer );
+        LOG_INFO( "Received from %s: %s",
+                  client->m_address.ToStringAll().c_str(),
+                  buffer );
 
         String msg = "Tony's Shitty Server";
         client->Send( msg.c_str(), (int) msg.size() + 1 );
     }
 
-    Logger::GetDefault()->LogPrintf( "%s closed connection",
+    LOG_INFO( "%s closed connection",
                                      client->m_address.ToStringAll().c_str() );
 
     client->Close();

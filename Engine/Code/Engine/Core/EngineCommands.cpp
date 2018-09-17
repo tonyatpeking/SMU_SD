@@ -334,14 +334,14 @@ void EngineCommands::RegisterAllCommands()
     {
         UNUSED( str );
         Print( "Starting Python Shell" );
-        Console::DefaultConsole()->UsePython( true );
+        Console::GetDefault()->UsePython( true );
     } );
 
     commandSys->AddCommand( "py", []( String str )
     {
         UNUSED( str );
         Print( "Starting Python Shell" );
-        Console::DefaultConsole()->UsePython( true );
+        Console::GetDefault()->UsePython( true );
     } );
 
     commandSys->AddCommand( "help", []( String str )

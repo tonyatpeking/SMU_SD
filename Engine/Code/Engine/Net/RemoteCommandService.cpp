@@ -58,7 +58,7 @@ void RemoteCommandService::RenderWidget()
     static TextRenderable* titleText = nullptr;
     static TextRenderable* infoText = nullptr;
 
-    Console* console = Console::DefaultConsole();
+    Console* console = Console::GetDefault();
 
     if( !console->IsActive() )
         return;
@@ -316,7 +316,8 @@ bool RemoteCommandService::SendMsg( TCPSocket* sock, bool isEcho, const char* st
 {
     if( sock == nullptr || sock->IsClosed() )
         return false;
-    BytePacker packer( (Endianness) Endianness::BIG );
+    BytePacker packer;
+    packer.SetEndianness( Endianness::BIG );
     packer.Write( isEcho );
     packer.WriteString( str );
 
@@ -397,9 +398,9 @@ bool RemoteCommandService::ProcessReceive( TCPSocket* sock )
         else
         {
             m_echoToSocket = sock;
-            Console::DefaultConsole()->AddObserver( this );
+            Console::GetDefault()->AddObserver( this );
             CommandSystem::DefaultCommandSystem()->RunCommand( out_msg );
-            Console::DefaultConsole()->RemoveObserver( this );
+            Console::GetDefault()->RemoveObserver( this );
         }
     }
 

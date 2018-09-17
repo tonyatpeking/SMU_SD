@@ -10,12 +10,67 @@
 #include "Game/GameCommon.hpp"
 #include "Game/Game.hpp"
 #include "Game/App.hpp"
-
+#include "Engine/Net/UDPTest.hpp"
 
 
 void GameCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
+
+    commandSys->AddCommand( "udpTestStart", []( String str )
+    {
+        CommandParameterParser parser( str );
+
+        String portStr = "";
+        if( parser.NumOfParams() > 0 )
+        {
+            parser.GetNext( portStr );
+        }
+
+        UNUSED( str );
+        UDPTest::GetInstance()->Start( portStr );
+    } );
+
+    commandSys->AddCommand( "udpTestStop", []( String str )
+    {
+        UNUSED( str );
+        UDPTest::GetInstance()->Stop();
+    } );
+
+
+    commandSys->AddCommand( "udpTestSend", []( String str )
+    {
+        CommandParameterParser parser( str );
+
+        String addrStr;
+
+        parser.GetNext( addrStr );
+
+        NetAddress addr(addrStr);
+
+        String msg;
+
+        parser.GetNext( msg );
+
+        Printf( "Sending Message..." );
+
+        UDPTest::GetInstance()->SendTo(addr,msg.c_str(),msg.size());
+    } );
+
+
+    commandSys->AddCommand( "echo", []( String str )
+    {
+        CommandParameterParser parser( str );
+        String msg;
+        parser.GetNext( msg );
+        Rgba color = Rgba::GREEN;
+        if( parser.NumOfParams() > 1 )
+            parser.GetNext( color );
+
+        if( parser.AllParseSuccess() )
+            Print( msg, color );
+    } );
+
 
     commandSys->AddCommand( "profilerReport", []( String str )
     {

@@ -41,6 +41,8 @@
 #include "Engine/Net/NetAddress.hpp"
 #include "Engine/Core/EngineCommonC.hpp"
 
+#include "Engine/Net/UDPTest.hpp"
+
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
 #include "Game/GameCommon.hpp"
@@ -76,6 +78,8 @@ void Game::Update()
     m_currentGameState->Update();
 
     UpdatePause();
+
+    UDPTest::GetInstance()->Update();
 }
 
 void Game::Render() const

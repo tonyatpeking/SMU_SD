@@ -17,6 +17,7 @@
 #include "Engine/Net/TCPSocket.hpp"
 #include "Engine/Math/Random.hpp"
 #include "Engine/Core/SystemUtils.hpp"
+#include "Engine/Net/UDPSocket.hpp"
 
 #include "Game/GameCommon.hpp"
 
@@ -124,6 +125,10 @@ void IOTests()
     Print( "file exists: " + ::ToString( IOUtils::FileExists( someFile ) ) );
 
 }
+
+
+
+
 
 void NetworkCourseTests()
 {
@@ -239,7 +244,7 @@ void NetworkCourseTests()
 
 void LoggerTests()
 {
-    LOG_DEBUG("LOG_DEBUG");
+    LOG_DEBUG( "LOG_DEBUG" );
     LOG_INFO( "LOG_INFO" );
     LOG_WARNING( "LOG_WARNING" );
     LOG_ERROR( "LOG_ERROR" );

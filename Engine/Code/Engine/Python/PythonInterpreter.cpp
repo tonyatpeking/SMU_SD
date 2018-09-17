@@ -47,7 +47,7 @@ std::string PythonInterpreter::ReadFromShell()
 
 void PythonInterpreter::CloseShell()
 {
-    Console::DefaultConsole()->UsePython( false );
+    Console::GetDefault()->UsePython( false );
     LOG_INFO_TAG( "Console", "Leaving Python" );
 }
 

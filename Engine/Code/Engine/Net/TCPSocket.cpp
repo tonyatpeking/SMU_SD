@@ -1,3 +1,4 @@
+#include "Engine/Core/WindowsUtils.hpp"
 #include "Engine/Net/TCPSocket.hpp"
 #include "Engine/Core/WindowsCommon.hpp"
 #include "Engine/Log/Logger.hpp"
@@ -19,7 +20,6 @@ char* GetStrBuffer()
 
     return s_strBuffer;
 }
-
 }
 
 
@@ -30,34 +30,22 @@ TCPSocket::TCPSocket()
     {
         LOG_WARNING_TAG( "Net", "Could not create socket" );
     }
-}
-
-TCPSocket::TCPSocket( unsigned __int64 socket )
-{
-    m_sock = socket;
+    else
+    {
+        m_isClosed = false;
+    }
 }
 
 TCPSocket::~TCPSocket()
 {
-    if( !IsClosed() )
-        Close();
     free( m_receiveBuffer );
-}
-
-void TCPSocket::SetBlocking( bool block )
-{
-    m_blocking = block;
-    u_long nonBlocking = m_blocking ? 0 : 1;
-    int result = ioctlsocket( m_sock, FIONBIO, &nonBlocking );
-    if( result != NO_ERROR )
-        LOG_WARNING_TAG( "Net", "ioctlsocket failed with error: %ld\n", result );
 }
 
 bool TCPSocket::Listen( const NetAddress& localAddr, uint maxQueued )
 {
     if( localAddr.IsEmpty() )
     {
-        LOG_WARNING_TAG( "Net", "Could not find local address"  );
+        LOG_WARNING_TAG( "Net", "Listen() failed. Could not find local address" );
         Close();
         return false;
     }
@@ -67,23 +55,23 @@ bool TCPSocket::Listen( const NetAddress& localAddr, uint maxQueued )
     localAddr.ToSockAddr( (sockaddr*) &saddr, &addrlen );
 
     size_t result = ::bind( (SOCKET) m_sock, (sockaddr*) &saddr, (int) addrlen );
-    if( result == SOCKET_ERROR )
+    if( IsFatalError( result ) )
     {
-        // failed to bind - if you want to know why, call WSAGetLastError()
         LOG_WARNING_TAG( "Net", "failed to bind socket" );
         Close();
         return false;
     }
 
     result = ::listen( (SOCKET) m_sock, maxQueued );
-    if( result == SOCKET_ERROR )
+    if( IsFatalError( result ) )
     {
-
+        LOG_WARNING_TAG( "Net", "failed to listen" );
         Close();
         return false;
     }
     LOG_INFO_TAG( "Net", "Listening at, %s", localAddr.ToStringAll().c_str() );
     m_address = localAddr;
+    m_isClosed = false;
     return true;
 }
 
@@ -103,6 +91,7 @@ TCPSocket* TCPSocket::Accept()
 
     TCPSocket* theirTCPSock = new TCPSocket( theirSock );
     theirTCPSock->m_address = NetAddress( (sockaddr*) &theirAddr );
+    theirTCPSock->m_isClosed = false;
     return theirTCPSock;
 }
 
@@ -113,13 +102,10 @@ bool TCPSocket::Connect( const NetAddress& addr )
     addr.ToSockAddr( (sockaddr*) &saddr, &addrlen );
 
     int result = ::connect( (SOCKET) m_sock, (sockaddr*) &saddr, (int) addrlen );
-    if( result == SOCKET_ERROR )
+    if( IsFatalError( result ) )
     {
-        if( HasFatalError() )
-        {
-            LOG_INFO_TAG( "Net", "Could not connect" );
-            Close();
-        }
+        LOG_INFO_TAG( "Net", "Could not connect" );
+        Close();
         return false;
     }
     m_address = addr;
@@ -127,37 +113,26 @@ bool TCPSocket::Connect( const NetAddress& addr )
     return true;
 }
 
-void TCPSocket::Close()
-{
-    LOG_INFO_TAG( "Net", "Connection closed %s", m_address.ToStringAll().c_str() );
-    ::closesocket( (SOCKET) m_sock );
-    m_isClosed = true;
-}
-
 size_t TCPSocket::Send( void const *data, int dataByteSize )
 {
     size_t sent = ::send( (SOCKET) m_sock, (const char*) data, dataByteSize, 0 );
-    if( sent == SOCKET_ERROR )
+    if( IsFatalError( sent ) )
     {
-        if( HasFatalError() )
-        {
-            LOG_INFO_TAG( "Net", "Could not Send" );
-            Close();
-        }
+        LOG_INFO_TAG( "Net", "Could not Send" );
+        Close();
     }
     return sent;
 }
 
 size_t TCPSocket::Receive( void *buffer, int maxByteSize )
 {
+    if( IsClosed() )
+        return Socket::Error;
     size_t recvd = ::recv( (SOCKET) m_sock, (char*) buffer, maxByteSize, 0 );
-    if( recvd == SOCKET_ERROR )
+    if( IsFatalError( recvd ) )
     {
-        if( HasFatalError() )
-        {
-            LOG_INFO_TAG( "Net", "Could not Receive" );
-            Close();
-        }
+        LOG_INFO_TAG( "Net", "Could not Receive" );
+        Close();
     }
     if( recvd == 0 )
     {
@@ -196,7 +171,7 @@ size_t TCPSocket::BufferIncomming( size_t bufferUpTo )
 
     size_t bytesNeeded = bufferUpTo - m_bufferWriteHead;
 
-    size_t byteCountRead = Receive( m_receiveBuffer + m_bufferWriteHead, (int)bytesNeeded );
+    size_t byteCountRead = Receive( m_receiveBuffer + m_bufferWriteHead, (int) bytesNeeded );
 
     // return if no data or disconnect
     if( byteCountRead == SOCKET_ERROR || byteCountRead == 0 )
@@ -252,7 +227,7 @@ size_t TCPSocket::ReceiveMessage( bool& out_isEcho, String& out_msg )
         size_t bytesCount = BufferIncomming( m_msgSize );
         if( bytesCount == m_msgSize )
         {
-            BytePacker packer(m_msgSize, m_receiveBuffer );
+            BytePacker packer( m_msgSize, m_receiveBuffer );
             packer.SetWriteHead( m_msgSize );
 
             packer.Read( &out_isEcho );
@@ -266,19 +241,5 @@ size_t TCPSocket::ReceiveMessage( bool& out_isEcho, String& out_msg )
         }
         return (size_t) SOCKET_ERROR; // keep on waiting
     }
-}
-
-bool TCPSocket::IsClosed() const
-{
-    return m_isClosed;
-}
-
-bool TCPSocket::HasFatalError() const
-{
-    int err = WSAGetLastError();
-    if( err == WSAEWOULDBLOCK || err == WSAEMSGSIZE || err == WSAECONNRESET )
-        return false;
-    LOG_WARNING_TAG( "Net", "winsock error: %d", err );
-    return true;
 }
 
