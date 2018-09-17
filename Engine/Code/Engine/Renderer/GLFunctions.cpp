@@ -1,8 +1,7 @@
-﻿#define WIN32_LEAN_AND_MEAN		// Always #define this before #including <windows.h>
-#include <windows.h>
-
+﻿
 #pragma comment( lib, "opengl32" )	// Link in the OpenGL32.lib static library
 
+#include "Engine/Core/WindowsCommon.hpp"
 #include "Engine/Renderer/GLFunctions.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/String/StringUtils.hpp"

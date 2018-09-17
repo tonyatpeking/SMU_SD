@@ -1,11 +1,9 @@
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
 
 
+#include "Engine/Core/WindowsCommon.hpp"
 #include "Engine/FileIO/IOUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/String/StringUtils.hpp"

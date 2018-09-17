@@ -13,10 +13,7 @@
 #include "Engine/Core/SystemUtils.hpp"
 #include <fstream>
 
-#define WIN32_LEAN_AND_MEAN
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#include <Windows.h>
+#include "Engine/Core/WindowsCommon.hpp"
 
 void ThreadTestWork()
 {

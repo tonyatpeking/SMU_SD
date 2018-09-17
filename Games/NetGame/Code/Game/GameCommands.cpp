@@ -142,18 +142,7 @@ void GameCommands::RegisterAllCommands()
             Print( ToString( sum ) );
     } );
 
-    commandSys->AddCommand( "echo", []( String str )
-    {
-        CommandParameterParser parser( str );
-        String msg;
-        parser.GetNext( msg );
-        Rgba color = Rgba::GREEN;
-        if( parser.NumOfParams() > 1 )
-            parser.GetNext( color );
 
-        if( parser.AllParseSuccess() )
-            Print( msg, color );
-    } );
 
     commandSys->AddCommand( "quit", []( String str )
     {

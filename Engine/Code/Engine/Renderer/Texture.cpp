@@ -1,11 +1,4 @@
-﻿// #define WIN32_LEAN_AND_MEAN
-// #include <Windows.h>
-//#include <gl/GL.h>
-
-// #pragma warning(push, 0)        //suppress warnings
-// #include "ThirdParty/stb/stb_image.h"
-// #pragma warning(pop)
-
+﻿
 #include "Engine/Renderer/Texture.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/Image/Image.hpp"

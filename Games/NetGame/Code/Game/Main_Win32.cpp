@@ -12,9 +12,7 @@
 #include "Game/App.hpp"
 #include "Game/GameCommon.hpp"
 
-#define WIN32_LEAN_AND_MEAN		// Always #define this before #including <windows.h>
-#include <windows.h>			// #include this ( massive, platform-specific ) header in very few places
-
+#include "Engine/Core/WindowsCommon.hpp"
 
 bool WindowCallback( unsigned int wmMessageCode, size_t wParam, size_t lParam )
 {
