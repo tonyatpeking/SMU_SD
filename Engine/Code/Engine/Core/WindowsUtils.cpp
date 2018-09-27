@@ -3,7 +3,7 @@
 #include "Engine/Core/WindowsUtils.hpp"
 
 
-String WindowsUtils::ErrorCodeToString( int errorCode )
+string WindowsUtils::ErrorCodeToString( int errorCode )
 {
 
     LPSTR errString = NULL;  // will be allocated and filled by FormatMessage
@@ -28,7 +28,7 @@ String WindowsUtils::ErrorCodeToString( int errorCode )
         0 );               // 0, since getting message from system tables
     printf( "Error code %d:  %s\n\nMessage was %d bytes, in case you cared to know this.\n\n", errorCode, errString, size );
 
-    String str = std::string( errString );
+    string str = string( errString );
     StringUtils::RemoveOuterWhitespace( str );
     LocalFree( errString ); // if you don't do this, you will get an
                             // ever so slight memory leak, since we asked

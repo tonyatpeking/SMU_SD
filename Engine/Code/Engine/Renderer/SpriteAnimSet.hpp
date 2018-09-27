@@ -25,6 +25,6 @@ public:
 
 protected:
     SpriteAnimSetDefinition*			    m_animSetDef = nullptr;
-    std::map< SpriteAnimType, SpriteAnim* >	m_anims;
+    map< SpriteAnimType, SpriteAnim* >	m_anims;
     SpriteAnim*					            m_currentAnim = nullptr;
 };

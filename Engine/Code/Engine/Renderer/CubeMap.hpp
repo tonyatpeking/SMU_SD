@@ -7,7 +7,7 @@ class CubeMap : public Texture
 {
 public:
     virtual ~CubeMap();
-    CubeMap( const String& imageFilePath );
+    CubeMap( const string& imageFilePath );
     CubeMap( Image* image );
 
     virtual void MakeFromImage( Image* image ) override;

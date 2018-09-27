@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Math/Vec2.hpp"
 
 typedef bool( *WindowsMessageHandlerCallback )( unsigned int msg, size_t wparam, size_t lparam );
@@ -31,7 +32,7 @@ public:
 
     // When the WindowsProcedure is called - let all listeners get first crack at the message
     // Giving us better code modularity.
-    std::vector<WindowsMessageHandlerCallback> listeners;
+    vector<WindowsMessageHandlerCallback> listeners;
 
     Vec2 GetDimensions() const { return m_windowDimensions; };
     AABB2 GetWindowBounds() const;

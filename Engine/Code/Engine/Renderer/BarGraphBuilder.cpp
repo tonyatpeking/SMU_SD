@@ -65,7 +65,7 @@ void BarGraphBuilder::Finalize()
     EndSubMesh();
 }
 
-std::vector<float>& BarGraphBuilder::GetDataRef()
+vector<float>& BarGraphBuilder::GetDataRef()
 {
     m_maxData = -INFINITY;
     m_minData = INFINITY;

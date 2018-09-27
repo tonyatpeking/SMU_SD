@@ -109,7 +109,7 @@ Rgba ColorInRange( const Rgba& colorA, const Rgba& colorB )
         CharInRange( colorA.a, colorB.a ) );
 }
 
-void UniqueValuesInRange( int numOfValues, int minInclusive, int maxInclusive, std::vector<int>& out_uniqueValues )
+void UniqueValuesInRange( int numOfValues, int minInclusive, int maxInclusive, vector<int>& out_uniqueValues )
 {
     //#OPTIMIZE very inefficient, should probably take one out of the list and update the list every time.
     out_uniqueValues.clear();

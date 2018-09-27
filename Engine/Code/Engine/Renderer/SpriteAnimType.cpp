@@ -22,7 +22,7 @@ SpriteAnimType SpriteAnimTypeWithDirection( SpriteAnimType baseAnim, const IVec2
 
 const SpriteAnimType ParseXmlAttribute( const XMLElement& element, const char* attributeName, const SpriteAnimType defaultValue )
 {
-    String strValue = ParseXmlAttribute( element, attributeName, "" );
+    string strValue = ParseXmlAttribute( element, attributeName, "" );
     SpriteAnimType animType = SpriteAnimType::FromString( strValue );
 
     if( animType == SpriteAnimType::INVALID )

@@ -23,10 +23,10 @@ public:
     XMLAttribute() {};
     ~XMLAttribute() {};
 
-    String Name() const;
+    string Name() const;
 
-    String Value( const char* defaultValue=nullptr );
-    String Value( const String& defaultValue );
+    string Value( const char* defaultValue=nullptr );
+    string Value( const string& defaultValue );
     int Value( int defaultValue );
     char Value( char defaultValue );
     bool Value( bool defaultValue );
@@ -37,8 +37,8 @@ public:
     Range Value( const Range& defaultValue );
     IVec2 Value( const IVec2& defaultValue );
     AABB2 Value( const AABB2& defaultValue );
-    std::vector<int> Value( const std::vector<int>& defaultValue );
-    std::vector<float> Value( const std::vector<float>& defaultValue );
+    vector<int> Value( const vector<int>& defaultValue );
+    vector<float> Value( const vector<float>& defaultValue );
 
     XMLAttribute NextAttribute() const;
     bool Valid() const;
@@ -54,8 +54,8 @@ class XMLElement
 public:
     XMLElement() {};
     virtual ~XMLElement() {};
-    XMLAttribute Attribute( const String& attributeName ) const;
-    XMLElement Child( const String& elementName ) const;
+    XMLAttribute Attribute( const string& attributeName ) const;
+    XMLElement Child( const string& elementName ) const;
     XMLElement Parent() const;
 
     XMLAttribute FirstAttribute() const;
@@ -64,7 +64,7 @@ public:
     XMLElement LastChild() const;
     XMLElement NextSibling() const;
 
-    const String Name() const;
+    const string Name() const;
     bool Valid() const;
 
 protected:
@@ -80,7 +80,7 @@ class XMLDocument : public XMLElement
 public:
     XMLDocument() {};
     ~XMLDocument() override {};
-    void LoadFromFile( const String& filePath );
+    void LoadFromFile( const string& filePath );
 private:
     const pugi::xml_node& GetNode() const override { return m_document; };
     pugi::xml_document m_document;
@@ -97,9 +97,9 @@ IRange ParseXmlAttribute( const XMLElement& element, const char* attributeName, 
 Range ParseXmlAttribute( const XMLElement& element, const char* attributeName, const Range& defaultValue );
 IVec2 ParseXmlAttribute( const XMLElement& element, const char* attributeName, const IVec2& defaultValue );
 AABB2 ParseXmlAttribute( const XMLElement& element, const char* attributeName, const AABB2& defaultValue );
-String ParseXmlAttribute( const XMLElement& element, const char* attributeName, const String& defaultValue );
-String ParseXmlAttribute( const XMLElement& element, const char* attributeName, const char* defaultValue );
-std::vector<int> ParseXmlAttribute( const XMLElement& element, const char* attributeName, const std::vector<int>& defaultValue );
+string ParseXmlAttribute( const XMLElement& element, const char* attributeName, const string& defaultValue );
+string ParseXmlAttribute( const XMLElement& element, const char* attributeName, const char* defaultValue );
+vector<int> ParseXmlAttribute( const XMLElement& element, const char* attributeName, const vector<int>& defaultValue );
 
 // this will get the xml attribute with the same name as attrName, minus any m_ g_ s_ prefix
 // and assign the value to attrName converted to the correct type

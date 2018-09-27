@@ -69,7 +69,7 @@ const Texture* SpriteAnimDefinition::GetTexture() const
     return m_spriteSheet->GetTexture();
 }
 
-void SpriteAnimDefinition::SwapSpriteSheet( const String& spriteSheetPath, Renderer& renderer )
+void SpriteAnimDefinition::SwapSpriteSheet( const string& spriteSheetPath, Renderer& renderer )
 {
     m_spritePath = spriteSheetPath;
     m_spriteSheet = renderer.CreateOrGetSpriteSheet( m_spritePath, m_spriteLayout );
@@ -119,7 +119,7 @@ void SpriteAnimDefinition::SetFPSFromDuration()
     m_fps = (float) m_spriteIndices.size() / m_duration;
 }
 
-SpriteAnimMode StringToSpriteAnimMode( const String& spriteAnimModeStr )
+SpriteAnimMode StringToSpriteAnimMode( const string& spriteAnimModeStr )
 {
     if( spriteAnimModeStr == STRINGIZE( PLAY_TO_END ) )
         return SpriteAnimMode::PLAY_TO_END;
@@ -132,7 +132,7 @@ SpriteAnimMode StringToSpriteAnimMode( const String& spriteAnimModeStr )
 
 const SpriteAnimMode ParseXmlAttribute( const XMLElement& element, const char* attributeName, const SpriteAnimMode defaultValue )
 {
-    String stringValue = ParseXmlAttribute( element, attributeName, "" );
+    string stringValue = ParseXmlAttribute( element, attributeName, "" );
     SpriteAnimMode animMode = StringToSpriteAnimMode( stringValue );
     if( animMode != SpriteAnimMode::INVALID )
         return animMode;

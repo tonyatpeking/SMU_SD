@@ -32,11 +32,11 @@ public:
     void RenderWidget();
 
 
-    void ShouldHost( const String& service = "" );
+    void ShouldHost( const string& service = "" );
 
     void ShouldJoin( const NetAddress& addr );
 
-    void ShouldJoin( const String& addr );
+    void ShouldJoin( const string& addr );
 
     bool SendMsg( int idx, bool isEcho, const char* str );
 
@@ -51,7 +51,7 @@ public:
 private:
 
     // Console will call this when RCS is observing
-    void OnConsolePrint( const String& str ) override;
+    void OnConsolePrint( const string& str ) override;
 
     void InitialState_Update();
     void HostState_Update();
@@ -85,8 +85,8 @@ private:
     bool m_echoOn = true;
     bool m_shouldDisconnect = false;
     bool m_shouldHost = false;
-    const String m_defautService = "29283";
-    String m_service = "29283";
+    const string m_defautService = "29283";
+    string m_service = "29283";
     float m_failDelay = 1.f;
 
     RCS_State m_rcs_state = RCS_State::INITIAL;
@@ -94,7 +94,7 @@ private:
 
     TCPSocket* m_hostListenSocket = nullptr;
 
-    std::vector<TCPSocket*> m_connectedSockets;
+    vector<TCPSocket*> m_connectedSockets;
 
     TCPSocket* m_echoToSocket = nullptr;
 

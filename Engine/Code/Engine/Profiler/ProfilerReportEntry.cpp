@@ -4,7 +4,7 @@
 #include "Engine/String/StringUtils.hpp"
 #include <algorithm>
 
-ProfilerReportEntry::ProfilerReportEntry( const String& name )
+ProfilerReportEntry::ProfilerReportEntry( const string& name )
     : m_name( name )
 {
 
@@ -105,7 +105,7 @@ void ProfilerReportEntry::PopulateFlatR( Profiler::Measurement *measurement,
     }
 }
 
-ProfilerReportEntry* ProfilerReportEntry::GetOrCreateChild( const String& id )
+ProfilerReportEntry* ProfilerReportEntry::GetOrCreateChild( const string& id )
 {
     ProfilerReportEntry* entry = nullptr;
     if( !ContainerUtils::Contains( m_children, id ) )
@@ -120,7 +120,7 @@ ProfilerReportEntry* ProfilerReportEntry::GetOrCreateChild( const String& id )
     return m_children[id];
 }
 
-String ProfilerReportEntry::GernerateStringR( int indent /*= 0 */ )
+string ProfilerReportEntry::GernerateStringR( int indent /*= 0 */ )
 {
     m_reportString = Stringf(
         "%*s%-*s %-7i %-5.1f%% [%-7.2f ms] %-5.1f%% [%-7.2f ms] \n",
@@ -151,7 +151,7 @@ size_t ProfilerReportEntry::GetTotalStringSizeR()
     return m_reportString.size() + childrenSize;
 }
 
-void ProfilerReportEntry::AppendToStringR( String& appendTo )
+void ProfilerReportEntry::AppendToStringR( string& appendTo )
 {
     appendTo.append( m_reportString );
     for( auto& entry : m_sortedChildren )

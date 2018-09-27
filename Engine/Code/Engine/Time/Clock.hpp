@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include "Engine/Core/EngineCommonH.hpp"
 
 
 class Clock
@@ -31,6 +31,6 @@ private:
     bool m_paused = false;
     int m_frameCount = 0;
     Clock* m_parentClock = nullptr;
-    std::vector<Clock*> m_childrenClocks;
+    vector<Clock*> m_childrenClocks;
 
 };

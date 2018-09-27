@@ -54,7 +54,7 @@ bool MenuEntry::ProcessMouseInput()
     return mouseOver;
 }
 
-String MenuEntry::GetText() const
+string MenuEntry::GetText() const
 {
     return m_text;
 }

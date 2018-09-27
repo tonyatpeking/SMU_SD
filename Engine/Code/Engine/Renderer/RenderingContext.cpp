@@ -149,7 +149,7 @@ HGLRC RenderingContext::CreateRealRenderContext( HDC hdc, int major, int minor )
         {
             DWORD error = GetLastError();
             UNUSED( error );
-            //LOG( ( String( "Failed to set the format: " ) + StringUtils::ToString( (int) error ) ) );
+            //LOG( ( string( "Failed to set the format: " ) + StringUtils::ToString( (int) error ) ) );
         }
     }
 

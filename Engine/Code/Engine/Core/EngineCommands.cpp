@@ -40,7 +40,7 @@ void EngineCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
 
-    commandSys->AddCommand( "rc", []( String str )
+    commandSys->AddCommand( "rc", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -51,14 +51,14 @@ void EngineCommands::RegisterAllCommands()
             return;
         }
 
-        String onlyParams = "";
+        string onlyParams = "";
 
 
         int indexToSend = 0;
 
         for( int idx = 0; idx < numParams; ++idx )
         {
-            String param;
+            string param;
             parser.GetNext( param );
             if( idx == 0 )
             {
@@ -88,7 +88,7 @@ void EngineCommands::RegisterAllCommands()
     } );
 
 
-    commandSys->AddCommand( "rca", []( String str )
+    commandSys->AddCommand( "rca", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -99,12 +99,12 @@ void EngineCommands::RegisterAllCommands()
             return;
         }
 
-        String onlyParams = parser.GetOnlyParameters();
+        string onlyParams = parser.GetOnlyParameters();
 
         RemoteCommandService::GetDefault()->RemoteCommandAll( onlyParams.c_str() );
     } );
 
-    commandSys->AddCommand( "rcb", []( String str )
+    commandSys->AddCommand( "rcb", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -115,12 +115,12 @@ void EngineCommands::RegisterAllCommands()
             return;
         }
 
-        String onlyParams = parser.GetOnlyParameters();
+        string onlyParams = parser.GetOnlyParameters();
 
         RemoteCommandService::GetDefault()->RemoteCommandAllButMe( onlyParams.c_str() );
     } );
 
-    commandSys->AddCommand( "rc_host", []( String str )
+    commandSys->AddCommand( "rc_host", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -131,12 +131,12 @@ void EngineCommands::RegisterAllCommands()
             return;
         }
 
-        String onlyParams = parser.GetOnlyParameters();
+        string onlyParams = parser.GetOnlyParameters();
 
         RemoteCommandService::GetDefault()->ShouldHost( onlyParams.c_str() );
     } );
 
-    commandSys->AddCommand( "rc_join", []( String str )
+    commandSys->AddCommand( "rc_join", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -147,12 +147,12 @@ void EngineCommands::RegisterAllCommands()
             return;
         }
 
-        String onlyParams = parser.GetOnlyParameters();
+        string onlyParams = parser.GetOnlyParameters();
 
         RemoteCommandService::GetDefault()->ShouldJoin( onlyParams.c_str() );
     } );
 
-    commandSys->AddCommand( "rc_echo", []( String str )
+    commandSys->AddCommand( "rc_echo", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -173,7 +173,7 @@ void EngineCommands::RegisterAllCommands()
         RemoteCommandService::GetDefault()->SetEchoOn( on );
     } );
 
-    commandSys->AddCommand( "clone_process", []( String str )
+    commandSys->AddCommand( "clone_process", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -197,14 +197,14 @@ void EngineCommands::RegisterAllCommands()
         }
     } );
 
-    commandSys->AddCommand( "spawn_process", []( String str )
+    commandSys->AddCommand( "spawn_process", []( string& str )
     {
         CommandParameterParser parser( str );
 
         size_t numParams = parser.NumOfParams();
         if( numParams == 1 )
         {
-            String path;
+            string path;
             parser.GetNext( path );
             SystemUtils::SpawnProcess( path );
             return;
@@ -215,7 +215,7 @@ void EngineCommands::RegisterAllCommands()
             parser.GetNext( count );
             if( count > 20 )
                 count = 20;
-            String path;
+            string path;
             parser.GetNext( path );
             for( int idx = 0; idx < count; ++idx )
             {
@@ -225,7 +225,7 @@ void EngineCommands::RegisterAllCommands()
         }
     } );
 
-    commandSys->AddCommand( "TestConnect", []( String str )
+    commandSys->AddCommand( "TestConnect", []( string& str )
     {
         UNUSED( str );
         CommandParameterParser parser( str );
@@ -237,18 +237,18 @@ void EngineCommands::RegisterAllCommands()
             return;
         }
 
-        String addrStr;
+        string addrStr;
         parser.GetNext( addrStr );
         NetAddress netAddr( addrStr );
 
-        String msg;
+        string msg;
         parser.GetNext( msg );
 
         Net::ConnectionTest( netAddr, msg );
 
     } );
 
-    commandSys->AddCommand( "TestHost", []( String str )
+    commandSys->AddCommand( "TestHost", []( string& str )
     {
         UNUSED( str );
         CommandParameterParser parser( str );
@@ -267,7 +267,7 @@ void EngineCommands::RegisterAllCommands()
 
     } );
 
-    commandSys->AddCommand( "TestHostClose", []( String str )
+    commandSys->AddCommand( "TestHostClose", []( string& str )
     {
         UNUSED( str );
 
@@ -275,11 +275,11 @@ void EngineCommands::RegisterAllCommands()
 
     } );
 
-    commandSys->AddCommand( "NetLocalIP", []( String str )
+    commandSys->AddCommand( "NetLocalIP", []( string& str )
     {
         UNUSED( str );
 
-        std::vector<NetAddress> addresses = NetAddress::GetAllLocal( "12345" );
+        vector<NetAddress> addresses = NetAddress::GetAllLocal( "12345" );
 
         for( auto& addr : addresses )
         {
@@ -288,62 +288,63 @@ void EngineCommands::RegisterAllCommands()
 
     } );
 
-    commandSys->AddCommand( "testThreaded", []( String str )
+    commandSys->AddCommand( "testThreaded", []( string& str )
     {
         UNUSED( str );
         Thread::CreateAndDetach( ThreadTestWork );
     } );
 
-    commandSys->AddCommand( "testNonThreaded", []( String str )
+    commandSys->AddCommand( "testNonThreaded", []( string& str )
     {
         UNUSED( str );
         ThreadTestWork();
     } );
 
-    commandSys->AddCommand( "testThreadJoin", []( String str )
+    commandSys->AddCommand( "testThreadJoin", []( string& str )
     {
         UNUSED( str );
         Thread::Handle handle = Thread::Create( ThreadTestWork );
         Thread::Join( handle );
     } );
 
-    commandSys->AddCommand( "p", []( String str )
+    commandSys->AddCommand( "p", []( string& str )
     {
         UNUSED( str );
         Profiler::ToggleVisible();
     } );
 
-    commandSys->AddCommand( "pp", []( String str )
+    commandSys->AddCommand( "pp", []( string& str )
     {
         UNUSED( str );
         Print( "Paused profiler" );
         Profiler::Pause();
     } );
 
-    commandSys->AddCommand( "pr", []( String str )
+    commandSys->AddCommand( "pr", []( string& str )
     {
         UNUSED( str );
         Print( "Resumed profiler" );
         Profiler::Resume();
     } );
 
-    commandSys->AddCommand( "python", []( String str )
+    commandSys->AddCommand( "python", []( string& str )
     {
         UNUSED( str );
         Print( "Starting Python Shell" );
         Console::GetDefault()->UsePython( true );
     } );
 
-    commandSys->AddCommand( "py", []( String str )
+    commandSys->AddCommand( "py", []( string& str )
     {
         UNUSED( str );
         Print( "Starting Python Shell" );
         Console::GetDefault()->UsePython( true );
     } );
 
-    commandSys->AddCommand( "help", []( String str )
+    commandSys->AddCommand( "help", []( string& str )
     {
-        const std::map<String, CommandDef>& allCommandDefs =
+        UNUSED( str );
+        const map<string, CommandDef>& allCommandDefs =
             CommandSystem::DefaultCommandSystem()->GetAllCommandDefs();
         for( auto& CommandDef : allCommandDefs )
         {

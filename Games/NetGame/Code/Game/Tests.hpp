@@ -59,9 +59,9 @@ void TrajectoryTests()
 void StringTests()
 {
     // test if IsAllWhiteSpace works
-    String allWhite = " \t\t\n\r";
-    String someWhite = " \t s\n df \n";
-    String noWhite = "a";
+    string allWhite = " \t\t\n\r";
+    string someWhite = " \t s\n df \n";
+    string noWhite = "a";
     bool all = StringUtils::IsAllWhitespace( allWhite );
     bool some = StringUtils::IsAllWhitespace( someWhite );
     bool no = StringUtils::IsAllWhitespace( noWhite );
@@ -73,7 +73,7 @@ void StringTests()
     StringUtils::RemoveOuterWhitespace( someWhite );
     StringUtils::RemoveOuterWhitespace( noWhite );
 
-    String mockShader =
+    string mockShader =
         R"(
 #version 420 core
 
@@ -106,10 +106,10 @@ void main( void )
 void IOTests()
 {
 
-    String someDir = IOUtils::GetCurrentDir() + "/Tests/somefolder";
-    String someDeepDir = IOUtils::GetCurrentDir() + "/Tests/A/B/C/D";
-    String someDeepFile = IOUtils::GetCurrentDir() + "/Tests/B/C/D.txt";
-    String someFile = IOUtils::GetCurrentDir() + "/Tests/somefile.txt";
+    string someDir = IOUtils::GetCurrentDir() + "/Tests/somefolder";
+    string someDeepDir = IOUtils::GetCurrentDir() + "/Tests/A/B/C/D";
+    string someDeepFile = IOUtils::GetCurrentDir() + "/Tests/B/C/D.txt";
+    string someFile = IOUtils::GetCurrentDir() + "/Tests/somefile.txt";
 
 
     Print( "dir exists: " + ::ToString( IOUtils::DirExists( someDir ) ) );
@@ -133,7 +133,7 @@ void IOTests()
 void NetworkCourseTests()
 {
     // Endian
-    String end = EndianUtils::GetPlatformEndianness().ToString();
+    string end = EndianUtils::GetPlatformEndianness().ToString();
     PrintfTest( true, "Platform Endianness is: %s", end.c_str() );
 
     int testInt = 0x332fecae;

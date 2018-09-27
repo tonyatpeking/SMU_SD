@@ -43,7 +43,7 @@ public:
     bool operator==( const IVec3& compare ) const;
     bool operator!=( const IVec3& compare ) const;
 
-    ParseStatus SetFromText( const String& text );
+    ParseStatus SetFromText( const string& text );
 
     Axis AxisIfIsDirection() const;
 

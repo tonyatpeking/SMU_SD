@@ -17,11 +17,11 @@ public:
     SpriteAnimSetDefinition( const XMLElement& xmlAnimSetDef, Renderer& renderer );
     ~SpriteAnimSetDefinition();
     // swaps the sprite sheets in this def for another one, preserves the layout
-    void SwapSpriteSheet( const String& spriteSheetPath, Renderer& renderer );
+    void SwapSpriteSheet( const string& spriteSheetPath, Renderer& renderer );
 
 protected:
     void AddAnimDef( SpriteAnimDefinition* animDef );
-    std::map< SpriteAnimType, SpriteAnimDefinition* > m_animDefs;
+    map< SpriteAnimType, SpriteAnimDefinition* > m_animDefs;
     SpriteAnimType m_defaultAnimType = SpriteAnimType::IDLE;
 
 };

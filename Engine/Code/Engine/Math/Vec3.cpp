@@ -60,7 +60,7 @@ Vec2 Vec3::ToVec2XZ() const
     return Vec2::MakeFromXZ( *this );
 }
 
-String Vec3::ToString() const
+string Vec3::ToString() const
 {
     return ::ToString( *this );
 }
@@ -220,9 +220,9 @@ void Vec3::SnapToZero()
     z = ::SnapToZero( z );
 }
 
-ParseStatus Vec3::SetFromText( const String& text, const String& delimiter )
+ParseStatus Vec3::SetFromText( const string& text, const string& delimiter )
 {
-    std::vector<float> out_floats;
+    vector<float> out_floats;
     ParseStatus status = StringUtils::ParseToFloats( text, out_floats, delimiter );
 
     if( out_floats.size() != 3 )

@@ -14,9 +14,9 @@ public:
     // can be zero or negative if sinceThisTime is in the future
     double SecondsSince( const DateTime& sinceThisTime ) const;
 
-    String ToString();
-    String ToStringTimeOnly();
-    String ToStringFileFriendly();
+    string ToString();
+    string ToStringTimeOnly();
+    string ToStringFileFriendly();
 
     bool operator>( const DateTime& rhs ) const;
     bool operator>=( const DateTime& rhs ) const;

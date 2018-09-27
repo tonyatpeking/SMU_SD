@@ -7,7 +7,7 @@ namespace ShapeRulesetLoader
 
 void Init();
 
-void Load( const String& file );
+void Load( const string& file );
 
 bool DidCurrentRuleChange();
 

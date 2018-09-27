@@ -22,7 +22,7 @@ private:
     // lights is an array of light indices, max size is UBO::MAX_LIGHTS
     void ComputeMostContributingLights( const Vec3& pos,
                                         int out_lightIndices[] );
-    void SortDrawCalls( std::vector<DrawCall>& out_drawCalls );
+    void SortDrawCalls( vector<DrawCall>& out_drawCalls );
     void EnableLightsForDrawCall( const DrawCall& drawCall );
 
 public:

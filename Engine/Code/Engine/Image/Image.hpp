@@ -10,7 +10,7 @@ class Image
 {
     friend class Texture;
 public:
-    explicit Image( const String& imageFilePath );
+    explicit Image( const string& imageFilePath );
     explicit Image( int x, int y, const Rgba& color = Rgba::BLACK );
     ~Image() {};
     Rgba	GetTexel( int x, int y ) const; 			// (0,0) is top-left
@@ -20,9 +20,9 @@ public:
     IVec2 GetDimentions() const { return m_dimensions; };
     void FlipYCoords();
     bool IsImageValid();
-    void SaveToDisk( const String& imageFilePath );
+    void SaveToDisk( const string& imageFilePath );
 
-    std::vector<Rgba>	m_texels;
+    vector<Rgba>	m_texels;
 private:
     void CalcInverseDimensions();
     Vec2 m_inversDimensions;

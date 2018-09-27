@@ -52,9 +52,9 @@ void Disc2::Translate( float translationX, float translationY )
     Translate( Vec2( translationX, translationY ) );
 }
 
-ParseStatus Disc2::SetFromText( const String& text )
+ParseStatus Disc2::SetFromText( const string& text )
 {
-    std::vector<float> out_floats;
+    vector<float> out_floats;
     ParseStatus status = StringUtils::ParseToFloats( text, out_floats );
 
     //ASSERT_RECOVERABLE( out_floats.size() == 3, "Wrong number of elements passed to Disc2" );

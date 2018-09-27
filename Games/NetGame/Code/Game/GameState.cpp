@@ -71,7 +71,7 @@ void GameState::ProcessInput()
 
 }
 
-String GameState::ToString()
+string GameState::ToString()
 {
     return GameStateType::ToString( m_gameStateType );
 }

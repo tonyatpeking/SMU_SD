@@ -29,12 +29,12 @@ float BitmapFont::GetGlyphAspect( int glyphUnicode ) const
     return m_baseAspect;
 }
 
-float BitmapFont::GetTextWidth( const String& text, float height, float glyphAspect ) const
+float BitmapFont::GetTextWidth( const string& text, float height, float glyphAspect ) const
 {
     return ( (float) text.length() ) * height * glyphAspect;
 }
 
-void BitmapFont::WrapLineOfText( const String& line, float height, float maxWidth, Strings& out_wrappedLines, float glyphAspect /*= 1.f */ ) const
+void BitmapFont::WrapLineOfText( const string& line, float height, float maxWidth, Strings& out_wrappedLines, float glyphAspect /*= 1.f */ ) const
 {
     out_wrappedLines.clear();
     if( GetTextWidth( line, height, glyphAspect ) <= maxWidth )
@@ -49,7 +49,7 @@ void BitmapFont::WrapLineOfText( const String& line, float height, float maxWidt
     float spaceWidth = GetTextWidth( " ", height, glyphAspect );
     for( unsigned int tokenIdx = 0; tokenIdx < tokens.size(); ++tokenIdx )
     {
-        const String& token = tokens[tokenIdx];
+        const string& token = tokens[tokenIdx];
         float tokenWidth = GetTextWidth( token, height, glyphAspect );
         float prevLineLenth = currentLineLength;
         currentLineLength += tokenWidth;

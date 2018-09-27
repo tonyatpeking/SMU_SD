@@ -13,7 +13,7 @@ class Mesh;
 class SurfacePatch;
 class Mat4;
 
-typedef std::vector<VertexBuilderData> VertexDataVec;
+typedef vector<VertexBuilderData> VertexDataVec;
 
 class MeshBuilder
 {
@@ -82,7 +82,7 @@ public:
     Uints m_indices;
     VertexDataVec m_verts;
     const VertexLayout* m_vertexLayout = &VertexLit::s_vertexLayout;
-    std::vector<DrawInstruction> m_subMeshInstuct;
+    vector<DrawInstruction> m_subMeshInstuct;
 
     void CalculateBounds();
     AABB3 GetLocalBounds() const { return m_localBounds; };

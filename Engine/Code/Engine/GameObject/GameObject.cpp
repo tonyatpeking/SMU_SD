@@ -29,7 +29,7 @@ GameObject* GameObject::MakeCube( const Vec3& sideLengths /*= Vec3::ONES*/,
     return go;
 }
 
-GameObject::GameObject( const String& type )
+GameObject::GameObject( const string& type )
 {
     SetType( type );
     m_manager = GameObjectManager::GetDefault();
@@ -143,7 +143,7 @@ void GameObject::ClearDeathCallbacks()
     m_deathCallbacks.clear();
 }
 
-void GameObject::SetType( std::string type )
+void GameObject::SetType( string type )
 {
     m_type = type;
 }

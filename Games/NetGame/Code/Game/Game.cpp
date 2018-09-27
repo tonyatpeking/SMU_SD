@@ -40,8 +40,8 @@
 #include "Engine/Net/Net.hpp"
 #include "Engine/Net/NetAddress.hpp"
 #include "Engine/Core/EngineCommonC.hpp"
-
 #include "Engine/Net/UDPTest.hpp"
+
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
@@ -203,7 +203,7 @@ void Game::LoadShaders()
     ShaderProgram::CreateOrGetFromFiles( "Data/Shaders/fog" );
     ShaderProgram::CreateOrGetFromFiles( "Data/Shaders/cubeBorders" );
 
-    String maxLightDefine = Stringf( "MAX_LIGHTS = (%i)", MAX_LIGHTS );
+    string maxLightDefine = Stringf( "MAX_LIGHTS = (%i)", MAX_LIGHTS );
     ShaderProgram::CreateOrGetFromFiles( "Data/Shaders/lit", maxLightDefine );
 }
 

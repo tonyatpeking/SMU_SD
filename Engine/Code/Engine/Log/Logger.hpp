@@ -53,20 +53,20 @@ public:
     void LogTaggedPrintf( char const *tag, char const *format, ... );
     void AddLogHook( LogCB cb, void *userArg );
     void AddFlushHook( FlushCB cb, void *userArg );
-    void AddFileHook( const String& filePath = "" );
+    void AddFileHook( const string& filePath = "" );
 
     void LogPrintf( char const *format, ... );
-    void Log( const String& filePath, const String& functionName,
-              int lineNum, LogLevel logLevel, const String& tag,
-              const String& messageText );
+    void Log( const string& filePath, const string& functionName,
+              int lineNum, LogLevel logLevel, const string& tag,
+              const string& messageText );
 private:
     bool m_isRunning = false;
     Thread::Handle m_thread = nullptr;
     ThreadSafeQueue<LogEntry*> m_logQueue;
 
     std::shared_mutex m_logHookLock;
-    std::vector<LogHook> m_logHooks;
-    std::vector<FlushHook> m_flushHooks;
+    vector<LogHook> m_logHooks;
+    vector<FlushHook> m_flushHooks;
     std::shared_mutex m_flushHookLock;
 
 };

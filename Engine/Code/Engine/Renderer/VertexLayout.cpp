@@ -4,7 +4,7 @@
 
 
 
-bool VertexLayout::HasAttribute( String name ) const
+bool VertexLayout::HasAttribute( string name ) const
 {
     for ( auto& attrib : m_attributes )
     {

@@ -3,7 +3,7 @@
 
 namespace WindowsUtils
 {
-String ErrorCodeToString( int errorCode );
+string ErrorCodeToString( int errorCode );
 
 
 };

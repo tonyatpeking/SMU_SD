@@ -8,12 +8,12 @@
 struct LogEntry
 {
 public:
-    String m_tag;
+    string m_tag;
     LogLevel m_level;
-    String m_file;
-    String m_function;
+    string m_file;
+    string m_function;
     int m_line = 0;
     DateTime m_dateTime;
 
-    String m_text;
+    string m_text;
 };

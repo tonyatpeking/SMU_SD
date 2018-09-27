@@ -19,10 +19,10 @@
 namespace StringUtils
 {
 
-std::vector<char> s_whitespace ={ ' ', '\n', '\t', '\r' };
-std::vector<char> s_openingBrackets ={ '(','[','{','<','\'','\"' };
-std::vector<char> s_closingBrackets ={ ')',']','}','>','\'','\"' };
-std::map<char, char> s_matchingBrackets ={ { '(',')' },{ '[',']' },{ '{','}' },
+vector<char> s_whitespace ={ ' ', '\n', '\t', '\r' };
+vector<char> s_openingBrackets ={ '(','[','{','<','\'','\"' };
+vector<char> s_closingBrackets ={ ')',']','}','>','\'','\"' };
+map<char, char> s_matchingBrackets ={ { '(',')' },{ '[',']' },{ '{','}' },
                                          { '<','>' },{ '\"','\"' },{'\'', '\'' },
                                          { ')','(' },{ ']','[' },{ '}','{' },
                                          { '>','<' } };
@@ -31,8 +31,8 @@ std::map<char, char> s_matchingBrackets ={ { '(',')' },{ '[',']' },{ '{','}' },
 const int Stringf_STACK_LOCAL_TEMP_LENGTH = 2048;
 
 
-ParseStatus ParseToInts( const String& str, std::vector<int>& out_ints,
-                         const String& delimiter /*= "," */ )
+ParseStatus ParseToInts( const string& str, vector<int>& out_ints,
+                         const string& delimiter /*= "," */ )
 {
     out_ints.clear();
     ParseStatus status = PARSE_SUCCESS;
@@ -49,7 +49,7 @@ ParseStatus ParseToInts( const String& str, std::vector<int>& out_ints,
     for( size_t tokenIdx = 0; tokenIdx < out_tokens.size(); ++tokenIdx )
     {
         int out_int = 0;
-        String& token = out_tokens[tokenIdx];
+        string& token = out_tokens[tokenIdx];
         if( SetFromString( token, out_int ) != PARSE_SUCCESS
             && status == PARSE_SUCCESS )
         {
@@ -62,8 +62,8 @@ ParseStatus ParseToInts( const String& str, std::vector<int>& out_ints,
 }
 
 
-ParseStatus ParseToFloats( const String& str, std::vector<float>& out_floats,
-                           const String& delimiter /*= "," */ )
+ParseStatus ParseToFloats( const string& str, vector<float>& out_floats,
+                           const string& delimiter /*= "," */ )
 {
     out_floats.clear();
     ParseStatus status = PARSE_SUCCESS;
@@ -80,7 +80,7 @@ ParseStatus ParseToFloats( const String& str, std::vector<float>& out_floats,
     for( size_t tokenIdx = 0; tokenIdx < out_tokens.size(); ++tokenIdx )
     {
         float out_float = 0;
-        String& token = out_tokens[tokenIdx];
+        string& token = out_tokens[tokenIdx];
         if( SetFromString( token, out_float ) != PARSE_SUCCESS
             && status == PARSE_SUCCESS )
         {
@@ -92,8 +92,8 @@ ParseStatus ParseToFloats( const String& str, std::vector<float>& out_floats,
     return status;
 }
 
-ParseStatus ParseToBools( const String& str, std::vector<bool>& out_bools,
-                          const String& delimiter /*= "," */ )
+ParseStatus ParseToBools( const string& str, vector<bool>& out_bools,
+                          const string& delimiter /*= "," */ )
 {
     out_bools.clear();
     ParseStatus status = PARSE_SUCCESS;
@@ -110,7 +110,7 @@ ParseStatus ParseToBools( const String& str, std::vector<bool>& out_bools,
     for( size_t tokenIdx = 0; tokenIdx < out_tokens.size(); ++tokenIdx )
     {
         bool out_bool = 0;
-        String& token = out_tokens[tokenIdx];
+        string& token = out_tokens[tokenIdx];
         if( SetFromString( token, out_bool ) != PARSE_SUCCESS
             && status == PARSE_SUCCESS )
         {
@@ -122,14 +122,14 @@ ParseStatus ParseToBools( const String& str, std::vector<bool>& out_bools,
     return status;
 }
 
-ParseStatus ParseToTokens( const String& str, Strings& out_tokens,
-                           const String& delimiter, bool removeWhiteSpace,
+ParseStatus ParseToTokens( const string& str, Strings& out_tokens,
+                           const string& delimiter, bool removeWhiteSpace,
                            bool removeBrackets, bool removeDelimiter )
 {
     out_tokens.clear();
     size_t pos = 0;
-    String token;
-    String strCopy = str;
+    string token;
+    string strCopy = str;
     size_t delimiterLenToCopy = 0;
     if( delimiter == " " )
         removeWhiteSpace = false;
@@ -139,7 +139,7 @@ ParseStatus ParseToTokens( const String& str, Strings& out_tokens,
         RemoveWhitespace( strCopy );
     if( removeBrackets )
         RemoveStartAndEndBrackets( strCopy );
-    while( ( pos = strCopy.find( delimiter ) ) != String::npos )
+    while( ( pos = strCopy.find( delimiter ) ) != string::npos )
     {
         token = strCopy.substr( 0, pos + delimiterLenToCopy );
 
@@ -161,7 +161,7 @@ ParseStatus ParseToTokens( const String& str, Strings& out_tokens,
 
 
 
-ParseStatus ParseToLines( const String& str,
+ParseStatus ParseToLines( const string& str,
                           Strings& out_tokens,
                           bool removeNewline, /*= true */
                           bool addNewlineToEnd  /*= false */ )
@@ -177,7 +177,7 @@ ParseStatus ParseToLines( const String& str,
     return status;
 }
 
-ParseStatus ParseParameters( const String& str,
+ParseStatus ParseParameters( const string& str,
                              Strings& out_parameters )
 {
     // Will parse "function_name(a,b,c,(1,2),[3,4],{5,6},"[]([  ](]]")" into
@@ -185,7 +185,7 @@ ParseStatus ParseParameters( const String& str,
     // Will parse "add 2 3" to "2" "3"
     // Note: will not work if there are nested brackets e.g. [[2,3]]
     out_parameters.clear();
-    String paramsStr;
+    string paramsStr;
     ExtractOnlyParameters( str, paramsStr );
 
     char delimiter = ',';
@@ -289,13 +289,13 @@ ParseStatus ParseParameters( const String& str,
     return PARSE_SUCCESS;
 }
 
-ParseStatus ExtractOnlyParameters( const String& str, String& out_parameters )
+ParseStatus ExtractOnlyParameters( const string& str, string& out_parameters )
 {
     // Remove everything not inside the outermost "( )"
     // Note there is a space in there
     size_t parametersStartPos = str.find_first_of( "( " );
     // no parameters, in this case "some_function"
-    if( parametersStartPos == String::npos )
+    if( parametersStartPos == string::npos )
         return PARSE_SUCCESS;
 
     size_t parametersEndPos;
@@ -307,7 +307,7 @@ ParseStatus ExtractOnlyParameters( const String& str, String& out_parameters )
         parametersEndPos = str.size();
 
 
-    if( parametersEndPos == String::npos ) // there is no matching ending bracket
+    if( parametersEndPos == string::npos ) // there is no matching ending bracket
         return PARSE_INVALID_INPUT;
 
     int parametersLength = (int) parametersEndPos - (int) parametersStartPos - 1;
@@ -319,7 +319,7 @@ ParseStatus ExtractOnlyParameters( const String& str, String& out_parameters )
     return PARSE_SUCCESS;
 }
 
-ParseStatus ParseFunctionName( const String& str, String& out_functionName )
+ParseStatus ParseFunctionName( const string& str, string& out_functionName )
 {
     //Note there is a space in there
     size_t parametersStartPos = str.find_first_of( "( " );
@@ -330,7 +330,7 @@ ParseStatus ParseFunctionName( const String& str, String& out_functionName )
 }
 
 
-ParseStatus ParseEnumStringToMap( const String& str, std::map<int, String>& stringMap )
+ParseStatus ParseEnumStringToMap( const string& str, map<int, string>& stringMap )
 {
     ParseStatus parseStatus = PARSE_SUCCESS;
     Strings enumEntrys;
@@ -363,7 +363,7 @@ ParseStatus ParseEnumStringToMap( const String& str, std::map<int, String>& stri
 
 
 
-String ConcatStrings( const Strings& strings, bool newlineAfterEachLine )
+string ConcatStrings( const Strings& strings, bool newlineAfterEachLine )
 {
     size_t totalSize = 0;
     for( auto& str : strings )
@@ -372,7 +372,7 @@ String ConcatStrings( const Strings& strings, bool newlineAfterEachLine )
     if( newlineAfterEachLine )
         totalSize += strings.size();
 
-    String concatStr;
+    string concatStr;
     concatStr.reserve( totalSize );
     for( auto& str : strings )
     {
@@ -384,7 +384,7 @@ String ConcatStrings( const Strings& strings, bool newlineAfterEachLine )
     return concatStr;
 }
 
-void ReplaceAll( String& out_str, char toBeReplaced, char replaceWith )
+void ReplaceAll( string& out_str, char toBeReplaced, char replaceWith )
 {
     size_t strLen = out_str.size();
     for( size_t strIdx = 0; strIdx < strLen; ++strIdx )
@@ -399,7 +399,7 @@ bool IsWhitespace( char charToTest )
     return IsCharInList( charToTest, s_whitespace );
 }
 
-bool IsAllWhitespace( String& strToTest )
+bool IsAllWhitespace( string& strToTest )
 {
     for( char c : strToTest )
     {
@@ -409,11 +409,11 @@ bool IsAllWhitespace( String& strToTest )
     return true;
 }
 
-bool IsPositiveInt( String& strToTest )
+bool IsPositiveInt( string& strToTest )
 {
     if( strToTest.empty() )
         return false;
-    std::string::const_iterator it = strToTest.begin();
+    string::const_iterator it = strToTest.begin();
     while( it != strToTest.end() && std::isdigit( *it ) )
     {
         ++it;
@@ -421,14 +421,14 @@ bool IsPositiveInt( String& strToTest )
     return it == strToTest.end();
 }
 
-bool FindInStrings( const Strings& strings, const String strToFind,
+bool FindInStrings( const Strings& strings, const string strToFind,
                     size_t& out_stringIdx, size_t& out_pos )
 {
     size_t pos;
     for( size_t strIdx = 0; strIdx < strings.size(); ++strIdx )
     {
         pos = strings[strIdx].find( strToFind );
-        if( pos != String::npos )
+        if( pos != string::npos )
         {
             out_stringIdx = strIdx;
             out_pos = pos;
@@ -438,7 +438,7 @@ bool FindInStrings( const Strings& strings, const String strToFind,
     return false;
 }
 
-bool IsCharInList( char charToTest, const std::vector<char>& charList )
+bool IsCharInList( char charToTest, const vector<char>& charList )
 {
     for( const auto charInList : charList )
     {
@@ -449,7 +449,7 @@ bool IsCharInList( char charToTest, const std::vector<char>& charList )
 }
 
 
-void RemoveWhitespace( String& out_str )
+void RemoveWhitespace( string& out_str )
 {
     for( const auto whiteSpaceChar : s_whitespace )
     {
@@ -457,7 +457,7 @@ void RemoveWhitespace( String& out_str )
     }
 }
 
-void RemoveOuterWhitespace( String& out_str )
+void RemoveOuterWhitespace( string& out_str )
 {
     // start from back and move forward
     for( int strIdx = (int) out_str.size() - 1; strIdx >= 0; --strIdx )
@@ -471,7 +471,7 @@ void RemoveOuterWhitespace( String& out_str )
     if( out_str.empty() )
         return;
 
-    String strCopy;
+    string strCopy;
     size_t firstNonWhite = out_str.size();
     // start from front and move back
     for( size_t strIdx = 0; strIdx < out_str.size(); ++strIdx )
@@ -483,19 +483,19 @@ void RemoveOuterWhitespace( String& out_str )
         break;
     }
 
-    strCopy.append( out_str, firstNonWhite, String::npos );
+    strCopy.append( out_str, firstNonWhite, string::npos );
     out_str = strCopy;
 }
 
-void RemoveAllChar( String& out_str, const char& charToRemove )
+void RemoveAllChar( string& out_str, const char& charToRemove )
 {
-    String::iterator end_pos
+    string::iterator end_pos
         = std::remove( out_str.begin(), out_str.end(), charToRemove );
 
     out_str.erase( end_pos, out_str.end() );
 }
 
-void RemoveStartAndEndBrackets( String& out_str )
+void RemoveStartAndEndBrackets( string& out_str )
 {
     if( out_str.empty() )
         return;
@@ -517,12 +517,12 @@ void RemoveStartAndEndBrackets( String& out_str )
     }
 }
 
-bool ContainsSubstring( const String& str, const String& subStr )
+bool ContainsSubstring( const string& str, const string& subStr )
 {
-    return str.find( subStr ) != String::npos;
+    return str.find( subStr ) != string::npos;
 }
 
-void ChopStringWithMaxLength( const String& str, Strings& out_substrings, int maxLength )
+void ChopStringWithMaxLength( const string& str, Strings& out_substrings, int maxLength )
 {
     out_substrings.clear();
 
@@ -539,7 +539,7 @@ void ChopStringWithMaxLength( const String& str, Strings& out_substrings, int ma
     }
 }
 
-void ToLower( String& out_str )
+void ToLower( string& out_str )
 {
     for( char& c : out_str )
     {
@@ -547,7 +547,7 @@ void ToLower( String& out_str )
     }
 }
 
-void ToUpper( String& out_str )
+void ToUpper( string& out_str )
 {
     for( char& c : out_str )
     {
@@ -561,17 +561,17 @@ char GetMatchingBracket( char bracket )
 }
 
 
-void ReplaceComments( String& str, char replaceWith /*= '*' */ )
+void ReplaceComments( string& str, char replaceWith /*= '*' */ )
 {
     size_t pos = 0;
     //replace "/* words */"
     while( true )
     {
         pos = str.find( "/*", pos );
-        if( String::npos == pos )
+        if( string::npos == pos )
             break;
         size_t endPos = str.find( "*/", pos + 2 ); // + 2 because /*/ is not valid end
-        if( String::npos == endPos )
+        if( string::npos == endPos )
         {
             LOG_WARNING( "No matching */ found to end comment" );
             break;
@@ -588,10 +588,10 @@ void ReplaceComments( String& str, char replaceWith /*= '*' */ )
     while( true )
     {
         pos = str.find( "//", pos );
-        if( String::npos == pos )
+        if( string::npos == pos )
             break;
         size_t endPos = str.find( '\n', pos + 2 ); // + 2 because /*/ is not valid end
-        if( String::npos == endPos )
+        if( string::npos == endPos )
             endPos = str.size(); //123/n
         size_t len = endPos - pos - 2;
         str.replace( pos + 2, len, len, replaceWith );
@@ -599,7 +599,7 @@ void ReplaceComments( String& str, char replaceWith /*= '*' */ )
     }
 }
 
-const String RemovePrefix( const String& str )
+const string RemovePrefix( const string& str )
 {
     if( str.size() < 3 )
         return str;
@@ -621,7 +621,7 @@ const String RemovePrefix( const String& str )
 // End of namespace StringUtils
 //--------------------------------------------------------------------------------------
 
-const String Stringf( const char* format, ... )
+const string Stringf( const char* format, ... )
 {
     char textLiteral[StringUtils::Stringf_STACK_LOCAL_TEMP_LENGTH];
     va_list variableArgumentList;
@@ -632,20 +632,20 @@ const String Stringf( const char* format, ... )
     // In case vsnprintf overran (doesn't auto-terminate)
     textLiteral[StringUtils::Stringf_STACK_LOCAL_TEMP_LENGTH - 1] = '\0';
 
-    return String( textLiteral );
+    return string( textLiteral );
 }
 
-const String Stringf( const char* format, va_list args )
+const string Stringf( const char* format, va_list args )
 {
     char textLiteral[StringUtils::Stringf_STACK_LOCAL_TEMP_LENGTH];
     vsnprintf_s( textLiteral, StringUtils::Stringf_STACK_LOCAL_TEMP_LENGTH,
                  _TRUNCATE, format, args );
     // In case vsnprintf overran (doesn't auto-terminate)
     textLiteral[StringUtils::Stringf_STACK_LOCAL_TEMP_LENGTH - 1] = '\0';
-    return String( textLiteral );
+    return string( textLiteral );
 }
 
-const String Stringf( const int maxLength, const char* format, ... )
+const string Stringf( const int maxLength, const char* format, ... )
 {
     char textLiteralSmall[StringUtils::Stringf_STACK_LOCAL_TEMP_LENGTH];
     char* textLiteral = textLiteralSmall;
@@ -659,14 +659,14 @@ const String Stringf( const int maxLength, const char* format, ... )
     // In case vsnprintf overran (doesn't auto-terminate)
     textLiteral[maxLength - 1] = '\0';
 
-    String returnValue( textLiteral );
+    string returnValue( textLiteral );
     if( maxLength > StringUtils::Stringf_STACK_LOCAL_TEMP_LENGTH )
         delete[] textLiteral;
 
     return returnValue;
 }
 
-ParseStatus SetFromString( const String& str, int& out_int )
+ParseStatus SetFromString( const string& str, int& out_int )
 {
     out_int = atoi( str.c_str() );
 
@@ -676,7 +676,7 @@ ParseStatus SetFromString( const String& str, int& out_int )
         if( str.empty() )
             return PARSE_EMPTY;
 
-        String out_strCopy = str;
+        string out_strCopy = str;
 
         if( out_strCopy[0] == '0' )
             return PARSE_SUCCESS;
@@ -687,7 +687,7 @@ ParseStatus SetFromString( const String& str, int& out_int )
     return PARSE_SUCCESS;
 }
 
-ParseStatus SetFromString( const String& str, float& out_float )
+ParseStatus SetFromString( const string& str, float& out_float )
 {
     out_float = (float) atof( str.c_str() );
 
@@ -697,7 +697,7 @@ ParseStatus SetFromString( const String& str, float& out_float )
         if( str.empty() )
             return PARSE_EMPTY;
 
-        String out_strCopy = str;
+        string out_strCopy = str;
 
         if( out_strCopy[0] == '0' || out_strCopy[0] == '-' )
             return PARSE_SUCCESS;
@@ -708,10 +708,10 @@ ParseStatus SetFromString( const String& str, float& out_float )
     return PARSE_SUCCESS;
 }
 
-ParseStatus SetFromString( const String& str, bool& out_bool )
+ParseStatus SetFromString( const string& str, bool& out_bool )
 {
 
-    String out_strCopy = str;
+    string out_strCopy = str;
     if( out_strCopy == "true" || out_strCopy == "True" )
     {
         out_bool = true;
@@ -730,7 +730,7 @@ ParseStatus SetFromString( const String& str, bool& out_bool )
         return status;
     }
 }
-ParseStatus SetFromString( const String& str, unsigned char& out_var )
+ParseStatus SetFromString( const string& str, unsigned char& out_var )
 {
     int out_int = 0;
     ParseStatus status = SetFromString( str, out_int );
@@ -738,7 +738,7 @@ ParseStatus SetFromString( const String& str, unsigned char& out_var )
     return status;
 }
 
-ParseStatus SetFromString( const String& str, String& out_var )
+ParseStatus SetFromString( const string& str, string& out_var )
 {
     out_var = str;
     return PARSE_SUCCESS;
@@ -746,7 +746,7 @@ ParseStatus SetFromString( const String& str, String& out_var )
 
 
 
-ParseStatus SetFromString( const String& str, uint& out_int )
+ParseStatus SetFromString( const string& str, uint& out_int )
 {
     int i;
     ParseStatus status = SetFromString( str, i );
@@ -754,17 +754,17 @@ ParseStatus SetFromString( const String& str, uint& out_int )
     return status;
 }
 
-const String ToString( int var )
+const string ToString( int var )
 {
     return std::to_string( var );
 }
 
-const String ToString( float var )
+const string ToString( float var )
 {
     return Stringf( "%.2f", var );
 }
 
-const String ToString( bool var )
+const string ToString( bool var )
 {
     if( var )
         return "true";
@@ -772,58 +772,58 @@ const String ToString( bool var )
     return "false";
 }
 
-const String ToString( unsigned char var )
+const string ToString( unsigned char var )
 {
     return std::to_string( var );
 }
 
-const String ToString( const Rgba& var )
+const string ToString( const Rgba& var )
 {
     return Stringf( "Rgba(%d, %d, %d, %d)", var.r, var.g, var.b, var.a );
 }
 
-const String ToString( const AABB2& var )
+const string ToString( const AABB2& var )
 {
     return Stringf( "AABB2(%.2f, %.2f, %.2f, %.2f)", var.mins.x, var.mins.y,
                     var.maxs.x, var.maxs.y );
 }
 
-const String ToString( const Range& var )
+const string ToString( const Range& var )
 {
     return Stringf( "Range(%.2f, %.2f)", var.min, var.max );
 }
 
-const String ToString( const IRange& var )
+const string ToString( const IRange& var )
 {
     return Stringf( "IRange(%d, %d)", var.min, var.max );
 }
 
-const String ToString( const IVec2& var )
+const string ToString( const IVec2& var )
 {
     return Stringf( "IVec2(%d, %d)", var.x, var.y );
 }
 
-const String ToString( const Vec2& var )
+const string ToString( const Vec2& var )
 {
     return Stringf( "Vec2(%.2f, %.2f)", var.x, var.y );
 }
 
-const String ToString( const String& var )
+const string ToString( const string& var )
 {
     return var;
 }
 
-const String ToString( const Vec3& var )
+const string ToString( const Vec3& var )
 {
     return Stringf( "Vec3(%.2f, %.2f, %.2f)", var.x, var.y, var.z );
 }
 
-const String ToString( const Vec4& var )
+const string ToString( const Vec4& var )
 {
     return Stringf( "Vec4(%.2f, %.2f, %.2f, %.2f)", var.x, var.y, var.z, var.w );
 }
 
-const String ToString( const Mat4& var )
+const string ToString( const Mat4& var )
 {
     return Stringf( "%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f",
                     var.Ix, var.Jx, var.Kx, var.Tx,
@@ -833,7 +833,7 @@ const String ToString( const Mat4& var )
     );
 }
 
-const String ToString( uint var )
+const string ToString( uint var )
 {
     return ToString( (int) var );
 }

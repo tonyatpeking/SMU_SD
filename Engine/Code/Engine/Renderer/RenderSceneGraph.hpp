@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include "Engine/Core/EngineCommonH.hpp"
 
 class Light;
 class Camera;
@@ -16,22 +16,22 @@ public:
     RenderSceneGraph();
     ~RenderSceneGraph() {};
 
-    std::vector<GameObject*>& GetGameObjects();
-    std::vector<Renderable*>& GetRenderables();
-    std::vector<GameObject*>& GetLights();
+    vector<GameObject*>& GetGameObjects();
+    vector<Renderable*>& GetRenderables();
+    vector<GameObject*>& GetLights();
 
     void AddCamera( Camera* camera ) { m_cameras.push_back( camera ); };
     void RemoveCamera( Camera* camera );
-    std::vector<Camera*>& GetCameras();
+    vector<Camera*>& GetCameras();
 
     void SetGameObjectManager( GameObjectManager* manager ) { m_manager = manager; };
 
 private:
 
-    std::vector<Renderable*> m_renderables;
+    vector<Renderable*> m_renderables;
     static RenderSceneGraph* s_default;
     GameObjectManager* m_manager = nullptr;
 
-    std::vector<Camera*> m_cameras;
+    vector<Camera*> m_cameras;
 
 };

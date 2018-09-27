@@ -6,19 +6,19 @@ namespace IOUtils
 {
 // returns in the following format, no slash at end
 // "D:\\Guildhall\\p4\\C27\\Students\\hongjiny\\Projects\\SD0\\Protogame2D\\Run_Win32"
-String GetCurrentDir();
-String RelativeToFullPath( const String& relativePath );
+string GetCurrentDir();
+string RelativeToFullPath( const string& relativePath );
 // returns false for files
-bool DirExists( const String& path );
-bool FileExists( const String& path );
-bool MakeDirR( const String& path );
-bool MakeFileR( const String& path );
+bool DirExists( const string& path );
+bool FileExists( const string& path );
+bool MakeDirR( const string& path );
+bool MakeFileR( const string& path );
 
-bool WriteToFile( const String& path, const String& text );
-bool WriteToFile( const String& path, const Strings& text );
+bool WriteToFile( const string& path, const string& text );
+bool WriteToFile( const string& path, const Strings& text );
 void* ReadFileToNewStringBuffer( char const* filename );
 void* ReadFileToNewRawBuffer( char const* filename, size_t& out_byteCount );
-String ReadFileToString( char const* filename );
-Strings ReadFileToStrings( String& path );
+string ReadFileToString( char const* filename );
+Strings ReadFileToStrings( string& path );
 bool CanOpenFile( char const* filename );
 }

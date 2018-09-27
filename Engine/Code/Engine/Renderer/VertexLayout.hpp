@@ -21,7 +21,7 @@ struct VertexAttribute
     VertexAttribute( const char* name ) : m_name( name ) {}
     static VertexAttribute END();
 
-    String m_name; // e.g. POSITION
+    string m_name; // e.g. POSITION
     RenderDataType m_renderDataType;
     uint m_elementCount;
     bool m_isNormalized;
@@ -43,11 +43,11 @@ public:
         , Copier( copierFunc ) {}
     uint GetAttributeCount() const { return (uint) m_attributes.size(); };
     const VertexAttribute* GetAttribute( uint idx ) const { return &m_attributes[idx]; };
-    bool HasAttribute( String name ) const;
+    bool HasAttribute( string name ) const;
 
 
 public:
-    std::vector<VertexAttribute> m_attributes;
+    vector<VertexAttribute> m_attributes;
     size_t m_stride; // how far between element
 
     VertCopierFunc Copier;

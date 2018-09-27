@@ -15,7 +15,7 @@ public:
     static bool Startup();
     static bool Shutdown();
 
-    static void ConnectionTest( const NetAddress& addr, const String& msg );
+    static void ConnectionTest( const NetAddress& addr, const string& msg );
 
     static void HostTest(int port);
     static void HostTestClose();

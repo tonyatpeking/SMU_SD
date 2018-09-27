@@ -114,7 +114,7 @@ SMART_ENUM(
     runTests
 )
 
-extern std::map<GameFlag, bool> g_flags;
+extern map<GameFlag, bool> g_flags;
 
 constexpr char* CONFIG_PATH = "Data/GameConfig.xml";
 constexpr char* SHADER_TEST_RELOAD = "Data/Shaders/testReload";
@@ -123,11 +123,11 @@ constexpr char* SHADER_UV = "Data/Shaders/showUV";
 constexpr char* TEST_TEXTURE = "Data/Images/test_opengl.png";
 
 
-bool GetFlag( const String& flag );
+bool GetFlag( const string& flag );
 bool GetFlag( GameFlag flag );
-void SetFlag( const String& flag, bool set = true );
+void SetFlag( const string& flag, bool set = true );
 void SetFlag( GameFlag, bool set = true );
-void ToggleFlag( const String& flag );
+void ToggleFlag( const string& flag );
 void ToggleFlag( GameFlag flag );
 
 class Config
@@ -136,20 +136,20 @@ public:
 
     void LoadConfigFromBlackboard();
     // Definitions
-    String tileDefPath;
-    String mapDefPath;
-    String actorDefPath;
-    String projectileDefPath;
-    String portalDefPath;
-    String adventureDefPath;
-    String itemDefPath;
+    string tileDefPath;
+    string mapDefPath;
+    string actorDefPath;
+    string projectileDefPath;
+    string portalDefPath;
+    string adventureDefPath;
+    string itemDefPath;
 
 
     // Key bindings
     char keyPause = '\0';
     char keySlowTime = '\0';
 
-    String appName = "";
+    string appName = "";
 
     // Camera
     Vec2 orthoSysSize = Vec2::ZEROS;
@@ -183,8 +183,8 @@ public:
     IVec2 playerStartCoords = IVec2( 3, 3 );
 
     // Texture
-    String testTexturePath = "";
-    String fontPath = "";
+    string testTexturePath = "";
+    string fontPath = "";
     IVec2 fontSprtiesheetLayout = IVec2( 16, 16 );
 
     // Dev mode
@@ -194,11 +194,11 @@ public:
     Rgba cosmeticRadiusColor = Rgba::MAGENTA;
 
     // Sounds
-    String soundAttract = "";
-    String soundGameplay= "";
-    String soundPause = "";
-    String soundVictory = "";
-    String soundDeath = "";
+    string soundAttract = "";
+    string soundGameplay= "";
+    string soundPause = "";
+    string soundVictory = "";
+    string soundDeath = "";
 
     // Gamestates
     Rgba transitionColor = Rgba::BLACK;

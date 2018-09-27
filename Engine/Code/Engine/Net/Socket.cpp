@@ -46,7 +46,7 @@ void Socket::SetBlocking( bool block )
     int result = ioctlsocket( m_sock, FIONBIO, &nonBlocking );
     if( result != NO_ERROR )
     {
-        String errStr = WindowsUtils::ErrorCodeToString( result );
+        string errStr = WindowsUtils::ErrorCodeToString( result );
         LOG_WARNING_TAG(
             "Net",
             "ioctlsocket failed with error: %d, %s\n",
@@ -82,7 +82,7 @@ bool Socket::HasFatalError() const
     AssertBreakpoint( err != 10038 );
     if( err == WSAEWOULDBLOCK || err == WSAEMSGSIZE || err == WSAECONNRESET )
         return false;
-    String errStr = WindowsUtils::ErrorCodeToString( err );
+    string errStr = WindowsUtils::ErrorCodeToString( err );
     LOG_WARNING_TAG( "Net", "winsock error: %d, %s", err, errStr.c_str() );
     return true;
 }
@@ -92,7 +92,7 @@ int Socket::GetLastErrorCode() const
     return WSAGetLastError();
 }
 
-String Socket::GetLastErrorString() const
+string Socket::GetLastErrorString() const
 {
     int errCode = GetLastErrorCode();
     return WindowsUtils::ErrorCodeToString( errCode );

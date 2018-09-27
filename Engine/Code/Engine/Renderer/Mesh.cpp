@@ -6,7 +6,7 @@
 #include "Engine/Core/ContainerUtils.hpp"
 #include "Engine/FileIO/ObjLoader.hpp"
 
-std::map<String, Mesh*> Mesh::s_loadedMeshes;
+map<string, Mesh*> Mesh::s_loadedMeshes;
 
 void Mesh::SetIndices( uint count, const uint* indices )
 {
@@ -32,10 +32,10 @@ void Mesh::FromBuilder( const MeshBuilder& builder )
     m_subMeshInstuct = builder.m_subMeshInstuct;
 }
 
-Mesh* Mesh::CreateOrGetMesh( const String& filePath, bool generateNormals,
+Mesh* Mesh::CreateOrGetMesh( const string& filePath, bool generateNormals,
                              bool generateTangents, bool useMikkT )
 {
-    if( !ContainerUtils::Contains( s_loadedMeshes, filePath ) )
+    if( !ContainerUtils::ContainsKey( s_loadedMeshes, filePath ) )
     {
         MeshBuilder mb = ObjLoader::LoadFromFile( filePath.c_str() );
 

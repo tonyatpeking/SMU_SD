@@ -6,7 +6,7 @@
 #include "Engine/Core/ErrorUtils.hpp"
 
 
-int ShaderSourceBuilder::GetRealFileLine( int lineStitched, String& out_filePath ) const
+int ShaderSourceBuilder::GetRealFileLine( int lineStitched, string& out_filePath ) const
 {
     if( lineStitched > 0 )
         --lineStitched;
@@ -19,17 +19,17 @@ int ShaderSourceBuilder::GetRealFileLine( int lineStitched, String& out_filePath
 }
 
 
-String ShaderSourceBuilder::Finalize( String& source,
-                                   const String& filePath,
-                                   const String& defines /*= "" */,
-                                   const String& generatedFilepath )
+string ShaderSourceBuilder::Finalize( string& source,
+                                   const string& filePath,
+                                   const string& defines /*= "" */,
+                                   const string& generatedFilepath )
 {
     InitShaderLoader( source, filePath );
     bool insertSuccess = InsertDefinesToShaderSource( defines );
     bool includeSuccess = InsertIncludesToShaderSource();
     if( m_hasIncludes )
     {
-        String writeToFilepath;
+        string writeToFilepath;
         if( generatedFilepath.empty() )
             writeToFilepath = filePath;
         else
@@ -45,15 +45,15 @@ String ShaderSourceBuilder::Finalize( String& source,
     return GetCombinedSource();
 }
 
-void ShaderSourceBuilder::InitShaderLoader( String& source,
-                                            const String& filePath )
+void ShaderSourceBuilder::InitShaderLoader( string& source,
+                                            const string& filePath )
 {
     m_includedFilePaths.push_back( filePath );
     ReadSourceToLines( source, m_mainSource, m_mainSourceNoComment );
     m_lineEntries = MakeFileLineEntries( 0, (int) m_mainSource.size() );
 }
 
-bool ShaderSourceBuilder::InsertDefinesToShaderSource( const String defines )
+bool ShaderSourceBuilder::InsertDefinesToShaderSource( const string defines )
 {
     // find line with version,
     size_t versionPos = 0;
@@ -74,7 +74,7 @@ bool ShaderSourceBuilder::InsertDefinesToShaderSource( const String defines )
     StringUtils::ParseToTokens( defines, tokens, ";", false, false );
     for( int tokenIdx = (int) tokens.size() - 1; tokenIdx >= 0; --tokenIdx )
     {
-        String& token = tokens[tokenIdx];
+        string& token = tokens[tokenIdx];
         if( tokens[tokenIdx].empty() || StringUtils::IsAllWhitespace( tokens[tokenIdx] ) )
         {
             ContainerUtils::EraseAtIndexFast( tokens, tokenIdx );
@@ -102,22 +102,22 @@ bool ShaderSourceBuilder::InsertIncludesToShaderSource()
         else
             m_hasIncludes = true;
 
-        String includeLineStr = m_mainSourceNoComment[includeLine];
+        string includeLineStr = m_mainSourceNoComment[includeLine];
         //check if the include line ends with a comment
         if( ErrorIfLineEndsWithComment( includeLineStr ) )
             return false;
-        String includeFilePath = GetFilePathFromInclude( includeLineStr );
+        string includeFilePath = GetFilePathFromInclude( includeLineStr );
         StringUtils::RemoveOuterWhitespace( includeFilePath );
         CommentLineFromSource( (int) includeLine );
         if( FileHasBeenAdded( includeFilePath ) )
             continue;
 
-        String source = IOUtils::ReadFileToString( includeFilePath.c_str() );
+        string source = IOUtils::ReadFileToString( includeFilePath.c_str() );
         if( source.empty() )
         {
 
-            String errorMsg = "Could not include file [" + includeFilePath + "]";
-            String realFile;
+            string errorMsg = "Could not include file [" + includeFilePath + "]";
+            string realFile;
             int realLine = GetRealFileLine( (int) includeLine + 1, realFile );
             Log( ( IOUtils::GetCurrentDir() + "/" + realFile ),
                  "", realLine, LOG_LEVEL_WARNING, "", errorMsg );
@@ -137,14 +137,14 @@ bool ShaderSourceBuilder::InsertIncludesToShaderSource()
 }
 
 //extracts "fullPath/abcd" from "#include \"abcd\""
-String ShaderSourceBuilder::GetFilePathFromInclude( const String& includeLine )
+string ShaderSourceBuilder::GetFilePathFromInclude( const string& includeLine )
 {
     size_t start = includeLine.find( '\"' );
     size_t end = 0;
-    if( String::npos != start )
+    if( string::npos != start )
         end = includeLine.find( '\"', start + 1 );
 
-    if( String::npos == start || String::npos == end )
+    if( string::npos == start || string::npos == end )
     {
         LOG_WARNING( "Bad include: " + includeLine );
         return includeLine;
@@ -153,7 +153,7 @@ String ShaderSourceBuilder::GetFilePathFromInclude( const String& includeLine )
     return includeLine.substr( start + 1, end - start - 1 );
 }
 
-bool ShaderSourceBuilder::ErrorIfLineEndsWithComment( const String& line )
+bool ShaderSourceBuilder::ErrorIfLineEndsWithComment( const string& line )
 {
     if( line.size() < 2 )
         return false;
@@ -216,12 +216,12 @@ void ShaderSourceBuilder::InsertLineEntries( int replacePos, int fileIdx,
                           entiresToInsert.begin(), entiresToInsert.end() );
 }
 
-bool ShaderSourceBuilder::FileHasBeenAdded( const String& filePath )
+bool ShaderSourceBuilder::FileHasBeenAdded( const string& filePath )
 {
     return ContainerUtils::Contains( m_includedFilePaths, filePath );
 }
 
-bool ShaderSourceBuilder::ReadSourceToLines( String& source,
+bool ShaderSourceBuilder::ReadSourceToLines( string& source,
                                              Strings& out_sourceLines,
                                              Strings& out_sourceLineNoComment )
 {
@@ -231,17 +231,17 @@ bool ShaderSourceBuilder::ReadSourceToLines( String& source,
     return true;
 }
 
-String ShaderSourceBuilder::GetSourceFilepath()
+string ShaderSourceBuilder::GetSourceFilepath()
 {
     return m_includedFilePaths[0];
 }
 
-String ShaderSourceBuilder::GetCombinedSource()
+string ShaderSourceBuilder::GetCombinedSource()
 {
     return StringUtils::ConcatStrings( m_mainSource );
 }
 
-String ShaderSourceBuilder::GetCombinedLineMeta()
+string ShaderSourceBuilder::GetCombinedLineMeta()
 {
     Strings lineMeta;
     for( auto& entry : m_lineEntries )

@@ -2,6 +2,7 @@
 #include <string>
 
 #include "ThirdParty/pybind11/embed.h"
+#include "Engine/Core/EngineCommonH.hpp"
 
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -19,8 +20,8 @@ public:
 
     bool IsStarted() { return m_started; };
 
-    void PushToShell(std::string text);
-    std::string ReadFromShell();
+    void PushToShell(string& text);
+    string ReadFromShell();
 
     static void CloseShell();
 

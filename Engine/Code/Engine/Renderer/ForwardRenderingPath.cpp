@@ -96,7 +96,7 @@ void ForwardRenderingPath::RenderSceneForCamera( Camera* camera )
 
     //ClearBasedOnCameraOptions( camera );
 
-    std::vector<DrawCall> drawCalls;
+    vector<DrawCall> drawCalls;
 
     PROFILER_PUSH( GenerateDrawCalls );
     // Generate the draw calls
@@ -178,8 +178,8 @@ void ForwardRenderingPath::ComputeMostContributingLights( const Vec3& pos,
 {
 
     PROFILER_SCOPED();
-    std::vector<LightSortStruct> lightsSorted;
-    std::vector<GameObject*>& lights = m_scene->GetLights();
+    vector<LightSortStruct> lightsSorted;
+    vector<GameObject*>& lights = m_scene->GetLights();
     lightsSorted.reserve( lights.size() );
     for( uint lightIdx = 0; lightIdx < lights.size(); ++lightIdx )
     {
@@ -199,9 +199,9 @@ void ForwardRenderingPath::ComputeMostContributingLights( const Vec3& pos,
     }
 }
 
-void ForwardRenderingPath::SortDrawCalls( std::vector<DrawCall>& out_drawCalls )
+void ForwardRenderingPath::SortDrawCalls( vector<DrawCall>& out_drawCalls )
 {
-    std::vector<Ints> queueBuckets;
+    vector<Ints> queueBuckets;
     queueBuckets.resize( RenderQueue::COUNT );
     for( uint drawCallIdx = 0; drawCallIdx < out_drawCalls.size(); drawCallIdx++ )
     {
@@ -210,7 +210,7 @@ void ForwardRenderingPath::SortDrawCalls( std::vector<DrawCall>& out_drawCalls )
     }
 
 
-    std::map<int, Ints> sortOrderBuckets;
+    map<int, Ints> sortOrderBuckets;
     for( int queueBucketIdx = 0; queueBucketIdx < queueBuckets.size(); ++queueBucketIdx )
     {
         Ints& bucket = queueBuckets[queueBucketIdx];
@@ -222,7 +222,7 @@ void ForwardRenderingPath::SortDrawCalls( std::vector<DrawCall>& out_drawCalls )
         }
     }
 
-    std::vector<DrawCall> sortedDrawCalls;
+    vector<DrawCall> sortedDrawCalls;
     sortedDrawCalls.reserve( out_drawCalls.size() );
 
     for( auto& pair : sortOrderBuckets )

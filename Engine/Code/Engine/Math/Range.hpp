@@ -14,7 +14,7 @@ public:
     explicit Range( float minInclusive, float maxInclusive );
     explicit Range( float minMaxInclusive );
 
-    ParseStatus SetFromText( const String& text, const String& delimiter = "~" );
+    ParseStatus SetFromText( const string& text, const string& delimiter = "~" );
 
     float GetRandomInRange() const;
     bool IsInRange( float val ) const;

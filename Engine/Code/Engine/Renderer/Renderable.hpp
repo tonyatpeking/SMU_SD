@@ -53,12 +53,12 @@ public:
     static Renderable* MakeUVSphere();
 
 
-    std::vector<Material*> m_materials;
+    vector<Material*> m_materials;
     Mat4 m_modelMatrix;
 
 
     //AKA VAO
-    std::vector<InputLayout> m_inputLayouts;
+    vector<InputLayout> m_inputLayouts;
 
 private:
     void SetDirty();

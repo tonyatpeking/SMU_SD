@@ -86,7 +86,7 @@ public:		// Public methods
     //     void DrawDottedCircle( const Vec3& center, float radius, const Vec3& normal,
     //                            const Rgba& color = Rgba::WHITE, int sides = 30 );
     void DrawRect( const AABB2& bounds, const Rgba& color = Rgba::MAGENTA );
-    void DrawPoints( const std::vector<Vec3>& points, float pointSize = 1.f,
+    void DrawPoints( const vector<Vec3>& points, float pointSize = 1.f,
                      const Rgba& color = Rgba::WHITE );
 
     // Draw Cube
@@ -106,7 +106,7 @@ public:		// Public methods
 
     // Draw Text
     void DrawText2D(
-        const String& text,
+        const string& text,
         const Vec2& position,
         float height,
         const BitmapFont* font = nullptr,
@@ -115,7 +115,7 @@ public:		// Public methods
         float aspectScale = 1.f );
 
     void DrawTextInBox2D(
-        const String& text,
+        const string& text,
         const AABB2& box,
         float fontHeight,
         const BitmapFont* font = nullptr,
@@ -125,7 +125,7 @@ public:		// Public methods
         float aspectScale = 1.f );
 
     void DrawText2DFlashWave(
-        const String& text,
+        const string& text,
         const Vec2& position,
         float height,
         const BitmapFont* font,
@@ -142,8 +142,8 @@ public:		// Public methods
 
 
     // Texture creation / destruction
-    Texture* CreateOrGetTexture( const String& texturePath ); // Does not reload if texturePath is the same
-    Texture* GetTexture( const String& texturePath );
+    Texture* CreateOrGetTexture( const string& texturePath ); // Does not reload if texturePath is the same
+    Texture* GetTexture( const string& texturePath );
     Texture* CreateOrGetTexture( Image* image ); // Does not automatically cache, so hold on to the texture pointer
 
     // Render Targets
@@ -156,13 +156,13 @@ public:		// Public methods
 
     bool CopyFrameBuffer( FrameBuffer* dst, FrameBuffer* src );
 
-    void SetDefaultFont( const String& bitmapFontPath );
-    BitmapFont* CreateOrGetBitmapFont( const String& bitmapFontPath );
-    BitmapFont* GetBitmapFont( const String& bitmapFontPath );
+    void SetDefaultFont( const string& bitmapFontPath );
+    BitmapFont* CreateOrGetBitmapFont( const string& bitmapFontPath );
+    BitmapFont* GetBitmapFont( const string& bitmapFontPath );
     BitmapFont* DefaultFont() { return m_defaultFont; };
 
-    SpriteSheet* CreateOrGetSpriteSheet( const String& spriteSheetPath, const IVec2& layout );
-    SpriteSheet* GetSpriteSheet( const String& spriteSheetPath );
+    SpriteSheet* CreateOrGetSpriteSheet( const string& spriteSheetPath, const IVec2& layout );
+    SpriteSheet* GetSpriteSheet( const string& spriteSheetPath );
 
     void DeleteTexture( Texture*& texture );
 
@@ -275,9 +275,9 @@ private:	// Private members
     void BindInstanceUBO( const Mat4& model, const Material* material );
     void BindLightUBO();
 
-    std::map<String, Texture*> m_loadedTextures;
-    std::map< String, BitmapFont* > m_loadedFonts;
-    std::map< String, SpriteSheet* > m_loadedSpriteSheets;
+    map<string, Texture*> m_loadedTextures;
+    map< string, BitmapFont* > m_loadedFonts;
+    map< string, SpriteSheet* > m_loadedSpriteSheets;
 
     Rgba m_backgroundColor = Rgba::DIM_GRAY;
 

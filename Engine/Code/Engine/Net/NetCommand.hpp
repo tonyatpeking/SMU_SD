@@ -15,7 +15,7 @@ public:
 
 public:
 
-    String m_name;
+    string m_name;
     NetCommandCallback m_callback = nullptr;
     GetLengthCallback m_getLengthCallback = nullptr;
     size_t m_fixedLength;

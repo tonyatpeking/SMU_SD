@@ -46,9 +46,9 @@ from zzzEngine import *
     ;
 }
 
-void ShapeRulesetLoader::Load( const String& file )
+void ShapeRulesetLoader::Load( const string& file )
 {
-    String msg = LoadRuleset( file ).cast<String>();
+    string msg = LoadRuleset( file ).cast<string>();
     LOG_INFO_TAG("ShapeRule", msg.c_str() )
 }
 
@@ -62,7 +62,7 @@ PYBIND11_EMBEDDED_MODULE( zzzEngine, m ) {
 
 
     py::class_<GameObject, std::unique_ptr<GameObject, py::nodelete>>( m, "GameObject" )
-        .def( py::init<const String&>() )
+        .def( py::init<const string&>() )
         .def( "GetTransform", py::overload_cast<>( &GameObject::GetTransform ), py::return_value_policy::reference_internal )
         .def( "SetParent", &GameObject::SetParent<GameObject> )
         .def( "SetParentKeepWorldTransform", &GameObject::SetParentKeepWorldTransform<GameObject> )

@@ -4,15 +4,16 @@
 #include <map>
 #include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/ErrorUtils.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 
 
 
-typedef void( *CommandCallback )( String );
+typedef void( *CommandCallback )( string& );
 
 // make a static variable of this to self register to the default command system
 class CommandSelfRegister
 {
-    CommandSelfRegister( String name, CommandCallback callback );
+    CommandSelfRegister( string& name, CommandCallback callback );
     ~CommandSelfRegister() {};
 };
 
@@ -22,12 +23,12 @@ public:
 
     CommandDef() {}
 
-    CommandDef( String name, CommandCallback callback )
+    CommandDef( string& name, CommandCallback callback )
         : m_name( name )
         , m_callback( callback )
     {};
 
-    String m_name;
+    string m_name;
 
     CommandCallback m_callback = nullptr;
 };
@@ -36,7 +37,7 @@ class CommandParameterParser
 {
 public:
 
-    CommandParameterParser( const String& commandString, bool suppressWarnings = false );
+    CommandParameterParser( const string& commandString, bool suppressWarnings = false );
 
     // gets the next param, works for most engine types, return whether succeeded
     template<typename T>
@@ -65,12 +66,12 @@ public:
 
     bool AllParseSuccess() { return m_allParseSuccess; };
     size_t NumOfParams() { return m_parameterTokens.size(); };
-    String GetName() { return m_commandName; };
-    String GetOnlyParameters() { return m_justParams; };
+    string GetName() { return m_commandName; };
+    string GetOnlyParameters() { return m_justParams; };
 private:
     Strings m_parameterTokens;
-    String m_commandName;
-    String m_justParams;
+    string m_commandName;
+    string m_justParams;
     size_t m_nextParamToGet = 0;
     bool m_suppressWarnings;
     bool m_allParseSuccess = true;
@@ -82,10 +83,10 @@ public:
 
     static CommandSystem* DefaultCommandSystem();
 
-    void AddCommand( String name, CommandCallback callback );
-    void RunCommand( String commandString );
+    void AddCommand( string name, CommandCallback callback );
+    void RunCommand( string commandString );
 
-    const std::map<String, CommandDef>& GetAllCommandDefs() const
+    const map<string, CommandDef>& GetAllCommandDefs() const
     {
         return m_commandDefs;
     };
@@ -94,5 +95,5 @@ private:
 
     static CommandSystem* s_defaultCommandSystem;
 
-    std::map<String, CommandDef>  m_commandDefs;
+    map<string, CommandDef>  m_commandDefs;
 };

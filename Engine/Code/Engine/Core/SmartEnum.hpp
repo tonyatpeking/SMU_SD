@@ -6,7 +6,7 @@
 #include <sstream>
 #include "Engine/Core/ErrorUtils.hpp"
 #include "Engine/String/StringUtils.hpp"
-
+#include "Engine/Core/Types.hpp"
 
 // This is an easy to use enum macro that allows automatic string conversion
 // inspired by https://stackoverflow.com/questions/201593/is-there-a-simple-way-to-convert-c-enum-to-string#201792
@@ -32,8 +32,8 @@ TypeOfFruit apple = TypeOfFruit::APPLE;
 int appleInt = apple;
 
 // To and from string, with static and non-static versions, case sensitive
-String str1 = apple.ToString();
-String str2 = TypeOfFruit::ToString(apple);
+string str1 = apple.ToString();
+string str2 = TypeOfFruit::ToString(apple);
 TypeOfFruit pear = TypeOfFruit::FromString("PEAR");
 
 // If string cannot be found, FromString will return TypeOfFruit::ENUM_NOT_FOUND
@@ -59,30 +59,30 @@ public:                                                                         
     /* Store the enum so that EnumName::SOMETHING will return the enum */                                                       \
     enum { __VA_ARGS__, COUNT, ENUM_NOT_FOUND };                                                                                \
                                                                                                                                 \
-    static std::vector<EnumName>& AllValues() {                                                                                 \
-        static std::vector<EnumName> allValues;                                                                                 \
+    static vector<EnumName>& AllValues() {                                                                                 \
+        static vector<EnumName> allValues;                                                                                 \
         if( (int) allValues.size() == 0 )                                                                                             \
             InitAllValues( allValues );                                                                                         \
         return allValues;                                                                                                       \
     }                                                                                                                           \
                                                                                                                                 \
-    static String ToString( int intValue )                                                                                 \
+    static string ToString( int intValue )                                                                                 \
     {                                                                                                                           \
         return StringMap()[intValue];                                                                                           \
     }                                                                                                                           \
                                                                                                                                 \
-    String ToString( void ) const                                                                                          \
+    string ToString( void ) const                                                                                          \
     {                                                                                                                           \
         return ToString( m_value );                                                                                             \
     }                                                                                                                           \
                                                                                                                                 \
-    static EnumName FromString( const String& str )                                                                        \
+    static EnumName FromString( const string& str )                                                                        \
     {                                                                                                                           \
         auto it = find_if( StringMap().begin(), StringMap().end(),                                                              \
-                           [str]( const std::pair<int, String>& pair ) { return pair.second == str; } );                   \
+                           [str]( const std::pair<int, string>& pair ) { return pair.second == str; } );                   \
         if( it == StringMap().end() )                                                                                           \
         {                                                                                                                       \
-            String errEnumName = #EnumName;                                                                                \
+            string errEnumName = #EnumName;                                                                                \
             LOG_WARNING( errEnumName + "::" + str + " not defined" );                                                           \
             return EnumName( (int) StringMap().size() - 1 );                                                                          \
         }                                                                                                                       \
@@ -96,23 +96,23 @@ public:                                                                         
                                                                                                                                 \
 private:                                                                                                                        \
                                                                                                                                 \
-    static void InitStringMap( std::map<int, String>& stringMap )                                                          \
+    static void InitStringMap( map<int, string>& stringMap )                                                          \
     {                                                                                                                           \
-        String  enumString = #__VA_ARGS__;                                                                                 \
+        string  enumString = #__VA_ARGS__;                                                                                 \
         enumString += " ,COUNT, ENUM_NOT_FOUND";                                                                                       \
         ParseStatus parseStatus = StringUtils::ParseEnumStringToMap( enumString, stringMap );                                   \
         if( parseStatus != ParseStatus::PARSE_SUCCESS )                                                                         \
             LOG_WARNING( "Failed to parse enum string: \n" + enumString );                                                      \
     }                                                                                                                           \
                                                                                                                                 \
-    static std::map<int, String>& StringMap() {                                                                            \
-        static std::map<int, String> stringMap;                                                                            \
+    static map<int, string>& StringMap() {                                                                            \
+        static map<int, string> stringMap;                                                                            \
         if( (int) stringMap.size() == 0 )                                                                                             \
             InitStringMap( stringMap );                                                                                         \
         return stringMap;                                                                                                       \
     }                                                                                                                           \
                                                                                                                                 \
-    static void InitAllValues( std::vector<EnumName>& allValues )                                                               \
+    static void InitAllValues( vector<EnumName>& allValues )                                                               \
     {                                                                                                                           \
         const auto& stringMap = StringMap();                                                                                    \
         for( const auto& pair : stringMap )                                                                                     \

@@ -5,7 +5,7 @@
 class RigidBody : public GameObject
 {
 public:
-	RigidBody(std::string type);
+	RigidBody(string type);
 	virtual ~RigidBody(){};
     virtual void Update() override;
 

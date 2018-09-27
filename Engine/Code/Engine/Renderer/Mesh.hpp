@@ -34,7 +34,7 @@ public:
 
     void FromBuilder( const MeshBuilder& builder );
 
-    static Mesh* CreateOrGetMesh( const String& filePath, bool generateNormals = false,
+    static Mesh* CreateOrGetMesh( const string& filePath, bool generateNormals = false,
                                   bool generateTangents = false, bool useMikkT = true );
 
     DrawInstruction& GetSubMeshInstruction( uint subMeshId );
@@ -43,11 +43,11 @@ public:
     AABB3 GetLocalBounds() const { return m_localBounds; };
     void SetLocalBounds( AABB3& bounds ) { m_localBounds = bounds; };
 public:
-    static std::map<String, Mesh*> s_loadedMeshes;
+    static map<string, Mesh*> s_loadedMeshes;
 
     VertexBuffer m_vertexBuffer;
     IndexBuffer m_indexBuffer;
-    std::vector<DrawInstruction> m_subMeshInstuct;
+    vector<DrawInstruction> m_subMeshInstuct;
     const VertexLayout* m_vertexLayout = nullptr;
     AABB3 m_localBounds;
 };

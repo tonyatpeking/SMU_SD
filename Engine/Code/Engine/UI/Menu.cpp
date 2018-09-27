@@ -112,7 +112,7 @@ void Menu::AddEntry( MenuEntry* menuEntry )
     menuEntry->SetParent( this );
 }
 
-void Menu::AddEntry( const String& text, std::function<void()> action, const Rgba& color )
+void Menu::AddEntry( const string& text, std::function<void()> action, const Rgba& color )
 {
     MenuEntry* entry = new MenuEntry();
     AddEntry( entry );

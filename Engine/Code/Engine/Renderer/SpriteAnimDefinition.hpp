@@ -22,7 +22,7 @@ SMART_ENUM(
     LOOPING
 )
 
-SpriteAnimMode StringToSpriteAnimMode( const String& spriteAnimModeStr );
+SpriteAnimMode StringToSpriteAnimMode( const string& spriteAnimModeStr );
 
 
 class SpriteAnimDefinition
@@ -32,17 +32,17 @@ public:
     const Texture* GetTexture() const;
 
     // swaps the sprite sheets in this def for another one, preserves the layout
-    void SwapSpriteSheet( const String& spriteSheetPath, Renderer& renderer );
+    void SwapSpriteSheet( const string& spriteSheetPath, Renderer& renderer );
 
     SpriteAnimType m_animType;
     SpriteAnimMode m_playbackMode = SpriteAnimMode::LOOPING;
 
-    String m_spritePath;
+    string m_spritePath;
     IVec2 m_spriteLayout;
     SpriteSheet* m_spriteSheet = nullptr;
 
 
-    std::vector<int> m_spriteIndices;
+    vector<int> m_spriteIndices;
     IRange m_spriteIndexRange = IRange( 0 );
 
     float m_duration = 0.f;

@@ -62,7 +62,7 @@ public:
     Mat4 m_projMat;    // projection
 
     FrameBuffer* m_frameBuffer = nullptr;
-    std::vector<Material*> m_effects;
+    vector<Material*> m_effects;
 
 
 private:

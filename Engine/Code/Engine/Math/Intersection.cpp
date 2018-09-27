@@ -48,19 +48,19 @@ bool PointSphere( const Vec3& point, const Vec3& center, float radius )
 }
 
 bool IsPointInsideConvexPolyhedron( const Vec3& point,
-                                    const std::vector<Plane>& polyhedron )
+                                    const vector<Plane>& polyhedron )
 {
     return IsSphereInsideConvexPolyhedron( point, 0, polyhedron );
 }
 
 bool IsPointOutsideConvexPolyhedron( const Vec3& point,
-                                     const std::vector<Plane>& polyhedron )
+                                     const vector<Plane>& polyhedron )
 {
     return !IsPointInsideConvexPolyhedron( point, polyhedron );
 }
 
 bool IsSphereInsideConvexPolyhedron( const Vec3& center, float radius,
-                                     const std::vector<Plane>& polyhedron )
+                                     const vector<Plane>& polyhedron )
 {
     for( auto& plane : polyhedron )
     {

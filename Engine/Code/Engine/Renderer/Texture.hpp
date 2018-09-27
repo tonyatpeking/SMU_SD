@@ -28,7 +28,7 @@ public:
     Image* MakeImageFromGPU();
     Texture() {};
     virtual ~Texture();
-    Texture( const String& imageFilePath, bool useMipmaps = true ); // Use renderer->CreateOrGetTexture() instead!
+    Texture( const string& imageFilePath, bool useMipmaps = true ); // Use renderer->CreateOrGetTexture() instead!
     Texture( Image* image, bool useMipmaps = true );
     bool Valid() const { return m_handle != NULL; };
 protected:

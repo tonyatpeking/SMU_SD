@@ -224,7 +224,7 @@ MeshBuilder MeshPrimitive::MakeUVSphere( float radius,
     return mb;
 }
 
-MeshBuilder MeshPrimitive::MakeLineStrip( const std::vector<Vec3>& points,
+MeshBuilder MeshPrimitive::MakeLineStrip( const vector<Vec3>& points,
                                           const Rgba& startColor, const Rgba& endColor )
 {
     MeshBuilder mb{};

@@ -13,7 +13,7 @@ class ProfilerReportEntry
 private:
     static constexpr int CHILD_STR_INDENT = 1;
 public:
-    ProfilerReportEntry( const String& name );
+    ProfilerReportEntry( const string& name );
     ~ProfilerReportEntry();
 
     void PopulateTreeR( Profiler::Measurement *node );
@@ -31,14 +31,14 @@ public:
 
     void PopulateFlatR( Profiler::Measurement *node, ProfilerReportEntry *rootEntry );
 
-    ProfilerReportEntry* GetOrCreateChild( const String& id );
+    ProfilerReportEntry* GetOrCreateChild( const string& id );
 
-    String GernerateStringR( int indent = 0 );
+    string GernerateStringR( int indent = 0 );
 
     size_t GetTotalStringSizeR();
 
     // this is done according to sorting order
-    void AppendToStringR( String& appendTo );
+    void AppendToStringR( string& appendTo );
 
     void SortChildrenR(
         std::function<bool( ProfilerReportEntry*, ProfilerReportEntry* )> comparer );
@@ -48,14 +48,14 @@ public:
 
 
 public:
-    String m_name;
+    string m_name;
     uint m_callCount;
     double m_totalTime = 0; // inclusive time;
     double m_selfTime = 0;  // exclusive time
     double m_totalPercentTime = 0;
     double m_selfPercentTime = 0;
 
-    String m_reportString;
+    string m_reportString;
 
     // if you care about new piece data - add time;
     // mean
@@ -64,8 +64,8 @@ public:
     // low water
 
     ProfilerReportEntry *m_parent;
-    std::map<String, ProfilerReportEntry*> m_children;
-    std::vector <ProfilerReportEntry*> m_sortedChildren;
+    map<string, ProfilerReportEntry*> m_children;
+    vector <ProfilerReportEntry*> m_sortedChildren;
 };
 
 

@@ -100,7 +100,7 @@ uint DrawLine2D( const Vec2& p0, const Vec2& p1,
 uint DrawText2D( const AABB2& bounds, float fontSize, const Vec2& alignment,
                  const char* format, ... );
 uint DrawText2D( const AABB2& bounds, float fontSize, const Vec2& alignment,
-                 const String& str );
+                 const string& str );
 
 uint Logf( const char* format, ... );
 // text that always faces camera, and is always the same size,

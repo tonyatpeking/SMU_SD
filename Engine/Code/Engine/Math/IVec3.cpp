@@ -114,16 +114,16 @@ bool IVec3::operator!=( const IVec3 & compare ) const
     return !( ( *this ) == compare );
 }
 
-ParseStatus IVec3::SetFromText( const String& text )
+ParseStatus IVec3::SetFromText( const string& text )
 {
-    String delimiter = ",";
+    string delimiter = ",";
     if( StringUtils::ContainsSubstring( text, "~" ) )
     {
         ERROR_RECOVERABLE( "Found '~' in IVec3, use ',' instead" );
         delimiter = "~";
     }
 
-    std::vector<int> out_ints;
+    vector<int> out_ints;
     ParseStatus status = StringUtils::ParseToInts( text, out_ints, delimiter );
 
     //ASSERT_RECOVERABLE( out_ints.size() == 3, "Wrong number of elements passed to IVec3" );

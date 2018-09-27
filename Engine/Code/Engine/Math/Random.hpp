@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include "Engine/Core/EngineCommonH.hpp"
 
 class Rgba;
 class Vec2;
@@ -39,7 +39,7 @@ Rgba ColorInRange( const Rgba& colorA, const Rgba& colorB );
 
 // collections
 void UniqueValuesInRange( int numOfValues, int minInclusive, int maxInclusive,
-                     std::vector<int>& out_uniqueValues);
+                     vector<int>& out_uniqueValues);
 
 }
 

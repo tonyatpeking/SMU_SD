@@ -4,6 +4,6 @@
 class IConsoleObserver
 {
 public:
-    virtual void OnConsolePrint( const String& str ) = 0;
+    virtual void OnConsolePrint( const string& str ) = 0;
 
 };

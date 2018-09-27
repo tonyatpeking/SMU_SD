@@ -17,7 +17,7 @@ public:
 
     static UDPTest * GetInstance();
 
-    bool Start( const String& port = GAME_PORT );
+    bool Start( const string& port = GAME_PORT );
 
     void Stop();
 

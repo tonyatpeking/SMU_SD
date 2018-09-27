@@ -43,7 +43,7 @@ void GameState_MainMenu::Render() const
 
     Vec2 screenCenter = (Vec2) g_window->GetDimensions() * 0.5f;
 
-    String text = "Net Game";
+    string text = "Net Game";
     Vec2 textPosition = screenCenter + Vec2( 0.f, 250.f );
     float textHeight = 70.f;
     float time = g_UIClock->GetTimeSinceStartupF();
@@ -64,12 +64,12 @@ void GameState_MainMenu::Render() const
         nextGlyphOffsetSeconds );
 
 
-    String textStart   = " Press Start to Start!               ";
-    String textLabel   = " F4 Debug shader                     ";
-    String textMove    = " Move:       WASD                    ";
-    String textAim     = " Look:       Mouse                   ";
-    String textShoot   = " ";
-    String textAuthor  = "                        Tony Yu      ";
+    string textStart   = " Press Start to Start!               ";
+    string textLabel   = " F4 Debug shader                     ";
+    string textMove    = " Move:       WASD                    ";
+    string textAim     = " Look:       Mouse                   ";
+    string textShoot   = " ";
+    string textAuthor  = "                        Tony Yu      ";
 
     textPosition = textPosition - Vec2( 300.f, 150.f );
     Vec2 menuPosition = textPosition + Vec2( 800.f, 0.f );

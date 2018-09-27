@@ -18,6 +18,7 @@
 #include "Engine/FileIO/IOUtils.hpp"
 #include "Engine/Net/Net.hpp"
 #include "Engine/Net/RemoteCommandService.hpp"
+#include "Engine/Net/EngineNetMessages.hpp"
 
 
 #include "Game/App.hpp"
@@ -47,6 +48,7 @@ App::App()
     DebugRender::SetClock( g_appClock );
 
     Net::Startup();
+    EngineNetMessages::RegisterAllToSession( nullptr );
 
     //instead of awkwardly asking renderer for the font, have a resource manager instead
     TextMeshBuilder::SetDefaultFont( g_renderer->DefaultFont() );

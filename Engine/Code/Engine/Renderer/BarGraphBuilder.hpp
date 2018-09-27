@@ -20,7 +20,7 @@ public:
 
     void Finalize();
 
-    std::vector<float>& GetDataRef();
+    vector<float>& GetDataRef();
 
     void SetBarWidth( float barWidth ) { m_barWidth = barWidth; };
 
@@ -77,7 +77,7 @@ private:
 
     float m_maxData = -INFINITY;
     float m_minData = INFINITY;
-    std::vector<float> m_data;
+    vector<float> m_data;
 
 
     std::function<Rgba( float, int, float, float )> m_dataToColor = nullptr;

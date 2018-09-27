@@ -3,8 +3,8 @@
 
 namespace SystemUtils
 {
-String GetExePath();
-bool SpawnProcess( const String& processPath, const String& commandLine = "" );
-bool CloneProcess( const String& commandLine = "" );
+string GetExePath();
+bool SpawnProcess( const string& processPath, const string& commandLine = "" );
+bool CloneProcess( const string& commandLine = "" );
 
 };

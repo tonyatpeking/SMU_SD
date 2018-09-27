@@ -10,14 +10,14 @@ class BitmapFont;
 class TextRenderable : public Renderable
 {
 public:
-	TextRenderable( const String& str );
+	TextRenderable( const string& str );
 	virtual ~TextRenderable();
 
-    void SetText( const String& str );
-    String GetText() const;
+    void SetText( const string& str );
+    string GetText() const;
 
     // will call finalize if text has changed
-    void UpdateText( const String& str );
+    void UpdateText( const string& str );
 
     void Finalize();
 
@@ -36,5 +36,5 @@ public:
     uint m_glyphCount = 0;
 
 private:
-    String m_text;
+    string m_text;
 };

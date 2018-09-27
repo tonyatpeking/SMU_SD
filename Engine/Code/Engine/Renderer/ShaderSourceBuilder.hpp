@@ -16,7 +16,7 @@ struct LineEntry
         , localLineNum( line ) {}
 };
 
-typedef std::vector<LineEntry> LineEntries;
+typedef vector<LineEntry> LineEntries;
 
 class ShaderSourceBuilder
 {
@@ -25,14 +25,14 @@ public:
     ~ShaderSourceBuilder() {};
 
 
-    String Finalize(
-        String& source,
-        const String& filePath,
-        const String& defines = "",
+    string Finalize(
+        string& source,
+        const string& filePath,
+        const string& defines = "",
         // this is where the generated files will go, if blank will go to filePath
-        const String& generatedFilepath = "" );
+        const string& generatedFilepath = "" );
 
-    int GetRealFileLine( int lineStitched, String& out_filePath )  const;
+    int GetRealFileLine( int lineStitched, string& out_filePath )  const;
 
     bool m_hasIncludes = false;
 
@@ -41,15 +41,15 @@ private:
     // if string was not from a file, filePath should indicate where the string came from
     // e.g. "Injected defines" to indicate the string was an injected define
 
-    void InitShaderLoader( String& source, const String& filePath );
+    void InitShaderLoader( string& source, const string& filePath );
 
-    bool InsertDefinesToShaderSource( const String defines );
+    bool InsertDefinesToShaderSource( const string defines );
     bool InsertIncludesToShaderSource();
-    String GetFilePathFromInclude( const String& includeLine );
+    string GetFilePathFromInclude( const string& includeLine );
 
     // use the NoComment versions of sources
     // this checks for '*' since all comments should have been replaced with *
-    bool ErrorIfLineEndsWithComment( const String& line );
+    bool ErrorIfLineEndsWithComment( const string& line );
 
 
     // auto updates s_lineEntries
@@ -64,13 +64,13 @@ private:
     LineEntries MakeFileLineEntries( int fileIdx, int lineCount );
     void InsertLineEntries( int replacePos, int fileIdx, int lineCount );
 
-    bool FileHasBeenAdded( const String& filePath );
+    bool FileHasBeenAdded( const string& filePath );
     // will modify source so do not use after
-    bool ReadSourceToLines( String& source, Strings& out_sourceLines,
+    bool ReadSourceToLines( string& source, Strings& out_sourceLines,
                             Strings& out_sourceLineNoComment );
-    String GetSourceFilepath();
-    String GetCombinedSource();
-    String GetCombinedLineMeta();
+    string GetSourceFilepath();
+    string GetCombinedSource();
+    string GetCombinedLineMeta();
 
     // #defines and #includes will be appended to this
     Strings m_mainSource;

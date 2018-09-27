@@ -47,9 +47,9 @@ TweenSystem* g_gameTweenSystem = nullptr;
 bool g_devModeOn = false;
 bool g_fullMapMode = false;
 
-std::map<GameFlag, bool> g_flags;
+map<GameFlag, bool> g_flags;
 
-GameFlag StringToFlag( String str )
+GameFlag StringToFlag( string str )
 {
     StringUtils::RemoveOuterWhitespace( str );
     GameFlag flag = GameFlag::FromString( str );
@@ -57,7 +57,7 @@ GameFlag StringToFlag( String str )
 }
 
 
-bool GetFlag( const String& flagStr )
+bool GetFlag( const string& flagStr )
 {
     GameFlag flag = StringToFlag( flagStr );
     return g_flags[flag];
@@ -68,7 +68,7 @@ bool GetFlag( GameFlag flag )
     return g_flags[flag];
 }
 
-void SetFlag( const String& flagStr, bool set /*= true */ )
+void SetFlag( const string& flagStr, bool set /*= true */ )
 {
     GameFlag flag = StringToFlag( flagStr );
     g_flags[flag] = set;
@@ -87,7 +87,7 @@ void ToggleFlag( GameFlag flag )
         g_flags[flag] = true;
 }
 
-void ToggleFlag( const String& flagStr )
+void ToggleFlag( const string& flagStr )
 {
     GameFlag flag = StringToFlag( flagStr );
     ToggleFlag( flag );

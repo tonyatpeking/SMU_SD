@@ -15,7 +15,7 @@ public:
     virtual void OnExit();
     virtual void ProcessInput();
     GameStateType GetType() { return m_gameStateType; };
-    String ToString();
+    string ToString();
 protected:
     GameState( GameStateType gameStateType );
     float m_UITimeOfEnter = 0.f;

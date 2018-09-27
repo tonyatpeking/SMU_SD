@@ -34,7 +34,7 @@ void Logger::WriteToFile( LogEntry* entry, void* logFile )
 {
     std::ofstream* file = ( std::ofstream* ) logFile;
 
-    String entryLine = Stringf(
+    string entryLine = Stringf(
         "%s %-7s %-10s %s",
         entry->m_dateTime.ToStringTimeOnly().c_str(),
         LogLevelToString( entry->m_level ).c_str(),
@@ -47,7 +47,7 @@ void Logger::WriteToFile( LogEntry* entry, void* logFile )
 
     if( entry->m_level >= LOG_LEVEL_WARNING )
     {
-        String errorInfo = Stringf(
+        string errorInfo = Stringf(
             " [%s(%d) %s()]",
             entry->m_file.c_str(),
             entry->m_line,
@@ -135,9 +135,9 @@ void Logger::AddFlushHook( FlushCB cb, void *userArg )
     m_flushHookLock.unlock();
 }
 
-void Logger::AddFileHook( const String& filePath )
+void Logger::AddFileHook( const string& filePath )
 {
-    String path = filePath;
+    string path = filePath;
     if( path.empty() )
         path = Stringf(
             "%s/Logs/log_%s.txt",
@@ -167,8 +167,8 @@ void Logger::LogPrintf( char const *format, ... )
     va_end( args );
 }
 
-void Logger::Log( const String& fileName, const String& functionName, int lineNum,
-                  LogLevel logLevel, const String& tag, const String& messageText )
+void Logger::Log( const string& fileName, const string& functionName, int lineNum,
+                  LogLevel logLevel, const string& tag, const string& messageText )
 {
     LogEntry* log = new LogEntry();
     log->m_tag = tag;

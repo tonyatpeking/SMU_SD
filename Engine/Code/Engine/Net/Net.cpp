@@ -27,7 +27,7 @@ bool Net::Shutdown()
     return true;
 }
 
-void Net::ConnectionTest( const NetAddress& addr, const String& msg )
+void Net::ConnectionTest( const NetAddress& addr, const string& msg )
 {
     TCPSocket socket;
     if( socket.Connect( addr ) )
@@ -55,7 +55,7 @@ std::atomic_bool s_shouldShutServer = false;
 
 void Net::HostTest( int port )
 {
-    std::vector<NetAddress> addrs = NetAddress::GetAllLocal( ::ToString( port ) );
+    vector<NetAddress> addrs = NetAddress::GetAllLocal( ::ToString( port ) );
 
     for( auto& addr : addrs )
     {
@@ -105,7 +105,7 @@ void Net::HostTestServiceThread( TCPSocket* client )
                   client->m_address.ToStringAll().c_str(),
                   buffer );
 
-        String msg = "Tony's Shitty Server";
+        string msg = "Tony's Shitty Server";
         client->Send( msg.c_str(), (int) msg.size() + 1 );
     }
 

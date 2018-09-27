@@ -15,15 +15,15 @@
 #include "Engine/Log/LogEntry.hpp"
 
 
-void Log( const String& filePath, const String& functionName, int lineNum,
-          LogLevel logLevel, const String& tag, const String& messageText )
+void Log( const string& filePath, const string& functionName, int lineNum,
+          LogLevel logLevel, const string& tag, const string& messageText )
 {
     Logger::GetDefault()->Log( filePath, functionName, lineNum, logLevel, tag, messageText );
 }
 
 
-void Log( const String& filePath, const String& functionName, int lineNum,
-           LogLevel logLevel, const String& tag, const char* format, ... )
+void Log( const string& filePath, const string& functionName, int lineNum,
+           LogLevel logLevel, const string& tag, const char* format, ... )
 {
     va_list args;
     va_start( args, format );
@@ -32,18 +32,18 @@ void Log( const String& filePath, const String& functionName, int lineNum,
 }
 
 
-void Logfv( const String& filePath, const String& functionName, int lineNum,
-            LogLevel logLevel, const String& tag, const char* format, va_list args )
+void Logfv( const string& filePath, const string& functionName, int lineNum,
+            LogLevel logLevel, const string& tag, const char* format, va_list args )
 {
     Log( filePath, functionName, lineNum, logLevel, tag, Stringf( format, args ) );
 }
 //
 //  void Log(
-//      const String& filePath, const String& functionName, int lineNum,
-//      LogLevel logLevel, const String& tag,
-//      const String& messageText )
+//      const string& filePath, const string& functionName, int lineNum,
+//      LogLevel logLevel, const string& tag,
+//      const string& messageText )
 //  {
-//       String fullMessageText = messageText;
+//       string fullMessageText = messageText;
 //       fullMessageText += Stringf( " line %i of %s, in %s()\n",
 //                                                lineNum, fileName, functionName );
 //       Rgba textColor = LogLevelToColor( logLevel );
@@ -51,7 +51,7 @@ void Logfv( const String& filePath, const String& functionName, int lineNum,
 //           Console::GetDefault()->Print( fullMessageText, textColor );
 //
 //
-//      String logLevelString = LogLevelToString( logLevel );
+//      string logLevelString = LogLevelToString( logLevel );
 //
 //      Logger::GetDefault()->LogTaggedPrintf( logLevelString.c_str(), fullMessageText.c_str() );
 //       DebuggerPrintf( "\n======================ERROR======================\n" );
@@ -90,7 +90,7 @@ void DebuggerLoggerCB( LogEntry* entry, void* _ )
     if( entry->m_level < LOG_LEVEL_WARNING )
         return;
     const char* fileName = FindStartOfFileNameWithinFilePath( entry->m_file.c_str() );
-    String logLevelStr = LogLevelToString( entry->m_level );
+    string logLevelStr = LogLevelToString( entry->m_level );
 
     DebuggerPrintf( "\n====================== %s ======================\n", logLevelStr.c_str() );
     DebuggerPrintf( "RUN-TIME %s on line %i of %s, in %s()\n", logLevelStr.c_str(),
@@ -178,7 +178,7 @@ UINT GetWindowsMessageBoxIconFlagForSeverityLevel( LogLevel logLevel )
 
 
 void SystemDialogue_Okay(
-    const String& messageTitle, const String& messageText, LogLevel logLevel )
+    const string& messageTitle, const string& messageText, LogLevel logLevel )
 {
 	#if defined( PLATFORM_WINDOWS )
 	{
@@ -198,7 +198,7 @@ void SystemDialogue_Okay(
 // Returns true if OKAY was chosen, false if CANCEL was chosen.
 //
 bool SystemDialogue_OkayCancel(
-    const String& messageTitle, const String& messageText, LogLevel logLevel )
+    const string& messageTitle, const string& messageText, LogLevel logLevel )
 {
 	bool isAnswerOkay = true;
 
@@ -223,7 +223,7 @@ bool SystemDialogue_OkayCancel(
 // Returns true if YES was chosen, false if NO was chosen.
 //
 bool SystemDialogue_YesNo(
-    const String& messageTitle, const String& messageText, LogLevel logLevel )
+    const string& messageTitle, const string& messageText, LogLevel logLevel )
 {
 	bool isAnswerYes = true;
 
@@ -248,7 +248,7 @@ bool SystemDialogue_YesNo(
 // Returns 1 if YES was chosen, 0 if NO was chosen, -1 if CANCEL was chosen.
 //
 int SystemDialogue_YesNoCancel(
-    const String& messageTitle, const String& messageText, LogLevel logLevel )
+    const string& messageTitle, const string& messageText, LogLevel logLevel )
 {
 	int answerCode = 1;
 
@@ -282,9 +282,9 @@ void AssertBreakpoint( bool condition )
 
 __declspec( noreturn ) void FatalError(
     const char* filePath, const char* functionName, int lineNum,
-    const String& reasonForError, const char* conditionText )
+    const string& reasonForError, const char* conditionText )
 {
-	String errorMessage = reasonForError;
+	string errorMessage = reasonForError;
 	if( reasonForError.empty() )
 	{
 		if( conditionText )
@@ -294,10 +294,10 @@ __declspec( noreturn ) void FatalError(
 	}
 
 	const char* fileName = FindStartOfFileNameWithinFilePath( filePath );
-//	String appName = theApplication ? theApplication->GetApplicationName() : "Unnamed Application";
-	String appName = "Unnamed Application";
-	String fullMessageTitle = appName + " :: Error";
-	String fullMessageText = errorMessage;
+//	string appName = theApplication ? theApplication->GetApplicationName() : "Unnamed Application";
+	string appName = "Unnamed Application";
+	string fullMessageTitle = appName + " :: Error";
+	string fullMessageText = errorMessage;
 	fullMessageText += "\n\nThe application will now close.\n";
 	bool isDebuggerPresent = (IsDebuggerPresent() == TRUE);
 	if( isDebuggerPresent )
@@ -345,9 +345,9 @@ __declspec( noreturn ) void FatalError(
 
 void RecoverableWarning(
     const char* filePath, const char* functionName, int lineNum,
-    const String& reasonForWarning, const char* conditionText )
+    const string& reasonForWarning, const char* conditionText )
 {
-	String errorMessage = reasonForWarning;
+	string errorMessage = reasonForWarning;
 	if( reasonForWarning.empty() )
 	{
 		if( conditionText )
@@ -357,10 +357,10 @@ void RecoverableWarning(
 	}
 
 	const char* fileName = FindStartOfFileNameWithinFilePath( filePath );
-//	String appName = theApplication ? theApplication->GetApplicationName() : "Unnamed Application";
-	String appName = "Unnamed Application";
-	String fullMessageTitle = appName + " :: Warning";
-	String fullMessageText = errorMessage;
+//	string appName = theApplication ? theApplication->GetApplicationName() : "Unnamed Application";
+	string appName = "Unnamed Application";
+	string fullMessageTitle = appName + " :: Warning";
+	string fullMessageText = errorMessage;
 
 	bool isDebuggerPresent = (IsDebuggerPresent() == TRUE);
 	if( isDebuggerPresent )

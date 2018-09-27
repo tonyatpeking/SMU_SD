@@ -35,7 +35,7 @@ public:
     void AddPaddingToSides( float xPad, float yPad, float zPad );
     void Translate( const Vec3& translation ); // move the box; similar to +=
     void Translate( float translationX, float translationY, float translationZ );
-    ParseStatus SetFromText( const String& text );
+    ParseStatus SetFromText( const string& text );
     void ScaleFromCenter( float scale );
     void ScaleFromCenter( const Vec3& scale );
     void ScaleFromCenter( float scaleX, float scaleY, float scaleZ );

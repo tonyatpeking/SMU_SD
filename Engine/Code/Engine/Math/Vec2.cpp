@@ -325,9 +325,9 @@ void Vec2::RotateDegrees( float degrees )
     y = oldX * sinDeg + y * cosDeg;
 }
 
-ParseStatus Vec2::SetFromText( const String& text, const String& delimiter )
+ParseStatus Vec2::SetFromText( const string& text, const string& delimiter )
 {
-    std::vector<float> out_floats;
+    vector<float> out_floats;
     ParseStatus status = StringUtils::ParseToFloats( text, out_floats, delimiter );
 
     if( out_floats.size() < 2 )

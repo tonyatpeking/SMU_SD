@@ -243,7 +243,7 @@ void RenderReport( int frameSkip = 0 )
         shouldUpdateThisFrame = true;
     }
 
-    static String reportStr;
+    static string reportStr;
 
     if( shouldUpdateThisFrame )
     {
@@ -318,7 +318,7 @@ void RenderBarGraph()
     builder.SetYAxisRange( 0.f, 50.f, true, false );
     builder.SetBarColoringFunction( BarColoringFunction );
 
-    std::vector<float>& dataRef = builder.GetDataRef();
+    vector<float>& dataRef = builder.GetDataRef();
 
     int frameCount = (int) g_prevFrames.size();
     dataRef.reserve( frameCount );

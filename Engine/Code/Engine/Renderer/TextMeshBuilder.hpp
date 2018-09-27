@@ -20,7 +20,7 @@ public:
 
     static void SetDefaultFont( const BitmapFont* font );
 
-    String m_text;
+    string m_text;
 
 
     float m_fontHeight = 10.f;
@@ -39,7 +39,7 @@ public:
 private:
     void ReserveVertsAndIndices();
     // Assumes top left alignment, position is the top left of the line
-    void AppendLineMeshToVerts( const String& text, const Vec2& position);
+    void AppendLineMeshToVerts( const string& text, const Vec2& position);
     // Assumes bottom left alignment, position is the bottom left of the glyph
     void AppendGlyphMeshToVerts( char glyph, const AABB2& bounds );
     bool HasValidFont();

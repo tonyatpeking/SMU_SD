@@ -37,5 +37,5 @@ public:
     void RemoveTween( Tween* tween );
     uint GetTweenCount() { return (uint) m_tweens.size(); };
 private:
-    std::vector<Tween*> m_tweens;
+    vector<Tween*> m_tweens;
 };

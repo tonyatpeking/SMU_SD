@@ -391,7 +391,7 @@ void Renderer::DrawLine( const Vec3 & start, const Vec3 & end, const Rgba & colo
 
 void Renderer::DrawLines( const Vec3* vertPtrs, int numOfVerts, const Rgba& color )
 {
-    std::vector<VertexPCU> verts;
+    vector<VertexPCU> verts;
     verts.reserve( numOfVerts );
     for( int i = 0; i < numOfVerts; ++i )
     {
@@ -405,7 +405,7 @@ void Renderer::DrawLines( const Vec3* vertPtrs, int numOfVerts, const Rgba& colo
 
 void Renderer::DrawLineLoop( const Vec3* vertPtrs, int numOfVerts, const Rgba& color )
 {
-    std::vector<VertexPCU> verts;
+    vector<VertexPCU> verts;
     verts.reserve( numOfVerts );
     for( int i = 0; i < numOfVerts; ++i )
     {
@@ -419,7 +419,7 @@ void Renderer::DrawLineLoop( const Vec3* vertPtrs, int numOfVerts, const Rgba& c
 // void Renderer::DrawDottedCircle( const Rgba& color, int sides )
 // {
 //
-//     std::vector<VertexPCU> verts;
+//     vector<VertexPCU> verts;
 //     verts.reserve( sides );
 //     float deltaAngleDegrees = 360.f / (float) sides;
 //     for( int i = 0; i < sides; ++i )
@@ -441,11 +441,11 @@ void Renderer::DrawRect( const AABB2& bounds, const Rgba& color )
     DrawLineLoop( verts, 4, color );
 }
 
-void Renderer::DrawPoints( const std::vector<Vec3>& points, float pointSize /*= 1.f*/,
+void Renderer::DrawPoints( const vector<Vec3>& points, float pointSize /*= 1.f*/,
                            const Rgba& color /*= Rgba::WHITE */ )
 {
     glPointSize( pointSize );
-    std::vector<VertexPCU> verts;
+    vector<VertexPCU> verts;
     verts.reserve( points.size() );
 
     for( unsigned int pointIdx = 0; pointIdx < points.size(); ++pointIdx )
@@ -507,7 +507,7 @@ void Renderer::DrawTexturedAABB( const Texture* texture,
 
 
 // Deprecated use TextRenderable instead
-void Renderer::DrawText2D( const String& text,
+void Renderer::DrawText2D( const string& text,
                            const Vec2& position,
                            float height,
                            const BitmapFont* font,
@@ -538,7 +538,7 @@ void Renderer::DrawText2D( const String& text,
 }
 
 void Renderer::DrawTextInBox2D(
-    const String& text,
+    const string& text,
     const AABB2& box,
     float fontHeight,
     const BitmapFont* font,
@@ -561,7 +561,7 @@ void Renderer::DrawTextInBox2D(
         Strings allWrappedLines;
         for( unsigned int lineIdx = 0; lineIdx < linesOfText.size(); ++lineIdx )
         {
-            const String& line = linesOfText[lineIdx];
+            const string& line = linesOfText[lineIdx];
             Strings wrappedLines;
             font->WrapLineOfText( line, fontHeight, boxWidth, wrappedLines, aspectScale );
             allWrappedLines.insert( allWrappedLines.end(), wrappedLines.begin(), wrappedLines.end() );
@@ -593,7 +593,7 @@ void Renderer::DrawTextInBox2D(
     pos.y = box.maxs.y - paddingOnTop;
     for( unsigned int lineIdx = 0; lineIdx < linesOfText.size(); ++lineIdx )
     {
-        String& line = linesOfText[lineIdx];
+        string& line = linesOfText[lineIdx];
         float totalXPaddingForLine = boxWidth - font->GetTextWidth( line, fontHeight, aspectScale );
         float paddingOnLeft = alignment.x * totalXPaddingForLine;
         pos.x = box.mins.x + paddingOnLeft;
@@ -603,7 +603,7 @@ void Renderer::DrawTextInBox2D(
 }
 
 void Renderer::DrawText2DFlashWave(
-    const String& text,
+    const string& text,
     const Vec2& position,
     float height,
     const BitmapFont* font,
@@ -656,7 +656,7 @@ void Renderer::DrawText2DFlashWave(
     }
 }
 
-Texture* Renderer::CreateOrGetTexture( const String& texturePath )
+Texture* Renderer::CreateOrGetTexture( const string& texturePath )
 {
     if( m_loadedTextures.find( texturePath ) == m_loadedTextures.end() )
     {
@@ -701,7 +701,7 @@ void Renderer::TakeScreenshot()
     image->FlipYCoords();
     image->SaveToDisk( "Screenshots/screenshot.png" );
     DateTime sysTime = DateTime::GetLocalTime();
-    String path = Stringf( "Screenshots/screenshot_%i.%i.%i_%i.%i.%i.png",
+    string path = Stringf( "Screenshots/screenshot_%i.%i.%i_%i.%i.%i.png",
                            sysTime.year, sysTime.month, sysTime.day,
                            sysTime.hour, sysTime.minute, sysTime.second );
     image->SaveToDisk( path );
@@ -835,7 +835,7 @@ void Renderer::ClearDepth( float depth /*= 1.0f */ )
     glClear( GL_DEPTH_BUFFER_BIT );
 }
 
-Texture* Renderer::GetTexture( const String& texturePath )
+Texture* Renderer::GetTexture( const string& texturePath )
 {
     if( m_loadedTextures.find( texturePath ) == m_loadedTextures.end() )
     {
@@ -901,12 +901,12 @@ bool Renderer::CopyFrameBuffer( FrameBuffer *dst, FrameBuffer *src )
     return GLSucceeded();
 }
 
-void Renderer::SetDefaultFont( const String& bitmapFontPath )
+void Renderer::SetDefaultFont( const string& bitmapFontPath )
 {
     m_defaultFont = CreateOrGetBitmapFont( bitmapFontPath );
 }
 
-BitmapFont* Renderer::CreateOrGetBitmapFont( const String& bitmapFontPath )
+BitmapFont* Renderer::CreateOrGetBitmapFont( const string& bitmapFontPath )
 {
     if( m_loadedFonts.find( bitmapFontPath ) == m_loadedFonts.end() )
     {
@@ -920,7 +920,7 @@ BitmapFont* Renderer::CreateOrGetBitmapFont( const String& bitmapFontPath )
     }
 }
 
-BitmapFont* Renderer::GetBitmapFont( const String& bitmapFontPath )
+BitmapFont* Renderer::GetBitmapFont( const string& bitmapFontPath )
 {
     if( m_loadedFonts.find( bitmapFontPath ) == m_loadedFonts.end() )
     {
@@ -930,7 +930,7 @@ BitmapFont* Renderer::GetBitmapFont( const String& bitmapFontPath )
     return m_loadedFonts[bitmapFontPath];
 }
 
-SpriteSheet* Renderer::CreateOrGetSpriteSheet( const String& spriteSheetPath, const IVec2& layout )
+SpriteSheet* Renderer::CreateOrGetSpriteSheet( const string& spriteSheetPath, const IVec2& layout )
 {
     if( m_loadedSpriteSheets.find( spriteSheetPath ) == m_loadedSpriteSheets.end() )
     {
@@ -946,7 +946,7 @@ SpriteSheet* Renderer::CreateOrGetSpriteSheet( const String& spriteSheetPath, co
     }
 }
 
-SpriteSheet* Renderer::GetSpriteSheet( const String& spriteSheetPath )
+SpriteSheet* Renderer::GetSpriteSheet( const string& spriteSheetPath )
 {
     if( m_loadedSpriteSheets.find( spriteSheetPath ) == m_loadedSpriteSheets.end() )
     {

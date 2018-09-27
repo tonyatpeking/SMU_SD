@@ -70,14 +70,14 @@ public:
     int	GetNumPoints() const { return (int) m_positions.size(); }
     const Vec2 GetPosition( int pointIndex ) const;
     const Vec2 GetVelocity( int pointIndex ) const;
-    int	GetPositions( std::vector<Vec2>& out_positions ) const;
-    int GetVelocities( std::vector<Vec2>& out_velocities ) const;
+    int	GetPositions( vector<Vec2>& out_positions ) const;
+    int GetVelocities( vector<Vec2>& out_velocities ) const;
     Vec2 EvaluateAtCumulativeParametric( float t ) const;
     Vec2 EvaluateAtNormalizedParametric( float t ) const;
 
 protected:
-    std::vector<Vec2> m_positions;
-    std::vector<Vec2> m_velocities;
+    vector<Vec2> m_positions;
+    vector<Vec2> m_velocities;
 };
 
 

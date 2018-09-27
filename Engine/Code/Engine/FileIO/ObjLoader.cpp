@@ -15,7 +15,7 @@ MeshBuilder ObjLoader::LoadFromFile( const char* filePath )
 
 MeshBuilder ObjLoader::LoadFromFileInternal( const char* filePath )
 {
-    m_filePath = std::string( filePath );
+    m_filePath = string( filePath );
     MeshBuilder mb = MeshBuilder{};
 
     if( !LoadFileToLines( filePath ) )
@@ -69,10 +69,10 @@ MeshBuilder ObjLoader::LoadFromFileInternal( const char* filePath )
 
 bool ObjLoader::LoadFileToLines( const char* filePath )
 {
-    String fileString = IOUtils::ReadFileToString( filePath );
+    string fileString = IOUtils::ReadFileToString( filePath );
     if( fileString.empty() )
     {
-        LOG_WARNING( "Failed to load file: " + std::string( filePath ) );
+        LOG_WARNING( "Failed to load file: " + string( filePath ) );
         return false;
     }
     ParseStatus status = StringUtils::ParseToLines( fileString, m_fileLines );
@@ -126,7 +126,7 @@ void ObjLoader::ParseLinesToBuffers()
 
 Vec3 ObjLoader::ParseLineToVec3( uint lineIdx )
 {
-    String& str = m_fileLines[lineIdx];
+    string& str = m_fileLines[lineIdx];
     StringUtils::RemoveOuterWhitespace( str );
     Vec3 v3;
     ParseStatus status = v3.SetFromText( str, " " );
@@ -140,7 +140,7 @@ Vec3 ObjLoader::ParseLineToVec3( uint lineIdx )
 
 Vec2 ObjLoader::ParseLineToVec2( uint lineIdx )
 {
-    String& str = m_fileLines[lineIdx];
+    string& str = m_fileLines[lineIdx];
     StringUtils::RemoveOuterWhitespace( str );
     Vec2 v2;
     ParseStatus status = v2.SetFromText( str, " " );
@@ -157,7 +157,7 @@ ObjLoader::FaceElements ObjLoader::ParseLineToFaceElements( uint lineIdx )
 {
     Strings elementStrings;
     FaceElements faceElements;
-    String& str = m_fileLines[lineIdx];
+    string& str = m_fileLines[lineIdx];
     StringUtils::RemoveOuterWhitespace( str );
     StringUtils::ParseToTokens( str, elementStrings, " ", false );
     if( elementStrings.size() < 3 )
@@ -196,7 +196,7 @@ ObjLoader::FaceElements& ObjLoader::MaterialSeparator()
 
 ObjLoader::LineType ObjLoader::GetLineType( uint lineIdx )
 {
-    String& str = m_fileLines[lineIdx];
+    string& str = m_fileLines[lineIdx];
     // 5 is the minimum to define something valid e.g. v 1 2
     if( str.size() < 5 )
         return UNKNOWN;
@@ -204,7 +204,7 @@ ObjLoader::LineType ObjLoader::GetLineType( uint lineIdx )
     char second = str[1];
     char third = str[2];
 
-    if( 'u' == first && str.find( "usemtl" ) != std::string::npos )
+    if( 'u' == first && str.find( "usemtl" ) != string::npos )
         return MATERIAL_SEPARATOR;
 
     // setting char to whitespace for easy parsing later on

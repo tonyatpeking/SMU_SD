@@ -7,7 +7,7 @@
 
 namespace
 {
-std::map<HWND, Window*> s_windowFromHWND;
+map<HWND, Window*> s_windowFromHWND;
 }
 
 // I believe in App you will have a windows procedure you use that looks similar to the following;

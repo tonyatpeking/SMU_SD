@@ -3,14 +3,14 @@
 #include "Engine/Core/WindowsCommon.hpp"
 
 
-String SystemUtils::GetExePath()
+string SystemUtils::GetExePath()
 {
     char buffer[MAX_PATH];
     GetModuleFileNameA( NULL, buffer, MAX_PATH );
-    return String( buffer );
+    return string( buffer );
 }
 
-bool SystemUtils::SpawnProcess( const String& processPath, const String& commandLine /*= "" */ )
+bool SystemUtils::SpawnProcess( const string& processPath, const string& commandLine /*= "" */ )
 {
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
@@ -19,7 +19,7 @@ bool SystemUtils::SpawnProcess( const String& processPath, const String& command
     si.cb = sizeof( si );
     ZeroMemory( &pi, sizeof( pi ) );
 
-    String pathAndCommand = ( processPath + " " + commandLine );
+    string pathAndCommand = ( processPath + " " + commandLine );
     std::wstring widestr = std::wstring( pathAndCommand.begin(), pathAndCommand.end() );
 
     wchar_t buffer[MAX_PATH];
@@ -49,8 +49,8 @@ bool SystemUtils::SpawnProcess( const String& processPath, const String& command
     return true;
 }
 
-bool SystemUtils::CloneProcess( const String& commandLine /*= "" */ )
+bool SystemUtils::CloneProcess( const string& commandLine /*= "" */ )
 {
-    String path = GetExePath();
+    string path = GetExePath();
     return SpawnProcess( path, commandLine );
 }

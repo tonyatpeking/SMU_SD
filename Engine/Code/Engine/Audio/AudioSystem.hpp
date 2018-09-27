@@ -14,8 +14,8 @@ constexpr size_t MISSING_SOUND_ID = (size_t) ( -1 );
 
 struct AudioGroup
 {
-    std::vector<SoundID>soundIDs;
-    String name;
+    vector<SoundID>soundIDs;
+    string name;
 };
 
 class AudioSystem;
@@ -37,13 +37,13 @@ public:
     void BeginFrame();
     void EndFrame();
 
-    SoundID CreateSound( const String& soundFilePath );
-    SoundID GetSound( const String& soundFilePath );
+    SoundID CreateSound( const string& soundFilePath );
+    SoundID GetSound( const string& soundFilePath );
     PlaybackID PlaySound(
         SoundID soundID, bool isLooped=false, float volume=1.f, float balance=0.0f,
         float speed=1.0f, bool isPaused=false );
     PlaybackID PlaySoundFromPath(
-        const String& soundFilePath, bool isLooped=false, float volume=1.f,
+        const string& soundFilePath, bool isLooped=false, float volume=1.f,
         float balance=0.0f, float speed=1.0f, bool isPaused=false );
     void StopSound( PlaybackID soundPlaybackID );
     void SetPauseSound( PlaybackID soundPlaybackID, bool paused );
@@ -61,15 +61,15 @@ public:
     void ValidateResult( int result );
 
     // Audio groups
-    PlaybackID PlayOneOffSoundFromGroup( String groupName );
-    void LoadAudioGroups( String datafile );
+    PlaybackID PlayOneOffSoundFromGroup( string groupName );
+    void LoadAudioGroups( string datafile );
 protected:
 
     bool MissingPlaybackID( PlaybackID playbackID );
 
     FMOD::System* m_fmodSystem;
-    std::map< String, SoundID >	m_registeredSoundIDs;
-    std::vector< FMOD::Sound* > m_registeredSounds;
-    std::map<String, AudioGroup> m_registeredGroups;
+    map< string, SoundID >	m_registeredSoundIDs;
+    vector< FMOD::Sound* > m_registeredSounds;
+    map<string, AudioGroup> m_registeredGroups;
 };
 

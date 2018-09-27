@@ -79,7 +79,7 @@ void Texture::SwapHandle( Texture* textureA, Texture* textureB )
 }
 
 // Called only by the Renderer.  Use renderer->CreateOrGetTexture() to instantiate textures.
-Texture::Texture( const String& imageFilePath, bool useMipmaps /*= true */ )
+Texture::Texture( const string& imageFilePath, bool useMipmaps /*= true */ )
     : m_useMipmaps( useMipmaps )
 {
     Image image = Image( imageFilePath );

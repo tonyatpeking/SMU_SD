@@ -12,9 +12,9 @@
 // so packet size is 1500 - 40 - 8 => 1452B (why?)
 
 
-bool UDPTest::Start( const String& port )
+bool UDPTest::Start( const string& port )
 {
-    String portCopy;
+    string portCopy;
     portCopy = port;
     if( portCopy == "" )
         portCopy = GAME_PORT;
@@ -57,7 +57,7 @@ void UDPTest::Update()
     if( read > 0U )
     {
         uint max_bytes = Min( (int) read, 128 );
-        //String output = "0x";
+        //string output = "0x";
         char* out = (char*) malloc( max_bytes * 2U + 3U );
         out[0] = '0';
         out[1] = '1';

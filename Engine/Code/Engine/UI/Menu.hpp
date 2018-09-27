@@ -34,7 +34,7 @@ public:
     void SetParent( MenuEntry* parent ) { m_parentEntry = parent; };
     int GetSelectedEntryIdx() { return m_selectedEntryIdx; };
 
-    void AddEntry( const String& text, std::function<void()> action, const Rgba& color = Rgba::WHITE );
+    void AddEntry( const string& text, std::function<void()> action, const Rgba& color = Rgba::WHITE );
 
     void AddEntry( MenuEntry* menuEntry);
     void RemoveEntry( MenuEntry* menuEntry );
@@ -52,7 +52,7 @@ protected:
     int m_selectedEntryIdx = 0;
     MenuEntry* m_selectedEntry = nullptr;
     // Owns:
-    std::vector<MenuEntry*> m_menuEntries;
+    vector<MenuEntry*> m_menuEntries;
     // Uses:
     MenuEntry* m_activeSubMenu = nullptr;
     Renderer* m_renderer;

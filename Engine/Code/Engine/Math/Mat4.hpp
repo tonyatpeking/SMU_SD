@@ -43,7 +43,7 @@ public:
     Vec3 DecomposeScale() const;
     bool IsAnyInf() const;
     bool IsAnyNaN() const;
-    String ToString() const;
+    string ToString() const;
 
     // Mutators
     void SetIdentity();

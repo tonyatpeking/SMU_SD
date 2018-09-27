@@ -30,7 +30,7 @@ void Blackboard::PopulateFromXmlElementAttributes( const XMLElement& element )
     }
 }
 
-void Blackboard::PopulateFromFile( const String& path )
+void Blackboard::PopulateFromFile( const string& path )
 {
     XMLDocument doc;
     doc.LoadFromFile( path );
@@ -38,7 +38,7 @@ void Blackboard::PopulateFromFile( const String& path )
     PopulateFromXmlElementAttributes( xmlConfig );
 }
 
-void Blackboard::SetValue( const String& keyName, const String& newValue )
+void Blackboard::SetValue( const string& keyName, const string& newValue )
 {
     if( m_keyValuePairs.find( keyName ) != m_keyValuePairs.end() )
     {
@@ -49,7 +49,7 @@ void Blackboard::SetValue( const String& keyName, const String& newValue )
     m_keyValuePairs[keyName] = newValue;
 }
 
-bool Blackboard::GetValue( const String& keyName, bool defaultValue ) const
+bool Blackboard::GetValue( const string& keyName, bool defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -65,7 +65,7 @@ bool Blackboard::GetValue( const String& keyName, bool defaultValue ) const
     return defaultValue;
 }
 
-int Blackboard::GetValue( const String& keyName, int defaultValue ) const
+int Blackboard::GetValue( const string& keyName, int defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -81,7 +81,7 @@ int Blackboard::GetValue( const String& keyName, int defaultValue ) const
     return defaultValue;
 }
 
-float Blackboard::GetValue( const String& keyName, float defaultValue ) const
+float Blackboard::GetValue( const string& keyName, float defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -97,7 +97,7 @@ float Blackboard::GetValue( const String& keyName, float defaultValue ) const
     return defaultValue;
 }
 
-String Blackboard::GetValue( const String& keyName, const String& defaultValue ) const
+string Blackboard::GetValue( const string& keyName, const string& defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -107,7 +107,7 @@ String Blackboard::GetValue( const String& keyName, const String& defaultValue )
     return iter->second;
 }
 
-String Blackboard::GetValue( const String& keyName, const char* defaultValue ) const
+string Blackboard::GetValue( const string& keyName, const char* defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -117,7 +117,7 @@ String Blackboard::GetValue( const String& keyName, const char* defaultValue ) c
     return iter->second;
 }
 
-Rgba Blackboard::GetValue( const String& keyName, const Rgba& defaultValue ) const
+Rgba Blackboard::GetValue( const string& keyName, const Rgba& defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -133,7 +133,7 @@ Rgba Blackboard::GetValue( const String& keyName, const Rgba& defaultValue ) con
     return defaultValue;
 }
 
-Vec2 Blackboard::GetValue( const String& keyName, const Vec2& defaultValue ) const
+Vec2 Blackboard::GetValue( const string& keyName, const Vec2& defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -149,7 +149,7 @@ Vec2 Blackboard::GetValue( const String& keyName, const Vec2& defaultValue ) con
     return defaultValue;
 }
 
-IVec2 Blackboard::GetValue( const String& keyName, const IVec2& defaultValue ) const
+IVec2 Blackboard::GetValue( const string& keyName, const IVec2& defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -165,7 +165,7 @@ IVec2 Blackboard::GetValue( const String& keyName, const IVec2& defaultValue ) c
     return defaultValue;
 }
 
-Range Blackboard::GetValue( const String& keyName, const Range& defaultValue ) const
+Range Blackboard::GetValue( const string& keyName, const Range& defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -181,7 +181,7 @@ Range Blackboard::GetValue( const String& keyName, const Range& defaultValue ) c
     return defaultValue;
 }
 
-IRange Blackboard::GetValue( const String& keyName, const IRange& defaultValue ) const
+IRange Blackboard::GetValue( const string& keyName, const IRange& defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 
@@ -197,7 +197,7 @@ IRange Blackboard::GetValue( const String& keyName, const IRange& defaultValue )
     return defaultValue;
 }
 
-char Blackboard::GetValue( const String& keyName, char defaultValue ) const
+char Blackboard::GetValue( const string& keyName, char defaultValue ) const
 {
     auto iter = m_keyValuePairs.find( keyName );
 

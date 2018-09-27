@@ -42,7 +42,7 @@ AABB2 LogSlotToScreenBounds( int slot );
 // -1 is empty slot
 Ints g_logSlots( LOG_MAX_SLOTS, -1 );
 
-std::vector < DebugRender::Task* > g_tasks;
+vector < DebugRender::Task* > g_tasks;
 Camera* g_2dCamera;
 Camera* g_3dCamera;
 DebugRender::Options g_options;
@@ -278,7 +278,7 @@ uint DebugRender::DrawLine2D( const Vec2& p0, const Vec2& p1, const Rgba& colorP
     g_options.m_screenspace = true;
     Renderable* renderable = new Renderable();
     renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
-    std::vector<Vec3> points;
+    vector<Vec3> points;
     points.push_back( Vec3( p0 ) );
     points.push_back( Vec3( p1 ) );
     renderable->SetMesh( MeshPrimitive::MakeLineStrip( points, colorP0, colorP1 ).MakeMesh() );
@@ -292,14 +292,14 @@ uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& a
 
     va_list args;
     va_start( args, format );
-    String text = Stringf( format, args );
+    string text = Stringf( format, args );
     uint id = DrawText2D( bounds, fontSize, alignment, text );
     return id;
 }
 
 
 
-uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& alignment, const String& str )
+uint DebugRender::DrawText2D( const AABB2& bounds, float fontSize, const Vec2& alignment, const string& str )
 {
     g_options.m_screenspace = true;
     Renderable* renderable = new Renderable();
@@ -325,7 +325,7 @@ uint DebugRender::Logf( const char* format, ... )
     AABB2 bounds = LogSlotToScreenBounds( slot );
     va_list args;
     va_start( args, format );
-    String text = Stringf( format, args );
+    string text = Stringf( format, args );
     uint handle = DrawText2D( bounds, LOG_TEXT_HEIGHT, Vec2::ZERO_ONE, text.c_str() );
     g_logSlots[slot] = handle;
     GetTask( handle )->m_onDeathFunc = [handle]() {RemoveLogFromSlot( handle ); };
@@ -357,7 +357,7 @@ uint DebugRender::DrawLine( const Vec3& p0, const Vec3& p1, const Rgba& color0, 
     g_options.m_screenspace = false;
     Renderable* renderable = new Renderable();
     renderable->GetMaterial( 0 )->SetTint( g_options.m_startColor );
-    std::vector<Vec3> points;
+    vector<Vec3> points;
     points.push_back( p0 );
     points.push_back( p1 );
     renderable->SetMesh( MeshPrimitive::MakeLineStrip(

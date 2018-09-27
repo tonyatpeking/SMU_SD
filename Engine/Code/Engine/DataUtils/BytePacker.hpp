@@ -31,7 +31,7 @@ public:
     BytePacker( size_t bufferSize, void* buffer );
 
     // only releases memory if it owns it
-    ~BytePacker();
+    virtual ~BytePacker();
 
     // will fail if cannot grow
     bool Reserve( size_t byteCount );

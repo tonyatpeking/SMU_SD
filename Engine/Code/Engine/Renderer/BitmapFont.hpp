@@ -13,10 +13,10 @@ private:
 public:
     AABB2 GetGlyphUVs( int glyphID ) const;
     float GetGlyphAspect( int glyphUnicode ) const;
-    float GetTextWidth( const String& text, float height, float glyphAspect = 1.f ) const;
+    float GetTextWidth( const string& text, float height, float glyphAspect = 1.f ) const;
 
     //#Refactor Move this to StringUtils
-    void WrapLineOfText( const String& line, float height, float maxWidth, Strings& out_wrappedLines, float glyphAspect = 1.f ) const;
+    void WrapLineOfText( const string& line, float height, float maxWidth, Strings& out_wrappedLines, float glyphAspect = 1.f ) const;
 
 private:
     float m_baseAspect;

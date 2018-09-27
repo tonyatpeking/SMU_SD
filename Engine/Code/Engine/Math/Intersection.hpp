@@ -88,10 +88,10 @@ bool IsSphereOutsideHexahedron( const Vec3& center, float radius, const Hexahedr
 
 // Pass in the face planes of the Convex Polyhedron
 // they must have normals pointing out
-bool IsPointInsideConvexPolyhedron( const Vec3& point, const std::vector<Plane>& polyhedron );
-bool IsPointOutsideConvexPolyhedron( const Vec3& point, const std::vector<Plane>& polyhedron );
+bool IsPointInsideConvexPolyhedron( const Vec3& point, const vector<Plane>& polyhedron );
+bool IsPointOutsideConvexPolyhedron( const Vec3& point, const vector<Plane>& polyhedron );
 bool IsSphereInsideConvexPolyhedron( const Vec3& center, float radius,
-                             const std::vector<Plane>& polyhedron );
+                             const vector<Plane>& polyhedron );
 
 bool IsSphereInsideAABB3( const Vec3& center, float radius, const AABB3& aabb3 );
 bool IsSphereOutsideAABB3( const Vec3& center, float radius, const AABB3& aabb3 );

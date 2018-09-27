@@ -55,7 +55,7 @@ void TextMeshBuilder::SetDefaultFont( const BitmapFont* font )
     s_defaultFont = font;
 }
 
-void TextMeshBuilder::AppendLineMeshToVerts( const String& text, const Vec2& position )
+void TextMeshBuilder::AppendLineMeshToVerts( const string& text, const Vec2& position )
 {
     // Set starting position to bottom left corner
     float aspectRatio = m_font->GetGlyphAspect( 0 ) * m_aspectScale;
@@ -129,7 +129,7 @@ void TextMeshBuilder::WrapLines()
     Strings allWrappedLines;
     for( unsigned int lineIdx = 0; lineIdx < m_linesOfText.size(); ++lineIdx )
     {
-        const String& line = m_linesOfText[lineIdx];
+        const string& line = m_linesOfText[lineIdx];
         Strings wrappedLines;
         m_font->WrapLineOfText( line, m_fontHeight, m_boundingBox.GetWidth(),
                                 wrappedLines, m_aspectScale );
@@ -146,7 +146,7 @@ void TextMeshBuilder::CalculatePaddingsAndAppendLines()
     pos.y = m_boundingBox.maxs.y - paddingOnTop;
     for( unsigned int lineIdx = 0; lineIdx < m_linesOfText.size(); ++lineIdx )
     {
-        String& line = m_linesOfText[lineIdx];
+        string& line = m_linesOfText[lineIdx];
         float totalXPaddingForLine = m_boundingBox.GetWidth()
             - m_font->GetTextWidth( line, m_fontHeight, m_aspectScale );
         float paddingOnLeft = m_alignment.x * totalXPaddingForLine;

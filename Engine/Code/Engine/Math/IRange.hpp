@@ -14,7 +14,7 @@ public:
     explicit IRange( int minInclusive, int maxInclusive );
     explicit IRange( int minMaxInclusive );
 
-    ParseStatus SetFromText( const String& text, const String& delimiter = "~" );
+    ParseStatus SetFromText( const string& text, const string& delimiter = "~" );
 
     int GetRandomInRange() const;
     bool IsInRange( int val ) const;

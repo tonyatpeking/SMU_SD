@@ -25,10 +25,10 @@ IRange::IRange( int minMaxInclusive )
 
 }
 
-ParseStatus IRange::SetFromText( const String& text, const String& delimiter )
+ParseStatus IRange::SetFromText( const string& text, const string& delimiter )
 {
 
-    std::vector<int> out_ints;
+    vector<int> out_ints;
     ParseStatus status = StringUtils::ParseToInts( text, out_ints, delimiter );
 
     //ASSERT_RECOVERABLE( out_ints.size() == 1 || out_ints.size() == 2, "Wrong number of elements passed to IRange" );

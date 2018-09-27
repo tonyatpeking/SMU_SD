@@ -47,5 +47,5 @@ private:
     {
         return IVec2::CoordsToIndex( cellCoords, m_dimensions );
     };
-    std::vector<T> m_heatPerGridCell;
+    vector<T> m_heatPerGridCell;
 };

@@ -261,10 +261,10 @@ void MeshBuilder::GenerateNormals()
     // first and then the average is used for the vertex
 
     // all the face normals of one vertex
-    typedef std::vector<Vec3> Normals;
+    typedef vector<Vec3> Normals;
 
     // the Normals of all the vertices
-    typedef std::vector<Normals> VertexNormals;
+    typedef vector<Normals> VertexNormals;
     VertexNormals vertexNormals;
     vertexNormals.resize( m_verts.size() );
     uint indexCount = (uint) m_indices.size();

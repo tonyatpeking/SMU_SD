@@ -227,7 +227,7 @@ bool Console::IsCursorBlinkOn()
 
 void Console::LoadFromCommandHistoryFile()
 {
-    String fullPath = IOUtils::RelativeToFullPath( m_historyFile );
+    string fullPath = IOUtils::RelativeToFullPath( m_historyFile );
     Strings strs = IOUtils::ReadFileToStrings( fullPath );
     m_commandHistory.clear();
     for( auto& str : strs )
@@ -239,11 +239,11 @@ void Console::LoadFromCommandHistoryFile()
 
 void Console::DumpToCommandHistoryFile()
 {
-    String fullPath = IOUtils::RelativeToFullPath( m_historyFile );
+    string fullPath = IOUtils::RelativeToFullPath( m_historyFile );
     IOUtils::WriteToFile( fullPath, m_commandHistory );
 }
 
-String Console::GetCommandFromHistory( int offset )
+string Console::GetCommandFromHistory( int offset )
 {
     if( offset == 0 )
         return "";
@@ -252,7 +252,7 @@ String Console::GetCommandFromHistory( int offset )
     return m_commandHistory[idx];
 }
 
-void Console::AppendToCommandHistory( const String& str )
+void Console::AppendToCommandHistory( const string& str )
 {
     // first check if str is already in commands
     for( int idx = 0; idx < m_commandHistory.size(); ++idx )
@@ -291,7 +291,7 @@ void Console::MoveCommandHistorySelector( int direction )
 }
 
 
-void Console::NotifyObservers( const String& text )
+void Console::NotifyObservers( const string& text )
 {
     for( auto& ob : m_observers )
     {
@@ -369,13 +369,13 @@ void Console::SetScorllPosition( int lineNum )
     m_currentOutputLine = ClampInt( lineNum, 0, (int) m_allOutputText.size() - 1 );
 }
 
-void Console::Print( const String& text, const Rgba& color /*= Rgba::LIGHT_GRAY */ )
+void Console::Print( const string& text, const Rgba& color /*= Rgba::LIGHT_GRAY */ )
 {
     NotifyObservers( text );
 
     std::lock_guard<std::mutex> lock( m_printMutex );
     Strings out_SingleLines;
-    String delimiter = "\n";
+    string delimiter = "\n";
     bool removeWhiteSpace = false;
     bool removeBrackets = false;
     StringUtils::ParseToTokens(
@@ -393,14 +393,14 @@ void Console::Print( const String& text, const Rgba& color /*= Rgba::LIGHT_GRAY 
 
 }
 
-void Console::Print( const String& text )
+void Console::Print( const string& text )
 {
     Print( text, m_defaultTextColor );
 }
 
 void Console::Printfv( const Rgba& color, const char* format, va_list args )
 {
-    String str = Stringf( format, args );
+    string str = Stringf( format, args );
     Print( str, color );
 }
 
@@ -425,7 +425,7 @@ void Console::Printf( const char* format, ... )
     va_end( args );
 }
 
-String Console::GetInputPrompt() const
+string Console::GetInputPrompt() const
 {
     if( m_usePython )
         return ">>>";
@@ -436,7 +436,7 @@ String Console::GetInputPrompt() const
 void Console::LoggerCB( LogEntry* entry, void* me )
 {
     Rgba color = LogLevelToColor( entry->m_level );
-    String logLevel = LogLevelToString( entry->m_level );
+    string logLevel = LogLevelToString( entry->m_level );
     ( (Console*) me )->Printf(
         color, "%-10s %s",
         entry->m_tag.c_str(), entry->m_text.c_str() );
@@ -458,7 +458,7 @@ void Console::RemoveObserver( IConsoleObserver* ob )
     ContainerUtils::EraseOneValue( m_observers, ob );
 }
 
-void Console::InputWithEnter( String text )
+void Console::InputWithEnter( string text )
 {
     m_inputText = text;
     OnEnterPressed();
@@ -467,7 +467,7 @@ void Console::InputWithEnter( String text )
 void Console::OnEnterPressed()
 {
     SetCursorPosition( 0 );
-    String text = GetInputPrompt() + m_inputText;
+    string text = GetInputPrompt() + m_inputText;
     Print( text, Rgba::GREEN_YELLOW );
 
     if( m_inputText != "" )
@@ -479,7 +479,7 @@ void Console::OnEnterPressed()
     if( m_usePython )
     {
         PythonInterpreter::GetInstance()->PushToShell( m_inputText );
-        String pythonOut = PythonInterpreter::GetInstance()->ReadFromShell();
+        string pythonOut = PythonInterpreter::GetInstance()->ReadFromShell();
         Print( pythonOut );
     }
     else
@@ -533,7 +533,7 @@ void Console::DrawOutputText( const Vec2& startPos ) const
         }
         else
         {
-            const String& outputText = m_allOutputText[outputIdx];
+            const string& outputText = m_allOutputText[outputIdx];
             const Rgba& color = m_allOutputColors[outputIdx];
             DrawOneOutputString(
                 outputText, color, stringStartPos, out_nextPosition, out_overflow );
@@ -548,9 +548,9 @@ void Console::DrawOutputText( const Vec2& startPos ) const
 }
 
 void Console::DrawOneLine(
-    const String& text, const Rgba& color, const Vec2& startPos ) const
+    const string& text, const Rgba& color, const Vec2& startPos ) const
 {
-    String textCopy = text;
+    string textCopy = text;
     size_t charsPerLine = GetCharsPerLine();
     if( textCopy.size() > charsPerLine )
     {
@@ -560,7 +560,7 @@ void Console::DrawOneLine(
         textCopy, startPos, m_fontHeight, m_font, color );
 }
 
-float Console::GetStringDrawHeight( const String& text ) const
+float Console::GetStringDrawHeight( const string& text ) const
 {
     int lineCount = (int) text.size() / GetCharsPerLine();  // Yes we want int divide
     if( lineCount == 0 ) // blank lines take up one line
@@ -571,7 +571,7 @@ float Console::GetStringDrawHeight( const String& text ) const
 }
 
 void Console::DrawOneOutputString(
-    const String& text, const Rgba& color, const Vec2& startPos, Vec2& out_nextPos,
+    const string& text, const Rgba& color, const Vec2& startPos, Vec2& out_nextPos,
     bool& out_overflow ) const
 {
     out_overflow = false;
@@ -624,7 +624,7 @@ void Printfv( const Rgba& color, const char* format, va_list args )
     Console::GetDefault()->Printfv( color, format, args );
 }
 
-void Print( const String& str, const Rgba& color /*= Rgba::WHITE */ )
+void Print( const string& str, const Rgba& color /*= Rgba::WHITE */ )
 {
     Printf( color, str.c_str() );
 }

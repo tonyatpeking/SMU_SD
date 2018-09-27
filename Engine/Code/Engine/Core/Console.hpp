@@ -3,6 +3,7 @@
 #include <vector>
 #include <functional>
 
+#include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Core/Rgba.hpp"
 #include "Engine/Input/InputObserver.hpp"
@@ -15,7 +16,7 @@ class Logger;
 class IConsoleObserver;
 struct LogEntry;
 
-void Print( const String& str, const Rgba& color = Rgba::WHITE );
+void Print( const string& str, const Rgba& color = Rgba::WHITE );
 void Printf( const char* format, ... );
 void Printf( const Rgba& color, const char* format, ... );
 void Printfv(  const char* format, va_list args );
@@ -57,7 +58,7 @@ public:
     void SetFont( BitmapFont* font ) { m_font = font; };
     void SetActive( bool isActive );
     void SetScreenBounds( const AABB2& screenBounds );
-    void SetOutputFilePath( const String& filePath ) { m_outputFilePath = filePath; };
+    void SetOutputFilePath( const string& filePath ) { m_outputFilePath = filePath; };
     bool OutputToFile();
     void SetSizeRatio( float sizeRatio );
     void ToggleActive();
@@ -66,21 +67,21 @@ public:
     void ScrollToStart();
     void ScrollToEnd();
     void SetScorllPosition( int lineNum );
-    void InputWithEnter( String text );
+    void InputWithEnter( string text );
     void Clear();
     void ClearInput();
     void OnEnterPressed();  // called when 'Enter' is pressed
     void UsePython( bool use );
 
     // the text will be split at each newline '\n'
-    void Print( const String& text, const Rgba& color );
-    void Print( const String& text );
+    void Print( const string& text, const Rgba& color );
+    void Print( const string& text );
     void Printfv( const Rgba& color, const char* format, va_list args );
     void Printfv( const char* format, va_list args );
     void Printf( const Rgba& color, const char* format, ... );
     void Printf( const char* format, ... );
 
-    String GetInputPrompt() const;
+    string GetInputPrompt() const;
 
     float GetFontHeight() { return m_fontHeight; };
 
@@ -97,11 +98,11 @@ private:
     // Drawing
     void DrawInputText( Vec2& out_nextPos ) const; // Cannot span multiple lines
     void DrawOutputText( const Vec2& startPos ) const; // Can span multiple lines
-    void DrawOneLine( const String& text, const Rgba& color, const Vec2& startPos ) const; //Cannot span multiple lines, text will be truncated
-    void DrawOneOutputString( const String& text, const Rgba& color, const Vec2& startPos, Vec2& out_nextPos, bool& out_overflow ) const; // String can span multiple lines
+    void DrawOneLine( const string& text, const Rgba& color, const Vec2& startPos ) const; //Cannot span multiple lines, text will be truncated
+    void DrawOneOutputString( const string& text, const Rgba& color, const Vec2& startPos, Vec2& out_nextPos, bool& out_overflow ) const; // String can span multiple lines
 
     // Utilities
-    float GetStringDrawHeight( const String& text ) const; // How high will the text box be taking into account multi line span
+    float GetStringDrawHeight( const string& text ) const; // How high will the text box be taking into account multi line span
     int GetCharsPerLine() const; // How many chars will fit in one line
     int GetOutputMaxLinesShown() const; // How many vertical chars can be shown
     float GetTextboxWidth() const;
@@ -118,13 +119,13 @@ private:
     void LoadFromCommandHistoryFile();
     void DumpToCommandHistoryFile();
     //offset 1 is previous command, 2 is the one before that, 0 is no command selected
-    String GetCommandFromHistory(int offset);
-    void AppendToCommandHistory( const String& str );
+    string GetCommandFromHistory(int offset);
+    void AppendToCommandHistory( const string& str );
     void ClearCommandHistorySelector();
     // 1 is up and -1 is down, wraps
     void MoveCommandHistorySelector( int direction );
 
-    void NotifyObservers( const String& text );
+    void NotifyObservers( const string& text );
 
 
     // The default console
@@ -142,7 +143,7 @@ private:
     float m_lineSpacingRatio = 0.5f; // Ratio in terms of font height, 0 is no spacing
     float m_lineSpacing = 0.f;
     float m_cursorBlinkInterval = 1.f;
-    String m_outputFilePath;
+    string m_outputFilePath;
     Rgba m_backgroundColor = Rgba( 0, 0, 0, 230 );
     Rgba m_defaultTextColor = Rgba::LIGHT_GRAY;
 
@@ -161,19 +162,19 @@ private:
     // Text
     Strings m_previousInputText;
     Strings m_allOutputText;
-    std::vector<Rgba> m_allOutputColors;
-    String m_inputText;
+    vector<Rgba> m_allOutputColors;
+    string m_inputText;
     BitmapFont* m_font = nullptr;
 
     // Thread Safety
     std::mutex m_printMutex;
 
     // Command History
-    String m_historyFile = "Logs/command_history.txt";
+    string m_historyFile = "Logs/command_history.txt";
     int m_maxCommandHistoryLength = 20;
     Strings m_commandHistory;
     int m_commandHistorySelectorPos = 0;
 
     // Observers
-    std::vector<IConsoleObserver*> m_observers;
+    vector<IConsoleObserver*> m_observers;
 };

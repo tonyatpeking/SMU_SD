@@ -12,7 +12,7 @@
 #include "Engine/Math/MathUtils.hpp"
 
 
-Image::Image( const String& imageFilePath )
+Image::Image( const string& imageFilePath )
 {
     // Filled in for us to indicate how many color/alpha components the image had
     // (e.g. 3=RGB, 4=RGBA)
@@ -137,7 +137,7 @@ bool Image::IsImageValid()
     return true;
 }
 
-void Image::SaveToDisk( const String& imageFilePath )
+void Image::SaveToDisk( const string& imageFilePath )
 {
     stbi_write_png( imageFilePath.c_str(), m_dimensions.x, m_dimensions.y, 4,
                     m_texels.data(), sizeof( Rgba ) * m_dimensions.x );

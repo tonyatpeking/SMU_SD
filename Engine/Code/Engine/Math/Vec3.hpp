@@ -31,7 +31,7 @@ public:
     static Vec3 MakeFromXZ( const Vec2& vec2, float y = 0.f );
     Vec2 ToVec2() const;
     Vec2 ToVec2XZ() const;
-    String ToString() const;
+    string ToString() const;
 
     // Operators
     const Vec3 operator+( const Vec3& vecToAdd ) const;		// vec3 + vec3
@@ -59,7 +59,7 @@ public:
     float GetValueOnAxis( Axis axis ) const;
     void SnapToZero();
 
-    ParseStatus SetFromText( const String& text, const String& delimiter = "," );
+    ParseStatus SetFromText( const string& text, const string& delimiter = "," );
 
     static Vec3 Reflect( const Vec3& vectorToReflect, const Vec3& reflectionNormal );
     static Vec3 MakeVectorOnAxis( Axis axis, float lengthOnAxis=1.0f );// construct a vector based on axis

@@ -28,7 +28,7 @@ SpriteAnimSetDefinition::~SpriteAnimSetDefinition()
     m_animDefs.clear();
 }
 
-void SpriteAnimSetDefinition::SwapSpriteSheet( const String& spriteSheetPath, Renderer& renderer )
+void SpriteAnimSetDefinition::SwapSpriteSheet( const string& spriteSheetPath, Renderer& renderer )
 {
     for( auto& animDef : m_animDefs )
     {

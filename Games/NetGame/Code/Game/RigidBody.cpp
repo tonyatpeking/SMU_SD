@@ -3,7 +3,7 @@
 #include "Game/RigidBody.hpp"
 #include "Game/GameCommon.hpp"
 
-RigidBody::RigidBody( std::string type )
+RigidBody::RigidBody( string type )
     : GameObject(type)
 {
 }

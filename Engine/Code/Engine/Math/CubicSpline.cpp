@@ -87,13 +87,13 @@ const Vec2 CubicSpline2D::GetVelocity( int pointIndex ) const
     return m_velocities[pointIndex];
 }
 
-int CubicSpline2D::GetPositions( std::vector<Vec2>& out_positions ) const
+int CubicSpline2D::GetPositions( vector<Vec2>& out_positions ) const
 {
     out_positions = m_positions;
     return (int) m_positions.size();
 }
 
-int CubicSpline2D::GetVelocities( std::vector<Vec2>& out_velocities ) const
+int CubicSpline2D::GetVelocities( vector<Vec2>& out_velocities ) const
 {
     out_velocities = m_velocities;
     return (int) m_velocities.size();

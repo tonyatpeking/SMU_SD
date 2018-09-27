@@ -1,24 +1,19 @@
 #pragma once
 #include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/Net/NetDefines.hpp"
+
 #include <map>
 
+struct NetAddress;
 class NetPacket;
-class NetCommand;
 class BytePacker;
-class NetNode;
-class NetAddress;
+class NetConnection;
 class UDPSocket;
+class NetMessageDefinition;
+class NetMessage;
+class PacketChannel;
 
-typedef int UID;
-typedef uint16_t CommandID;
 
-typedef void( *NetCommandCallback )( NetPacket& );
-typedef size_t( *GetLengthCallback )( NetPacket& );
-
-#define GAME_PORT "10084"
-#define ETHERNET_MTU 1500  // maximum transmission unit - determined by hardware part of OSI model.
-// 1500 is the MTU of EthernetV2, and is the minimum one - so we use it;
-#define PACKET_MTU (ETHERNET_MTU - 40 - 8)
 
 class NetSession
 {
@@ -26,41 +21,38 @@ public:
     NetSession();
     ~NetSession();
 
-    // Nodes
-    NetNode* AddNode( UID uid, const NetAddress& address );
+    // message definitions
+    bool RegisterMessageDefinition( const string& name, NetMessageCB cb );
+    const NetMessageDefinition* GetMessageDefinition( const MessageID& id );
+    const NetMessageDefinition* GetMessageDefinitionByIndex( const uint8_t idx ) const;
+    void Finalize();
 
-    // Communication
-    void ProcessIncomming();
-    void ProcessOutgoing();
-    // data is copied out so it is save to delete after this is called
-    // all commands are queued to allow for optimal packet size
-    void QueueSend( const String& netCommandName, BytePacker& data, NetNode receiver );
-    void SendImmediate( const NetPacket& packet );
+    // Starting a session (finalizes definitions - can't add more once
+    // the session is running)
+    void Bind( int port, uint rangeToTry = 0U );
 
-    // NetCommands
-    NetCommand* GetNetCommandFromID( CommandID id );
-    // Note: read head for BytePacker must be at the command
-    // this takes a packet to get the length because the command might need the context
-    // of the packet to determine length
-    size_t GetParameterLength( NetPacket& packet );
-    // Note: read head for BytePacker must be at the command
-    bool RunNetCommand( NetPacket& packet );
-    bool RunNetCommands( NetPacket& packet );
+    // Connection management
+    NetConnection* AddConnection( uint idx, const NetAddress& addr );
+    void CloseAllConnections();
 
-    // walk through the packet and make sure all command and lengths are valid
-    bool VerifyPacket( NetPacket& packet );
+    // updates
+    void ProcessIncomming()
+    {
+        // receive packets, see who they came from
+        // and call process those packets until
+        // no more packets are available;
+    }
 
-    void RegisterNetCommand( NetCommand* netCommand );
+    void ProcessOutgoing()
+    {
+        // foreach connection, process outgoing;
+    }
 
 
+public:
+    vector<NetConnection*> m_connections; // all connections I know about;
+    PacketChannel* m_channel; // what we send/receive packets on;
 
-private:
-
-    std::vector<NetPacket*> m_queuedSendPackets;
-
-    std::map<CommandID, NetCommand*> m_netCommands;
-    std::map<UID, NetNode*> m_nodes;
-
-    UDPSocket* m_socket = nullptr;
+    // sorted, based on name
+    vector<NetMessageDefinition*> m_messageDefinitions;
 };
-

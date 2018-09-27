@@ -31,7 +31,7 @@ MeshBuilder MakeUVSphere(
     const Vec3 centerPos = Vec3::ZEROS );
 
 MeshBuilder MakeLineStrip(
-    const std::vector<Vec3>& points,
+    const vector<Vec3>& points,
     const Rgba& startColor, const Rgba& endColor );
 
 MeshBuilder MakeFrustum( const Frustum& frustum );

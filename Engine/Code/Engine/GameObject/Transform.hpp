@@ -74,7 +74,7 @@ public:
     bool HasParent() const;
     bool HasChildren() const;
     Transform* GetParent() { return m_parent; };
-    std::vector<Transform*>& GetChildren() { return m_children; };
+    vector<Transform*>& GetChildren() { return m_children; };
     // parent can be null
     void SetParentKeepWorldTransform( Transform* parent );
     void SetParent( Transform* parent );
@@ -110,7 +110,7 @@ private:
 //     mutable Mat4 m_localMatrix;
 
     Transform* m_parent = nullptr;
-    std::vector<Transform*> m_children;
+    vector<Transform*> m_children;
 
     // These are always up to date after a function call so do not need dirty flags
     Vec3 m_localPosition = Vec3::ZEROS;

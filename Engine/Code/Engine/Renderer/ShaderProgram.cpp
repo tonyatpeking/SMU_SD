@@ -82,10 +82,10 @@ void LogProgramError( uint programId )
 // End namespace
 //--------------------------------------------------------------------------------------
 
-std::map < String, ShaderProgram* > ShaderProgram::s_loadedShaders;
+map < string, ShaderProgram* > ShaderProgram::s_loadedShaders;
 
 uint ShaderProgram::CompileShaderFromString(
-    const String& str, uint type, const String& defines )
+    const string& str, uint type, const string& defines )
 {
     if( str.empty() )
     {
@@ -99,9 +99,9 @@ uint ShaderProgram::CompileShaderFromString(
 
     ShaderSourceBuilder builder;
 
-    String strCopy = str;
-    String filepath;
-    String generatedFilepath = m_generatedFilepath;
+    string strCopy = str;
+    string filepath;
+    string generatedFilepath = m_generatedFilepath;
     if( GL_VERTEX_SHADER == type )
     {
         filepath = m_vsFilepath;
@@ -114,7 +114,7 @@ uint ShaderProgram::CompileShaderFromString(
         if( !generatedFilepath.empty() )
             generatedFilepath += ".fs";
     }
-    String finalSource = builder.Finalize( strCopy, filepath, defines,
+    string finalSource = builder.Finalize( strCopy, filepath, defines,
                                         generatedFilepath );
     GLint shaderLength = (GLint) finalSource.size();
     const char *c_str = finalSource.c_str();
@@ -151,24 +151,24 @@ void ShaderProgram::LogShaderError( uint shaderId, const ShaderSourceBuilder& bu
     buffer[length] = NULL;
 
     int errorFileLine = 0;
-    String errorMsg;
+    string errorMsg;
 
 
     if( buffer[0] == 'E' ) // probably Intel formatting
     {
         Strings errorLogLines;
-        StringUtils::ParseToTokens( String( buffer ), errorLogLines, "\n", false );
+        StringUtils::ParseToTokens( string( buffer ), errorLogLines, "\n", false );
         for( unsigned int errorLineNum = 0;
              errorLineNum < errorLogLines.size(); ++errorLineNum )
         {
             if( errorLogLines[errorLineNum].empty() )
                 continue;;
             Strings errorLogTokens;
-            StringUtils::ParseToTokens( String( errorLogLines[errorLineNum] ),
+            StringUtils::ParseToTokens( string( errorLogLines[errorLineNum] ),
                                         errorLogTokens, ":", false );
             errorLogTokens.resize( 3 );
             SetFromString( errorLogTokens[2], errorFileLine );
-            errorMsg = String( errorLogLines[errorLineNum] );
+            errorMsg = string( errorLogLines[errorLineNum] );
 
         }
     }
@@ -176,19 +176,19 @@ void ShaderProgram::LogShaderError( uint shaderId, const ShaderSourceBuilder& bu
     else // probably Nvidia formatting
     {
         Strings errorLogTokens;
-        StringUtils::ParseToTokens( String( buffer ), errorLogTokens, "(", false );
+        StringUtils::ParseToTokens( string( buffer ), errorLogTokens, "(", false );
         errorLogTokens.resize( 2 );
-        String afterParentheses = errorLogTokens[1];
+        string afterParentheses = errorLogTokens[1];
         StringUtils::ParseToTokens( afterParentheses, errorLogTokens, ")", false );
         errorLogTokens.resize( 1 );
         SetFromString( errorLogTokens[0], errorFileLine );
-        errorMsg = String( String( buffer ) );
+        errorMsg = string( string( buffer ) );
     }
-    String realFilepath;
+    string realFilepath;
     int realFileLine = builder.GetRealFileLine( errorFileLine, realFilepath ) - 1;
 
-    String originFile;
-    String combinedFilepath = m_generatedFilepath;
+    string originFile;
+    string combinedFilepath = m_generatedFilepath;
     if( GL_VERTEX_SHADER == type )
     {
         originFile = m_vsFilepath;
@@ -295,13 +295,13 @@ void ShaderProgram::Bind()
 }
 
 ShaderProgram* ShaderProgram::CreateOrGetFromFiles(
-    const String& rootpath,
-    const String& defines /*= "" */ )
+    const string& rootpath,
+    const string& defines /*= "" */ )
 {
-    String vsFile = rootpath + ".vs";
-    String fsFile = rootpath + ".fs";
-    String vsSource = IOUtils::ReadFileToString( vsFile.c_str() );
-    String fsSource = IOUtils::ReadFileToString( fsFile.c_str() );
+    string vsFile = rootpath + ".vs";
+    string fsFile = rootpath + ".fs";
+    string vsSource = IOUtils::ReadFileToString( vsFile.c_str() );
+    string fsSource = IOUtils::ReadFileToString( fsFile.c_str() );
     ShaderProgram* shader = CreateOrGetFromStrings(
         rootpath, vsSource, fsSource, defines, vsFile, fsFile );
     if( shader )
@@ -310,15 +310,15 @@ ShaderProgram* ShaderProgram::CreateOrGetFromFiles(
 }
 
 ShaderProgram* ShaderProgram::CreateOrGetFromStrings(
-    const String& name,
-    const String& vertShader,
-    const String& fragShader,
-    const String& defines, /*= ""*/
-    const String& vsFilepath, /*= "From string" */
-    const String& fsFilepath, /*= "From string" */
+    const string& name,
+    const string& vertShader,
+    const string& fragShader,
+    const string& defines, /*= ""*/
+    const string& vsFilepath, /*= "From string" */
+    const string& fsFilepath, /*= "From string" */
     int vsFileLineOffset,
     int fsFileLineOffset,
-    const String& generatedFilepath )
+    const string& generatedFilepath )
 {
     // Try getting first
     ShaderProgram* shaderProgram = GetProgram( name, true );
@@ -354,7 +354,7 @@ void ShaderProgram::UpdateAllShadersFromDisk()
     }
 }
 
-ShaderProgram* ShaderProgram::GetProgram( const String& name, bool disableWarning )
+ShaderProgram* ShaderProgram::GetProgram( const string& name, bool disableWarning )
 {
     auto iter = s_loadedShaders.find( name );
     if( s_loadedShaders.end() == iter )
@@ -368,18 +368,18 @@ ShaderProgram* ShaderProgram::GetProgram( const String& name, bool disableWarnin
 
 void ShaderProgram::UpdateShaderFromFile(
     bool updateDefines /*= false*/,
-    const String& defines /*= "" */ )
+    const string& defines /*= "" */ )
 {
-    String vsSource = IOUtils::ReadFileToString( m_vsFilepath.c_str() );
-    String fsSource = IOUtils::ReadFileToString( m_fsFilepath.c_str() );
+    string vsSource = IOUtils::ReadFileToString( m_vsFilepath.c_str() );
+    string fsSource = IOUtils::ReadFileToString( m_fsFilepath.c_str() );
     CreateOrUpdate( vsSource, fsSource, updateDefines, defines );
 }
 
 void ShaderProgram::UpdateShaderFromString(
-    const String& vertShader,
-    const String& fragShader,
+    const string& vertShader,
+    const string& fragShader,
     bool updateDefines /*= false*/,
-    const String& defines /*= "" */ )
+    const string& defines /*= "" */ )
 {
     CreateOrUpdate( vertShader, fragShader, updateDefines, defines );
 }
@@ -399,10 +399,10 @@ ShaderProgram::~ShaderProgram()
 }
 
 bool ShaderProgram::CreateOrUpdate(
-    const String& vertShader,
-    const String& fragShader,
+    const string& vertShader,
+    const string& fragShader,
     bool updateDefines,
-    const String& defines
+    const string& defines
 )
 {
     if( m_programHandle != NULL )

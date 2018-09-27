@@ -17,4 +17,4 @@ enum LogLevel
 
 Rgba LogLevelToColor( LogLevel logLevel );
 
-String LogLevelToString( LogLevel logLevel );
+string LogLevelToString( LogLevel logLevel );

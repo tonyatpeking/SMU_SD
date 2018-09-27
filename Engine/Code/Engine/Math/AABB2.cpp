@@ -89,9 +89,9 @@ void AABB2::FlipY()
 }
 
 
-ParseStatus AABB2::SetFromText( const String& text, const String& delimiter )
+ParseStatus AABB2::SetFromText( const string& text, const string& delimiter )
 {
-    std::vector<float> out_floats;
+    vector<float> out_floats;
     ParseStatus status = StringUtils::ParseToFloats( text, out_floats, delimiter );
 
     //ASSERT_RECOVERABLE( out_floats.size() == 4, "Wrong number of elements passed to AABB2" );

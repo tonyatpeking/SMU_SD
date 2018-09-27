@@ -3,7 +3,7 @@
 #include "Engine/Renderer/TextMeshBuilder.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 
-TextRenderable::TextRenderable( const String& str )
+TextRenderable::TextRenderable( const string& str )
 {
     SetText( str );
 }
@@ -13,17 +13,17 @@ TextRenderable::~TextRenderable()
     DeleteMesh();
 }
 
-void TextRenderable::SetText( const String& str )
+void TextRenderable::SetText( const string& str )
 {
     m_text = str;
 }
 
-String TextRenderable::GetText() const
+string TextRenderable::GetText() const
 {
     return m_text;
 }
 
-void TextRenderable::UpdateText( const String& str )
+void TextRenderable::UpdateText( const string& str )
 {
     if( str != m_text )
     {

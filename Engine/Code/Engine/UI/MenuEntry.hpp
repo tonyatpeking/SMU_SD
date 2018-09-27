@@ -26,9 +26,9 @@ public:
     bool IsSelected() { return m_isSelected; };
 
     void SetAction( std::function<void()> action ) { m_action = action; };
-    void SetText( const String& text ) { m_text = text; };
+    void SetText( const string& text ) { m_text = text; };
     void SetColor( const Rgba& color ) { m_color = color; };
-    virtual String GetText() const;
+    virtual string GetText() const;
     void SetBounds( const AABB2& bounds );
     void SetParent( Menu* parent ) { m_parentMenu = parent; };
     bool ExpandSubMenu(); // returns true if sub menu was expanded
@@ -47,7 +47,7 @@ protected:
 
     bool m_isSubMenuExpanded = false;
     bool m_isSelected = false;
-    String m_text;
+    string m_text;
 
     // Owns:
     Menu* m_subMenu = nullptr;

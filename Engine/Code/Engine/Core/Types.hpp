@@ -1,16 +1,26 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <map>
 
+// Usings
+
+using std::vector;
+using std::map;
+using std::string;
 
 // TypeDefs
-typedef std::string String;
-typedef std::vector<std::string> Strings;
-typedef std::vector<int> Ints;
-typedef std::vector<float> Floats;
-typedef std::vector<double> Doubles;
-typedef std::vector<unsigned int> Uints;
+
+typedef vector<string> Strings;
+typedef vector<int> Ints;
+typedef vector<float> Floats;
+typedef vector<double> Doubles;
+typedef vector<unsigned int> Uints;
 
 typedef unsigned int uint;
 typedef unsigned char uchar;
 typedef unsigned char Byte;
+
+typedef uint16_t uint16;
+typedef uint8_t uint8;
+

@@ -5,7 +5,7 @@
 CommandSystem* CommandSystem::s_defaultCommandSystem;
 
 CommandParameterParser::CommandParameterParser(
-    const String& commandString, bool suppressWarnings )
+    const string& commandString, bool suppressWarnings )
     :m_suppressWarnings( suppressWarnings )
 {
     StringUtils::ParseFunctionName( commandString, m_commandName );
@@ -30,7 +30,7 @@ CommandSystem* CommandSystem::DefaultCommandSystem()
     return s_defaultCommandSystem;
 }
 
-void CommandSystem::AddCommand( String name, CommandCallback callback )
+void CommandSystem::AddCommand( string name, CommandCallback callback )
 {
     if( m_commandDefs.find( name ) != m_commandDefs.end() )
     {
@@ -43,9 +43,9 @@ void CommandSystem::AddCommand( String name, CommandCallback callback )
     m_commandDefs[name] = CommandDef( name, callback );
 }
 
-void CommandSystem::RunCommand( String commandString )
+void CommandSystem::RunCommand( string commandString )
 {
-    String commandName;
+    string commandName;
     StringUtils::ParseFunctionName( commandString, commandName );
     if( m_commandDefs.find( commandName ) == m_commandDefs.end() )
     {
@@ -56,7 +56,7 @@ void CommandSystem::RunCommand( String commandString )
 }
 
 
-CommandSelfRegister::CommandSelfRegister( String name, CommandCallback callback )
+CommandSelfRegister::CommandSelfRegister( string& name, CommandCallback callback )
 {
     CommandSystem::DefaultCommandSystem()->AddCommand( name, callback );
 }

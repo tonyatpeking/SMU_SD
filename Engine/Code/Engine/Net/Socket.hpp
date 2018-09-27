@@ -47,7 +47,7 @@ public:
 
     int GetLastErrorCode() const;
 
-    String GetLastErrorString() const;
+    string GetLastErrorString() const;
 
 
 

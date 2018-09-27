@@ -3,7 +3,7 @@
 namespace
 {
 
-const String LIGHTING_DEBUG_SHADER = "Data/Shaders/Debug/LightingDebug";
+const string LIGHTING_DEBUG_SHADER = "Data/Shaders/Debug/LightingDebug";
 
 
 }

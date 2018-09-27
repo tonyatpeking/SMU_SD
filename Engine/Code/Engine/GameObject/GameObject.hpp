@@ -24,7 +24,7 @@ public:
                                  const Vec3& pivot = Vec3::ZEROS );
 
     // GameObject RenderSceneGraph will default to RenderSceneGraph::GetDefault()
-    GameObject( const String& type = "Unknown" );
+    GameObject( const string& type = "Unknown" );
     virtual ~GameObject();
 
     virtual void Update();
@@ -60,8 +60,8 @@ public:
     void AddDeathCallback( GameObjectCB cb );
     void ClearDeathCallbacks();
 
-    void SetType( std::string type );
-    String GetType() { return m_type; };
+    void SetType( string type );
+    string GetType() { return m_type; };
 
     OBB3 GetOBB3() const;
     AABB3 GetLocalBounds() const;
@@ -72,7 +72,7 @@ public:
 
 
 protected:
-    std::string m_type = "Unknown";
+    string m_type = "Unknown";
 
     Transform m_transform;
     mutable bool m_modelMatDirty = false;
@@ -82,7 +82,7 @@ protected:
     RenderSceneGraph* m_scene = nullptr;
     GameObjectManager* m_manager = nullptr;
 
-    std::vector < GameObjectCB > m_deathCallbacks;
+    vector < GameObjectCB > m_deathCallbacks;
 
     bool m_firstUpdateCalled = false;
     bool m_visible = true;

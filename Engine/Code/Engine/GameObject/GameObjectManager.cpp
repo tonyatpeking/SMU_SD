@@ -34,20 +34,20 @@ void GameObjectManager::DeleteDeadGameObjects()
     }
 }
 
-std::vector<GameObject*>& GameObjectManager::GetObjectsOfType( std::string type )
+vector<GameObject*>& GameObjectManager::GetObjectsOfType( string type )
 {
     return m_allGameObjects[type];
 }
 
-std::vector<GameObject*>& GameObjectManager::GetObejctsFlat()
+vector<GameObject*>& GameObjectManager::GetObejctsFlat()
 {
     return m_allGameObjectsFlat;
 }
 
 void GameObjectManager::AddGameObject( GameObject* go )
 {
-    std::string goType = go->GetType();
-    std::vector<GameObject*>& gos = GetObjectsOfType( goType );
+    string goType = go->GetType();
+    vector<GameObject*>& gos = GetObjectsOfType( goType );
 
     gos.push_back( go );
     m_allGameObjectsFlat.push_back( go );
@@ -55,8 +55,8 @@ void GameObjectManager::AddGameObject( GameObject* go )
 
 void GameObjectManager::RemoveGameObject( GameObject* go )
 {
-    std::string goType = go->GetType();
-    std::vector<GameObject*>& gos = GetObjectsOfType( goType );
+    string goType = go->GetType();
+    vector<GameObject*>& gos = GetObjectsOfType( goType );
     ContainerUtils::EraseOneValue( gos, go );
     ContainerUtils::EraseOneValue( m_allGameObjectsFlat, go );
 }

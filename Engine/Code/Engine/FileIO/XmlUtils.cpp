@@ -11,26 +11,26 @@
 #include "Engine/Core/ErrorUtils.hpp"
 
 
-String XMLAttribute::Name() const
+string XMLAttribute::Name() const
 {
     return m_attribute.name();
 }
 
-String XMLAttribute::Value( const char* defaultValue/*=nullptr */ )
+string XMLAttribute::Value( const char* defaultValue/*=nullptr */ )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     if( !stringValue.empty() )
         return stringValue;
     else if( defaultValue == nullptr )
         return "";
     else
-        return String( defaultValue );
+        return string( defaultValue );
 }
 
-String XMLAttribute::Value( const String& defaultValue )
+string XMLAttribute::Value( const string& defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     if( !stringValue.empty() )
         return stringValue;
@@ -40,7 +40,7 @@ String XMLAttribute::Value( const String& defaultValue )
 
 int XMLAttribute::Value( int defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
     int out_int;
     ParseStatus status = SetFromString( stringValue, out_int );
 
@@ -52,7 +52,7 @@ int XMLAttribute::Value( int defaultValue )
 
 char XMLAttribute::Value( char defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     if( stringValue.length() > 1 )
         return stringValue[0];
@@ -62,7 +62,7 @@ char XMLAttribute::Value( char defaultValue )
 
 bool XMLAttribute::Value( bool defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     bool out_bool;
     ParseStatus status = SetFromString( stringValue, out_bool );
@@ -75,7 +75,7 @@ bool XMLAttribute::Value( bool defaultValue )
 
 float XMLAttribute::Value( float defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     float out_float;
     ParseStatus status = SetFromString( stringValue, out_float );
@@ -88,7 +88,7 @@ float XMLAttribute::Value( float defaultValue )
 
 Rgba XMLAttribute::Value( const Rgba& defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     Rgba color;
     ParseStatus status = color.SetFromText( stringValue );
@@ -101,7 +101,7 @@ Rgba XMLAttribute::Value( const Rgba& defaultValue )
 
 Vec2 XMLAttribute::Value( const Vec2& defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     Vec2 vec2;
     ParseStatus status = vec2.SetFromText( stringValue );
@@ -114,7 +114,7 @@ Vec2 XMLAttribute::Value( const Vec2& defaultValue )
 
 IRange XMLAttribute::Value( const IRange& defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     IRange intRange;
     ParseStatus status = intRange.SetFromText( stringValue );
@@ -127,7 +127,7 @@ IRange XMLAttribute::Value( const IRange& defaultValue )
 
 Range XMLAttribute::Value( const Range& defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     Range floatRange;
     ParseStatus status = floatRange.SetFromText( stringValue );
@@ -140,7 +140,7 @@ Range XMLAttribute::Value( const Range& defaultValue )
 
 IVec2 XMLAttribute::Value( const IVec2& defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     IVec2 intVec2;
     ParseStatus status = intVec2.SetFromText( stringValue );
@@ -151,10 +151,10 @@ IVec2 XMLAttribute::Value( const IVec2& defaultValue )
         return defaultValue;
 }
 
-std::vector<int> XMLAttribute::Value( const std::vector<int>& defaultValue )
+vector<int> XMLAttribute::Value( const vector<int>& defaultValue )
 {
-    String stringValue = m_attribute.value();
-    std::vector<int> out_ints;
+    string stringValue = m_attribute.value();
+    vector<int> out_ints;
     ParseStatus status = StringUtils::ParseToInts( stringValue, out_ints );
 
     if( status == PARSE_SUCCESS )
@@ -163,10 +163,10 @@ std::vector<int> XMLAttribute::Value( const std::vector<int>& defaultValue )
         return defaultValue;
 }
 
-std::vector<float> XMLAttribute::Value( const std::vector<float>& defaultValue )
+vector<float> XMLAttribute::Value( const vector<float>& defaultValue )
 {
-    String stringValue = m_attribute.value();
-    std::vector<float> out_floats;
+    string stringValue = m_attribute.value();
+    vector<float> out_floats;
     ParseStatus status = StringUtils::ParseToFloats( stringValue, out_floats );
 
     if( status == PARSE_SUCCESS )
@@ -178,7 +178,7 @@ std::vector<float> XMLAttribute::Value( const std::vector<float>& defaultValue )
 
 AABB2 XMLAttribute::Value( const AABB2& defaultValue )
 {
-    String stringValue = m_attribute.value();
+    string stringValue = m_attribute.value();
 
     AABB2 aabb2;
     ParseStatus status = aabb2.SetFromText( stringValue );
@@ -199,12 +199,12 @@ bool XMLAttribute::Valid() const
     return m_attribute;
 }
 
-XMLAttribute XMLElement::Attribute( const String& attributeName ) const
+XMLAttribute XMLElement::Attribute( const string& attributeName ) const
 {
     return XMLAttribute( GetNode().attribute( attributeName.c_str() ) );
 }
 
-XMLElement XMLElement::Child( const String& elementName ) const
+XMLElement XMLElement::Child( const string& elementName ) const
 {
     return XMLElement( GetNode().child( elementName.c_str() ) );
 }
@@ -239,7 +239,7 @@ XMLElement XMLElement::NextSibling() const
     return XMLElement( GetNode().next_sibling() );
 }
 
-const String XMLElement::Name() const
+const string XMLElement::Name() const
 {
     return GetNode().name();
 }
@@ -249,7 +249,7 @@ bool XMLElement::Valid() const
     return GetNode();
 }
 
-void XMLDocument::LoadFromFile( const String& filePath )
+void XMLDocument::LoadFromFile( const string& filePath )
 {
     pugi::xml_parse_result result = m_document.load_file( filePath.c_str() );
 
@@ -302,17 +302,17 @@ IVec2 ParseXmlAttribute( const XMLElement& element, const char* attributeName, c
     return element.Attribute( attributeName ).Value( defaultValue );
 }
 
-String ParseXmlAttribute( const XMLElement& element, const char* attributeName, const String& defaultValue )
+string ParseXmlAttribute( const XMLElement& element, const char* attributeName, const string& defaultValue )
 {
     return element.Attribute( attributeName ).Value( defaultValue );
 }
 
-std::vector<int> ParseXmlAttribute( const XMLElement& element, const char* attributeName, const std::vector<int>& defaultValue )
+vector<int> ParseXmlAttribute( const XMLElement& element, const char* attributeName, const vector<int>& defaultValue )
 {
     return element.Attribute( attributeName ).Value( defaultValue );
 }
 
-String ParseXmlAttribute( const XMLElement& element, const char* attributeName, const char* defaultValue )
+string ParseXmlAttribute( const XMLElement& element, const char* attributeName, const char* defaultValue )
 {
     return element.Attribute( attributeName ).Value( defaultValue );
 }

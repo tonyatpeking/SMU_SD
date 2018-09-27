@@ -109,19 +109,19 @@ double DateTime::SecondsSince( const DateTime& sinceThisTime ) const
 }
 
 
-String DateTime::ToString()
+string DateTime::ToString()
 {
     return Stringf( "%d/%02d/%02d %02d:%02d:%02d %3dms",
                     year, month, day, hour, minute, second, milliseconds );
 }
 
-String DateTime::ToStringTimeOnly()
+string DateTime::ToStringTimeOnly()
 {
     return Stringf( "%02d:%02d:%02d %3dms",
                     hour, minute, second, milliseconds );
 }
 
-String DateTime::ToStringFileFriendly()
+string DateTime::ToStringFileFriendly()
 {
     return Stringf( "%d.%02d.%02d_%02d.%02d.%02d %3d",
                     year, month, day, hour, minute, second, milliseconds );

@@ -22,7 +22,7 @@ public:
 
     double GetTotalFrameTime();
 
-    String ToString();
+    string ToString();
 
 private:
     class ProfilerReportEntry* m_rootEntry;

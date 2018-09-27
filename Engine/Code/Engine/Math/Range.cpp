@@ -25,9 +25,9 @@ Range::Range( float minMaxInclusive )
 
 }
 
-ParseStatus Range::SetFromText( const String& text, const String& delimiter )
+ParseStatus Range::SetFromText( const string& text, const string& delimiter )
 {
-    std::vector<float> out_floats;
+    vector<float> out_floats;
     ParseStatus status = StringUtils::ParseToFloats( text, out_floats, delimiter );
 
     //ASSERT_RECOVERABLE( out_floats.size() == 1 || out_floats.size() == 2, "Wrong number of elements passed to Range" );

@@ -5,7 +5,7 @@
 #include "Engine/Core/Rgba.hpp"
 
 
-CubeMap::CubeMap( const String& imageFilePath )
+CubeMap::CubeMap( const string& imageFilePath )
 {
     m_target = TextureTarget::CUBE_MAP;
     Image image = Image( imageFilePath );

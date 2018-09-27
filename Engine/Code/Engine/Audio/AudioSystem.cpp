@@ -68,7 +68,7 @@ void AudioSystem::EndFrame()
 {
 }
 
-SoundID AudioSystem::CreateSound( const String& soundFilePath )
+SoundID AudioSystem::CreateSound( const string& soundFilePath )
 {
     auto found = m_registeredSoundIDs.find( soundFilePath );
     if( found != m_registeredSoundIDs.end() )
@@ -96,7 +96,7 @@ SoundID AudioSystem::CreateSound( const String& soundFilePath )
     }
 }
 
-SoundID AudioSystem::GetSound( const String& soundFilePath )
+SoundID AudioSystem::GetSound( const string& soundFilePath )
 {
     auto found = m_registeredSoundIDs.find( soundFilePath );
     if( found != m_registeredSoundIDs.end() )
@@ -142,7 +142,7 @@ PlaybackID AudioSystem::PlaySound(
 
 
 PlaybackID AudioSystem::PlaySoundFromPath(
-    const String& soundFilePath, bool isLooped/*=false*/, float volume/*=1.f*/,
+    const string& soundFilePath, bool isLooped/*=false*/, float volume/*=1.f*/,
     float balance/*=0.0f*/, float speed/*=1.0f*/, bool isPaused/*=false */ )
 {
     if( soundFilePath.empty() )
@@ -232,9 +232,9 @@ void AudioSystem::ValidateResult( int result )
 }
 
 
-PlaybackID AudioSystem::PlayOneOffSoundFromGroup( String groupName )
+PlaybackID AudioSystem::PlayOneOffSoundFromGroup( string groupName )
 {
-    if( ContainerUtils::Contains( m_registeredGroups, groupName ) )
+    if( ContainerUtils::ContainsKey( m_registeredGroups, groupName ) )
     {
         AudioGroup& group = m_registeredGroups[groupName];
         int numSounds = (int)group.soundIDs.size();
@@ -246,7 +246,7 @@ PlaybackID AudioSystem::PlayOneOffSoundFromGroup( String groupName )
     return MISSING_SOUND_ID;
 }
 
-void AudioSystem::LoadAudioGroups( String datafile )
+void AudioSystem::LoadAudioGroups( string datafile )
 {
     XMLDocument doc;
     doc.LoadFromFile( datafile );
@@ -264,7 +264,7 @@ void AudioSystem::LoadAudioGroups( String datafile )
         for( XMLElement clipEl = groupEl.FirstChild(); clipEl.Valid();
              clipEl = clipEl.NextSibling() )
         {
-            String soundPath = clipEl.FirstAttribute().Value();
+            string soundPath = clipEl.FirstAttribute().Value();
             SoundID soundID = CreateSound( soundPath );
             group.soundIDs.push_back( soundID );
         }

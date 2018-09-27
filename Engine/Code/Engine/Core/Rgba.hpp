@@ -31,7 +31,7 @@ public:
     void SetAsFloats( float normalizedRed, float normalizedGreen, float normalizedBlue,
                       float normalizedAlpha=1.0f );
 
-    ParseStatus SetFromText( const String& text, const String& delimiter = "," );
+    ParseStatus SetFromText( const string& text, const string& delimiter = "," );
     void ScaleRGB( float rgbScale ); // Scales (and clamps) RGB components, but not A
     void ScaleAlpha( float alphaScale ); // Scales (and clamps) Alpha, RGB is untouched
 

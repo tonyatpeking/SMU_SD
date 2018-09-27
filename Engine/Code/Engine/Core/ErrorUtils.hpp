@@ -7,14 +7,14 @@ class Rgba;
 class Logger;
 struct LogEntry;
 
-void Log( const String& filePath, const String& functionName, int lineNum,
-          LogLevel logLevel, const String& tag, const String& messageText );
+void Log( const string& filePath, const string& functionName, int lineNum,
+          LogLevel logLevel, const string& tag, const string& messageText );
 
-void Log( const String& filePath, const String& functionName, int lineNum,
-           LogLevel logLevel, const String& tag, const char* format, ... );
+void Log( const string& filePath, const string& functionName, int lineNum,
+           LogLevel logLevel, const string& tag, const char* format, ... );
 
-void Logfv( const String& filePath, const String& functionName, int lineNum,
-            LogLevel logLevel, const String& tag, const char* format, va_list args );
+void Logfv( const string& filePath, const string& functionName, int lineNum,
+            LogLevel logLevel, const string& tag, const char* format, va_list args );
 
 void DebuggerLoggerCB( LogEntry* entry, void* _ );
 void HookDebuggerToLogger( Logger* logger );
@@ -24,23 +24,23 @@ void DebuggerPrintf( const char* messageFormat, ... );
 bool IsDebuggerAvailable();
 __declspec( noreturn ) void FatalError(
     const char* filePath, const char* functionName, int lineNum,
-    const String& reasonForError, const char* conditionText=nullptr );
+    const string& reasonForError, const char* conditionText=nullptr );
 
 void RecoverableWarning(
     const char* filePath, const char* functionName, int lineNum,
-    const String& reasonForWarning, const char* conditionText=nullptr );
+    const string& reasonForWarning, const char* conditionText=nullptr );
 
 void SystemDialogue_Okay(
-    const String& messageTitle, const String& messageText, LogLevel logLevel );
+    const string& messageTitle, const string& messageText, LogLevel logLevel );
 
 bool SystemDialogue_OkayCancel(
-    const String& messageTitle, const String& messageText, LogLevel logLevel );
+    const string& messageTitle, const string& messageText, LogLevel logLevel );
 
 bool SystemDialogue_YesNo(
-    const String& messageTitle, const String& messageText, LogLevel logLevel );
+    const string& messageTitle, const string& messageText, LogLevel logLevel );
 
 int SystemDialogue_YesNoCancel(
-    const String& messageTitle, const String& messageText, LogLevel logLevel );
+    const string& messageTitle, const string& messageText, LogLevel logLevel );
 
 void AssertBreakpoint( bool condition );
 

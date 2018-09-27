@@ -94,9 +94,9 @@ void AABB3::Translate( float translationX, float translationY, float translation
     maxs.z += translationZ;
 }
 
-ParseStatus AABB3::SetFromText( const String& text )
+ParseStatus AABB3::SetFromText( const string& text )
 {
-    std::vector<float> out_floats;
+    vector<float> out_floats;
     ParseStatus status = StringUtils::ParseToFloats( text, out_floats );
 
     //ASSERT_RECOVERABLE( out_floats.size() == 4, "Wrong number of elements passed to AABB2" );

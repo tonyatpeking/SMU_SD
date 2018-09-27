@@ -57,7 +57,7 @@ public:
     bool operator==( const IVec2& compare ) const;				// vec2 == vec2
     bool operator!=( const IVec2& compare ) const;				// vec2 != vec2
 
-    ParseStatus SetFromText( const String& text, const String& delimiter = "," );
+    ParseStatus SetFromText( const string& text, const string& delimiter = "," );
 
     Axis AxisIfIsDirection() const;
 
@@ -70,7 +70,7 @@ public:
     static int GetMaxIndex( const IVec2& dimensions );
     static int GetManhattanDist( const IVec2& a, const IVec2& b);
     //All range and bounds inclusive
-    static std::vector<IVec2> GetCoordsWithinManhattanDistRange( const IVec2& center,
+    static vector<IVec2> GetCoordsWithinManhattanDistRange( const IVec2& center,
                                                                       int minRange, int maxRange,
                                                                       const IVec2& minBounds,
                                                                       const IVec2& maxBounds);

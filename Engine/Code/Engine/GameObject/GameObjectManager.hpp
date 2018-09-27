@@ -1,12 +1,10 @@
 #pragma once
 
-#include <vector>
-#include <map>
-#include <string>
+#include "Engine/Core/EngineCommonH.hpp"
 
 class GameObject;
 
-typedef std::vector<GameObject*> GameObjects;
+typedef vector<GameObject*> GameObjects;
 
 class GameObjectManager
 {
@@ -21,7 +19,7 @@ public:
     virtual void Update();
     virtual void DeleteDeadGameObjects();
 
-    GameObjects& GetObjectsOfType( std::string type );
+    GameObjects& GetObjectsOfType( string type );
     GameObjects& GetObejctsFlat();
 
 protected:
@@ -32,6 +30,6 @@ protected:
     static GameObjectManager* s_default;
 
     // string is the type of object
-    std::map< std::string, GameObjects> m_allGameObjects;
+    map< string, GameObjects> m_allGameObjects;
     GameObjects m_allGameObjectsFlat;
 };

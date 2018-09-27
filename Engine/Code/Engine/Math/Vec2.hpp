@@ -70,7 +70,7 @@ public:
 
     // Mutators
     void RotateDegrees( float degrees );
-    ParseStatus SetFromText( const String& text, const String& delimiter = "," );
+    ParseStatus SetFromText( const string& text, const string& delimiter = "," );
     void Scale( const Vec2& scale );
     bool SnapToZero();
 

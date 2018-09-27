@@ -118,10 +118,10 @@ bool IVec2::operator!=( const IVec2 & compare ) const
     return !( ( *this ) == compare );
 }
 
-ParseStatus IVec2::SetFromText( const String& text, const String& delimiter )
+ParseStatus IVec2::SetFromText( const string& text, const string& delimiter )
 {
 
-    std::vector<int> out_ints;
+    vector<int> out_ints;
     ParseStatus status = StringUtils::ParseToInts( text, out_ints, delimiter );
 
     //ASSERT_RECOVERABLE( out_ints.size() == 2, "Wrong number of elements passed to IVec2" );
@@ -182,9 +182,9 @@ int IVec2::GetManhattanDist( const IVec2& a, const IVec2& b )
     return abs( a.x - b.x ) + abs( a.y - b.y );
 }
 
-std::vector<IVec2> IVec2::GetCoordsWithinManhattanDistRange( const IVec2& center, int minRange, int maxRange, const IVec2& minBounds, const IVec2& maxBounds )
+vector<IVec2> IVec2::GetCoordsWithinManhattanDistRange( const IVec2& center, int minRange, int maxRange, const IVec2& minBounds, const IVec2& maxBounds )
 {
-    std::vector<IVec2> coordsInRange;
+    vector<IVec2> coordsInRange;
     for( int x = minBounds.x; x <= maxBounds.x; ++x )
     {
         for( int y = minBounds.y; y <= maxBounds.y; ++y )

@@ -95,7 +95,7 @@ void RemoteCommandService::RenderWidget()
 
     if( m_rcs_state == RCS_State::CLIENT || m_rcs_state == RCS_State::HOST )
     {
-        String infoString = Stringf(
+        string infoString = Stringf(
             "Host Addr: \n  %s\n%d connections\n",
             m_hostAddress.ToStringAll().c_str(),
             m_connectedSockets.size()
@@ -103,7 +103,7 @@ void RemoteCommandService::RenderWidget()
 
         for( int clientIdx = 0; clientIdx < m_connectedSockets.size(); ++clientIdx )
         {
-            String clientString = Stringf(
+            string clientString = Stringf(
                 "  [%d] %s\n",
                 clientIdx,
                 m_connectedSockets[clientIdx]->m_address.ToStringAll().c_str()
@@ -125,7 +125,7 @@ void RemoteCommandService::RenderWidget()
 
 }
 
-void RemoteCommandService::ShouldHost( const String& service )
+void RemoteCommandService::ShouldHost( const string& service )
 {
     if( !service.empty() )
         m_service = service;
@@ -143,13 +143,13 @@ void RemoteCommandService::ShouldJoin( const NetAddress& addr )
     m_shouldDisconnect = true;
 }
 
-void RemoteCommandService::ShouldJoin( const String& addr )
+void RemoteCommandService::ShouldJoin( const string& addr )
 {
     NetAddress netAddr( addr );
     ShouldJoin( netAddr );
 }
 
-void RemoteCommandService::OnConsolePrint( const String& str )
+void RemoteCommandService::OnConsolePrint( const string& str )
 {
     SendMsg( m_echoToSocket, true, str.c_str() );
 }
@@ -363,7 +363,7 @@ void RemoteCommandService::ProcessReceives()
 bool RemoteCommandService::ProcessReceive( TCPSocket* sock )
 {
     bool out_isEcho;
-    String out_msg;
+    string out_msg;
     size_t byteCount = 1;
     int failCount = 0;
     while( failCount < 2 )

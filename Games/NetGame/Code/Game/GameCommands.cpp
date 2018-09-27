@@ -17,11 +17,11 @@ void GameCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
 
-    commandSys->AddCommand( "udpTestStart", []( String str )
+    commandSys->AddCommand( "udpTestStart", []( string& str )
     {
         CommandParameterParser parser( str );
 
-        String portStr = "";
+        string portStr = "";
         if( parser.NumOfParams() > 0 )
         {
             parser.GetNext( portStr );
@@ -31,24 +31,24 @@ void GameCommands::RegisterAllCommands()
         UDPTest::GetInstance()->Start( portStr );
     } );
 
-    commandSys->AddCommand( "udpTestStop", []( String str )
+    commandSys->AddCommand( "udpTestStop", []( string& str )
     {
         UNUSED( str );
         UDPTest::GetInstance()->Stop();
     } );
 
 
-    commandSys->AddCommand( "udpTestSend", []( String str )
+    commandSys->AddCommand( "udpTestSend", []( string& str )
     {
         CommandParameterParser parser( str );
 
-        String addrStr;
+        string addrStr;
 
         parser.GetNext( addrStr );
 
         NetAddress addr(addrStr);
 
-        String msg;
+        string msg;
 
         parser.GetNext( msg );
 
@@ -58,10 +58,10 @@ void GameCommands::RegisterAllCommands()
     } );
 
 
-    commandSys->AddCommand( "echo", []( String str )
+    commandSys->AddCommand( "echo", []( string& str )
     {
         CommandParameterParser parser( str );
-        String msg;
+        string msg;
         parser.GetNext( msg );
         Rgba color = Rgba::GREEN;
         if( parser.NumOfParams() > 1 )
@@ -72,7 +72,7 @@ void GameCommands::RegisterAllCommands()
     } );
 
 
-    commandSys->AddCommand( "profilerReport", []( String str )
+    commandSys->AddCommand( "profilerReport", []( string& str )
     {
         CommandParameterParser parser( str );
         size_t numParams = parser.NumOfParams();
@@ -80,7 +80,7 @@ void GameCommands::RegisterAllCommands()
         bool sortByTotalTime = true;
         if( numParams > 0 )
         {
-            String param;
+            string param;
             parser.GetNext( param );
             if( "flat" == param || "Flat" == param )
                 useTreeMode = false;
@@ -113,13 +113,13 @@ void GameCommands::RegisterAllCommands()
         }
 
 
-        String reportStr = report.ToString();
+        string reportStr = report.ToString();
         Print( reportStr );
 
     } );
 
 
-    commandSys->AddCommand( "add", []( String str )
+    commandSys->AddCommand( "add", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -144,27 +144,30 @@ void GameCommands::RegisterAllCommands()
 
 
 
-    commandSys->AddCommand( "quit", []( String str )
+    commandSys->AddCommand( "quit", []( string& str )
     {
+        UNUSED( str );
         g_app->OnQuitRequested();
     } );
 
-    commandSys->AddCommand( "quit()", []( String str )
+    commandSys->AddCommand( "quit()", []( string& str )
     {
+        UNUSED( str );
         g_app->OnQuitRequested();
     } );
 
-    commandSys->AddCommand( "cls", []( String str )
+    commandSys->AddCommand( "cls", []( string& str )
     {
+        UNUSED( str );
         g_console->Clear();
     } );
 
 
 
-    commandSys->AddCommand( "dump", []( String str )
+    commandSys->AddCommand( "dump", []( string& str )
     {
         CommandParameterParser parser( str );
-        String path;
+        string path;
         parser.GetNext( path );
 
         if( !parser.AllParseSuccess() )
@@ -178,10 +181,10 @@ void GameCommands::RegisterAllCommands()
             Print( "failed to dump to file: " + path, Rgba::YELLOW );
     } );
 
-    commandSys->AddCommand( "health", []( String str )
+    commandSys->AddCommand( "health", []( string& str )
     {
         CommandParameterParser parser( str );
-        String mode;
+        string mode;
         parser.GetNext( mode );
 
         if( !parser.AllParseSuccess() )
@@ -197,10 +200,10 @@ void GameCommands::RegisterAllCommands()
             LOG_WARNING( "wrong format for command, supported modes are always, normal, never e.g \"health always\"" );
     } );
 
-    commandSys->AddCommand( "echoFile", []( String str )
+    commandSys->AddCommand( "echoFile", []( string& str )
     {
         CommandParameterParser parser( str );
-        String filePath;
+        string filePath;
         parser.GetNext( filePath );
 
         if( !parser.AllParseSuccess() )
@@ -213,24 +216,24 @@ void GameCommands::RegisterAllCommands()
             return;
         }
 
-        String fileContents = IOUtils::ReadFileToString( filePath.c_str() );
+        string fileContents = IOUtils::ReadFileToString( filePath.c_str() );
         Print( fileContents );
     } );
 
-    commandSys->AddCommand( "get", []( String str )
+    commandSys->AddCommand( "get", []( string& str )
     {
         CommandParameterParser parser( str );
-        String flag;
+        string flag;
         parser.GetNext( flag );
         if( !parser.AllParseSuccess() )
             return;
         Print( ToString( GetFlag( flag ) ) );
     } );
 
-    commandSys->AddCommand( "set", []( String str )
+    commandSys->AddCommand( "set", []( string& str )
     {
         CommandParameterParser parser( str );
-        String flag;
+        string flag;
         parser.GetNext( flag );
         if( !parser.AllParseSuccess() )
             return;
@@ -238,10 +241,10 @@ void GameCommands::RegisterAllCommands()
         Print( "set flag [" + flag + "] to true" );
     } );
 
-    commandSys->AddCommand( "clear", []( String str )
+    commandSys->AddCommand( "clear", []( string& str )
     {
         CommandParameterParser parser( str );
-        String flag;
+        string flag;
         parser.GetNext( flag );
         if( !parser.AllParseSuccess() )
             return;
@@ -249,10 +252,10 @@ void GameCommands::RegisterAllCommands()
         Print( "cleared flag [" + flag + "] to false" );
     } );
 
-    commandSys->AddCommand( "toggle", []( String str )
+    commandSys->AddCommand( "toggle", []( string& str )
     {
         CommandParameterParser parser( str );
-        String flag;
+        string flag;
         parser.GetNext( flag );
         if( !parser.AllParseSuccess() )
             return;
@@ -262,8 +265,9 @@ void GameCommands::RegisterAllCommands()
         Print( "set flag [" + flag + "] to " + ToString( !before ) );
     } );
 
-    commandSys->AddCommand( "flags", []( String str )
+    commandSys->AddCommand( "flags", []( string& str )
     {
+        UNUSED( str );
         auto allFlags = GameFlag::AllValues();
         for( auto& flag : allFlags )
         {
@@ -271,18 +275,21 @@ void GameCommands::RegisterAllCommands()
         }
     } );
 
-    commandSys->AddCommand( "debugClear", []( String str )
+    commandSys->AddCommand( "debugClear", []( string& str )
     {
+        UNUSED( str );
         DebugRender::Clear();
     } );
 
-    commandSys->AddCommand( "debugHide", []( String str )
+    commandSys->AddCommand( "debugHide", []( string& str )
     {
+        UNUSED( str );
         DebugRender::SetHidden( true );
     } );
 
-    commandSys->AddCommand( "debugShow", []( String str )
+    commandSys->AddCommand( "debugShow", []( string& str )
     {
+        UNUSED( str );
         DebugRender::SetHidden( false );
     } );
 

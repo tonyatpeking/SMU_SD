@@ -118,9 +118,9 @@ void Rgba::SetAsFloats( float normalizedRed, float normalizedGreen,
     a = (unsigned char) ( normalizedAlpha * 255.f );
 }
 
-ParseStatus Rgba::SetFromText( const String& text, const String& delimiter )
+ParseStatus Rgba::SetFromText( const string& text, const string& delimiter )
 {
-    std::vector<int> out_ints;
+    vector<int> out_ints;
     ParseStatus status = StringUtils::ParseToInts( text, out_ints, delimiter );
 
     if( out_ints.size() != 3 && out_ints.size() != 4 )

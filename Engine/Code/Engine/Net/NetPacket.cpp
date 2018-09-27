@@ -4,3 +4,8 @@
 
 
 
+NetPacket::NetPacket()
+    : BytePacker( PACKET_MTU, m_localBuffer )
+{
+
+}

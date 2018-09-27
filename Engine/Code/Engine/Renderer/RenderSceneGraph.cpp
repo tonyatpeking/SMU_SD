@@ -20,12 +20,12 @@ RenderSceneGraph::RenderSceneGraph()
     m_manager = GameObjectManager::GetDefault();
 }
 
-std::vector<GameObject*>& RenderSceneGraph::GetGameObjects()
+vector<GameObject*>& RenderSceneGraph::GetGameObjects()
 {
     return m_manager->GetObejctsFlat();
 }
 
-std::vector<Renderable*>& RenderSceneGraph::GetRenderables()
+vector<Renderable*>& RenderSceneGraph::GetRenderables()
 {
     m_renderables.clear();
     m_renderables.reserve( GetGameObjects().size() );
@@ -40,7 +40,7 @@ std::vector<Renderable*>& RenderSceneGraph::GetRenderables()
     return m_renderables;
 }
 
-std::vector<GameObject*>& RenderSceneGraph::GetLights()
+vector<GameObject*>& RenderSceneGraph::GetLights()
 {
     return m_manager->GetObjectsOfType( "Light" );
 }
@@ -50,7 +50,7 @@ void RenderSceneGraph::RemoveCamera( Camera* camera )
     ContainerUtils::EraseOneValue( m_cameras, camera );
 }
 
-std::vector<Camera*>& RenderSceneGraph::GetCameras()
+vector<Camera*>& RenderSceneGraph::GetCameras()
 {
     return m_cameras;
 }

@@ -43,12 +43,12 @@ double ProfilerReport::GetTotalFrameTime()
     return m_frameTime;
 }
 
-String ProfilerReport::ToString()
+string ProfilerReport::ToString()
 {
     if( m_rootEntry->m_reportString.empty() )
         m_rootEntry->GernerateStringR();
 
-    String str;
+    string str;
     size_t stringTotalLength = m_rootEntry->GetTotalStringSizeR();
     str.reserve( stringTotalLength );
     m_rootEntry->AppendToStringR( str );

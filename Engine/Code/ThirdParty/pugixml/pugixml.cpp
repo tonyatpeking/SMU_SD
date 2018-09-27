@@ -181,9 +181,9 @@ PUGI__NS_BEGIN
 	typedef xml_memory_management_function_storage<int> xml_memory;
 PUGI__NS_END
 
-// String utilities
+// std::string utilities
 PUGI__NS_BEGIN
-	// Get string length
+	// Get std::string length
 	PUGI__FN size_t strlength(const char_t* s)
 	{
 		assert(s);
@@ -415,7 +415,7 @@ PUGI__NS_BEGIN
 	static const uintptr_t xml_memory_page_value_allocated_mask = 16;
 	static const uintptr_t xml_memory_page_type_mask = 15;
 
-	// combined masks for string uniqueness
+	// combined masks for std::string uniqueness
 	static const uintptr_t xml_memory_page_name_allocated_or_shared_mask = xml_memory_page_name_allocated_mask | xml_memory_page_contents_shared_mask;
 	static const uintptr_t xml_memory_page_value_allocated_or_shared_mask = xml_memory_page_value_allocated_mask | xml_memory_page_contents_shared_mask;
 
@@ -480,7 +480,7 @@ PUGI__NS_BEGIN
 	struct xml_memory_string_header
 	{
 		uint16_t page_offset; // offset from page->data
-		uint16_t full_size; // 0 if string occupies whole page
+		uint16_t full_size; // 0 if std::string occupies whole page
 	};
 
 	struct xml_allocator
@@ -618,7 +618,7 @@ PUGI__NS_BEGIN
 
 			PUGI__STATIC_ASSERT(xml_memory_page_size <= max_encoded_offset);
 
-			// allocate memory for string and header block
+			// allocate memory for std::string and header block
 			size_t size = sizeof(xml_memory_string_header) + length * sizeof(char_t);
 
 			// round size up to block alignment boundary
@@ -649,7 +649,7 @@ PUGI__NS_BEGIN
 		void deallocate_string(char_t* string)
 		{
 			// this function casts pointers through void* to avoid 'cast increases required alignment of target type' warnings
-			// we're guaranteed the proper (pointer-sized) alignment on the input string if it was allocated via allocate_string
+			// we're guaranteed the proper (pointer-sized) alignment on the input std::string if it was allocated via allocate_string
 
 			// get header
 			xml_memory_string_header* header = static_cast<xml_memory_string_header*>(static_cast<void*>(string)) - 1;
@@ -659,7 +659,7 @@ PUGI__NS_BEGIN
 			size_t page_offset = sizeof(xml_memory_page) + header->page_offset * xml_memory_block_alignment;
 			xml_memory_page* page = reinterpret_cast<xml_memory_page*>(static_cast<void*>(reinterpret_cast<char*>(header) - page_offset));
 
-			// if full_size == 0 then this string occupies the whole page
+			// if full_size == 0 then this std::string occupies the whole page
 			size_t full_size = header->full_size == 0 ? page->busy_size : header->full_size * xml_memory_block_alignment;
 
 			deallocate_memory(header, full_size, page);
@@ -2330,17 +2330,17 @@ PUGI__NS_BEGIN
 		return target_length >= length && (target_length < reuse_threshold || target_length - length < target_length / 2);
 	}
 
-	template <typename String, typename Header>
-	PUGI__FN bool strcpy_insitu(String& dest, Header& header, uintptr_t header_mask, const char_t* source, size_t source_length)
+	template <typename string, typename Header>
+	PUGI__FN bool strcpy_insitu(string& dest, Header& header, uintptr_t header_mask, const char_t* source, size_t source_length)
 	{
 		if (source_length == 0)
 		{
-			// empty string and null pointer are equivalent, so just deallocate old memory
+			// empty std::string and null pointer are equivalent, so just deallocate old memory
 			xml_allocator* alloc = PUGI__GETPAGE_IMPL(header)->allocator;
 
 			if (header & header_mask) alloc->deallocate_string(dest);
 
-			// mark the string as not allocated
+			// mark the std::string as not allocated
 			dest = 0;
 			header &= ~header_mask;
 
@@ -2364,14 +2364,14 @@ PUGI__NS_BEGIN
 			char_t* buf = alloc->allocate_string(source_length + 1);
 			if (!buf) return false;
 
-			// copy the string (including zero terminator)
+			// copy the std::string (including zero terminator)
 			memcpy(buf, source, source_length * sizeof(char_t));
 			buf[source_length] = 0;
 
 			// deallocate old buffer (*after* the above to protect against overlapping memory and/or allocation failures)
 			if (header & header_mask) alloc->deallocate_string(dest);
 
-			// the string is now allocated, so set the flag
+			// the std::string is now allocated, so set the flag
 			dest = buf;
 			header |= header_mask;
 
@@ -3759,7 +3759,7 @@ PUGI__NS_BEGIN
 
 		void write_string(const char_t* data)
 		{
-			// write the part of the string that fits in the buffer
+			// write the part of the std::string that fits in the buffer
 			size_t offset = bufsize;
 
 			while (*data && offset < bufcapacity)
@@ -4352,8 +4352,8 @@ PUGI__NS_BEGIN
 		return true;
 	}
 
-	template <typename String, typename Header>
-	PUGI__FN void node_copy_string(String& dest, Header& header, uintptr_t header_mask, char_t* source, Header& source_header, xml_allocator* alloc)
+	template <typename string, typename Header>
+	PUGI__FN void node_copy_string(string& dest, Header& header, uintptr_t header_mask, char_t* source, Header& source_header, xml_allocator* alloc)
 	{
 		assert(!dest && (header & header_mask) == 0);
 
@@ -4596,8 +4596,8 @@ PUGI__NS_BEGIN
 	}
 
 	// set value with conversion functions
-	template <typename String, typename Header>
-	PUGI__FN bool set_value_ascii(String& dest, Header& header, uintptr_t header_mask, char* buf)
+	template <typename string, typename Header>
+	PUGI__FN bool set_value_ascii(string& dest, Header& header, uintptr_t header_mask, char* buf)
 	{
 	#ifdef PUGIXML_WCHAR_MODE
 		char_t wbuf[128];
@@ -4612,8 +4612,8 @@ PUGI__NS_BEGIN
 	#endif
 	}
 
-	template <typename U, typename String, typename Header>
-	PUGI__FN bool set_value_integer(String& dest, Header& header, uintptr_t header_mask, U value, bool negative)
+	template <typename U, typename string, typename Header>
+	PUGI__FN bool set_value_integer(string& dest, Header& header, uintptr_t header_mask, U value, bool negative)
 	{
 		char_t buf[64];
 		char_t* end = buf + sizeof(buf) / sizeof(buf[0]);
@@ -4622,8 +4622,8 @@ PUGI__NS_BEGIN
 		return strcpy_insitu(dest, header, header_mask, begin, end - begin);
 	}
 
-	template <typename String, typename Header>
-	PUGI__FN bool set_value_convert(String& dest, Header& header, uintptr_t header_mask, float value)
+	template <typename string, typename Header>
+	PUGI__FN bool set_value_convert(string& dest, Header& header, uintptr_t header_mask, float value)
 	{
 		char buf[128];
 		sprintf(buf, "%.9g", value);
@@ -4631,8 +4631,8 @@ PUGI__NS_BEGIN
 		return set_value_ascii(dest, header, header_mask, buf);
 	}
 
-	template <typename String, typename Header>
-	PUGI__FN bool set_value_convert(String& dest, Header& header, uintptr_t header_mask, double value)
+	template <typename string, typename Header>
+	PUGI__FN bool set_value_convert(string& dest, Header& header, uintptr_t header_mask, double value)
 	{
 		char buf[128];
 		sprintf(buf, "%.17g", value);
@@ -4640,8 +4640,8 @@ PUGI__NS_BEGIN
 		return set_value_ascii(dest, header, header_mask, buf);
 	}
 
-	template <typename String, typename Header>
-	PUGI__FN bool set_value_bool(String& dest, Header& header, uintptr_t header_mask, bool value)
+	template <typename string, typename Header>
+	PUGI__FN bool set_value_bool(string& dest, Header& header, uintptr_t header_mask, bool value)
 	{
 		return strcpy_insitu(dest, header, header_mask, value ? PUGIXML_TEXT("true") : PUGIXML_TEXT("false"), value ? 4 : 5);
 	}
@@ -7585,7 +7585,7 @@ PUGI__NS_BEGIN
 	};
 PUGI__NS_END
 
-// String class
+// std::string class
 PUGI__NS_BEGIN
 	class xpath_string
 	{
@@ -7655,10 +7655,10 @@ PUGI__NS_BEGIN
 				char_t* result = static_cast<char_t*>(alloc->reallocate(_uses_heap ? const_cast<char_t*>(_buffer) : 0, (target_length + 1) * sizeof(char_t), (result_length + 1) * sizeof(char_t)));
 				assert(result);
 
-				// append first string to the new buffer in case there was no reallocation
+				// append first std::string to the new buffer in case there was no reallocation
 				if (!_uses_heap) memcpy(result, _buffer, target_length * sizeof(char_t));
 
-				// append second string to the new buffer
+				// append second std::string to the new buffer
 				memcpy(result + target_length, o._buffer, source_length * sizeof(char_t));
 				result[result_length] = 0;
 
@@ -8193,7 +8193,7 @@ PUGI__NS_BEGIN
 
 	PUGI__FN double convert_string_to_number(const char_t* string)
 	{
-		// check string format
+		// check std::string format
 		if (!check_string_to_number_format(string)) return gen_nan();
 
 		// parse string
@@ -8216,7 +8216,7 @@ PUGI__NS_BEGIN
 			if (!scratch) return false;
 		}
 
-		// copy string to zero-terminated buffer and perform conversion
+		// copy std::string to zero-terminated buffer and perform conversion
 		memcpy(scratch, begin, length * sizeof(char_t));
 		scratch[length] = 0;
 
@@ -8607,7 +8607,7 @@ PUGI__NS_BEGIN
 			if (!scratch) return false;
 		}
 
-		// copy string to zero-terminated buffer and perform lookup
+		// copy std::string to zero-terminated buffer and perform lookup
 		memcpy(scratch, begin, length * sizeof(char_t));
 		scratch[length] = 0;
 
@@ -9191,7 +9191,7 @@ PUGI__NS_BEGIN
 		ast_op_union,					// left | right
 		ast_predicate,					// apply predicate to set; next points to next predicate
 		ast_filter,						// select * from left where right
-		ast_string_constant,			// string constant
+		ast_string_constant,			// std::string constant
 		ast_number_constant,			// number constant
 		ast_variable,					// variable
 		ast_func_last,					// last()
@@ -10368,7 +10368,7 @@ PUGI__NS_BEGIN
 
 			xpath_allocator_capture ct(stack.temp);
 
-			// count the string number
+			// count the std::string number
 			size_t count = 1;
 			for (xpath_ast_node* nc = _right; nc; nc = nc->_next) count++;
 
@@ -11510,7 +11510,7 @@ PUGI__NS_BEGIN
 
 				xpath_ast_node* n = new (alloc_node()) xpath_ast_node(ast_step_root, xpath_type_node_set);
 
-				// relative location path can start from axis_attribute, dot, double_dot, multiply and string lexemes; any other lexeme means standalone root path
+				// relative location path can start from axis_attribute, dot, double_dot, multiply and std::string lexemes; any other lexeme means standalone root path
 				lexeme_t l = _lexer.current();
 
 				if (l == lex_string || l == lex_axis_attribute || l == lex_dot || l == lex_double_dot || l == lex_multiply)
@@ -11544,7 +11544,7 @@ PUGI__NS_BEGIN
 			// PathExpr begins with either LocationPath or FilterExpr.
 			// FilterExpr begins with PrimaryExpr
 			// PrimaryExpr begins with '$' in case of it being a variable reference,
-			// '(' in case of it being an expression, string literal, number constant or
+			// '(' in case of it being an expression, std::string literal, number constant or
 			// function call.
 
 			if (_lexer.current() == lex_var_ref || _lexer.current() == lex_open_brace ||

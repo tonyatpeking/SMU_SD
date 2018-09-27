@@ -1,5 +1,6 @@
 #include "Engine/Python/PythonInterpreter.hpp"
 #include "Engine/Core/Console.hpp"
+#include "Engine/Core/EngineCommonH.hpp"
 
 PYBIND11_EMBEDDED_MODULE( zzzUtils, m ) {
     // `m` is a `py::module` which is used to bind functions and classes
@@ -34,15 +35,15 @@ void PythonInterpreter::Stop()
     }
 }
 
-void PythonInterpreter::PushToShell( std::string text )
+void PythonInterpreter::PushToShell( string& text )
 {
     py::object pyText = py::cast( text );
     m_shellPush( pyText );
 }
 
-std::string PythonInterpreter::ReadFromShell()
+string PythonInterpreter::ReadFromShell()
 {
-    return py::eval( "outputCatcher.pop()" ).cast<std::string>();
+    return py::eval( "outputCatcher.pop()" ).cast<string>();
 }
 
 void PythonInterpreter::CloseShell()

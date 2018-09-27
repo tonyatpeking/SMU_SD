@@ -37,7 +37,7 @@ public:
     size_t ReceiveExact( void *buffer, size_t exactByteSize );
 
     // return 0 for disconnect -1 for error/non-fatal
-    size_t ReceiveMessage( bool& out_isEcho, String& out_msg );
+    size_t ReceiveMessage( bool& out_isEcho, string& out_msg );
 
 
 public:

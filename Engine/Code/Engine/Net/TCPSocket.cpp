@@ -206,7 +206,7 @@ size_t TCPSocket::ReceiveExact( void *buffer, size_t exactByteSize )
 }
 
 
-size_t TCPSocket::ReceiveMessage( bool& out_isEcho, String& out_msg )
+size_t TCPSocket::ReceiveMessage( bool& out_isEcho, string& out_msg )
 {
     if( m_msgSize == 0 )
     {
@@ -233,7 +233,7 @@ size_t TCPSocket::ReceiveMessage( bool& out_isEcho, String& out_msg )
             packer.Read( &out_isEcho );
             char* strBuffer = GetStrBuffer();
             packer.ReadString( strBuffer, MAX_STR_LEN );
-            out_msg = String( strBuffer );
+            out_msg = string( strBuffer );
 
             m_msgSize = 0;
             m_bufferWriteHead = 0;

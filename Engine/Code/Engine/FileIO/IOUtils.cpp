@@ -11,22 +11,22 @@
 namespace IOUtils
 {
 
-const String SEPARATORS = "\\/";
+const string SEPARATORS = "\\/";
 
-String GetCurrentDir()
+string GetCurrentDir()
 {
     char working_directory[MAX_PATH + 1];
     GetCurrentDirectoryA( sizeof( working_directory ), working_directory );
-    return String( working_directory );
+    return string( working_directory );
 }
 
-String RelativeToFullPath( const String& relativePath )
+string RelativeToFullPath( const string& relativePath )
 {
     int len = (int) relativePath.size();
     if( len > 1 )
     {
         char firstChar = relativePath[0];
-        if( SEPARATORS.find( firstChar ) != std::string::npos )
+        if( SEPARATORS.find( firstChar ) != string::npos )
             return GetCurrentDir() + relativePath;
     }
 
@@ -34,7 +34,7 @@ String RelativeToFullPath( const String& relativePath )
 
 }
 
-bool DirExists( const String& path )
+bool DirExists( const string& path )
 {
     DWORD attrib = GetFileAttributesA( path.c_str() );
 
@@ -42,7 +42,7 @@ bool DirExists( const String& path )
              && ( attrib & FILE_ATTRIBUTE_DIRECTORY ) );
 }
 
-bool FileExists( const String& path )
+bool FileExists( const string& path )
 {
     DWORD attrib = GetFileAttributesA( path.c_str() );
     // if last error was not ERROR_FILE_NOT_FOUND then it exists
@@ -55,7 +55,7 @@ bool FileExists( const String& path )
     return true;
 }
 
-bool MakeDirR( const String& path )
+bool MakeDirR( const string& path )
 {
     DWORD fileAttr = ::GetFileAttributesA( path.c_str() );
 
@@ -93,7 +93,7 @@ bool MakeDirR( const String& path )
     return true;
 }
 
-bool MakeFileR( const String& path )
+bool MakeFileR( const string& path )
 {
     DWORD fileAttr = ::GetFileAttributesA( path.c_str() );
 
@@ -123,7 +123,7 @@ bool MakeFileR( const String& path )
     return true;
 }
 
-bool WriteToFile( const String& path, const String& text )
+bool WriteToFile( const string& path, const string& text )
 {
     Strings strings;
     strings.push_back( text );
@@ -131,7 +131,7 @@ bool WriteToFile( const String& path, const String& text )
     return true;
 }
 
-bool WriteToFile( const String& path, const Strings& text )
+bool WriteToFile( const string& path, const Strings& text )
 {
     if( MakeFileR( path ) == false )
         return false;
@@ -199,22 +199,22 @@ void* ReadFileToNewRawBuffer( char const* filename, size_t& out_byteCount )
     return buffer;
 }
 
-String ReadFileToString( char const* filename )
+string ReadFileToString( char const* filename )
 {
     std::ifstream fileStream( filename );
     if( !fileStream.is_open() )
         return "";
     fileStream.seekg( 0, std::ios::end );
     size_t size = fileStream.tellg();
-    String buffer( size, ' ' );
+    string buffer( size, ' ' );
     fileStream.seekg( 0 );
     fileStream.read( &buffer[0], size );
     return buffer;
 }
 
-Strings ReadFileToStrings( String& path )
+Strings ReadFileToStrings( string& path )
 {
-    String str = ReadFileToString( path.c_str() );
+    string str = ReadFileToString( path.c_str() );
     Strings strs;
     StringUtils::ParseToLines( str, strs );
     return strs;

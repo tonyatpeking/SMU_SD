@@ -74,7 +74,7 @@ bool FrameBuffer::Finalize()
     GLenum status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
     if( status != GL_FRAMEBUFFER_COMPLETE )
     {
-        String msg = Stringf( "Failed to create framebuffer:  %u", status );
+        string msg = Stringf( "Failed to create framebuffer:  %u", status );
         LOG_WARNING( msg );
         return false;
     }

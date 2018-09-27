@@ -168,7 +168,7 @@ protected:
     Vec2 m_cursorPrevWindowPos;
     Vec2 m_cursorCurrWindowPos;
 
-    std::vector<InputObserver*> m_inputObservers;
+    vector<InputObserver*> m_inputObservers;
     Window* m_window;
 
     // window

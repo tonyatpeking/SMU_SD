@@ -16,7 +16,7 @@ public:
 
 public:
 
-    std::vector<String> m_tags;
+    vector<string> m_tags;
 
     bool m_whitelistTags = false;  // flip this to whitelist/blacklist tags
 

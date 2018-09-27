@@ -19,9 +19,9 @@ bool NetAddress::ShouldIgnoreAddr( const NetAddress& addr )
     return false;
 }
 
-NetAddress NetAddress::GetLocal( const String& service )
+NetAddress NetAddress::GetLocal( const string& service )
 {
-    std::vector<NetAddress> addresses = GetAllLocal( service );
+    vector<NetAddress> addresses = GetAllLocal( service );
 
     for ( auto& addr : addresses )
     {
@@ -33,14 +33,14 @@ NetAddress NetAddress::GetLocal( const String& service )
 }
 
 
-std::vector<NetAddress> NetAddress::GetAllLocal( const String& service, int maxCount /*= INT_MAX */ )
+vector<NetAddress> NetAddress::GetAllLocal( const string& service, int maxCount /*= INT_MAX */ )
 {
     return GetAllForHost( "", service, maxCount );
 }
 
-NetAddress NetAddress::GetAddrForHost( const String& hostName, const String& service )
+NetAddress NetAddress::GetAddrForHost( const string& hostName, const string& service )
 {
-    std::vector<NetAddress> addrs = GetAllForHost( hostName, service, 1 );
+    vector<NetAddress> addrs = GetAllForHost( hostName, service, 1 );
     if( addrs.size() == 0 )
     {
         LOG_WARNING( "Could not find host: " + hostName + ":" + service );
@@ -49,12 +49,12 @@ NetAddress NetAddress::GetAddrForHost( const String& hostName, const String& ser
     return addrs[0];
 }
 
-std::vector<NetAddress> NetAddress::GetAllForHost(
-    const String& addr,
-    const String& service, int maxCount )
+vector<NetAddress> NetAddress::GetAllForHost(
+    const string& addr,
+    const string& service, int maxCount )
 {
 
-    std::vector<NetAddress> addresses;
+    vector<NetAddress> addresses;
     int status;
     struct addrinfo hints;
     struct addrinfo *servinfo;
@@ -102,21 +102,21 @@ NetAddress::NetAddress( const sockaddr* addr )
     this->FromSockAddr( addr );
 }
 
-NetAddress::NetAddress( const String& addrWithService )
+NetAddress::NetAddress( const string& addrWithService )
 {
     size_t colonPos = addrWithService.find_last_of( ":" );
-    if( colonPos == String::npos )
+    if( colonPos == string::npos )
     {
         LOG_WARNING( "missing :service in " + addrWithService );
         return;
     }
-    String hostStr = addrWithService.substr( 0, colonPos );
-    String serviceStr = addrWithService.substr( colonPos + 1 );
+    string hostStr = addrWithService.substr( 0, colonPos );
+    string serviceStr = addrWithService.substr( colonPos + 1 );
 
     *this = GetAddrForHost( hostStr, serviceStr );
 }
 
-NetAddress::NetAddress( const String& addr, const String& service )
+NetAddress::NetAddress( const string& addr, const string& service )
 {
     *this = GetAddrForHost( addr, service );
 }
@@ -160,23 +160,23 @@ bool NetAddress::AreIPsSame( const NetAddress& addrA, const NetAddress& addrB )
     return addrA.m_ip4Address == addrB.m_ip4Address;
 }
 
-String NetAddress::ToStringAll() const
+string NetAddress::ToStringAll() const
 {
     return ToStringIP() + ":" + ToStringPort();
 }
 
-String NetAddress::ToStringIP() const
+string NetAddress::ToStringIP() const
 {
     char cstr[INET_ADDRSTRLEN];
     sockaddr_in sa;
     size_t len;
     ToSockAddr( (sockaddr*) &sa, &len );
     inet_ntop( sa.sin_family, &( sa.sin_addr ), cstr, INET_ADDRSTRLEN );
-    String str( cstr );
+    string str( cstr );
     return str;
 }
 
-String NetAddress::ToStringPort() const
+string NetAddress::ToStringPort() const
 {
     return ::ToString( m_port );
 }

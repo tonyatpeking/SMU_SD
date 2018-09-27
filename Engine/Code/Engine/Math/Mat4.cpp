@@ -506,7 +506,7 @@ bool Mat4::IsAnyNaN() const
     return false;
 }
 
-String Mat4::ToString() const
+string Mat4::ToString() const
 {
     return ::ToString( *this );
 }

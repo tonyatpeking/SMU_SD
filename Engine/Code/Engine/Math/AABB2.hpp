@@ -29,7 +29,7 @@ public:
     void Translate( const Vec2& translation ); // move the box; similar to +=
     void Translate( float translationX, float translationY );
     void FlipY();
-    ParseStatus SetFromText( const String& text, const String& delimiter = "," );
+    ParseStatus SetFromText( const string& text, const string& delimiter = "," );
     void ScaleFromCenter( float scale );
     void ScaleFromCenter( const Vec2& scale );
     void ScaleFromCenter( float scaleX, float scaleY );

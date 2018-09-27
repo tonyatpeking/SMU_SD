@@ -20,7 +20,7 @@ public:
     void AddPaddingToRadius( float paddingRadius );
     void Translate( const Vec2& translation ); // move the center
     void Translate( float translationX, float translationY ); // move the center
-    ParseStatus SetFromText( const String& text );
+    ParseStatus SetFromText( const string& text );
 
     // Accessors / queries:
     bool ContainsPoint( float x, float y ) const; // is (x,y) within disc's interior?
