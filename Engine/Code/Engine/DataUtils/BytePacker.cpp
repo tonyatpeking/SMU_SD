@@ -89,6 +89,15 @@ size_t BytePacker::ReadBytes( void* out_Data, size_t maxByteCount )
     return bytesToRead;
 }
 
+size_t BytePacker::CopyFrom( BytePacker& copyFrom, size_t maxBytesToCopy )
+{
+    size_t actualBytesToCopy = Min( maxBytesToCopy, copyFrom.GetReadableByteCount() );
+    actualBytesToCopy = Min( actualBytesToCopy, GetWritableByteCount() );
+    WriteBytes( actualBytesToCopy, copyFrom.GetReadHeadPtr() );
+    copyFrom.OffsetReadHead( actualBytesToCopy );
+    return actualBytesToCopy;
+}
+
 // Size Header internal
 namespace
 {
@@ -182,6 +191,13 @@ size_t BytePacker::ReadString( char* out_str, size_t maxByteSize )
     return readByteCount;
 }
 
+void BytePacker::ReadString( string& out_str )
+{
+    char strBuffer[BYTE_PACKER_MAX_STRING_LENGTH];
+    ReadString( strBuffer, BYTE_PACKER_MAX_STRING_LENGTH );
+    out_str = string( strBuffer );
+}
+
 bool BytePacker::ReadAndWriteHeadsValid() const
 {
     return m_readHead <= m_writeHead && m_writeHead <= m_bufferSize;
@@ -200,6 +216,8 @@ bool BytePacker::OwnsMemory() const
 void BytePacker::SetWriteHead( size_t byteCount )
 {
     m_writeHead = byteCount;
+    if( m_readHead > m_writeHead )
+        m_readHead = m_writeHead;
 }
 
 void BytePacker::SetReadHead( size_t byteCount )
@@ -262,7 +280,12 @@ size_t BytePacker::GetReadableByteCount() const
         LOG_WARNING( "Invalid read head" );
         return 0;
     }
-    return m_bufferSize - m_readHead;
+    return m_writeHead - m_readHead;
+}
+
+const Byte* BytePacker::GetReadHeadPtr() const
+{
+    return m_buffer + m_readHead;
 }
 
 Byte* BytePacker::GetWriteHeadPtr()

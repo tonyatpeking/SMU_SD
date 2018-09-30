@@ -43,7 +43,7 @@ TCPSocket::~TCPSocket()
 
 bool TCPSocket::Listen( const NetAddress& localAddr, uint maxQueued )
 {
-    if( localAddr.IsEmpty() )
+    if( localAddr.IsInvalid() )
     {
         LOG_WARNING_TAG( "Net", "Listen() failed. Could not find local address" );
         Close();

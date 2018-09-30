@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/Net/NetDefines.hpp"
 #include <vector>
 
 struct sockaddr_storage;
@@ -25,17 +26,18 @@ public:
         const string& service,
         int maxCount = INT_MAX );
 
-    NetAddress();
+    NetAddress() {};
     ~NetAddress() {};
-
     NetAddress( const sockaddr* addr );
     NetAddress( const string& addrWithService );
     NetAddress( const string& addr, const string& service );
 
+    bool operator==( const NetAddress& compare ) const;
+    bool operator!=( const NetAddress& compare ) const;
 
     bool ToSockAddr( sockaddr *out, size_t *outAddrLen ) const;
     bool FromSockAddr( const sockaddr* addr );
-    bool IsEmpty() const;
+    bool IsInvalid() const;
     static bool AreIPsSame( const NetAddress& addrA, const NetAddress& addrB );
 
     string ToStringAll() const;
@@ -44,10 +46,7 @@ public:
 
 public:
 
-    uint m_ip4Address = 0;
-    uint m_port = 0;
-
-
-
+    uint m_ip4Address = INVALID_IPV4_ADDR;
+    uint m_port = INVALID_PORT;
 
 };

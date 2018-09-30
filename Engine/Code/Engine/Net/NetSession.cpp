@@ -5,23 +5,169 @@
 #include "Engine/Net/NetConnection.hpp"
 #include "Engine/Net/UDPSocket.hpp"
 #include "Engine/Net/NetCommand.hpp"
+#include "Engine/Core/EngineCommonC.hpp"
+#include "Engine/Net/PacketChannel.hpp"
+#include "Engine/Net/NetMessageDefinition.hpp"
 
+#include <algorithm>
 
 NetSession::NetSession()
 {
-    // Open up port for communication
+
 }
 
 NetSession::~NetSession()
 {
 
 }
+
+bool NetSession::RegisterMessageDefinition( const string& name, NetMessageCB cb )
+{
+    for( auto& def : m_messageDefinitions )
+    {
+        if( def->m_name == name )
+        {
+            LOG_WARNING_TAG( "Net", "NetMessageDefinition already exists for [%s]",
+                             name.c_str() );
+            return false;
+        }
+    }
+
+    NetMessageDefinition* def = new NetMessageDefinition( name, cb );
+    m_messageDefinitions.push_back( def );
+    return true;
+}
+
+const NetMessageDefinition* NetSession::GetMessageDefinitionByName( const string& name )
+{
+    for( auto& def : m_messageDefinitions )
+    {
+        if( name == def->m_name )
+            return def;
+    }
+    return nullptr;
+}
+
+const NetMessageDefinition* NetSession::GetMessageDefinitionByIndex( const MessageID idx ) const
+{
+    if( m_messageDefinitions.size() <= idx )
+        return nullptr;
+    return m_messageDefinitions[idx];
+}
+
+void NetSession::BindAndFinalize( int port, uint rangeToTry /*= 0U */ )
+{
+    m_packetChannel = new PacketChannel();
+    bool success = false;
+
+    for( int portOffset = 0; portOffset <= rangeToTry; ++portOffset )
+    {
+        NetAddress localAddr = NetAddress::GetLocal( ToString( port + portOffset ) );
+        success = m_packetChannel->Bind( localAddr );
+
+        if( success )
+            break;
+    }
+
+    if( !success )
+    {
+        LOG_ERROR_TAG( "Net", "Failed to bind port(s): [%d], range:[%d]",
+                       port, rangeToTry );
+    }
+
+    SortMessageDefinitions();
+}
+
+NetConnection* NetSession::AddConnection( uint8 idx, const NetAddress& addr )
+{
+    if( ContainerUtils::ContainsKey( m_connections, idx ) )
+    {
+        LOG_WARNING_TAG( "Net", "Connection index [%d] already exists", idx );
+        return m_connections[idx];
+    }
+    NetConnection* connection = new NetConnection();
+    connection->m_address = addr;
+    connection->m_owningSession = this;
+    connection->m_idxInSession = idx;
+    connection->m_isClosed = false;
+}
+
+NetConnection* NetSession::GetConnection( uint8 idx )
+{
+    if( !ContainerUtils::ContainsKey( m_connections, idx ) )
+    {
+        LOG_WARNING_TAG( "Net", "Connection index [%d] does not exist", idx );
+        return nullptr;
+    }
+    return m_connections[idx];
+}
+
+void NetSession::CloseAllConnections()
+{
+    for( auto& pair : m_connections )
+    {
+        pair.second->Close();
+    }
+}
+
+void NetSession::ProcessIncomming()
+{
+    NetPacket packet;
+    while( m_packetChannel->Receive( packet ) )
+    {
+        if( PacketIsValid( packet ) )
+            ProcessPacket( packet );
+    }
+
+}
+
+bool NetSession::PacketIsValid( const NetPacket& packet )
+{
+    return true;
+}
+
+bool NetSession::ProcessPacket( const NetPacket& packet )
+{
+    return true;
+}
+
+void NetSession::ProcessOutgoing()
+{
+    for( auto& pair : m_connections )
+    {
+        if( pair.second->IsClosed() )
+            continue;
+
+        pair.second->ProcessOutgoing();
+    }
+}
+
+void NetSession::Send( const NetPacket& packet )
+{
+    m_packetChannel->Send( packet );
+}
+
+namespace
+{
+
+bool MessageNameCompare( const NetMessageDefinition* defA, const NetMessageDefinition* defB )
+{
+    return defA->m_name < defB->m_name;
+}
+
+}
+
+void NetSession::SortMessageDefinitions()
+{
+    std::sort( m_messageDefinitions.begin(), m_messageDefinitions.end(), MessageNameCompare );
+}
+
 //
 //
-// NetNode* NetSession::AddNode( UID uid, const NetAddress& address )
+// NetConnection* NetSession::AddNode( UID uid, const NetAddress& address )
 // {
 //     // TODO: check for duplicates
-//     NetNode* node = new NetNode();
+//     NetConnection* node = new NetConnection();
 //     m_nodes[uid] = node;
 //     return node;
 // }
@@ -67,9 +213,9 @@ NetSession::~NetSession()
 //     }
 // }
 //
-// void NetSession::QueueSend( const string& netCommandName, BytePacker& data, NetNode receiver )
+// void NetSession::QueueSend( const string& netCommandName, BytePacker& data, NetConnection receiver )
 // {
-//     // NetPacket* packet = GetOrCreateQueuedSendPacket( NetNode node );
+//     // NetPacket* packet = GetOrCreateQueuedSendPacket( NetConnection node );
 //     // packet->Append( netCommandName, data );
 // }
 //

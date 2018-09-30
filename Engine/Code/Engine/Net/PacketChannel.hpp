@@ -3,6 +3,7 @@
 class NetAddress;
 class UDPSocket;
 class NetPacket;
+class NetSession;
 
 // collection of UDP sockets to communicate on
 // can allocate and free packets
@@ -12,15 +13,17 @@ public:
     // tries to bind to an additional UDP Socket
     // returns the index assigned to this socket.
     // returns -1 if it failed to bind;
-    int Bind( const NetAddress& addr );
+    bool Bind( const NetAddress& addr );
 
-    void Send( const NetAddress& to, const NetPacket& packet );
+    void Send( const NetPacket& packet );
 
-    bool Receive( const NetAddress& from, const NetPacket& packet );
+    bool Receive( NetPacket& out_packet );
+
+    bool IsClosed();
 
 public:
 
     UDPSocket* m_socket;
-
+    NetSession* m_owningSession;
 
 };

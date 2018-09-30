@@ -16,7 +16,7 @@ enum BytePackerOptionBit : uint
 };
 typedef uint BytePackerOptions;
 
-
+#define BYTE_PACKER_MAX_STRING_LENGTH 1024
 
 class BytePacker
 {
@@ -49,16 +49,22 @@ public:
     }
 
     template <typename T>
-    size_t Read( T* out_data )
+    bool Read( T* out_data )
     {
         size_t readByteCount = ReadBytes( out_data, sizeof( T ) );
         EndianUtils::FromEndianness( out_data, m_endianness );
-        return readByteCount;
+        return readByteCount == sizeof(T);
     }
 
 
     // all read calls go through this
     size_t ReadBytes( void* out_Data, size_t maxByteCount );
+
+    // copies data from another BytePacker
+    // read and write head rules are respected by both copier and copied
+    // i.e copy starts at copyFrom read head, and copyTo write head
+    // and moves the heads respectively, will not overflow
+    size_t CopyFrom( BytePacker& copyFrom, size_t maxBytesToCopy );
 
     size_t WriteLengthHeader( size_t length ); // returns how many bytes used
 
@@ -69,6 +75,7 @@ public:
 
     // if buffer maxByteSize cannot hold string, returns 0 and read head is not moved
     size_t ReadString( char* out_str, size_t maxByteSize ); // max_str_size should be enough to contain the null terminator as well;
+    void ReadString( string& out_str );
 
     // HELPERS
 
@@ -101,6 +108,8 @@ public:
     size_t GetReadHead() const;
 
     size_t GetReadableByteCount() const;   // how much more data can I read;
+
+    const Byte* GetReadHeadPtr() const;
 
     Byte* GetWriteHeadPtr();
 

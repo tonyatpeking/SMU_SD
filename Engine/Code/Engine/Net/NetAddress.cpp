@@ -92,11 +92,6 @@ vector<NetAddress> NetAddress::GetAllForHost(
     return addresses;
 }
 
-NetAddress::NetAddress()
-{
-
-}
-
 NetAddress::NetAddress( const sockaddr* addr )
 {
     this->FromSockAddr( addr );
@@ -119,6 +114,16 @@ NetAddress::NetAddress( const string& addrWithService )
 NetAddress::NetAddress( const string& addr, const string& service )
 {
     *this = GetAddrForHost( addr, service );
+}
+
+bool NetAddress::operator==( const NetAddress& compare ) const
+{
+    return m_ip4Address == compare.m_ip4Address && m_port == compare.m_port;
+}
+
+bool NetAddress::operator!=( const NetAddress& compare ) const
+{
+    return !( *this == compare );
 }
 
 bool NetAddress::ToSockAddr( sockaddr *out, size_t *outAddrLen ) const
@@ -150,9 +155,9 @@ bool NetAddress::FromSockAddr( const sockaddr* addr )
     return true;
 }
 
-bool NetAddress::IsEmpty() const
+bool NetAddress::IsInvalid() const
 {
-    return m_ip4Address == 0 && m_port == 0;
+    return m_ip4Address == INVALID_IPV4_ADDR || m_port == INVALID_PORT;
 }
 
 bool NetAddress::AreIPsSame( const NetAddress& addrA, const NetAddress& addrB )

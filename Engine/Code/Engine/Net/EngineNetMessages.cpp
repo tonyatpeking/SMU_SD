@@ -1,14 +1,14 @@
 #include "Engine/Net/EngineNetMessages.hpp"
 #include "Engine/Net/NetSession.hpp"
 #include "Engine/Core/EngineCommonC.hpp"
+#include "Engine/Net/NetMessage.hpp"
+#include "Engine/Core/ErrorUtils.hpp"
+#include "Engine/Net/NetConnection.hpp"
 
-
-
-#define NET_MESSAGE( functionName )\
-void functionName ## _net_message( NetMessage* netMessage );\
-static NetMessageSelfRegister functionName ## _self_register = NetMessageSelfRegister( #functionName, functionName ## _net_message );\
-void functionName ## _net_message( NetMessage* netMessage )
-
+#define NET_MESSAGE_EXECUTER( name )\
+bool Execute_ ## name ( NetMessage* netMessage );\
+static NetMessageSelfRegister name ## _self_register = NetMessageSelfRegister( #name, Execute_ ## name );\
+bool Execute_ ## name ( NetMessage* netMessage )
 
 namespace
 {
@@ -29,21 +29,117 @@ public:
     }
 };
 
-
 }
 
-
-void EngineNetMessages::RegisterAllToSession( NetSession* session )
+namespace EngineNetMessages
 {
-//     if( session )
-//         for( auto& pair : s_allEngineMessages )
-//         {
-//             session->RegisterMessageDefinition( pair.first, pair.second );
-//         }
-}
 
-
-NET_MESSAGE( ping )
+void RegisterAllToSession( NetSession* session )
 {
-    UNUSED( netMessage );
+    //     if( session )
+    //         for( auto& pair : s_allEngineMessages )
+    //         {
+    //             session->RegisterMessageDefinition( pair.first, pair.second );
+    //         }
 }
+
+//--------------------------------------------------------------------------------------
+// Ping
+
+NetMessage* ComposePing( const string& str )
+{
+    NetMessage* msg = new NetMessage( "ping" );
+    msg->WriteString( str.c_str() );
+    return msg;
+}
+
+NET_MESSAGE_EXECUTER( ping )
+{
+    string pingMsg;
+    netMessage->ReadString( pingMsg );
+    LOG_INFO_TAG( "Net",
+                  "Received ping from [%s] %s",
+                  netMessage->m_sender->m_address.ToStringAll().c_str(),
+                  pingMsg.c_str() );
+
+    NetMessage* pongMsg = ComposePong();
+    netMessage->m_sender->QueueSend( pongMsg );
+    return true;
+}
+
+//--------------------------------------------------------------------------------------
+// Pong
+
+NetMessage* ComposePong()
+{
+    return new NetMessage( "pong" );
+}
+
+NET_MESSAGE_EXECUTER( pong )
+{
+    LOG_INFO_TAG( "Net",
+                  "Received pong from [%s]",
+                  netMessage->m_sender->m_address.ToStringAll().c_str() );
+    return true;
+}
+
+//--------------------------------------------------------------------------------------
+// Add
+
+NetMessage* ComposeAdd( float a, float b )
+{
+    NetMessage* msg = new NetMessage( "add" );
+    msg->Write( a );
+    msg->Write( b );
+    return msg;
+}
+
+NET_MESSAGE_EXECUTER( add )
+{
+    float a, b;
+
+    if( !netMessage->Read( &a ) || !netMessage->Read( &b ) )
+    {
+        LOG_WARNING_TAG( "Net", "Bad add message" );
+        return false;
+    }
+
+    NetMessage* response = ComposeAddResponse( a, b, a + b );
+    netMessage->m_sender->QueueSend( response );
+    return true;
+}
+
+//--------------------------------------------------------------------------------------
+// Add Response
+
+NetMessage* ComposeAddResponse( float a, float b, float sum )
+{
+    NetMessage* msg = new NetMessage( "add_response" );
+    msg->Write( a );
+    msg->Write( b );
+    msg->Write( sum );
+    return msg;
+}
+
+NET_MESSAGE_EXECUTER( add_response )
+{
+    float a, b, sum;
+
+    if( !netMessage->Read( &a )
+        || !netMessage->Read( &b )
+        || !netMessage->Read( &sum ) )
+    {
+        LOG_WARNING_TAG( "Net", "Bad add_response message" );
+        return false;
+    }
+    LOG_INFO_TAG( "Net", "add_response: %f + %f = %f", a, b, sum );
+    return true;
+}
+
+
+
+
+
+
+}
+

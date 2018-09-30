@@ -1,16 +1,17 @@
 #pragma once
 #include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/Net/NetDefines.hpp"
 
 class NetMessageDefinition
 {
 public:
-	NetMessageDefinition(){};
+	NetMessageDefinition( const string& name, NetMessageCB cb );
 	~NetMessageDefinition(){};
 
-private:
+public:
 
     string m_name;
-
+    NetMessageCB m_callback;
     uint m_idx = (uint) -1;
 
 };
