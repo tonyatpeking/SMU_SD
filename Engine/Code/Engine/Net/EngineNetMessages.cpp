@@ -36,11 +36,13 @@ namespace EngineNetMessages
 
 void RegisterAllToSession( NetSession* session )
 {
-    //     if( session )
-    //         for( auto& pair : s_allEngineMessages )
-    //         {
-    //             session->RegisterMessageDefinition( pair.first, pair.second );
-    //         }
+    if( !session )
+        return;
+
+    for( auto& pair : s_allEngineMessages )
+    {
+        session->RegisterMessageDefinition( pair.first, pair.second );
+    }
 }
 
 //--------------------------------------------------------------------------------------
@@ -58,7 +60,7 @@ NET_MESSAGE_EXECUTER( ping )
     string pingMsg;
     netMessage->ReadString( pingMsg );
     LOG_INFO_TAG( "Net",
-                  "Received ping from [%s] %s",
+                  "Incomming [%s] [ping] %s",
                   netMessage->m_sender->m_address.ToStringAll().c_str(),
                   pingMsg.c_str() );
 
@@ -78,7 +80,7 @@ NetMessage* ComposePong()
 NET_MESSAGE_EXECUTER( pong )
 {
     LOG_INFO_TAG( "Net",
-                  "Received pong from [%s]",
+                  "Incomming [%s] [pong]",
                   netMessage->m_sender->m_address.ToStringAll().c_str() );
     return true;
 }
@@ -103,6 +105,9 @@ NET_MESSAGE_EXECUTER( add )
         LOG_WARNING_TAG( "Net", "Bad add message" );
         return false;
     }
+    LOG_INFO_TAG( "Net", "Incomming [%s] [add] %f + %f",
+                  netMessage->m_sender->m_address.ToStringAll().c_str(),
+                  a, b );
 
     NetMessage* response = ComposeAddResponse( a, b, a + b );
     netMessage->m_sender->QueueSend( response );
@@ -132,7 +137,9 @@ NET_MESSAGE_EXECUTER( add_response )
         LOG_WARNING_TAG( "Net", "Bad add_response message" );
         return false;
     }
-    LOG_INFO_TAG( "Net", "add_response: %f + %f = %f", a, b, sum );
+    LOG_INFO_TAG( "Net", "Incomming [%s] [add_response] %f + %f = %f",
+                  netMessage->m_sender->m_address.ToStringAll().c_str(),
+                  a, b, sum );
     return true;
 }
 

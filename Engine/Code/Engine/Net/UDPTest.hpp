@@ -2,14 +2,9 @@
 
 #include "Engine/Core/EngineCommonH.hpp"
 #include "Engine/Net/UDPSocket.hpp"
-
+#include "Engine/Net/NetDefines.hpp"
 struct NetAddress;
 
-// class test
-#define GAME_PORT "10084"
-#define ETHERNET_MTU 1500  // maximum transmission unit - determined by hardware part of OSI model.
-// 1500 is the MTU of EthernetV2, and is the minimum one - so we use it;
-#define PACKET_MTU (ETHERNET_MTU - 40 - 8)
 
 class UDPTest
 {
@@ -17,7 +12,7 @@ public:
 
     static UDPTest * GetInstance();
 
-    bool Start( const string& port = GAME_PORT );
+    bool Start( uint port = GAME_PORT );
 
     void Stop();
 

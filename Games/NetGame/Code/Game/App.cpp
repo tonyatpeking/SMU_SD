@@ -19,7 +19,9 @@
 #include "Engine/Net/Net.hpp"
 #include "Engine/Net/RemoteCommandService.hpp"
 #include "Engine/Net/EngineNetMessages.hpp"
-
+#include "Engine/Net/NetSession.hpp"
+#include "Engine/Net/NetSessionDisplay.hpp"
+#include "Engine/Net/NetDefines.hpp"
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
@@ -48,7 +50,8 @@ App::App()
     DebugRender::SetClock( g_appClock );
 
     Net::Startup();
-    EngineNetMessages::RegisterAllToSession( nullptr );
+    EngineNetMessages::RegisterAllToSession( NetSession::GetDefault() );
+    NetSession::GetDefault()->BindAndFinalize( GAME_PORT, 10 );
 
     //instead of awkwardly asking renderer for the font, have a resource manager instead
     TextMeshBuilder::SetDefaultFont( g_renderer->DefaultFont() );
@@ -127,8 +130,12 @@ void App::RunFrame()
     g_UITweenSystem->Update( g_UIClock->GetDeltaSecondsF() );
 
     RemoteCommandService::GetDefault()->Update();
+    NetSession::GetDefault()->ProcessIncomming();
 
     g_game->Update();
+
+    NetSession::GetDefault()->ProcessOutgoing();
+
     g_game->Render();
 
     PROFILER_PUSH( Profiler );
@@ -142,6 +149,7 @@ void App::RunFrame()
     g_console->Update( deltaSeconds );
     g_console->Render();
     RemoteCommandService::GetDefault()->RenderWidget();
+    NetSessionDisplay::GetDefault()->Render();
     PROFILER_POP();
 
     g_input->EndFrame();

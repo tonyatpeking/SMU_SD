@@ -1,6 +1,6 @@
 #pragma once
 
-class NetAddress;
+struct NetAddress;
 class UDPSocket;
 class NetPacket;
 class NetSession;
@@ -15,7 +15,7 @@ public:
     // returns -1 if it failed to bind;
     bool Bind( const NetAddress& addr );
 
-    void Send( const NetPacket& packet );
+    void SendImmediate( const NetPacket& packet );
 
     bool Receive( NetPacket& out_packet );
 

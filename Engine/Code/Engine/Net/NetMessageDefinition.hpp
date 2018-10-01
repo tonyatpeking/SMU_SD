@@ -12,6 +12,6 @@ public:
 
     string m_name;
     NetMessageCB m_callback;
-    uint m_idx = (uint) -1;
+    MessageID m_id = INVALID_MESSAGE_ID;
 
 };

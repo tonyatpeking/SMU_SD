@@ -12,14 +12,12 @@
 // so packet size is 1500 - 40 - 8 => 1452B (why?)
 
 
-bool UDPTest::Start( const string& port )
+bool UDPTest::Start( uint port )
 {
-    string portCopy;
-    portCopy = port;
-    if( portCopy == "" )
-        portCopy = GAME_PORT;
+    if( port == INVALID_PORT )
+        port = GAME_PORT;
     // get an address to use;
-    NetAddress addr = NetAddress::GetLocal( portCopy );
+    NetAddress addr = NetAddress::GetLocal( ToString( port ) );
 
     if( !m_socket.Bind( addr, 10 ) )
     {

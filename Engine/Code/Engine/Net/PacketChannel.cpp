@@ -25,7 +25,7 @@ bool PacketChannel::Bind( const NetAddress& addr )
     }
 }
 
-void PacketChannel::Send( const NetPacket& packet )
+void PacketChannel::SendImmediate( const NetPacket& packet )
 {
     if( IsClosed() )
         LOG_ERROR_TAG( "Net", "Cannot send, socket is closed or unbound" );
@@ -50,15 +50,15 @@ bool PacketChannel::Receive( NetPacket& out_packet )
 
     if( readBytes > 0U )
     {
-        PacketHeader header;
-        if( !out_packet.ReadHeader( header ) )
+        if( !out_packet.UnpackHeader() )
             return false;
 
         NetConnection* connection = m_owningSession->GetConnection(
-            header.m_senderConnectionIdx );
+            out_packet.m_header.m_senderConnectionIdx );
+        if( !connection )
+            connection = m_owningSession->GetConnection( senderAddr );
 
-        if( header.m_senderConnectionIdx == INVALID_CONNECTION_INDEX
-            || connection == nullptr
+        if( connection == nullptr
             || connection->m_address != senderAddr )
         {
             LOG_INFO_TAG(
@@ -69,25 +69,24 @@ bool PacketChannel::Receive( NetPacket& out_packet )
         }
         out_packet.m_sender = connection;
 
-
-        // DEBUG PRINTS
-        uint max_bytes = Min( (int) readBytes, 128 );
-        //string output = "0x";
-        char* out = (char*) malloc( max_bytes * 2U + 3U );
-        out[0] = '0';
-        out[1] = '1';
-        //output.set_max_size( max_bytes * 2U + 3U );
-        char *iter = out;
-        iter += 2U; // skip the 0x
-        for( uint i = 0; i < readBytes; ++i )
-        {
-            sprintf_s( iter, 3U, "%02X", out_packet.GetBuffer()[i] );
-            iter += 2U;
-        }
-        *iter = NULL;
-
-        LOG_DEBUG_TAG( "Net", "Received from %s \n%s", senderAddr.ToStringAll().c_str(), out );
-        free( out );
+//         // DEBUG PRINTS
+//         uint max_bytes = Min( (int) readBytes, 128 );
+//         //string output = "0x";
+//         char* out = (char*) malloc( max_bytes * 2U + 3U );
+//         out[0] = '0';
+//         out[1] = '1';
+//         //output.set_max_size( max_bytes * 2U + 3U );
+//         char *iter = out;
+//         iter += 2U; // skip the 0x
+//         for( uint i = 0; i < readBytes; ++i )
+//         {
+//             sprintf_s( iter, 3U, "%02X", out_packet.GetBuffer()[i] );
+//             iter += 2U;
+//         }
+//         *iter = NULL;
+//
+//         LOG_DEBUG_TAG( "Net", "Received from %s \n%s", senderAddr.ToStringAll().c_str(), out );
+//         free( out );
         return true;
     }
     else

@@ -11,9 +11,15 @@
 #include "Engine/Net/NetAddress.hpp"
 #include "Engine/Net/RemoteCommandService.hpp"
 #include "Engine/Core/SystemUtils.hpp"
+#include "Engine/Net/NetSession.hpp"
+#include "Engine/Net/NetConnection.hpp"
+#include "Engine/Net/NetMessage.hpp"
+#include "Engine/Net/EngineNetMessages.hpp"
 #include <fstream>
 
 #include "Engine/Core/WindowsCommon.hpp"
+
+using namespace EngineNetMessages;
 
 void ThreadTestWork()
 {
@@ -40,138 +46,8 @@ void EngineCommands::RegisterAllCommands()
 {
     CommandSystem* commandSys = CommandSystem::DefaultCommandSystem();
 
-    commandSys->AddCommand( "rc", []( string& str )
-    {
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams < 1 )
-        {
-            LOG_WARNING( "rc needs at least 1 param, (optional idx) and msg" );
-            return;
-        }
-
-        string onlyParams = "";
-
-
-        int indexToSend = 0;
-
-        for( int idx = 0; idx < numParams; ++idx )
-        {
-            string param;
-            parser.GetNext( param );
-            if( idx == 0 )
-            {
-                if( StringUtils::IsPositiveInt( param ) )
-                {
-                    if( numParams < 2 )
-                    {
-                        LOG_WARNING( "rc needs at least 2 param if supplying idx, (optional idx) and msg" );
-                        return;
-                    }
-                    SetFromString( param, indexToSend );
-                }
-                else
-                {
-                    onlyParams = param;
-                }
-            }
-            else
-            {
-                if( onlyParams == "" )
-                    onlyParams = param;
-                else
-                    onlyParams = onlyParams + " " + param;
-            }
-        }
-        RemoteCommandService::GetDefault()->SendMsg( indexToSend, false, onlyParams.c_str() );
-    } );
-
-
-    commandSys->AddCommand( "rca", []( string& str )
-    {
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams < 1 )
-        {
-            LOG_WARNING( "rca needs at least 1 param" );
-            return;
-        }
-
-        string onlyParams = parser.GetOnlyParameters();
-
-        RemoteCommandService::GetDefault()->RemoteCommandAll( onlyParams.c_str() );
-    } );
-
-    commandSys->AddCommand( "rcb", []( string& str )
-    {
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams < 1 )
-        {
-            LOG_WARNING( "rcb needs at least 1 param" );
-            return;
-        }
-
-        string onlyParams = parser.GetOnlyParameters();
-
-        RemoteCommandService::GetDefault()->RemoteCommandAllButMe( onlyParams.c_str() );
-    } );
-
-    commandSys->AddCommand( "rc_host", []( string& str )
-    {
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams > 1 )
-        {
-            LOG_WARNING( "rc_host needs at most 1 param, [service]" );
-            return;
-        }
-
-        string onlyParams = parser.GetOnlyParameters();
-
-        RemoteCommandService::GetDefault()->ShouldHost( onlyParams.c_str() );
-    } );
-
-    commandSys->AddCommand( "rc_join", []( string& str )
-    {
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams != 1 )
-        {
-            LOG_WARNING( "rc_join needs 1 param, [ipAddress:port]" );
-            return;
-        }
-
-        string onlyParams = parser.GetOnlyParameters();
-
-        RemoteCommandService::GetDefault()->ShouldJoin( onlyParams.c_str() );
-    } );
-
-    commandSys->AddCommand( "rc_echo", []( string& str )
-    {
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams != 1 )
-        {
-            LOG_WARNING( "rc_echo needs 1 param, [true/false]" );
-            return;
-        }
-
-
-        bool on;
-
-        parser.GetNext( on );
-
-        Printf( "rc echo is %s", ToString( on ).c_str() );
-
-        RemoteCommandService::GetDefault()->SetEchoOn( on );
-    } );
+    //--------------------------------------------------------------------------------------
+    // Process
 
     commandSys->AddCommand( "clone_process", []( string& str )
     {
@@ -225,68 +101,8 @@ void EngineCommands::RegisterAllCommands()
         }
     } );
 
-    commandSys->AddCommand( "TestConnect", []( string& str )
-    {
-        UNUSED( str );
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams < 2 )
-        {
-            LOG_WARNING( "TestConnect needs 2 params, IP:PORT and msg" );
-            return;
-        }
-
-        string addrStr;
-        parser.GetNext( addrStr );
-        NetAddress netAddr( addrStr );
-
-        string msg;
-        parser.GetNext( msg );
-
-        Net::ConnectionTest( netAddr, msg );
-
-    } );
-
-    commandSys->AddCommand( "TestHost", []( string& str )
-    {
-        UNUSED( str );
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams < 1 )
-        {
-            LOG_WARNING( "TestHost needs 1 params, PORT" );
-            return;
-        }
-
-        int port;
-        parser.GetNext( port );
-
-        Net::HostTest( port );
-
-    } );
-
-    commandSys->AddCommand( "TestHostClose", []( string& str )
-    {
-        UNUSED( str );
-
-        Net::HostTestClose();
-
-    } );
-
-    commandSys->AddCommand( "NetLocalIP", []( string& str )
-    {
-        UNUSED( str );
-
-        vector<NetAddress> addresses = NetAddress::GetAllLocal( "12345" );
-
-        for( auto& addr : addresses )
-        {
-            Print( "Local IP: " + addr.ToStringIP() );
-        }
-
-    } );
+    //--------------------------------------------------------------------------------------
+    // Thread
 
     commandSys->AddCommand( "testThreaded", []( string& str )
     {
@@ -307,11 +123,15 @@ void EngineCommands::RegisterAllCommands()
         Thread::Join( handle );
     } );
 
+    //--------------------------------------------------------------------------------------
+    // Profiler
+
     commandSys->AddCommand( "p", []( string& str )
     {
         UNUSED( str );
         Profiler::ToggleVisible();
     } );
+
 
     commandSys->AddCommand( "pp", []( string& str )
     {
@@ -320,12 +140,16 @@ void EngineCommands::RegisterAllCommands()
         Profiler::Pause();
     } );
 
+
     commandSys->AddCommand( "pr", []( string& str )
     {
         UNUSED( str );
         Print( "Resumed profiler" );
         Profiler::Resume();
     } );
+
+    //--------------------------------------------------------------------------------------
+    // Python
 
     commandSys->AddCommand( "python", []( string& str )
     {
@@ -334,12 +158,16 @@ void EngineCommands::RegisterAllCommands()
         Console::GetDefault()->UsePython( true );
     } );
 
+
     commandSys->AddCommand( "py", []( string& str )
     {
         UNUSED( str );
         Print( "Starting Python Shell" );
         Console::GetDefault()->UsePython( true );
     } );
+
+    //--------------------------------------------------------------------------------------
+    // Utils
 
     commandSys->AddCommand( "help", []( string& str )
     {
@@ -351,4 +179,237 @@ void EngineCommands::RegisterAllCommands()
             Print( CommandDef.second.m_name, Rgba::GREEN_CYAN );
         }
     } );
+
+
+    //--------------------------------------------------------------------------------------
+    // Net commands
+    commandSys->AddCommand( "TestConnect", []( string& str )
+    {
+        UNUSED( str );
+        CommandParameterParser parser( str );
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 2 )
+        {
+            LOG_WARNING( "TestConnect needs 2 params, IP:PORT and msg" );
+            return;
+        }
+        string addrStr;
+        parser.GetNext( addrStr );
+        NetAddress netAddr( addrStr );
+        string msg;
+        parser.GetNext( msg );
+        Net::ConnectionTest( netAddr, msg );
+    } );
+
+
+    commandSys->AddCommand( "TestHost", []( string& str )
+    {
+        UNUSED( str );
+        CommandParameterParser parser( str );
+
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 1 )
+        {
+            LOG_WARNING( "TestHost needs 1 params, PORT" );
+            return;
+        }
+
+        int port;
+        parser.GetNext( port );
+
+        Net::HostTest( port );
+
+    } );
+
+
+    commandSys->AddCommand( "TestHostClose", []( string& str )
+    {
+        UNUSED( str );
+
+        Net::HostTestClose();
+
+    } );
+
+
+    commandSys->AddCommand( "NetLocalIP", []( string& str )
+    {
+        UNUSED( str );
+
+        vector<NetAddress> addresses = NetAddress::GetAllLocal( "12345" );
+
+        for( auto& addr : addresses )
+        {
+            Print( "Local IP: " + addr.ToStringIP() );
+        }
+
+    } );
+
+
+    commandSys->AddCommand( "rc", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 1 )
+        {
+            LOG_WARNING( "rc needs at least 1 param, (optional idx) and msg" );
+            return;
+        }
+        string onlyParams = "";
+        int indexToSend = 0;
+        for( int idx = 0; idx < numParams; ++idx )
+        {
+            string param;
+            parser.GetNext( param );
+            if( idx == 0 )
+            {
+                if( StringUtils::IsPositiveInt( param ) )
+                {
+                    if( numParams < 2 )
+                    {
+                        LOG_WARNING( "rc needs at least 2 param if supplying idx, (optional idx) and msg" );
+                        return;
+                    }
+                    SetFromString( param, indexToSend );
+                }
+                else
+                {
+                    onlyParams = param;
+                }
+            }
+            else
+            {
+                if( onlyParams == "" )
+                    onlyParams = param;
+                else
+                    onlyParams = onlyParams + " " + param;
+            }
+        }
+        RemoteCommandService::GetDefault()->SendMsg( indexToSend, false, onlyParams.c_str() );
+    } );
+
+
+    commandSys->AddCommand( "rca", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 1 )
+        {
+            LOG_WARNING( "rca needs at least 1 param" );
+            return;
+        }
+        string onlyParams = parser.GetOnlyParameters();
+        RemoteCommandService::GetDefault()->RemoteCommandAll( onlyParams.c_str() );
+    } );
+
+
+    commandSys->AddCommand( "rcb", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        size_t numParams = parser.NumOfParams();
+        if( numParams < 1 )
+        {
+            LOG_WARNING( "rcb needs at least 1 param" );
+            return;
+        }
+
+        string onlyParams = parser.GetOnlyParameters();
+        RemoteCommandService::GetDefault()->RemoteCommandAllButMe( onlyParams.c_str() );
+    } );
+
+
+    commandSys->AddCommand( "rc_host", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        size_t numParams = parser.NumOfParams();
+        if( numParams > 1 )
+        {
+            LOG_WARNING( "rc_host needs at most 1 param, [service]" );
+            return;
+        }
+        string onlyParams = parser.GetOnlyParameters();
+        RemoteCommandService::GetDefault()->ShouldHost( onlyParams.c_str() );
+    } );
+
+
+    commandSys->AddCommand( "rc_join", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        size_t numParams = parser.NumOfParams();
+        if( numParams != 1 )
+        {
+            LOG_WARNING( "rc_join needs 1 param, [ipAddress:port]" );
+            return;
+        }
+        string onlyParams = parser.GetOnlyParameters();
+        RemoteCommandService::GetDefault()->ShouldJoin( onlyParams.c_str() );
+    } );
+
+
+    commandSys->AddCommand( "rc_echo", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        size_t numParams = parser.NumOfParams();
+        if( numParams != 1 )
+        {
+            LOG_WARNING( "rc_echo needs 1 param, [true/false]" );
+            return;
+        }
+        bool on;
+        parser.GetNext( on );
+        Printf( "rc echo is %s", ToString( on ).c_str() );
+        RemoteCommandService::GetDefault()->SetEchoOn( on );
+    } );
+
+
+    commandSys->AddCommand( "add_connection", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        int connectionIdx;
+        string address;
+        if( !parser.GetNext( connectionIdx ) || !parser.GetNext( address ) )
+            return;
+
+        NetAddress addr = NetAddress( address );
+        NetSession::GetDefault()->AddConnection( (uint8) connectionIdx, addr );
+    } );
+
+    commandSys->AddCommand( "add_connection_self", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        int connectionIdx;
+        if( !parser.GetNext( connectionIdx ) )
+            return;
+
+        NetSession::GetDefault()->AddConnectionSelf( (uint8) connectionIdx );
+    } );
+
+    commandSys->AddCommand( "send_ping", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        int connectionIdx;
+        string txt = "";
+        if( !parser.GetNext( connectionIdx ) )
+            return;
+        parser.GetNext( txt );
+
+        NetMessage* msg = ComposePing( txt );
+        NetSession::GetDefault()->SendToConnection( (uint8)connectionIdx, msg );
+    } );
+
+    commandSys->AddCommand( "send_add", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        int connectionIdx;
+        float a, b;
+        string txt = "";
+        if( !parser.GetNext( connectionIdx )
+            || !parser.GetNext( a )
+            || !parser.GetNext( b ) )
+            return;
+
+
+        NetMessage* msg = ComposeAdd( a, b );
+        NetSession::GetDefault()->SendToConnection( (uint8) connectionIdx, msg );
+    } );
+
 }

@@ -57,12 +57,11 @@ public:
         if( m_allParseSuccess )
         {
             if( !m_suppressWarnings )
-                LOG_INVALID_PARAMETERS( m_commandName.c_str() );
             m_allParseSuccess = false;
         }
-
         return false;
     };
+
 
     bool AllParseSuccess() { return m_allParseSuccess; };
     size_t NumOfParams() { return m_parameterTokens.size(); };
@@ -73,7 +72,7 @@ private:
     string m_commandName;
     string m_justParams;
     size_t m_nextParamToGet = 0;
-    bool m_suppressWarnings;
+    bool m_suppressWarnings = false;
     bool m_allParseSuccess = true;
 };
 

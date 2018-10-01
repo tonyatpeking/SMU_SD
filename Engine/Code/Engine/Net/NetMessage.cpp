@@ -11,16 +11,26 @@ NetMessage::NetMessage( const string& name )
 }
 
 
-void NetMessage::WriteMessageHeader( uint8 msgIdx )
+NetMessage::NetMessage()
+    : BytePacker( MESSAGE_MTU, m_localBuffer )
 {
-    SetWriteHead( 0 );
-    Write( msgIdx );
+    SetEndianness( Endianness::LITTLE );
+    // Skip header
+    SetWriteHead( 1 );
 }
 
-uint8 NetMessage::ReadMessageIndex()
+void NetMessage::WriteMessageHeader( MessageID msgID )
 {
-    uint8 msgIdx = INVALID_MESSAGE_INDEX;
+    size_t saveWriteHead = GetWrittenByteCount();
+    SetWriteHead( 0 );
+    Write( msgID );
+    SetWriteHead( saveWriteHead );
+}
+
+MessageID NetMessage::ReadMessageID()
+{
+    MessageID msgID = INVALID_MESSAGE_ID;
     SetReadHead( 0 );
-    Read( &msgIdx );
-    return msgIdx;
+    Read( &msgID );
+    return msgID;
 }

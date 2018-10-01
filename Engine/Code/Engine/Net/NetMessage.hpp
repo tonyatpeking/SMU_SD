@@ -6,27 +6,25 @@
 class NetConnection;
 class NetMessageDefinition;
 
-// [uint8_t message_index] // this is header for now
+// [uint8_t message_id] // this is header for now
 // [byte_t* message_payload] // will be message_and_header_length - 1U long for now
 
 
 class NetMessage : public BytePacker
 {
 public:
+    NetMessage();
     NetMessage( const string& name );
     ~NetMessage() {};
 
-    void WriteMessageHeader( uint8 msgIdx );
+    void WriteMessageHeader( MessageID msgID );
     // also sets the read head to be after the header
-    uint8 ReadMessageIndex();
-    NetMessage() {};
-    ~NetMessage() {};
+    MessageID ReadMessageID();
 
 public:
 
     Byte m_localBuffer[MESSAGE_MTU];
 
-    const NetMessageDefinition* m_definition;
     string m_name;
 
     NetConnection* m_sender = nullptr;

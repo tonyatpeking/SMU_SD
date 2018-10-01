@@ -21,7 +21,7 @@ void GameCommands::RegisterAllCommands()
     {
         CommandParameterParser parser( str );
 
-        string portStr = "";
+        int portStr = INVALID_PORT;
         if( parser.NumOfParams() > 0 )
         {
             parser.GetNext( portStr );

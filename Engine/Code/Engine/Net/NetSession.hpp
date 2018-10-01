@@ -17,14 +17,16 @@ class PacketChannel;
 
 class NetSession
 {
+    friend class NetSessionDisplay;
 public:
+    static NetSession* GetDefault();
     NetSession();
     ~NetSession();
 
     // message definitions
     bool RegisterMessageDefinition( const string& name, NetMessageCB cb );
     const NetMessageDefinition* GetMessageDefinitionByName( const string& name );
-    const NetMessageDefinition* GetMessageDefinitionByIndex( const MessageID idx ) const;
+    const NetMessageDefinition* GetMessageDefinitionByID( const MessageID idx ) const;
 
 
     // Starting a session (finalizes definitions - can't add more once
@@ -33,24 +35,29 @@ public:
 
     // Connection management
     NetConnection* AddConnection( uint8 idx, const NetAddress& addr );
+    NetConnection* AddConnectionSelf( uint8 idx );
     NetConnection* GetConnection( uint8 idx );
+    NetConnection* GetConnection( const NetAddress& addr );
     void CloseAllConnections();
-    uint8 GetMyConnectionIdx() const { return INVALID_CONNECTION_INDEX; }
+    uint8 GetMyConnectionIdx() const { return m_myConnectionIdx; }
+    NetAddress GetMyAddress();
 
     // updates
     void ProcessIncomming();
-    bool PacketIsValid( const NetPacket& packet );
-    bool ProcessPacket( const NetPacket& packet );
+    bool ProcessPacket( NetPacket& packet );
+    bool ProcessMessage( NetMessage& message );
 
     void ProcessOutgoing();
 
-    void Send( const NetPacket& packet );
+    void SendImmediate( const NetPacket& packet );
+    bool SendToConnection( uint8 idx, NetMessage* message );
 
 private:
 
-    void SortMessageDefinitions();
+    void FinalizeMessageDefinitions();
 
     map<uint8, NetConnection*> m_connections; // all connections I know about;
+    uint8 m_myConnectionIdx = INVALID_CONNECTION_INDEX;
     PacketChannel* m_packetChannel = nullptr; // what we send/receive packets on;
 
     // sorted, based on name

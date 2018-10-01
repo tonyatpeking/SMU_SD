@@ -7,13 +7,13 @@ class NetConnection;
 
 // All BytePackers are LITTLE_ENDIAN
 // A packet header is..
-// [uint8_t sender_conn_idx]
-// [uint8_t unreliable_count]
+// [uint8 sender_conn_idx]
+// [uint8 unreliable_count]
 
 // Followed by all unreliables, each message having the format
-// [uint16_t message_and_header_length]
-// [uint8_t message_index] // this is header for now
-// [byte_t* message_payload] // will be message_and_header_length - 1U long for now
+// [uint16 message_and_header_length]
+// [uint8 message_index] // this is header for now
+// [Byte* message_payload] // will be message_and_header_length - 1U long for now
 
 struct PacketHeader
 {
@@ -28,19 +28,17 @@ public:
 	virtual ~NetPacket(){};
 
     // Header
-    void SetSenderIdx( uint8 senderIdx ) { m_header.m_senderConnectionIdx = senderIdx; }
-    bool ReadHeader( PacketHeader& out_header );
+    void PackHeader();
+    bool UnpackHeader();
 
     bool WriteUnreliableMessage( NetMessage const &msg );
     bool WriteMessage( NetMessage const &msg );
     bool ReadMessage( NetMessage& out_msg );
+    bool IsValid();
 
     uint16 GetBufferMaxSize() { return PACKET_MTU; };
 
 public:
-    void FinalizeHeader();
-
-    bool m_headerFinalized = false;
 
     PacketHeader m_header;
 

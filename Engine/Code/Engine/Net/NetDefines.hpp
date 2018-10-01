@@ -6,12 +6,14 @@
 #define PACKET_MTU (ETHERNET_MTU - 40 - 8)
 
 #define MESSAGE_MTU 1024 // arbitrary
-#define INVALID_CONNECTION_INDEX (~0)
-#define INVALID_PORT (~0)
-#define INVALID_IPV4_ADDR (~0)
-#define INVALID_MESSAGE_INDEX (~0)
+#define INVALID_CONNECTION_INDEX ((uint8)(~0))
+#define INVALID_PORT ((uint)(~0))
+#define INVALID_IPV4_ADDR ((uint)(~0))
+#define INVALID_MESSAGE_ID ((MessageID)(~0))
 
-typedef uint16_t MessageID;
+#define VALIDATE_PACKET true
+
+typedef uint8 MessageID;
 
 class NetMessage;
 typedef bool( *NetMessageCB )( NetMessage* netMessage );
