@@ -1,7 +1,8 @@
 #include <stdarg.h>
 #include <algorithm>
 #include <cctype>
-
+#include <sstream>
+#include <iomanip>
 #include "Engine/String/StringUtils.hpp"
 #include "Engine/Core/EngineCommonH.hpp"
 
@@ -614,6 +615,48 @@ const string RemovePrefix( const string& str )
     return str;
 }
 
+const string ToHex( void* buffer, size_t byteCount, bool reverse )
+{
+    std::stringstream sstream;
+
+    Byte* byteReader = (Byte*) buffer;
+    if( !reverse )
+    {
+        for( int byteIdx = 0; byteIdx < byteCount - 1; ++byteIdx )
+        {
+            Byte b = byteReader[byteIdx];
+            sstream
+                << std::uppercase
+                << std::hex
+                << std::setfill( '0' )
+                << std::setw( 2 )
+                << std::right
+                << (int) b;
+            if( byteIdx != byteCount - 1 )
+                sstream << ' ';
+        }
+    }
+
+    else
+    {
+        for( int byteIdx = (int) byteCount - 1; byteIdx >= 0; --byteIdx )
+        {
+            Byte b = byteReader[byteIdx];
+            sstream
+                << std::uppercase
+                << std::hex
+                << std::setfill( '0' )
+                << std::setw( 2 )
+                << std::right
+                << (int) b;
+            if( byteIdx != 0 )
+                sstream << ' ';
+        }
+    }
+
+    return sstream.str();
+}
+
 }
 
 
@@ -761,7 +804,12 @@ const string ToString( int var )
 
 const string ToString( float var )
 {
-    return Stringf( "%.2f", var );
+    return Stringf( "%f", var );
+}
+
+const string ToString( float var, int significantDigits )
+{
+    return Stringf("%.*f", significantDigits, var );
 }
 
 const string ToString( bool var )
@@ -837,3 +885,5 @@ const string ToString( uint var )
 {
     return ToString( (int) var );
 }
+
+

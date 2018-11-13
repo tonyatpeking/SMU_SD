@@ -37,11 +37,17 @@
 #include "Engine/Core/EngineCommands.hpp"
 #include "Engine/Time/Time.hpp"
 #include "Engine/Log/Logger.hpp"
+#include "Engine/Time/Timer.hpp"
+#include "Engine/Core/EngineCommonC.hpp"
+
+// Net
+#include "Engine/Net/UDPTest.hpp"
+#include "Engine/Net/EngineNetMessages.hpp"
 #include "Engine/Net/Net.hpp"
 #include "Engine/Net/NetAddress.hpp"
-#include "Engine/Core/EngineCommonC.hpp"
-#include "Engine/Net/UDPTest.hpp"
-
+#include "Engine/Net/NetSession.hpp"
+#include "Engine/Net/NetMessage.hpp"
+#include "Game/GameNetMessages.hpp"
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
@@ -80,6 +86,8 @@ void Game::Update()
     UpdatePause();
 
     UDPTest::GetInstance()->Update();
+
+    UpdateNetworkTest();
 }
 
 void Game::Render() const
@@ -111,7 +119,7 @@ void Game::Initialize()
     LoadShaders();
 
     g_renderer->SetBackGroundColor( g_config->backgroundColor );
-    g_forwardRenderingPath = new ForwardRenderingPath(g_renderer);
+    g_forwardRenderingPath = new ForwardRenderingPath( g_renderer );
     g_renderSceneGraph = RenderSceneGraph::GetDefault();
     g_gameObjectManager = GameObjectManager::GetDefault();
 
@@ -175,10 +183,10 @@ void Game::LoadTextures()
 
 void Game::LoadSounds()
 {
-//     g_audio->CreateSound( g_config->soundAttract );
-//     g_audio->CreateSound( g_config->soundGameplay );
-//     g_audio->CreateSound( g_config->soundPause );
-//     g_audio->CreateSound( g_config->soundVictory );
+    //     g_audio->CreateSound( g_config->soundAttract );
+    //     g_audio->CreateSound( g_config->soundGameplay );
+    //     g_audio->CreateSound( g_config->soundPause );
+    //     g_audio->CreateSound( g_config->soundVictory );
 }
 
 void Game::LoadConfigs()
@@ -254,15 +262,15 @@ void Game::ProcessInput()
     if( IsPaused() )
         m_pauseMenu->ProcessMouseInput();
 
-//     if( g_input->WasKeyJustPressed( g_config->keyPause )
-//         || ( controller != nullptr && controller->WasKeyJustPressed( XboxController::XBOX_KEY_START ) )
-//         )
-//     {
-//         if( IsPaused() )
-//             SetIsPaused( false );
-//         else
-//             SetIsPaused( true );
-//     }
+    //     if( g_input->WasKeyJustPressed( g_config->keyPause )
+    //         || ( controller != nullptr && controller->WasKeyJustPressed( XboxController::XBOX_KEY_START ) )
+    //         )
+    //     {
+    //         if( IsPaused() )
+    //             SetIsPaused( false );
+    //         else
+    //             SetIsPaused( true );
+    //     }
 
     if( g_input->WasKeyJustPressed( g_config->keySlowTime ) )
         SetGameTimeScale( g_config->speedOfTimeSlow );
@@ -400,9 +408,11 @@ void Game::ToggleDebugRenderModes()
 
 }
 
+
+
 void Game::StartGame()
 {
-    Random::InitSeed();
+
 }
 
 void Game::EndGame()
@@ -427,6 +437,46 @@ void Game::ToggleSpeedUp()
         SetGameTimeScale( g_config->speedOfTimeNormal );
 }
 
+//--------------------------------------------------------------------------------------
+// TEST
+// UnreliableTest Vars
+namespace
+{
+uint s_idx;
+uint s_totalCount = 0;
+uint s_currentCount = 0;
+Timer* timer = nullptr;
+bool s_reliable;
+}
+void Game::StartNetworkTest( uint idx, uint count, bool reliable )
+{
+    s_idx = idx;
+    s_totalCount = count;
+    s_currentCount = 0;
+    delete timer;
+    timer = new Timer( Clock::GetRealTimeClock(), 0.03f );
+    s_reliable = reliable;
+}
 
+void Game::UpdateNetworkTest()
+{
+    if( s_currentCount >= s_totalCount )
+        return;
+    if( timer->PopOneLap() )
+    {
+        NetMessage* msg;
+        if( s_reliable )
+        {
+            msg = GameNetMessages::Compose_ReliableTest(
+                s_currentCount, s_totalCount );
+        }
+        else
+        {
+            msg = GameNetMessages::Compose_UnreliableTest(
+                s_currentCount, s_totalCount );
+        }
 
-
+        NetSession::GetDefault()->SendToConnection( (uint8) s_idx, msg );
+        s_currentCount += 1;
+    }
+}

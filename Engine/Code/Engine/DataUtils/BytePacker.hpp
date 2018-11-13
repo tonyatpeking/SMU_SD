@@ -117,6 +117,8 @@ public:
 
     const Byte* GetBuffer() const;
 
+    string ToString() const;
+
 private:
     // Caution, may or may not own this memory, check BytePackerOptions
     Byte* m_buffer = nullptr;

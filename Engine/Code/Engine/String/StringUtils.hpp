@@ -94,6 +94,32 @@ void ReplaceComments( string& str, char replaceWith = '*' );
 // Removes m_ s_ g_ prefixes from string
 const string RemovePrefix( const string& str );
 
+template <typename T>
+const string ToBitfield( T num )
+{
+    string str;
+    size_t bitCount = sizeof( T ) * 8;
+    str.resize( bitCount, '0' );
+    T mask = (T) 1;
+    for( int idx = (int)bitCount - 1; idx >= 0; --idx )
+    {
+        if( num & mask )
+            str[idx] = '1';
+        mask <<= 1;
+    }
+    return str;
+}
+
+// formats any type to bytes e.g. 0D FF
+template <typename T>
+const string ToHex( T num )
+{
+    return ToHex( &num, sizeof( T ) );
+}
+
+const string ToHex( void* buffer, size_t byteCount, bool reverse = false );
+
+
 }
 
 // Outside namespace
@@ -121,6 +147,7 @@ const string Stringf( const int maxLength, const char* format, ... );
 const string ToString( int var );
 const string ToString( uint var );
 const string ToString( float var );
+const string ToString( float var, int significantDigits );
 const string ToString( bool var );
 const string ToString( unsigned char var );
 const string ToString( const Rgba& var );

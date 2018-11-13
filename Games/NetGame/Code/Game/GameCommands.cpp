@@ -118,32 +118,6 @@ void GameCommands::RegisterAllCommands()
 
     } );
 
-
-    commandSys->AddCommand( "add", []( string& str )
-    {
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams < 2 )
-        {
-            LOG_WARNING( "add needs at least 2 params" );
-            return;
-        }
-
-        float sum = 0;
-        for( size_t paramIdx = 0; paramIdx < parser.NumOfParams(); ++paramIdx )
-        {
-            float param;
-            parser.GetNext( param );
-            sum += param;
-        }
-
-        if( parser.AllParseSuccess() )
-            Print( ToString( sum ) );
-    } );
-
-
-
     commandSys->AddCommand( "quit", []( string& str )
     {
         UNUSED( str );
@@ -162,8 +136,6 @@ void GameCommands::RegisterAllCommands()
         g_console->Clear();
     } );
 
-
-
     commandSys->AddCommand( "dump", []( string& str )
     {
         CommandParameterParser parser( str );
@@ -179,25 +151,6 @@ void GameCommands::RegisterAllCommands()
             Print( "log dumped to file: " + path, Rgba::CYAN );
         else
             Print( "failed to dump to file: " + path, Rgba::YELLOW );
-    } );
-
-    commandSys->AddCommand( "health", []( string& str )
-    {
-        CommandParameterParser parser( str );
-        string mode;
-        parser.GetNext( mode );
-
-        if( !parser.AllParseSuccess() )
-            return;
-
-        if( mode == "always" )
-            g_config->healthBarRenderMode = RenderMode::ALWAYS;
-        else if( mode == "never" )
-            g_config->healthBarRenderMode = RenderMode::NEVER;
-        else if( mode == "normal" )
-            g_config->healthBarRenderMode = RenderMode::NORMAL;
-        else
-            LOG_WARNING( "wrong format for command, supported modes are always, normal, never e.g \"health always\"" );
     } );
 
     commandSys->AddCommand( "echoFile", []( string& str )
@@ -293,34 +246,33 @@ void GameCommands::RegisterAllCommands()
         DebugRender::SetHidden( false );
     } );
 
-    // Console printf
-    //Printf( Rgba::RED, "this is an int: %d, this is a float: %f  Lets see what happens when I type a really loooooooooooooooooooooooooooooooooooooooooooong line. Oh look it wraps around", 12, 123.3 );
+    commandSys->AddCommand( "net_unreliable_test", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        uint idx;
+        uint count;
+        if( !parser.GetNext( idx ) || !parser.GetNext( count ) )
+        {
+            LOG_WARNING("net_unreliable_test takes 2 args, idx and count");
+            return;
+        }
+        g_game->StartNetworkTest( idx, count, false );
 
-    //commandSys->RunCommand( "echo Hello" );
+    } );
 
-    // All of these formats will work
-//     g_console->InputWithEnter( "add(3,4)" );
-//     g_console->InputWithEnter( "add 3,4" );
-//     g_console->InputWithEnter( "add(3 4)" );
-//     g_console->InputWithEnter( "add 3 4" );
-//     g_console->InputWithEnter( "add    3  ,  4   " );
-//     g_console->InputWithEnter( "add 1 2 3 4 5 6 7 8 9 10" );
+    commandSys->AddCommand( "net_reliable_test", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        uint idx;
+        uint count;
+        if( !parser.GetNext( idx ) || !parser.GetNext( count ) )
+        {
+            LOG_WARNING( "net_reliable_test takes 2 args, idx and count" );
+            return;
+        }
+        g_game->StartNetworkTest( idx, count, true );
 
-    // These will fail with error output to console
-//     g_console->InputWithEnter( "add" );
-//     g_console->InputWithEnter( "add()" );
-//     g_console->InputWithEnter( "add ,," );
-//     g_console->InputWithEnter( "add d a" );
-
-//     g_console->InputWithEnter( "echo Hello" );
-//     g_console->InputWithEnter( "echo Hello (255,111,111,255)" );
-    // this does not parse the color correctly, anything inside brackets need ','
-    //g_console->InputWithEnter( "echo Hello (255 111 111 255)" );
-
-    //g_console->InputWithEnter( "clear" );
-//     g_console->InputWithEnter( "help" );
-//
-//     g_console->InputWithEnter( "dump log.txt" );
+    } );
 
 
 

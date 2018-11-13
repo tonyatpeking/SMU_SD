@@ -1,7 +1,6 @@
 #include "Engine/DataUtils/BytePacker.hpp"
 #include "Engine/Core/EngineCommonC.hpp"
 
-
 BytePacker::BytePacker()
 {
     m_bytePackerOptions = BYTEPACKER_OWNS_MEMORY | BYTEPACKER_CAN_GROW;
@@ -94,7 +93,7 @@ size_t BytePacker::CopyFrom( BytePacker& copyFrom, size_t maxBytesToCopy )
     size_t actualBytesToCopy = Min( maxBytesToCopy, copyFrom.GetReadableByteCount() );
     actualBytesToCopy = Min( actualBytesToCopy, GetWritableByteCount() );
     WriteBytes( actualBytesToCopy, copyFrom.GetReadHeadPtr() );
-    copyFrom.OffsetReadHead( actualBytesToCopy );
+    copyFrom.OffsetReadHead( (int)actualBytesToCopy );
     return actualBytesToCopy;
 }
 
@@ -301,4 +300,9 @@ Byte* BytePacker::GetBuffer()
 const Byte* BytePacker::GetBuffer() const
 {
     return m_buffer;
+}
+
+string BytePacker::ToString() const
+{
+    return StringUtils::ToHex(m_buffer,m_writeHead);
 }

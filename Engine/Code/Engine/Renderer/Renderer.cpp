@@ -619,6 +619,8 @@ void Renderer::DrawText2DFlashWave(
     float aspectScale /*= 1.f */ )
 
 {
+    static Random myRand = Random();
+
     if( font == nullptr )
         font = m_defaultFont;
 
@@ -645,8 +647,8 @@ void Renderer::DrawText2DFlashWave(
         glyphBoundsBumpedUp.Translate( 0, bumpUpOffset );
 
         int cycle = FloorToInt( ( localTime - flashDuration / 2.f ) / interval );
-        Random::SetSeed( cycle );
-        Rgba color = Random::ColorInRange( colorA, colorB );
+        myRand.SetSeed( cycle );
+        Rgba color = myRand.ColorInRange( colorA, colorB );
         color = Lerp( color, colorFlash, periodicBellWave );
 
         int glyphID = text[glyphIdx];

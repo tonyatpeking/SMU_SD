@@ -101,6 +101,10 @@ void main( void )
     StringUtils::ReplaceComments( mockShader );
     Print( mockShader );
 
+    int someInt = 0x123456ff;
+    string someIntToHex = StringUtils::ToHex( someInt );
+    Print( someIntToHex );
+
 }
 
 void IOTests()
@@ -166,7 +170,7 @@ void NetworkCourseTests()
 
     for( int i = 0; i < maxStrLen - 1; ++i )
     {
-        someStr[i] = Random::Char();
+        someStr[i] = Random::Default()->Char();
     }
     someStr[maxStrLen - 1] = '\0';;
 

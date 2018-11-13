@@ -52,11 +52,6 @@ ParseStatus IRange::SetFromText( const string& text, const string& delimiter )
     return status;
 }
 
-int IRange::GetRandomInRange() const
-{
-    return Random::IntInRange( min, max );
-}
-
 bool IRange::IsInRange( int val ) const
 {
     return ( min <= val ) && ( val <= max );

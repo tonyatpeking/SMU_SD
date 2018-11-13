@@ -108,7 +108,7 @@ void ProfilerReportEntry::PopulateFlatR( Profiler::Measurement *measurement,
 ProfilerReportEntry* ProfilerReportEntry::GetOrCreateChild( const string& id )
 {
     ProfilerReportEntry* entry = nullptr;
-    if( !ContainerUtils::Contains( m_children, id ) )
+    if( !ContainerUtils::ContainsKey( m_children, id ) )
     {
         entry = new ProfilerReportEntry( id );
         m_children[id] = entry;

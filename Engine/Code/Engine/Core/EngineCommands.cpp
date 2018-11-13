@@ -16,7 +16,7 @@
 #include "Engine/Net/NetMessage.hpp"
 #include "Engine/Net/EngineNetMessages.hpp"
 #include <fstream>
-
+#include "Engine/Core/RuntimeVars.hpp"
 #include "Engine/Core/WindowsCommon.hpp"
 
 using namespace EngineNetMessages;
@@ -33,7 +33,7 @@ void ThreadTestWork()
 
     for( uint i = 0; i < 1200000; ++i )
     {
-        int randInt = Random::IntInRange( 0, 99999 );
+        int randInt = Random::Default()->IntInRange( 0, 99999 );
         file << randInt;
     }
 
@@ -49,7 +49,7 @@ void EngineCommands::RegisterAllCommands()
     //--------------------------------------------------------------------------------------
     // Process
 
-    commandSys->AddCommand( "clone_process", []( string& str )
+    commandSys->AddCommand( "clone", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -73,7 +73,8 @@ void EngineCommands::RegisterAllCommands()
         }
     } );
 
-    commandSys->AddCommand( "spawn_process", []( string& str )
+
+    commandSys->AddCommand( "spawn", []( string& str )
     {
         CommandParameterParser parser( str );
 
@@ -392,8 +393,8 @@ void EngineCommands::RegisterAllCommands()
             return;
         parser.GetNext( txt );
 
-        NetMessage* msg = ComposePing( txt );
-        NetSession::GetDefault()->SendToConnection( (uint8)connectionIdx, msg );
+        NetMessage* msg = Compose_Ping( txt );
+        NetSession::GetDefault()->SendToConnection( (uint8) connectionIdx, msg );
     } );
 
     commandSys->AddCommand( "send_add", []( string& str )
@@ -408,8 +409,227 @@ void EngineCommands::RegisterAllCommands()
             return;
 
 
-        NetMessage* msg = ComposeAdd( a, b );
+        NetMessage* msg = Compose_Add( a, b );
         NetSession::GetDefault()->SendToConnection( (uint8) connectionIdx, msg );
     } );
 
+    commandSys->AddCommand( "net_sim_lag", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        int maxLag = 0;
+        int minLag;
+        if( !parser.GetNext( minLag ) )
+        {
+            LOG_INVALID_PARAMETERS( "net_sim_loss" );
+            return;
+        }
+
+        parser.GetNext( maxLag );
+
+        NetSession::GetDefault()->SetSimLatency( minLag, maxLag );
+    } );
+
+    commandSys->AddCommand( "net_sim_loss", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        float loss;
+        if( !parser.GetNext( loss ) )
+        {
+            LOG_INVALID_PARAMETERS( "net_sim_loss" );
+            return;
+        }
+
+        NetSession::GetDefault()->SetSimLoss( loss );
+
+    } );
+
+    commandSys->AddCommand( "net_set_session_send_rate", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        float Hz;
+        if( !parser.GetNext( Hz ) )
+        {
+            LOG_INVALID_PARAMETERS( "net_set_session_send_rate" );
+            return;
+        }
+
+        NetSession::GetDefault()->SetSessionSendRate( Hz );
+
+    } );
+
+    commandSys->AddCommand( "net_set_connection_send_rate", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        int connectionIdx;
+        float Hz;
+        if( !parser.GetNext( connectionIdx ) || !parser.GetNext( Hz ) )
+        {
+            LOG_INVALID_PARAMETERS( "net_set_connection_send_rate" );
+            return;
+        }
+
+        NetSession::GetDefault()->SetConnectionSendRate( (uint8) connectionIdx, Hz );
+
+    } );
+
+    commandSys->AddCommand( "net_set_heart_rate", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        float Hz;
+        if( !parser.GetNext( Hz ) )
+        {
+            LOG_INVALID_PARAMETERS( "net_set_heart_rate" );
+            return;
+        }
+        NetSession::GetDefault()->SetHeartBeat( Hz );
+    } );
+
+    commandSys->AddCommand( "net_easy_add", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string localIP1 = NetAddress::GetLocal( ToString( GAME_PORT ) ).ToStringAll();
+        string localIP2 = NetAddress::GetLocal( ToString( GAME_PORT + 1 ) ).ToStringAll();
+        CommandSystem::DefaultCommandSystem()->RunCommand( "rca add_connection 0 " + localIP1 );
+        CommandSystem::DefaultCommandSystem()->RunCommand( "rca add_connection 1 " + localIP2 );
+    } );
+
+    commandSys->AddCommand( "net_easy_add2", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string localIP1 = NetAddress::GetLocal( ToString( GAME_PORT ) ).ToStringAll();
+        string localIP2 = NetAddress::GetLocal( ToString( GAME_PORT + 1 ) ).ToStringAll();
+        CommandSystem::DefaultCommandSystem()->RunCommand( "add_connection 0 " + localIP1 );
+        CommandSystem::DefaultCommandSystem()->RunCommand( "rca add_connection 1 " + localIP2 );
+    } );
+
+    commandSys->AddCommand( "net_easy_add3", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string localIP1 = NetAddress::GetLocal( ToString( GAME_PORT ) ).ToStringAll();
+        string localIP2 = NetAddress::GetLocal( ToString( GAME_PORT + 1 ) ).ToStringAll();
+        CommandSystem::DefaultCommandSystem()->RunCommand( "rca add_connection 0 " + localIP1 );
+        CommandSystem::DefaultCommandSystem()->RunCommand( "add_connection 1 " + localIP2 );
+    } );
+
+    commandSys->AddCommand( "logVars", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        RuntimeVars::LogAll();
+    } );
+
+    commandSys->AddCommand( "setBool", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string var;
+        bool value;
+        if( parser.GetNext( var ) && parser.GetNext( value ) )
+            RuntimeVars::SetVar( var, value );
+        else
+            LOG_INVALID_PARAMETERS( "set command take 2 args" );
+    } );
+
+    commandSys->AddCommand( "getBool", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string var;
+        bool value;
+        if( parser.GetNext( var ) )
+        {
+            RuntimeVars::GetVar( var, value );
+            LOG_INFO_TAG( "VARS", "%s, %s", var.c_str(), ToString( value ).c_str() );
+        }
+        else
+            LOG_INVALID_PARAMETERS( "get command take 1 args" );
+    } );
+
+    commandSys->AddCommand( "setInt", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string var;
+        int value;
+        if( parser.GetNext( var ) && parser.GetNext( value ) )
+            RuntimeVars::SetVar( var, value );
+        else
+            LOG_INVALID_PARAMETERS( "set command take 2 args" );
+    } );
+
+    commandSys->AddCommand( "getInt", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string var;
+        int value;
+        if( parser.GetNext( var ) )
+        {
+            RuntimeVars::GetVar( var, value );
+            LOG_INFO_TAG( "VARS", "%s, %i", var.c_str(), ToString( value ).c_str() );
+        }
+        else
+            LOG_INVALID_PARAMETERS( "get command take 1 args" );
+    } );
+
+    commandSys->AddCommand( "setFloat", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string var;
+        float value;
+
+        if( parser.GetNext( var ) && parser.GetNext( value ) )
+            RuntimeVars::SetVar( var, value );
+        else
+            LOG_INVALID_PARAMETERS( "set command take 2 args" );
+    } );
+
+    commandSys->AddCommand( "getFloat", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string var;
+        float value;
+        if( parser.GetNext( var ) )
+        {
+            RuntimeVars::GetVar( var, value );
+            LOG_INFO_TAG( "VARS", "%s, %f", var.c_str(), ToString( value ).c_str() );
+        }
+        else
+            LOG_INVALID_PARAMETERS( "get command take 1 args" );
+    } );
+
+    commandSys->AddCommand( "setString", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string var;
+        string value;
+        if( parser.GetNext( var ) && parser.GetNext( value ) )
+            RuntimeVars::SetVar( var, value );
+        else
+            LOG_INVALID_PARAMETERS( "set command take 2 args" );
+    } );
+
+    commandSys->AddCommand( "getString", []( string& str )
+    {
+        CommandParameterParser parser( str );
+
+        string var;
+        string value;
+        if( parser.GetNext( var ) )
+        {
+            RuntimeVars::GetVar( var, value );
+            LOG_INFO_TAG( "VARS", "%s, %s", var.c_str(), ToString( value ).c_str() );
+        }
+        else
+            LOG_INVALID_PARAMETERS( "get command take 1 args" );
+    } );
+
 }
+
+

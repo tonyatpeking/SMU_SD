@@ -240,7 +240,7 @@ PlaybackID AudioSystem::PlayOneOffSoundFromGroup( string groupName )
         int numSounds = (int)group.soundIDs.size();
         if( numSounds == 0 )
             return MISSING_SOUND_ID;
-        int soundToPlay = Random::IntInRange( 0, numSounds - 1 );
+        int soundToPlay = Random::Default()->IntInRange( 0, numSounds - 1 );
         return PlaySound( group.soundIDs[soundToPlay] );
     }
     return MISSING_SOUND_ID;

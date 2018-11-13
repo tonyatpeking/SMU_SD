@@ -3,6 +3,8 @@
 
 class TextRenderable;
 
+#define DISPLAY_NET_INFO "displayNetInfo"
+
 class NetSessionDisplay
 {
 public:

@@ -1,3 +1,5 @@
+#include "Engine/Time/Time.hpp"
+#include "Engine/Math/Random.hpp"
 #include "Engine/Net/NetSession.hpp"
 #include "Engine/Net/NetPacket.hpp"
 #include "Engine/DataUtils/BytePacker.hpp"
@@ -9,6 +11,7 @@
 #include "Engine/Net/PacketChannel.hpp"
 #include "Engine/Net/NetMessageDefinition.hpp"
 #include "Engine/Net/NetMessage.hpp"
+#include "Engine/Net/NetMessageDatabase.hpp"
 
 #include <algorithm>
 
@@ -31,41 +34,6 @@ NetSession::NetSession()
 
 NetSession::~NetSession()
 {
-
-}
-
-bool NetSession::RegisterMessageDefinition( const string& name, NetMessageCB cb )
-{
-    for( auto& def : m_messageDefinitions )
-    {
-        if( def->m_name == name )
-        {
-            LOG_WARNING_TAG( "Net", "NetMessageDefinition already exists for [%s]",
-                             name.c_str() );
-            return false;
-        }
-    }
-
-    NetMessageDefinition* def = new NetMessageDefinition( name, cb );
-    m_messageDefinitions.push_back( def );
-    return true;
-}
-
-const NetMessageDefinition* NetSession::GetMessageDefinitionByName( const string& name )
-{
-    for( auto& def : m_messageDefinitions )
-    {
-        if( name == def->m_name )
-            return def;
-    }
-    return nullptr;
-}
-
-const NetMessageDefinition* NetSession::GetMessageDefinitionByID( const MessageID idx ) const
-{
-    if( m_messageDefinitions.size() <= idx )
-        return nullptr;
-    return m_messageDefinitions[idx];
 }
 
 void NetSession::BindAndFinalize( int port, uint rangeToTry /*= 0U */ )
@@ -89,14 +57,16 @@ void NetSession::BindAndFinalize( int port, uint rangeToTry /*= 0U */ )
                        port, rangeToTry );
     }
 
-    FinalizeMessageDefinitions();
+    NetMessageDatabase::Finalize();
 }
 
 NetConnection* NetSession::AddConnection( uint8 idx, const NetAddress& addr )
 {
     if( ContainerUtils::ContainsKey( m_connections, idx ) )
     {
-        LOG_WARNING_TAG( "Net", "Connection index [%d] already exists, replacing", idx );
+        LOG_WARNING_TAG(
+            "Net", "Connection index [%d] already exists, replacing", idx );
+
         delete m_connections[idx];
     }
     LOG_INFO_TAG( "Net", "Connection added at index [%d]", idx );
@@ -130,7 +100,7 @@ NetConnection* NetSession::GetConnection( uint8 idx )
 
 NetConnection* NetSession::GetConnection( const NetAddress& addr )
 {
-    for ( auto& pair : m_connections )
+    for( auto& pair : m_connections )
     {
         if( pair.second->m_address == addr )
             return pair.second;
@@ -146,6 +116,11 @@ void NetSession::CloseAllConnections()
     }
 }
 
+NetConnection* NetSession::GetMyConnection()
+{
+    return m_connections[m_myConnectionIdx];
+}
+
 NetAddress NetSession::GetMyAddress()
 {
     return m_packetChannel->m_socket->m_address;
@@ -153,28 +128,102 @@ NetAddress NetSession::GetMyAddress()
 
 void NetSession::ProcessIncomming()
 {
+#ifdef SIM_NET_LATENCY
+    ProcessIncommingWithLatency();
+#else
+    ProcessIncommingImmediate();
+#endif // SIM_NET_LATENCY
+}
+
+void NetSession::ProcessIncommingWithLatency()
+{
+    Random& rnd = *Random::Default();
+    NetPacket* packet = new NetPacket();
+    while( m_packetChannel->Receive( *packet ) )
+    {
+        if( ShouldDiscardPacketForLossSim() )
+            continue;
+
+        packet->m_timeOfReceiveMS = TimeUtils::GetCurrentTimeMS()
+            + (uint) rnd.IntInRange( m_minSimLatencyMS, m_maxSimLatencyMS );
+        m_queuedPacketsToProcess.push( packet );
+        packet = new NetPacket();
+    }
+    delete packet;
+
+    while( !m_queuedPacketsToProcess.empty() )
+    {
+        NetPacket* packetToProcess = m_queuedPacketsToProcess.top();
+        if( packetToProcess->m_timeOfReceiveMS < TimeUtils::GetCurrentTimeMS() )
+        {
+            bool processSuccess = ProcessPacket( *packetToProcess );
+            if( !processSuccess )
+            {
+                // bad packet, update connection with this info
+                LOG_WARNING_TAG(
+                    "Net", "Bad Packet from %s",
+                    packetToProcess->m_senderAddress.ToStringAll().c_str() );
+                LOG_WARNING_TAG(
+                    "Net", "Bad Packet Data: %s",
+                    packetToProcess->ToString().c_str() );
+            }
+            NetConnection* connection = packetToProcess->m_sender;
+            if( connection )
+                connection->OnReceivePacket( *packetToProcess, processSuccess );
+
+            delete packetToProcess;
+            m_queuedPacketsToProcess.pop();
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
+void NetSession::ProcessIncommingImmediate()
+{
     NetPacket packet;
     while( m_packetChannel->Receive( packet ) )
     {
-        if( !ProcessPacket( packet ) )
+        if( ShouldDiscardPacketForLossSim() )
+            continue;
+
+        bool processSuccess = ProcessPacket( packet );
+        if( !processSuccess )
         {
             // bad packet, update connection with this info
             LOG_WARNING_TAG( "Net", "Bad Packet from %s",
-                             packet.m_sender->m_address.ToStringAll().c_str() );
+                             packet.m_senderAddress.ToStringAll().c_str() );
+            LOG_WARNING_TAG( "Net", "Bad Packet Data: %s",
+                             packet.ToString().c_str() );
         }
+        NetConnection* connection = packet.m_sender;
+        if( connection )
+            connection->OnReceivePacket( packet, processSuccess );
+
     }
 }
 
 bool NetSession::ProcessPacket( NetPacket& packet )
 {
+    if( LOG_PACKET_BYTES )
+    {
+        LOG_INFO_TAG(
+            "Net",
+            "Packet: %s",
+            packet.ToString().c_str() );
+    }
+
     if( VALIDATE_PACKET && !packet.IsValid() )
         return false;
     packet.SetReadHead( sizeof( PacketHeader ) );
     NetMessage msg;
     for( int msgIdx = 0; msgIdx < packet.m_header.m_unreliableCount; ++msgIdx )
     {
-        if( !packet.ReadMessage( msg ) )
+        if( !packet.ExtractMessage( msg ) )
             return false;
+
         if( !ProcessMessage( msg ) )
             return false;
     }
@@ -183,24 +232,42 @@ bool NetSession::ProcessPacket( NetPacket& packet )
 
 bool NetSession::ProcessMessage( NetMessage& message )
 {
-    MessageID msgID = message.ReadMessageID();
-    const NetMessageDefinition* def = GetMessageDefinitionByID( msgID );
+    const NetMessageDefinition* def = message.m_def;
+    MessageID msgID = message.GetMessageID();
     if( !def )
     {
         LOG_WARNING_TAG( "Net",
                          "No definition found for messageID [%d]",
                          msgID );
+        return false;
+    }
+
+    if( def->RequiresConnection() && message.m_sender == nullptr )
+    {
+        LOG_WARNING_TAG( "Net",
+                         "MessageID [%d] required connection when there was none"
+                         , msgID );
+        return false;
+    }
+
+    if( !def->m_callback )
+    {
+        LOG_WARNING_TAG( "Net", "MessageID [%d] has no callback", msgID );
+        return false;
     }
 
     if( !def->m_callback( &message ) )
+    {
+        LOG_WARNING_TAG( "Net", "MessageID [%d] callback failed", msgID );
         return false;
+    }
 
     if( message.GetReadableByteCount() != 0 )
     {
         LOG_WARNING_TAG(
             "Net",
             "[%s] Message [%s] ran successfully but did not use all bytes",
-            message.m_sender->m_address.ToStringAll().c_str(),
+            message.m_senderAddress.ToStringAll().c_str(),
             def->m_name.c_str() );
     }
     return true;
@@ -237,145 +304,49 @@ bool NetSession::SendToConnection( uint8 idx, NetMessage* message )
     return true;
 }
 
-namespace
+void NetSession::SetSimLoss( float lossAmount )
 {
-
-bool MessageNameCompare( const NetMessageDefinition* defA, const NetMessageDefinition* defB )
-{
-    return defA->m_name < defB->m_name;
+    m_simLossAmount = lossAmount;
 }
 
+void NetSession::SetSimLatency( uint minSimLatencyMS, uint maxSimLatencyMS /*= 0U */ )
+{
+    m_minSimLatencyMS = minSimLatencyMS;
+    m_maxSimLatencyMS = Max( minSimLatencyMS, maxSimLatencyMS );
 }
 
-void NetSession::FinalizeMessageDefinitions()
+bool NetSession::ShouldDiscardPacketForLossSim() const
 {
-    std::sort( m_messageDefinitions.begin(), m_messageDefinitions.end(), MessageNameCompare );
-    for( size_t messageID = 0; messageID < m_messageDefinitions.size(); ++messageID )
+#ifdef SIM_NET_LOSS
+    return Random::Default()->CheckChance( m_simLossAmount );
+#else
+    return false;
+#endif // SIM_NET_LOSS
+}
+
+void NetSession::SetSessionSendRate( float Hz )
+{
+    m_sendRate = Hz;
+}
+
+void NetSession::SetConnectionSendRate( uint8 connectionIdx, float Hz )
+{
+    NetConnection* connection = GetConnection( connectionIdx );
+    if( connection )
+        connection->SetSendRate( Hz );
+}
+
+void NetSession::SetHeartBeat( float Hz )
+{
+    for( auto& pair : m_connections )
     {
-        m_messageDefinitions[messageID]->m_id = (MessageID) messageID;
+        pair.second->m_heartbeatRate = Hz;
     }
 }
 
-//
-//
-// NetConnection* NetSession::AddNode( UID uid, const NetAddress& address )
-// {
-//     // TODO: check for duplicates
-//     NetConnection* node = new NetConnection();
-//     m_nodes[uid] = node;
-//     return node;
-// }
-//
-// void NetSession::ProcessIncomming()
-// {
-//     if( m_socket->IsClosed() )
-//         return;
-//
-//     NetAddress fromAddr;
-//
-//     Byte buffer[PACKET_MTU];
-//
-//
-//     while( true )
-//     {
-//         size_t read = m_socket->ReceiveFrom( fromAddr, buffer, PACKET_MTU );
-//         if( read == 0 )
-//         {
-//             // someone closed connection
-//             continue;
-//         }
-//         if( read == -1 )
-//         {
-//             // check if is fatal and do something
-//             break;
-//         }
-//         // fill out a NetPacket with the buffer and address
-//         NetPacket netPacket;
-//
-//         // run commands on the NetPacket
-//         // bool success = RunNetCommands( netPacket);
-//         // manage node health based on success
-//         // drop a node if it is just sending crap
-//     }
-// }
-//
-// void NetSession::ProcessOutgoing()
-// {
-//     for ( auto& toSend : m_queuedSendPackets )
-//     {
-//         SendImmediate( *toSend );
-//     }
-// }
-//
-// void NetSession::QueueSend( const string& netCommandName, BytePacker& data, NetConnection receiver )
-// {
-//     // NetPacket* packet = GetOrCreateQueuedSendPacket( NetConnection node );
-//     // packet->Append( netCommandName, data );
-// }
-//
-// void NetSession::SendImmediate( const NetPacket& packet )
-// {
-//     m_socket->SendTo( packet.m_receiver.m_address,
-//                       packet.m_bytePacker.GetBuffer(),
-//                       packet.m_bytePacker.GetWrittenByteCount() );
-// }
-//
-// NetCommand* NetSession::GetNetCommandFromID( CommandID id )
-// {
-//     // TODO: Not safe for map, will create empty entry if id does not exist
-//     return m_netCommands[id];
-// }
-//
-// size_t NetSession::GetParameterLength( NetPacket& packet )
-// {
-//     // get command id from packet
-//     CommandID id = -1;
-//     NetCommand* command = GetNetCommandFromID( id );
-//     if( command->m_getLengthCallback == nullptr )
-//         return command->m_fixedLength;
-//     else
-//         return command->m_getLengthCallback( packet );
-// }
-//
-// bool NetSession::RunNetCommand( NetPacket& packet )
-// {
-//     // verify that after command has run, read head has moved exactly GetParameterLength
-//     // or else raise error
-//     return true;
-// }
-//
-// bool NetSession::VerifyPacket( NetPacket& packet )
-// {
-//     if( packet.m_length != packet.m_bytePacker.GetWrittenByteCount() )
-//         return false;
-//     BytePacker& packer = packet.m_bytePacker;
-//     size_t bytesCounted = 0;
-//     while ( packer.GetReadHead() < packet.m_length )
-//     {
-//         CommandID id = -1;
-//         // TODO implement Peek
-//         //id = packer.Peek( &id );
-//
-//         if( GetNetCommandFromID( id ) == nullptr )
-//             return false;
-//
-//         size_t length = GetParameterLength( packet );
-//         bytesCounted += 2 + length;
-//         packer.OffsetReadHead( 2 + length );
-//     }
-//     return bytesCounted == packet.m_length;
-// }
-//
-// void NetSession::RegisterNetCommand( NetCommand* netCommand )
-// {
-//     //CommandID id = new unique id that is the same for all builds
-//     //m_netCommands[id] = netCommand;
-// }
-//
-// bool NetSession::RunNetCommands( NetPacket& packet )
-// {
-//     // while packet read head is not end
-//     // RunNetCommand
-//     return true;
-// }
-//
+
+bool NetSession::GreaterThanByTime::operator()(
+    const NetPacket* lhs, const NetPacket* rhs ) const
+{
+    return lhs->m_timeOfReceiveMS > rhs->m_timeOfReceiveMS;
+}

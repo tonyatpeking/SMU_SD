@@ -103,7 +103,7 @@ float GetFractionInRange( float inValue, float rangeStart, float rangeEnd );
 template<typename T>
 T Lerp( const T& start, const T& end, float t )
 {
-    return start + ( end - start ) * t;
+    return (T)(start + ( end - start ) * t);
 }
 int Lerp( int start, int end, float t );
 unsigned char Lerp( unsigned char start, unsigned char end, float t );

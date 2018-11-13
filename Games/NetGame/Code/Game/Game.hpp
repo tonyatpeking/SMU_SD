@@ -5,6 +5,7 @@
 
 #include "Game/GameStateType.hpp"
 #include "Game/GameCommon.hpp"
+#include "Engine/Net/NetDefines.hpp"
 
 class MainMenu;
 class GameObject;
@@ -12,7 +13,6 @@ class GameMap;
 class Texture;
 class GameState;
 class Map;
-
 
 
 class Game
@@ -57,6 +57,11 @@ private:
     void UpdatePause();
 
     void ToggleDebugRenderModes();
+
+    public:
+    void StartNetworkTest( uint idx, uint count, bool reliable );
+    void UpdateNetworkTest();
+
 public:
 
     // Game resources, #TODO Move to res manager

@@ -324,6 +324,7 @@ xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(So
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="GameCommands.cpp" />
+    <ClCompile Include="GameNetMessages.cpp" />
     <ClCompile Include="GameplayEnums.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GameState_Lobby.cpp" />
@@ -342,6 +343,7 @@ xcopy /Y /F /I /E /S "$(SolutionDir)../../Engine/Code/ThirdParty/fmod/dll" "$(So
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameNetMessages.hpp" />
     <ClInclude Include="GameplayEnums.hpp" />
     <ClInclude Include="App.hpp" />
     <ClInclude Include="GameCommands.hpp" />

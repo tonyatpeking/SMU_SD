@@ -22,6 +22,7 @@
 #include "Engine/Net/NetSession.hpp"
 #include "Engine/Net/NetSessionDisplay.hpp"
 #include "Engine/Net/NetDefines.hpp"
+#include "Engine/Net/NetMessageDatabase.hpp"
 
 #include "Game/App.hpp"
 #include "Game/Game.hpp"
@@ -50,7 +51,6 @@ App::App()
     DebugRender::SetClock( g_appClock );
 
     Net::Startup();
-    EngineNetMessages::RegisterAllToSession( NetSession::GetDefault() );
     NetSession::GetDefault()->BindAndFinalize( GAME_PORT, 10 );
 
     //instead of awkwardly asking renderer for the font, have a resource manager instead

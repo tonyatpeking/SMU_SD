@@ -144,7 +144,7 @@ void ParticleEmitter::SetSpawnRate( float spawnRate )
 
 void ParticleEmitter::Burst( int min, int max )
 {
-    int burstCount = Random::IntInRange( min, max );
+    int burstCount = Random::Default()->IntInRange( min, max );
     SpawnParticles( burstCount );
 }
 

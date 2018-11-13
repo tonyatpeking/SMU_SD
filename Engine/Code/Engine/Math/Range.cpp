@@ -49,10 +49,6 @@ ParseStatus Range::SetFromText( const string& text, const string& delimiter )
     return status;
 }
 
-float Range::GetRandomInRange() const
-{
-    return Random::FloatInRange( min, max );
-}
 
 bool Range::IsInRange( float val ) const
 {

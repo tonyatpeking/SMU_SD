@@ -427,6 +427,9 @@
     <ClCompile Include="Net\NetConnection.cpp" />
     <ClCompile Include="Net\EngineNetMessages.cpp" />
     <ClCompile Include="Net\NetSessionDisplay.cpp" />
+    <ClCompile Include="Net\PacketTracker.cpp" />
+    <ClCompile Include="Net\NetMessageDatabase.cpp" />
+    <ClCompile Include="Core\RuntimeVars.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioSystem.hpp">
@@ -846,5 +849,8 @@
     <ClInclude Include="Net\NetConnection.hpp" />
     <ClInclude Include="Net\EngineNetMessages.hpp" />
     <ClInclude Include="Net\NetSessionDisplay.hpp" />
+    <ClInclude Include="Net\PacketTracker.hpp" />
+    <ClInclude Include="Net\NetMessageDatabase.hpp" />
+    <ClInclude Include="Core\RuntimeVars.hpp" />
   </ItemGroup>
 </Project>

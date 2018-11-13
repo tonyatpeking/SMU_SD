@@ -19,7 +19,7 @@ bool UDPTest::Start( uint port )
     // get an address to use;
     NetAddress addr = NetAddress::GetLocal( ToString( port ) );
 
-    if( !m_socket.Bind( addr, 10 ) )
+    if( !m_socket.Bind( addr ) )
     {
         LOG_WARNING_TAG( "Net", "Failed to bind." );
         return false;

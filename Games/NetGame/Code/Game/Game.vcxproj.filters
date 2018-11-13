@@ -79,6 +79,9 @@
     <ClCompile Include="GameState_Lobby.cpp">
       <Filter>GameStates</Filter>
     </ClCompile>
+    <ClCompile Include="GameNetMessages.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -129,6 +132,7 @@
     <ClInclude Include="GameState_Lobby.hpp">
       <Filter>GameStates</Filter>
     </ClInclude>
+    <ClInclude Include="GameNetMessages.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">

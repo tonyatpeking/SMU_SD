@@ -8,6 +8,9 @@
 #include "Engine/Net/UDPSocket.hpp"
 #include "Engine/Net/NetAddress.hpp"
 #include "Engine/Net/NetConnection.hpp"
+#include "Engine/String/StringUtils.hpp"
+#include "Engine/Time/Time.hpp"
+#include "Engine/Core/RuntimeVars.hpp"
 
 NetSessionDisplay* NetSessionDisplay::GetDefault()
 {
@@ -23,22 +26,27 @@ NetSessionDisplay::NetSessionDisplay()
     Window* window = renderer->GetWindow();
     AABB2 windowBounds = window->GetWindowBounds();
     m_bounds = windowBounds;
-    m_bounds.maxs = m_bounds.GetMinXMaxY() + Vec2( 600, -10 );
-    m_bounds.mins = m_bounds.GetMinXMaxY() + Vec2( 10, -200 );
+    float boundsWidth = 1100;
+    float boundsHeight = 300;
+    float boundsBorder = 10;
+    m_bounds.maxs = m_bounds.GetMinXMaxY() + Vec2( boundsWidth + boundsBorder, -boundsBorder );
+    m_bounds.mins = m_bounds.GetMinXMaxY() + Vec2( boundsBorder, -boundsHeight - boundsBorder );
 
     m_titleText = new TextRenderable( "Session Info" );
-    m_titleText->m_fontHeight = m_bounds.GetHeight() / 13;
+    m_titleText->m_fontHeight = m_bounds.GetHeight() / 18;
     m_titleText->m_boundingBox = m_bounds;
     m_titleText->m_alignment = Vec2( 0, 1 );
     m_titleText->Finalize();
 
     m_infoText = new TextRenderable( "" );
-    m_infoText->m_fontHeight = m_bounds.GetHeight() / 15;
+    m_infoText->m_fontHeight = m_bounds.GetHeight() / 24;
     AABB2 infoTextBounds = m_bounds;
     infoTextBounds.Translate( Vec2( 0, -m_titleText->m_fontHeight - 5 ) );
     m_infoText->m_boundingBox = infoTextBounds;
     m_infoText->m_alignment = Vec2( 0, 1 );
     m_infoText->Finalize();
+
+    RuntimeVars::SetVar( DISPLAY_NET_INFO, true );
 }
 
 NetSessionDisplay::~NetSessionDisplay()
@@ -52,23 +60,37 @@ void NetSessionDisplay::Render()
     if( !console->IsActive() )
         return;
 
+    if( !RuntimeVars::IsBoolSet( DISPLAY_NET_INFO ) )
+        return;
+
     NetSession* session = NetSession::GetDefault();
     string infoStr = Stringf(
-        "My Addr:\n  %s \nConnections:\n",
-        session->m_packetChannel->m_socket->m_address.ToStringAll().c_str()
+        "sim lag: %dms-%dms  sim loss: %0.00f \n  My Addr:\n    %s \n  Connections:\n"
+        "%-1s %-3s %-22s %-5s %-5s %-4s %-4s %-4s %-4s %-16s\n",
+        session->m_minSimLatencyMS, session->m_maxSimLatencyMS,
+        session->m_simLossAmount * 100,
+        session->m_packetChannel->m_socket->m_address.ToStringAll().c_str(),
+        "-", "idx", "addr", "rtt/s", "loss%", "lrcv", "lsnt", "oAck", "iAck", "rcvBits"
     );
 
     for ( auto& pair : session->m_connections )
     {
         char indicator = ' ';
         if( pair.first == session->m_myConnectionIdx )
-            indicator = '*';
-
+            indicator = 'L';
+        NetConnection* connection = pair.second;
         string connectionStr = Stringf(
-        " %c[%d]  [%s]\n",
+            "%-1c %-3d %-22s %-5.2f %-5.1f %-4.2f %-4.2f %-4d %-4d %-16s\n",
             indicator,
             pair.first,
-            pair.second->m_address.ToStringAll().c_str()
+            connection->m_address.ToStringAll().c_str(),
+            connection->m_roundTripTime / 1000.f,
+            connection->CalculateLossRate() * 100.f,
+            TimeUtils::GetCurrentTimeSeconds() - connection->m_timeOfLastReceiveMS / 1000.f,
+            TimeUtils::GetCurrentTimeSeconds() - connection->m_timeOfLastSendMS / 1000.f,
+            connection->m_nextAckToSend,
+            connection->m_receivedAcksCount,
+            StringUtils::ToBitfield( connection->m_receivedAckBitfield ).c_str()
         );
         infoStr += connectionStr;
     }

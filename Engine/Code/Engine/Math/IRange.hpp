@@ -16,7 +16,6 @@ public:
 
     ParseStatus SetFromText( const string& text, const string& delimiter = "~" );
 
-    int GetRandomInRange() const;
     bool IsInRange( int val ) const;
 
     // operators

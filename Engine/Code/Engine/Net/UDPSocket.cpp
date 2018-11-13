@@ -4,7 +4,7 @@
 #include "Engine/Core/WindowsCommon.hpp"
 
 
-bool UDPSocket::Bind( const NetAddress &addr, uint16_t port_range /*= 0U*/ )
+bool UDPSocket::Bind( const NetAddress &addr )
 {
     // create the socket
     SOCKET my_socket = socket( AF_INET,	// IPv4 to send...

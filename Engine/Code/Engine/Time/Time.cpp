@@ -33,3 +33,8 @@ double TimeUtils::GetCurrentTimeSeconds()
     return currentSeconds;
 }
 
+uint TimeUtils::GetCurrentTimeMS()
+{
+    return (uint) ( GetCurrentTimeSeconds() * 1000 );
+}
+

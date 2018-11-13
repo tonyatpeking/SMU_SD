@@ -33,7 +33,7 @@ bool Timer::PopOneLap()
         m_timeOfStartLaps += m_lapTime;
         return true;
     }
-    
+
     else
         return false;
 }

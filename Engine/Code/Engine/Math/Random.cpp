@@ -10,66 +10,82 @@
 #include "Engine/Time/Time.hpp"
 #include "Engine/Math/Vec3.hpp"
 
-namespace Random
-{
 
-int g_seed;
-
-void InitSeed()
+Random* Random::Default()
 {
-    //g_seed = static_cast<unsigned int>( time( NULL ) );
-    g_seed = (int) ( TimeUtils::GetCurrentTimeSeconds() * 100.f );
-    srand( g_seed );
+    static Random* s_default = nullptr;
+    if( !s_default )
+        s_default = new Random();
+    return s_default;
 }
 
-void SetSeed( unsigned int seed )
+Random::Random()
 {
-    g_seed = seed;
-    srand( seed );
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
+    SetSeed( MakeNonDeterministic() );
 }
 
-bool CheckChance( float chanceForSuccess )
+
+Random::Random( uint seed )
+{
+    SetSeed( seed );
+}
+
+uint Random::MakeNonDeterministic()
+{
+    std::random_device rd;
+    return rd();
+}
+
+void Random::SetSeed( uint seed )
+{
+    m_seed = seed;
+    m_randEngine = std::default_random_engine( seed );
+}
+
+uint Random::GetSeed() const
+{
+    return m_seed;
+}
+
+
+bool Random::CheckChance( float chanceForSuccess )
 {
     return FloatZeroToOne() < chanceForSuccess;
 }
 
-float FloatZeroToOne()
+float Random::FloatZeroToOne()
 {
-    return static_cast<float>( rand() ) * ( 1.f / static_cast<float>( RAND_MAX ) );
+    return FloatInRange( 0.f, 1.f );
 }
 
-float FloatMinusOneToOne()
+float Random::FloatMinusOneToOne()
 {
     return FloatInRange( -1.f, 1.f );
 }
 
-float FloatInRange( float minInclusive, float maxInclusive )
+float Random::FloatInRange( float minInclusive, float maxNonInclusive )
 {
-    return FloatZeroToOne() * ( maxInclusive - minInclusive ) + minInclusive;
+    std::uniform_real_distribution<float> floatDist( minInclusive, maxNonInclusive );
+    return floatDist( m_randEngine );
 }
 
-float RotationDegrees()
+float Random::RotationDegrees()
 {
     return FloatInRange( 0.f, 360.f );
 }
 
-Vec2 Direction()
+Vec2 Random::Direction()
 {
     float dirDegrees = RotationDegrees();
     return Vec2::MakeDirectionAtDegrees( dirDegrees );
 }
 
-Vec2 PointInCircle( float radius )
+Vec2 Random::PointInCircle( float radius )
 {
     return PointInCircle01() * radius;
 }
 
-Vec2 PointInCircle01()
+Vec2 Random::PointInCircle01()
 {
     float x;
     float y;
@@ -81,26 +97,26 @@ Vec2 PointInCircle01()
     return Vec2( x, y );
 }
 
-Vec2 Vec2InRange( const Vec2& min, const Vec2& max )
+Vec2 Random::Vec2InRange( const Vec2& min, const Vec2& max )
 {
     return Vec2( FloatInRange( min.x, max.x ), FloatInRange( min.y, max.y ) );
 }
 
 
 
-Vec3 Vec3InRange( const Vec3& min, const Vec3& max )
+Vec3 Random::Vec3InRange( const Vec3& min, const Vec3& max )
 {
     return Vec3( FloatInRange( min.x, max.x ),
                  FloatInRange( min.y, max.y ),
                  FloatInRange( min.z, max.z ) );
 }
 
-Rgba Color()
+Rgba Random::Color()
 {
     return Rgba( Char(), Char(), Char(), 255 );
 }
 
-Rgba ColorInRange( const Rgba& colorA, const Rgba& colorB )
+Rgba Random::ColorInRange( const Rgba& colorA, const Rgba& colorB )
 {
     return Rgba(
         CharInRange( colorA.r, colorB.r ),
@@ -109,7 +125,7 @@ Rgba ColorInRange( const Rgba& colorA, const Rgba& colorB )
         CharInRange( colorA.a, colorB.a ) );
 }
 
-void UniqueValuesInRange( int numOfValues, int minInclusive, int maxInclusive, vector<int>& out_uniqueValues )
+void Random::UniqueValuesInRange( int numOfValues, int minInclusive, int maxInclusive, vector<int>& out_uniqueValues )
 {
     //#OPTIMIZE very inefficient, should probably take one out of the list and update the list every time.
     out_uniqueValues.clear();
@@ -132,7 +148,7 @@ void UniqueValuesInRange( int numOfValues, int minInclusive, int maxInclusive, v
     }
 }
 
-int IntInRange( int minInclusive, int maxInclusive )
+int Random::IntInRange( int minInclusive, int maxInclusive )
 {
     if( maxInclusive < minInclusive )
     {
@@ -140,25 +156,25 @@ int IntInRange( int minInclusive, int maxInclusive )
         minInclusive = maxInclusive;
         maxInclusive = temp;
     }
-    return rand() % ( maxInclusive - minInclusive + 1 ) + minInclusive;
+    std::uniform_int_distribution<int> dist( minInclusive, maxInclusive );
+    return dist( m_randEngine );
 }
 
-int IntLessThan( int maxNotInclusive )
+int Random::PositiveIntLessThan( int maxNotInclusive )
 {
-    if( maxNotInclusive == 0 )
-        return -1;
-    return rand() % maxNotInclusive;
+    if( maxNotInclusive < 0 )
+        return 0;
+    return IntInRange( 0, maxNotInclusive );
 }
 
 
-unsigned char Char()
+unsigned char Random::Char()
 {
     return (unsigned char) IntInRange( 0, 255 );
 }
 
-unsigned char CharInRange( unsigned char minInclusive, unsigned char maxInclusive )
+unsigned char Random::CharInRange( unsigned char minInclusive, unsigned char maxInclusive )
 {
     return (unsigned char) IntInRange( minInclusive, maxInclusive );
 }
 
-}

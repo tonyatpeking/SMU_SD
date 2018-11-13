@@ -3,6 +3,7 @@
 #include "Engine/Net/NetDefines.hpp"
 
 #include <map>
+#include <queue>
 
 struct NetAddress;
 class NetPacket;
@@ -23,12 +24,6 @@ public:
     NetSession();
     ~NetSession();
 
-    // message definitions
-    bool RegisterMessageDefinition( const string& name, NetMessageCB cb );
-    const NetMessageDefinition* GetMessageDefinitionByName( const string& name );
-    const NetMessageDefinition* GetMessageDefinitionByID( const MessageID idx ) const;
-
-
     // Starting a session (finalizes definitions - can't add more once
     // the session is running)
     void BindAndFinalize( int port, uint rangeToTry = 0U );
@@ -40,10 +35,12 @@ public:
     NetConnection* GetConnection( const NetAddress& addr );
     void CloseAllConnections();
     uint8 GetMyConnectionIdx() const { return m_myConnectionIdx; }
+    NetConnection* GetMyConnection();
     NetAddress GetMyAddress();
 
     // updates
     void ProcessIncomming();
+
     bool ProcessPacket( NetPacket& packet );
     bool ProcessMessage( NetMessage& message );
 
@@ -52,14 +49,44 @@ public:
     void SendImmediate( const NetPacket& packet );
     bool SendToConnection( uint8 idx, NetMessage* message );
 
-private:
+    // network condition simulation
+    // 1 for all loss
+    // 0 for no loss
+    void SetSimLoss( float lossAmount );
 
-    void FinalizeMessageDefinitions();
+    // if max is 0, range will be [min-min]
+    void SetSimLatency( uint minAddedLatencyMS, uint maxAddedLatencyMS = 0U );
+
+    bool ShouldDiscardPacketForLossSim() const;
+
+    void SetSessionSendRate( float Hz );
+    void SetConnectionSendRate( uint8 connectionIdx, float Hz );
+
+    void SetHeartBeat( float Hz );
+
+public:
+
+    void ProcessIncommingWithLatency();
+    void ProcessIncommingImmediate();
 
     map<uint8, NetConnection*> m_connections; // all connections I know about;
     uint8 m_myConnectionIdx = INVALID_CONNECTION_INDEX;
     PacketChannel* m_packetChannel = nullptr; // what we send/receive packets on;
 
-    // sorted, based on name
-    vector<NetMessageDefinition*> m_messageDefinitions;
+
+    // Send rate
+    float m_sendRate = DEFAULT_SESSION_SEND_RATE;
+
+    // network condition simulation
+    float m_simLossAmount = 0.f;
+    uint m_minSimLatencyMS = 0U;
+    uint m_maxSimLatencyMS = 0U;
+
+    // using this for compare puts the oldest time at the top of the queue
+    struct GreaterThanByTime
+    {
+        bool operator()( const NetPacket* lhs, const NetPacket* rhs ) const;
+    };
+    std::priority_queue<NetPacket*, vector<NetPacket*>, GreaterThanByTime> m_queuedPacketsToProcess;
+
 };
