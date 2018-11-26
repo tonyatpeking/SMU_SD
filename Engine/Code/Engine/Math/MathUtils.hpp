@@ -26,6 +26,37 @@ float Atan2Deg( float y, float x );
 float ArcSinDeg( float sinTheta );
 float ArcCosDeg( float cosTheta );
 
+// Cyclic
+template <typename T>
+bool CyclicLesserEqual( const T& a, const T& b )
+{
+    static T const HALF_MAX = ( (T) ( ~0 ) ) >> 1;
+    T const diff = b - a;
+    return ( diff <= HALF_MAX );
+}
+
+template <typename T>
+bool CyclicGreaterEqual( const T& a, const T& b )
+{
+    return CyclicLesserEqual( b, a );
+}
+
+template <typename T>
+bool CyclicLesser( const T& a, const T& b )
+{
+    return !CyclicGreaterEqual( a, b );
+}
+
+template <typename T>
+bool CyclicGreater( const T& a, const T& b )
+{
+    return !CyclicLesserEqual( a, b );
+}
+
+bool CyclicLesser( float a, float b, float range );
+
+// Mod that returns positive
+float ModFloat( float a, float b );;
 
 //Angle & Vector utilities
 // Finds the "angular displacement" (or signed angular distance) from startDeg to endDeg.
@@ -103,7 +134,7 @@ float GetFractionInRange( float inValue, float rangeStart, float rangeEnd );
 template<typename T>
 T Lerp( const T& start, const T& end, float t )
 {
-    return (T)(start + ( end - start ) * t);
+    return (T) ( start + ( end - start ) * t );
 }
 int Lerp( int start, int end, float t );
 unsigned char Lerp( unsigned char start, unsigned char end, float t );

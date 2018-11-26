@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/DataUtils/BytePacker.hpp"
-#include "Engine/Net/NetDefines.hpp"
+#include "Engine/Net/NetCommonH.hpp"
 #include "Engine/Net/NetAddress.hpp"
 
 class NetMessage;
@@ -23,7 +23,7 @@ struct PacketHeader
     uint16 m_ack = INVALID_PACKET_ACK;
     uint16 m_lastReceivedAck = INVALID_PACKET_ACK;
     uint16 m_receivedAckBitfield = 0;
-    uint8 m_unreliableCount = 0;
+    uint8 m_message_count = 0;
 };
 #pragma pack(pop)
 
@@ -37,8 +37,8 @@ public:
     void PackHeader();
     bool UnpackHeader();
 
-    bool WriteUnreliableMessage( NetMessage& msg );
     bool WriteMessage( NetMessage& msg );
+    bool CanWriteMessage( NetMessage& msg );
     bool ExtractMessage( NetMessage& out_msg );
     bool IsValid();
 
@@ -51,10 +51,10 @@ public:
     Byte m_localBuffer[PACKET_MTU];
 
     NetAddress m_senderAddress;
+    NetAddress m_receiverAddress;
     NetConnection* m_sender = nullptr;
     NetConnection* m_receiver = nullptr;
 
     uint m_timeOfReceiveMS = 0;
-
-
+    uint m_reliableMessageCount = 0;
 };

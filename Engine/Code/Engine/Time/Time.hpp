@@ -11,6 +11,7 @@ namespace TimeUtils
 {
 
 double GetCurrentTimeSeconds();
+float GetCurrentTimeSecondsF();
 uint GetCurrentTimeMS();
 
 }

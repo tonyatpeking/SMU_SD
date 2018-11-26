@@ -5,7 +5,7 @@
 
 #include "Game/GameStateType.hpp"
 #include "Game/GameCommon.hpp"
-#include "Engine/Net/NetDefines.hpp"
+#include "Engine/Net/NetCommonH.hpp"
 
 class MainMenu;
 class GameObject;
@@ -59,7 +59,7 @@ private:
     void ToggleDebugRenderModes();
 
     public:
-    void StartNetworkTest( uint idx, uint count, bool reliable );
+    void StartNetworkTest( uint idx, uint count, eNetworkTestType testType );
     void UpdateNetworkTest();
 
 public:

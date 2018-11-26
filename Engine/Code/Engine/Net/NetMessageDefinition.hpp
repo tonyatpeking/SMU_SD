@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Core/EngineCommonH.hpp"
-#include "Engine/Net/NetDefines.hpp"
+#include "Engine/Net/NetCommonH.hpp"
 
 
 class NetMessageDefinition

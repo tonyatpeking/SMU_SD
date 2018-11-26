@@ -1,17 +1,9 @@
 #include "Engine/Time/Time.hpp"
+#include "Engine/Time/Timer.hpp"
+#include "Engine/Time/Clock.hpp"
 #include "Engine/Math/Random.hpp"
-#include "Engine/Net/NetSession.hpp"
-#include "Engine/Net/NetPacket.hpp"
-#include "Engine/DataUtils/BytePacker.hpp"
-#include "Engine/Net/NetAddress.hpp"
-#include "Engine/Net/NetConnection.hpp"
-#include "Engine/Net/UDPSocket.hpp"
-#include "Engine/Net/NetCommand.hpp"
-#include "Engine/Core/EngineCommonC.hpp"
-#include "Engine/Net/PacketChannel.hpp"
-#include "Engine/Net/NetMessageDefinition.hpp"
-#include "Engine/Net/NetMessage.hpp"
-#include "Engine/Net/NetMessageDatabase.hpp"
+
+#include "Engine/Net/NetCommonC.hpp"
 
 #include <algorithm>
 
@@ -29,33 +21,183 @@ NetSession* NetSession::GetDefault()
 
 NetSession::NetSession()
 {
-
 }
 
 NetSession::~NetSession()
 {
 }
 
-void NetSession::BindAndFinalize( int port, uint rangeToTry /*= 0U */ )
+void NetSession::Host( const string& myID, int port, uint rangeToTry /*= 0U */ )
 {
-    m_packetChannel = new PacketChannel();
-    m_packetChannel->m_owningSession = this;
+    if( m_state != eSessionState::DISCONNECTED )
+    {
+        LOG_WARNING_TAG( "Net", "Cannot host, not in disconnected state" );
+        return;
+    }
+
+    if( !BindToPort( port, rangeToTry ) )
+        return;
+
+    NetConnection* connection = CreateConnection( m_boundAddress );
+    BindConnection( 0, connection );
+    m_myConnection = connection;
+    m_myConnectionIdx = 0;
+    m_hostConnection = connection;
+    connection->m_state = eConnectionState::READY;
+    m_state = eSessionState::READY;
+}
+
+void NetSession::Join( const string& myID, const NetAddress& hostAddr )
+{
+    if( m_state != eSessionState::DISCONNECTED )
+    {
+        LOG_WARNING_TAG( "Net", "Cannot join, not in disconnected state" );
+        return;
+    }
+
+    if( !BindToPort( hostAddr.m_port, MAX_CONNECTION_COUNT ) )
+        return;
+
+    // host connection
+    NetConnection* hostConnection = CreateConnection( hostAddr );
+    BindConnection( 0, hostConnection );
+    m_hostConnection = hostConnection;
+    hostConnection->m_state = eConnectionState::CONNECTED;
+
+    // my connection
+    m_myConnection = CreateConnection( m_boundAddress );
+    m_myConnection->m_state = eConnectionState::CONNECTING;
+
+    m_state = eSessionState::CONNECTING;
+    ResetJoinTimeout();
+}
+
+void NetSession::Disconnect()
+{
+    m_hostConnection = nullptr;
+    m_myConnection = nullptr;
+
+    for ( auto& connection : m_unboundConnections )
+        delete connection;
+    m_unboundConnections.clear();
+
+    for( auto& pair : m_connections )
+        delete pair.second;
+    m_connections.clear();
+
+    m_packetChannel->Close();
+}
+
+bool NetSession::IsHost()
+{
+    return ( m_myConnection != nullptr ) && m_myConnection->IsHost();
+}
+
+void NetSession::SendJoinRequestWithInterval()
+{
+    static Timer* timer = new Timer( Clock::GetRealTimeClock(),
+                                     JOIN_REQUEST_RESEND_TIME );
+    if( timer->PopAllLaps() != 0 )
+    {
+        NetMessage* request = EngineNetMessages::Compose_JoinRequest();
+        SendImmediateConnectionless( request, m_hostConnection->m_address );
+    }
+}
+
+
+void NetSession::ResetJoinTimeout()
+{
+    delete m_joinTimeoutTimer;
+    m_joinTimeoutTimer = new Timer( Clock::GetRealTimeClock(), JOIN_TIMEOUT );
+}
+
+bool NetSession::DidJoinTimeout()
+{
+    return m_joinTimeoutTimer->PeekOneLap();
+}
+
+bool NetSession::ProcessJoinRequest( NetMessage* msg )
+{
+    NetAddress senderAddr = msg->m_senderAddress;
+    uint8 idx = GetAvailableConnectionIdx();
+
+    if( !IsHost() || ReachedMaxClients()
+        || ( idx == INVALID_CONNECTION_INDEX ) )
+    {
+        NetMessage* denyMsg = EngineNetMessages::Compose_JoinDeny();
+        SendImmediateConnectionless( denyMsg, senderAddr );
+        return false;
+    }
+
+    if( GetConnection( senderAddr ) != nullptr )
+        return true;
+
+    NetConnection* newConnection = CreateConnection( senderAddr );
+    BindConnection( idx, newConnection );
+    NetMessage* acceptMsg = EngineNetMessages::Compose_JoinAccept( idx );
+    SendToConnection( idx, acceptMsg );
+    NetMessage* finishedMsg = EngineNetMessages::Compose_JoinFinished();
+    SendToConnection( idx, finishedMsg );
+    return true;
+}
+
+bool NetSession::ProcessJoinDeny( NetMessage* msg )
+{
+    SetError( eSessionError::JOIN_DENIED );
+    return true;
+}
+
+bool NetSession::ProcessJoinAccept( uint8 assignedIdx )
+{
+    BindConnection( assignedIdx, m_myConnection );
+    m_myConnection->SetState( eConnectionState::CONNECTED );
+    return true;
+}
+
+bool NetSession::ProcessNewConnection( NetMessage* msg )
+{
+    return true;
+}
+
+bool NetSession::ProcessJoinFinished( NetMessage* msg )
+{
+    return true;
+}
+
+bool NetSession::ProcessUpdateConnectionState( NetMessage* msg,
+                                               eConnectionState state )
+{
+    msg->m_sender->m_state = state;
+    return true;
+}
+
+bool NetSession::BindToPort( int port, uint rangeToTry /*= 0U */ )
+{
     bool success = false;
+    NetAddress localAddr;
 
     for( uint portOffset = 0; portOffset <= rangeToTry; ++portOffset )
     {
-        NetAddress localAddr = NetAddress::GetLocal( ToString( port + portOffset ) );
+        localAddr = NetAddress::GetLocal( ToString( port + portOffset ) );
         success = m_packetChannel->Bind( localAddr );
 
         if( success )
-            break;
+        {
+            m_boundAddress = localAddr;
+            return true;
+        }
     }
 
-    if( !success )
-    {
-        LOG_ERROR_TAG( "Net", "Failed to bind port(s): [%d], range:[%d]",
-                       port, rangeToTry );
-    }
+    LOG_ERROR_TAG( "Net", "Failed to bind port(s): [%d], range:[%d]",
+                   port, rangeToTry );
+    SetError( eSessionError::FAILED_TO_BIND_PORT );
+    return false;
+}
+
+void NetSession::Finalize()
+{
+    m_packetChannel = new PacketChannel();
+    m_packetChannel->m_owningSession = this;
 
     NetMessageDatabase::Finalize();
 }
@@ -70,6 +212,7 @@ NetConnection* NetSession::AddConnection( uint8 idx, const NetAddress& addr )
         delete m_connections[idx];
     }
     LOG_INFO_TAG( "Net", "Connection added at index [%d]", idx );
+
     NetConnection* connection = new NetConnection();
     connection->m_address = addr;
     connection->m_owningSession = this;
@@ -92,7 +235,6 @@ NetConnection* NetSession::GetConnection( uint8 idx )
 {
     if( !ContainerUtils::ContainsKey( m_connections, idx ) )
     {
-        LOG_WARNING_TAG( "Net", "Connection index [%d] does not exist", idx );
         return nullptr;
     }
     return m_connections[idx];
@@ -126,8 +268,72 @@ NetAddress NetSession::GetMyAddress()
     return m_packetChannel->m_socket->m_address;
 }
 
-void NetSession::ProcessIncomming()
+
+NetConnection* NetSession::CreateConnection( const NetAddress& addr )
 {
+    NetConnection* connection = new NetConnection();
+    connection->m_address = addr;
+    connection->m_owningSession = this;
+    connection->m_isClosed = false;
+    m_unboundConnections.push_back( connection );
+    return connection;
+}
+
+void NetSession::DestroyConnection( NetConnection* connection )
+{
+    ContainerUtils::EraseOneValue( m_unboundConnections, connection );
+    ContainerUtils::EraseOneValue( m_connections, connection );
+    if( m_myConnection == connection )
+        m_myConnection = nullptr;
+    if( m_hostConnection == connection )
+        m_hostConnection = nullptr;
+    delete connection;
+}
+
+void NetSession::BindConnection( uint8 idx, NetConnection* connection )
+{
+    if( ContainerUtils::ContainsKey( m_connections, idx ) )
+    {
+        LOG_WARNING_TAG(
+            "Net", "Connection index [%d] already exists, replacing", idx );
+
+        delete m_connections[idx];
+    }
+    LOG_INFO_TAG( "Net", "Connection bound at index [%d]", idx );
+
+    m_connections[idx] = connection;
+    connection->m_idxInSession = idx;
+    ContainerUtils::EraseOneValue( m_unboundConnections, connection );
+
+    if( connection == m_myConnection )
+        m_myConnectionIdx = idx;
+}
+
+void NetSession::Update()
+{
+    if( m_state == eSessionState::DISCONNECTED )
+        return;
+
+    if( m_state == eSessionState::CONNECTING )
+    {
+        if( m_myConnection->m_state == eConnectionState::CONNECTED )
+            m_state = eSessionState::JOINING;
+        SendJoinRequestWithInterval();
+        if( DidJoinTimeout() )
+        {
+            LOG_ERROR_TAG( "Net", "Join Timed out" );
+            m_state = eSessionState::DISCONNECTED;
+            Disconnect();
+            return;
+        }
+    }
+    if( m_state == eSessionState::JOINING )
+    {
+        if( m_myConnection->m_state == eConnectionState::READY )
+            m_state = eSessionState::READY;
+    }
+
+
 #ifdef SIM_NET_LATENCY
     ProcessIncommingWithLatency();
 #else
@@ -219,7 +425,7 @@ bool NetSession::ProcessPacket( NetPacket& packet )
         return false;
     packet.SetReadHead( sizeof( PacketHeader ) );
     NetMessage msg;
-    for( int msgIdx = 0; msgIdx < packet.m_header.m_unreliableCount; ++msgIdx )
+    for( int msgIdx = 0; msgIdx < packet.m_header.m_message_count; ++msgIdx )
     {
         if( !packet.ExtractMessage( msg ) )
             return false;
@@ -256,6 +462,33 @@ bool NetSession::ProcessMessage( NetMessage& message )
         return false;
     }
 
+    if( def->IsReliable() )
+    {
+        // message has already been processed before, ignore
+        if( message.m_sender->HasReliableBeenProcessed( message.m_reliableID ) )
+        {
+            return true;
+        }
+        else
+        {
+            message.m_sender->MarkReliableProcessed( message.m_reliableID );
+        }
+    }
+
+    if( def->IsInOrder() )
+    {
+        return ProcessInOrderMessage( message );
+    }
+    else
+    {
+        return RunMessageCallback( message );
+    }
+}
+
+bool NetSession::RunMessageCallback( NetMessage& message )
+{
+    const NetMessageDefinition* def = message.m_def;
+    MessageID msgID = message.GetMessageID();
     if( !def->m_callback( &message ) )
     {
         LOG_WARNING_TAG( "Net", "MessageID [%d] callback failed", msgID );
@@ -269,24 +502,71 @@ bool NetSession::ProcessMessage( NetMessage& message )
             "[%s] Message [%s] ran successfully but did not use all bytes",
             message.m_senderAddress.ToStringAll().c_str(),
             def->m_name.c_str() );
+        return false;
     }
     return true;
 }
 
-void NetSession::ProcessOutgoing()
+bool NetSession::ProcessInOrderMessage( NetMessage& message )
 {
+    const NetMessageDefinition* def = message.m_def;
+    NetConnection* connection = message.m_sender;
+    NetMessageChannel* channel = connection->m_messageChannels[def->m_channelIdx];
+
+    if( channel->IsMessageExpected( &message ) )
+    {
+        bool success;
+        success = RunMessageCallback( message );
+        channel->IncrementExpectedSequenceID();
+
+        NetMessage* nextMessage = channel->PopMessageInOrder();
+        while( nextMessage )
+        {
+            success = success & RunMessageCallback( *nextMessage );
+            delete nextMessage;
+            nextMessage = channel->PopMessageInOrder();
+        }
+        return success;
+    }
+    else
+    {
+        channel->CloneAndPushMessage( &message );
+        return true;
+    }
+}
+
+void NetSession::Flush()
+{
+    if( m_state == eSessionState::DISCONNECTED )
+        return;
     for( auto& pair : m_connections )
     {
         if( pair.second->IsClosed() )
             continue;
 
-        pair.second->ProcessOutgoing();
+        pair.second->Flush();
     }
 }
 
 void NetSession::SendImmediate( const NetPacket& packet )
 {
     m_packetChannel->SendImmediate( packet );
+}
+
+void NetSession::SendImmediateConnectionless( NetMessage* netMessage,
+                                              const NetAddress& addr )
+{
+    NetPacket packet;
+    packet.m_receiverAddress = addr;
+    packet.SetWriteHead( sizeof( PacketHeader ) );
+    PacketHeader& header = packet.m_header;
+    header.m_senderConnectionIdx = INVALID_CONNECTION_INDEX;
+
+    packet.WriteMessage( *netMessage );
+
+    packet.PackHeader();
+    SendImmediate( packet );
+    delete netMessage;
 }
 
 bool NetSession::SendToConnection( uint8 idx, NetMessage* message )
@@ -344,6 +624,40 @@ void NetSession::SetHeartBeat( float Hz )
     }
 }
 
+
+void NetSession::SetError( eSessionError error )
+{
+    m_lastError = error;
+}
+
+void NetSession::ClearError()
+{
+    m_lastError = eSessionError::OK;
+}
+
+eSessionError NetSession::GetLastError()
+{
+    eSessionError error = m_lastError;
+    ClearError();
+    return error;
+}
+
+bool NetSession::ReachedMaxClients()
+{
+    return m_connections.size() >= MAX_CONNECTION_COUNT;
+}
+
+uint8 NetSession::GetAvailableConnectionIdx()
+{
+    for( uint8 idx = 0; idx < MAX_CONNECTION_COUNT; ++idx )
+    {
+        if( GetConnection( idx ) != nullptr )
+            continue;
+        else
+            return idx;
+    }
+    return INVALID_CONNECTION_INDEX;
+}
 
 bool NetSession::GreaterThanByTime::operator()(
     const NetPacket* lhs, const NetPacket* rhs ) const

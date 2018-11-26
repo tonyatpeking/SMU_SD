@@ -237,7 +237,7 @@ void RenderReport( int frameSkip = 0 )
     static double fps = 0;
     bool shouldUpdateThisFrame = false;
 
-    float currentTime = (float) TimeUtils::GetCurrentTimeSeconds();
+    float currentTime = TimeUtils::GetCurrentTimeSecondsF();
     if( currentTime - timeOfLastUpdate > g_updateIntervalSeconds )
     {
         shouldUpdateThisFrame = true;

@@ -95,6 +95,21 @@ float ArcCosDeg( float cosTheta )
     return RadToDeg( acosf( cosTheta ) );
 }
 
+bool CyclicLesser( float a, float b, float range )
+{
+    float diff = b - a;
+    float modDiff = ModFloat( diff, range );
+    return modDiff <= range * 0.5f;
+}
+
+float ModFloat( float a, float b )
+{
+    float m = fmodf( a, b );
+    if( m < 0 )
+        m += b;
+    return m;
+}
+
 float GetAngularDisplacement( float startDeg, float endDeg )
 {
     float displacement = endDeg - startDeg;

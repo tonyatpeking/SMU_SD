@@ -2,8 +2,8 @@
 #include "Engine/Net/NetConnection.hpp"
 #include "Engine/Net/NetMessage.hpp"
 #include "Engine/Net/NetMessageDatabase.hpp"
-
-
+#include "Engine/Core/EngineCommonC.hpp"
+#include "Engine/Net/NetMessageDefinition.hpp"
 
 NetPacket::NetPacket()
     : BytePacker( PACKET_MTU, m_localBuffer )
@@ -19,7 +19,7 @@ void NetPacket::PackHeader()
     Write( m_header.m_ack );
     Write( m_header.m_lastReceivedAck );
     Write( m_header.m_receivedAckBitfield );
-    Write( m_header.m_unreliableCount );
+    Write( m_header.m_message_count );
     SetWriteHead( savedWriteHead );
 }
 
@@ -31,30 +31,44 @@ bool NetPacket::UnpackHeader()
         || !Read( &m_header.m_ack )
         || !Read( &m_header.m_lastReceivedAck )
         || !Read( &m_header.m_receivedAckBitfield )
-        || !Read( &m_header.m_unreliableCount ) )
+        || !Read( &m_header.m_message_count ) )
         return false;
 
     return true;
 }
 
-bool NetPacket::WriteUnreliableMessage( NetMessage &msg )
-{
-    if( WriteMessage( msg ) )
-    {
-        ++m_header.m_unreliableCount;
-        return true;
-    }
-    return false;
-}
 
 bool NetPacket::WriteMessage( NetMessage &msg )
 {
+    if( !CanWriteMessage( msg ) )
+        return false;
     msg.PackHeader();
     // [uint16 message_and_header_length]
-    if( !Write( (uint16) msg.GetWrittenByteCount() ) )
+    Write( (uint16) msg.GetWrittenByteCount() );
+    WriteBytes( msg.GetWrittenByteCount(), msg.GetBuffer() );
+
+    ++m_header.m_message_count;
+
+    if( msg.m_def->IsReliable() )
+        ++m_reliableMessageCount;
+
+    return true;
+}
+
+bool NetPacket::CanWriteMessage( NetMessage& msg )
+{
+    if( m_header.m_message_count == MAX_MESSAGES_PER_PACKET )
         return false;
-    // [message index and payload]
-    return WriteBytes( msg.GetWrittenByteCount(), msg.GetBuffer() );
+
+    if( msg.m_def->IsReliable()
+        && m_reliableMessageCount == MAX_RELIABLES_PER_PACKET )
+        return false;
+
+    // the uint16 is the size of the message
+    size_t spaceNeeded = msg.GetWrittenByteCount() + sizeof( uint16 );
+    if( GetWritableByteCount() < spaceNeeded )
+        return false;
+    return true;
 }
 
 bool NetPacket::ExtractMessage( NetMessage& out_msg )
@@ -88,7 +102,7 @@ bool NetPacket::IsValid()
 
     NetMessage msg;
 
-    for( int msgIdx = 0; msgIdx < m_header.m_unreliableCount; ++msgIdx )
+    for( int msgIdx = 0; msgIdx < m_header.m_message_count; ++msgIdx )
     {
         ++unreliableCounted;
         if( !ExtractMessage( msg ) )
@@ -96,7 +110,7 @@ bool NetPacket::IsValid()
     }
 
     if( GetReadableByteCount() != 0
-        || unreliableCounted != m_header.m_unreliableCount )
+        || unreliableCounted != m_header.m_message_count )
         return false;
 
     return true;

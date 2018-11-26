@@ -55,9 +55,31 @@ NET_MESSAGE_STATIC_REGSITER( reliable_test, eNetMessageFlag::RELIABLE,
     UNUSED( netMessage );
     string out_str;
     netMessage->ReadString( out_str );
-    LOG_INFO_TAG( "Net", "Recieved reliable Test %s", out_str.c_str() );
+    LOG_INFO_TAG( "Net", "Recieved Reliable Test %s", out_str.c_str() );
     return true;
 }
+
+//--------------------------------------------------------------------------------------
+// SequenceTest
+NetMessage* Compose_SequenceTest( uint currentCount, uint totalCount )
+{
+    NetMessage* msg = new NetMessage( "sequence_test" );
+    string msgString = Stringf( "(%u,%u)", currentCount, totalCount );
+    msg->WriteString( msgString.c_str() );
+    return msg;
+}
+
+NET_MESSAGE_STATIC_REGSITER(
+    sequence_test,
+    eNetMessageFlag::RELIABLE_IN_ORDER,
+    eNetGameMessageIdx::SEQUENCE_TEST, 0 )
+{
+    string out_str;
+    netMessage->ReadString( out_str );
+    LOG_INFO_TAG( "Net", "Recieved Sequence Test %s", out_str.c_str() );
+    return true;
+}
+
 
 
 }

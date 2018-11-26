@@ -1,16 +1,10 @@
+
+#include "Engine/Net/NetCommonC.hpp"
+
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Net/NetConnection.hpp"
-#include "Engine/Net/NetSession.hpp"
-#include "Engine/Net/NetPacket.hpp"
-#include "Engine/Net/NetMessage.hpp"
-#include "Engine/Net/NetMessageDefinition.hpp"
 #include "Engine/Time/Timer.hpp"
 #include "Engine/Time/Clock.hpp"
-#include "Engine/Net/EngineNetMessages.hpp"
 #include "Engine/Time/Time.hpp"
-#include "Engine/Net/PacketTracker.hpp"
-#include "Engine/Core/EngineCommonC.hpp"
-#include "Engine/Net/NetMessageDatabase.hpp"
 
 NetConnection::NetConnection()
 {
@@ -23,6 +17,11 @@ NetConnection::NetConnection()
         packetTracker = new PacketTracker();
     }
     m_packetLossTracker.resize( PACKET_TRACKER_COUNT, 1 );
+
+    for( int i = 0; i < MAX_MESSAGE_CHANNELS; ++i )
+    {
+        m_messageChannels[i] = new NetMessageChannel();
+    }
 }
 
 NetConnection::~NetConnection()
@@ -31,9 +30,14 @@ NetConnection::~NetConnection()
 
     delete m_heartbeatTimer;
     delete m_sendTimer;
+
+    for( int i = 0; i < MAX_MESSAGE_CHANNELS; ++i )
+    {
+        delete m_messageChannels[i];
+    }
 }
 
-void NetConnection::ProcessOutgoing()
+void NetConnection::Flush()
 {
     if( !PopSendTimer() )
         return;
@@ -45,7 +49,11 @@ void NetConnection::ProcessOutgoing()
 
     NetPacket packet;
     packet.m_receiver = this;
-    while( !m_outboundUnreliables.empty() || m_shouldForceSend )
+    packet.m_receiverAddress = this->m_address;
+    if( !m_unsentUnreliables.empty()
+        || !m_unconfirmedReliables.empty()
+        || !m_unsentReliables.empty()
+        || m_shouldForceSend )
     {
         packet.SetWriteHead( sizeof( PacketHeader ) );
         PacketHeader& header = packet.m_header;
@@ -53,13 +61,15 @@ void NetConnection::ProcessOutgoing()
 
         header.m_lastReceivedAck = m_lastReceivedAck;
         header.m_receivedAckBitfield = m_receivedAckBitfield;
-        header.m_unreliableCount = 0;
+        header.m_message_count = 0;
 
-        FillPacketWithUnreliables( packet );
 
-        // TODO: possibly send another packet, or discard leftover unreliables
+        FillPacketWithUnconfirmedReliables( packet );
+        FillPacketWithUnsentReliables( packet );
+        FillPacketWithUnsentUnreliables( packet );
+        ClearUnreliables();
 
-        if( header.m_unreliableCount != 0 /*TODO: ||  m_reliableCount !=0*/ )
+        if( header.m_message_count != 0 /*TODO: ||  m_reliableCount !=0*/ )
         {
             header.m_ack = m_nextAckToSend;
             AddPacketTracker( m_nextAckToSend );
@@ -75,6 +85,7 @@ void NetConnection::ProcessOutgoing()
         m_shouldForceSend = false;
     }
 }
+
 
 bool NetConnection::OnReceivePacket( NetPacket& packet, bool processSuccess )
 {
@@ -106,7 +117,18 @@ void NetConnection::QueueSend( NetMessage* netMsg )
                        netMsg->m_name.c_str() );
         return;
     }
-    m_outboundUnreliables.push( netMsg );
+
+    if( def->IsInOrder() )
+    {
+        NetMessageChannel* channel = m_messageChannels[def->GetChannelIdx()];
+        netMsg->m_sequenceID = channel->m_nextSequenceIDToSend;
+        ++( channel->m_nextSequenceIDToSend );
+    }
+
+    if( def->IsReliable() )
+        m_unsentReliables.push( netMsg );
+    else
+        m_unsentUnreliables.push( netMsg );
 }
 
 void NetConnection::SendImmediate( const NetPacket& packet )
@@ -126,24 +148,80 @@ bool NetConnection::IsValid()
     return !IsClosed() && !m_address.IsInvalid();
 }
 
-void NetConnection::FillPacketWithUnreliables( NetPacket& packet )
+void NetConnection::FillPacketWithUnsentUnreliables( NetPacket& packet )
 {
-    while( !m_outboundUnreliables.empty() )
+    while( !m_unsentUnreliables.empty() )
     {
-        NetMessage* msg = m_outboundUnreliables.front();
+        NetMessage* msg = m_unsentUnreliables.front();
         if( packet.WriteMessage( *msg ) )
         {
             delete msg;
-            m_outboundUnreliables.pop();
-            ++packet.m_header.m_unreliableCount;
-            ASSERT_OR_DIE( packet.m_header.m_unreliableCount != 0U,
-                           "exceeded 256 messages!" );
+            m_unsentUnreliables.pop();
         }
         // packet is full
         else
         {
             return;
         }
+    }
+}
+
+void NetConnection::FillPacketWithUnconfirmedReliables( NetPacket& packet )
+{
+    float currentTime = TimeUtils::GetCurrentTimeSecondsF();
+    for( auto& msg : m_unconfirmedReliables )
+    {
+        if( currentTime - msg->m_lastSentTime > GetReliableResendWait() )
+        {
+            if( packet.WriteMessage( *msg ) )
+            {
+                msg->m_lastSentTime = currentTime;
+
+                GetCurrentPacketTracker()->AddReliable( msg->m_reliableID );
+                LOG_INFO_TAG( "Debug", "resend" );
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+}
+
+void NetConnection::FillPacketWithUnsentReliables( NetPacket& packet )
+{
+    float currentTime = TimeUtils::GetCurrentTimeSecondsF();
+    while( !m_unsentReliables.empty() )
+    {
+        // reached window limit
+        if( !CanSendNewReliable() )
+            return;
+        NetMessage* msg = m_unsentReliables.front();
+        msg->m_reliableID = m_nextReliableID;
+        msg->m_lastSentTime = currentTime;
+
+        if( packet.WriteMessage( *msg ) )
+        {
+            ++m_nextReliableID;
+            m_unconfirmedReliables.push_back( msg );
+            m_unsentReliables.pop();
+
+            GetCurrentPacketTracker()->AddReliable( msg->m_reliableID );
+        }
+        // packet is full
+        else
+        {
+            return;
+        }
+    }
+}
+
+void NetConnection::ClearUnreliables()
+{
+    while( !m_unsentUnreliables.empty() )
+    {
+        delete m_unsentUnreliables.front();
+        m_unsentUnreliables.pop();
     }
 }
 
@@ -236,16 +314,29 @@ void NetConnection::ConfirmOnePacketReceivedByOther( uint16 ackISentBefore )
     if( nullptr == tracker )
         return;
 
-
     // Update Round trip time
     uint rttLatest = TimeUtils::GetCurrentTimeMS() - tracker->m_timeOfSendMS;
     m_roundTripTime = (uint) Lerp( (float) rttLatest, (float) m_roundTripTime, m_roundTripTimeInertia );
-    tracker->m_ack = INVALID_PACKET_ACK;
+
+    // Reliables
+    for( int idx = 0; idx < (int) tracker->m_reliablesInPacket; ++idx )
+    {
+        uint16 reliableID = tracker->m_sentReliableIds[idx];
+        ConfirmReliable( reliableID );
+    }
+
+
+    tracker->Invalidate();
+}
+
+PacketTracker* NetConnection::GetCurrentPacketTracker()
+{
+    return m_packetTrackers[m_nextFreePacketTrackerSlot];
 }
 
 PacketTracker* NetConnection::AddPacketTracker( uint16 ackIJustSent )
 {
-    PacketTracker* tracker = m_packetTrackers[m_nextFreePacketTrackerSlot];
+    PacketTracker* tracker = GetCurrentPacketTracker();
 
     // we lost a packer if we are overwriting a valid packet ack
     bool notOverwriting = ( tracker->m_ack == INVALID_PACKET_ACK );
@@ -289,5 +380,129 @@ float NetConnection::CalculateLossRate()
         totalNotLost += wasNotLost;
     }
     return 1.f - ( (float) totalNotLost / (float) PACKET_TRACKER_COUNT );
+}
+
+float NetConnection::GetReliableResendWait()
+{
+    float wait = RELIABLE_RESEND_WAIT_MULTIPLIER * m_roundTripTime;
+    wait = Clampf( wait, RELIABLE_RESEND_WAIT_MIN, RELIABLE_RESEND_WAIT_MAX );
+    return RELIABLE_RESEND_WAIT_FIXED;
+}
+
+void NetConnection::ConfirmReliable( uint16 reliableID )
+{
+    for( int i = (int) m_unconfirmedReliables.size() - 1; i >= 0; --i )
+    {
+        NetMessage* msg = m_unconfirmedReliables[i];
+        if( msg->m_reliableID == reliableID )
+        {
+            delete msg;
+            ContainerUtils::EraseAtIndexFast( m_unconfirmedReliables, i );
+            return;
+        }
+
+    }
+}
+
+bool NetConnection::HasReliableBeenProcessed( uint16 reliableID )
+{
+    bool hasBeenProcessed = ContainerUtils::Contains(
+        m_receivedReliableIDs, reliableID );
+    uint16 diff = m_highestReceivedReliabeID - RELIABLE_WINDOW + 1;
+    bool outOfTrackingWindow = CyclicLesser( reliableID, diff );
+
+    return outOfTrackingWindow || hasBeenProcessed;
+}
+
+void NetConnection::MarkReliableProcessed( uint16 reliableID )
+{
+    if( CyclicLesser( m_highestReceivedReliabeID, reliableID ) )
+    {
+        m_highestReceivedReliabeID = reliableID;
+        for( int i = (int) m_receivedReliableIDs.size() - 1; i >= 0; --i )
+        {
+            uint16 msgID = m_receivedReliableIDs[i];
+            uint16 diff = m_highestReceivedReliabeID - msgID;
+            if( diff >= RELIABLE_WINDOW )
+            {
+                ContainerUtils::EraseAtIndexFast( m_receivedReliableIDs, i );
+            }
+        }
+    }
+    m_receivedReliableIDs.push_back( reliableID );
+}
+
+uint16 NetConnection::GetOldestUnconfirmedReliableID()
+{
+    uint16 lowestID = m_unconfirmedReliables[0]->m_reliableID;
+
+    for( auto& msg : m_unconfirmedReliables )
+    {
+        uint16 currentID = msg->m_reliableID;
+        if( CyclicLesser( currentID, lowestID ) )
+        {
+            lowestID = currentID;
+        }
+    }
+    return lowestID;
+}
+
+bool NetConnection::CanSendNewReliable()
+{
+    if( m_unconfirmedReliables.empty() )
+        return true;
+
+    uint16 lowestID = GetOldestUnconfirmedReliableID();
+    // dist auto wraps around for uint16
+    uint16 dist = m_nextReliableID - lowestID;
+    return dist < RELIABLE_WINDOW;
+}
+
+bool NetConnection::IsMe() const
+{
+    return m_owningSession->m_myConnection == this;
+}
+
+bool NetConnection::IsHost() const
+{
+    return m_owningSession->m_hostConnection == this;
+}
+
+bool NetConnection::IsClient() const
+{
+    return !IsHost();
+}
+
+bool NetConnection::IsConnected() const
+{
+    return m_state == eConnectionState::CONNECTED
+        || m_state == eConnectionState::READY;
+}
+
+bool NetConnection::IsDisconnected() const
+{
+    return m_state == eConnectionState::DISCONNECTED;
+}
+
+bool NetConnection::IsReady() const
+{
+    return m_state == eConnectionState::READY;
+}
+
+void NetConnection::SetState( eConnectionState state )
+{
+    m_state = state;
+    if( IsMe() )
+    {
+        for( auto& connection : m_owningSession->m_connections )
+        {
+            if( connection.second != this )
+            {
+                NetMessage* updateState =
+                    EngineNetMessages::Compose_UpdateConnectionState( state );
+                m_owningSession->SendToConnection( connection.first, updateState );
+            }
+        }
+    }
 }
 

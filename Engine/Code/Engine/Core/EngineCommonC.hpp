@@ -8,10 +8,8 @@
 
 
 #include <functional>
-#include <limits.h>
 
 
 
 void CallFunctinoNTimes( std::function<void()> func, int timesToCall );
 
-constexpr size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();

@@ -50,6 +50,12 @@ SMART_ENUM
     NEVER
 )
 
+enum class eNetworkTestType
+{
+    UNRELIABLE,
+    RELIABLE,
+    SEQUENCE
+};
 
 // Engine systems
 class  Renderer;

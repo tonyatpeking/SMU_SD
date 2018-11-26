@@ -21,7 +21,7 @@
 #include "Engine/Net/EngineNetMessages.hpp"
 #include "Engine/Net/NetSession.hpp"
 #include "Engine/Net/NetSessionDisplay.hpp"
-#include "Engine/Net/NetDefines.hpp"
+#include "Engine/Net/NetCommonH.hpp"
 #include "Engine/Net/NetMessageDatabase.hpp"
 
 #include "Game/App.hpp"
@@ -51,7 +51,7 @@ App::App()
     DebugRender::SetClock( g_appClock );
 
     Net::Startup();
-    NetSession::GetDefault()->BindAndFinalize( GAME_PORT, 10 );
+    NetSession::GetDefault()->Finalize();
 
     //instead of awkwardly asking renderer for the font, have a resource manager instead
     TextMeshBuilder::SetDefaultFont( g_renderer->DefaultFont() );
@@ -107,8 +107,8 @@ void App::RunFrame()
     Profiler::MarkFrame();
     PROFILER_SCOPED();
 
-    static float lastTime = (float) TimeUtils::GetCurrentTimeSeconds();
-    float currentTime = (float) TimeUtils::GetCurrentTimeSeconds();
+    static float lastTime = TimeUtils::GetCurrentTimeSecondsF();
+    float currentTime = TimeUtils::GetCurrentTimeSecondsF();
     float deltaSeconds = currentTime - lastTime;
     g_realtimeClock->Update( deltaSeconds );
 
@@ -130,11 +130,11 @@ void App::RunFrame()
     g_UITweenSystem->Update( g_UIClock->GetDeltaSecondsF() );
 
     RemoteCommandService::GetDefault()->Update();
-    NetSession::GetDefault()->ProcessIncomming();
+    NetSession::GetDefault()->Update();
 
     g_game->Update();
 
-    NetSession::GetDefault()->ProcessOutgoing();
+    NetSession::GetDefault()->Flush();
 
     g_game->Render();
 

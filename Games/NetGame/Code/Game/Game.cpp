@@ -446,16 +446,17 @@ uint s_idx;
 uint s_totalCount = 0;
 uint s_currentCount = 0;
 Timer* timer = nullptr;
-bool s_reliable;
+eNetworkTestType s_networkTestType;
 }
-void Game::StartNetworkTest( uint idx, uint count, bool reliable )
+
+void Game::StartNetworkTest( uint idx, uint count, eNetworkTestType testType )
 {
     s_idx = idx;
     s_totalCount = count;
     s_currentCount = 0;
     delete timer;
-    timer = new Timer( Clock::GetRealTimeClock(), 0.03f );
-    s_reliable = reliable;
+    timer = new Timer( Clock::GetRealTimeClock(), 0.1f );
+    s_networkTestType = testType;
 }
 
 void Game::UpdateNetworkTest()
@@ -464,16 +465,23 @@ void Game::UpdateNetworkTest()
         return;
     if( timer->PopOneLap() )
     {
-        NetMessage* msg;
-        if( s_reliable )
+        NetMessage* msg = nullptr;
+        switch( s_networkTestType )
         {
-            msg = GameNetMessages::Compose_ReliableTest(
-                s_currentCount, s_totalCount );
-        }
-        else
-        {
+        case eNetworkTestType::UNRELIABLE:
             msg = GameNetMessages::Compose_UnreliableTest(
                 s_currentCount, s_totalCount );
+            break;
+        case eNetworkTestType::RELIABLE:
+            msg = GameNetMessages::Compose_ReliableTest(
+                s_currentCount, s_totalCount );
+            break;
+        case eNetworkTestType::SEQUENCE:
+            msg = GameNetMessages::Compose_SequenceTest(
+                s_currentCount, s_totalCount );
+            break;
+        default:
+            break;
         }
 
         NetSession::GetDefault()->SendToConnection( (uint8) s_idx, msg );

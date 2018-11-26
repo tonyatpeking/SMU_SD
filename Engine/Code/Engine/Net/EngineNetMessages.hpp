@@ -1,6 +1,5 @@
 #pragma once
-#include "Engine/Core/EngineCommonH.hpp"
-#include "Engine/Net/NetDefines.hpp"
+#include "Engine/Net/NetCommonH.hpp"
 
 class NetSession;
 class NetMessage;
@@ -14,6 +13,15 @@ NetMessage* Compose_Pong();
 NetMessage* Compose_Add( float a, float b );
 NetMessage* Compose_AddResponse( float a, float b, float sum );
 NetMessage* Compose_Heartbeat();
+
+NetMessage* Compose_JoinRequest();
+NetMessage* Compose_JoinDeny();
+NetMessage* Compose_JoinAccept( uint8 assignedConnectionIdx );
+NetMessage* Compose_NewConnection();
+NetMessage* Compose_JoinFinished();
+NetMessage* Compose_UpdateConnectionState(eConnectionState state);
+
+
 
 };
 

@@ -1,19 +1,10 @@
 #pragma once
-#include "Engine/Core/EngineCommonH.hpp"
-#include "Engine/Net/NetDefines.hpp"
+
+#include "Engine/Net/NetCommonH.hpp"
+#include "Engine/Net/NetAddress.hpp"
 
 #include <map>
 #include <queue>
-
-struct NetAddress;
-class NetPacket;
-class BytePacker;
-class NetConnection;
-class UDPSocket;
-class NetMessageDefinition;
-class NetMessage;
-class PacketChannel;
-
 
 
 class NetSession
@@ -24,9 +15,27 @@ public:
     NetSession();
     ~NetSession();
 
+
+    void Host( const string& myID, int port, uint rangeToTry = 0U );
+    void Join( const string& myID, const NetAddress& hostAddr );
+    void Disconnect();
+    bool IsHost();
+    void SendJoinRequestWithInterval();
+    void ResetJoinTimeout();
+    bool DidJoinTimeout();
+
+    // Message processing
+    bool ProcessJoinRequest( NetMessage* msg );
+    bool ProcessJoinDeny( NetMessage* msg );
+    bool ProcessJoinAccept( uint8 assignedIdx );
+    bool ProcessNewConnection( NetMessage* msg );
+    bool ProcessJoinFinished( NetMessage* msg );
+    bool ProcessUpdateConnectionState( NetMessage* msg, eConnectionState state );
+
     // Starting a session (finalizes definitions - can't add more once
     // the session is running)
-    void BindAndFinalize( int port, uint rangeToTry = 0U );
+    bool BindToPort( int port, uint rangeToTry = 0U );
+    void Finalize();
 
     // Connection management
     NetConnection* AddConnection( uint8 idx, const NetAddress& addr );
@@ -38,16 +47,27 @@ public:
     NetConnection* GetMyConnection();
     NetAddress GetMyAddress();
 
+    NetConnection* CreateConnection( const NetAddress& addr );
+    void DestroyConnection( NetConnection* connection );
+    void BindConnection( uint8 idx, NetConnection* connection );
+
     // updates
-    void ProcessIncomming();
+    void Update();
 
     bool ProcessPacket( NetPacket& packet );
     bool ProcessMessage( NetMessage& message );
+    bool RunMessageCallback( NetMessage& message );
+    // returns true if message was queued or if ran successfully
+    // returns false if any messages in queue failed
+    bool ProcessInOrderMessage( NetMessage& message );
 
-    void ProcessOutgoing();
+    void Flush();
 
     void SendImmediate( const NetPacket& packet );
-    bool SendToConnection( uint8 idx, NetMessage* message );
+    // takes ownership of netMessage, only works for connectionless
+    void SendImmediateConnectionless( NetMessage* netMessage,
+                                      const NetAddress& addr );
+    bool SendToConnection( uint8 idx, NetMessage* message ); // takes ownership of netMessage
 
     // network condition simulation
     // 1 for all loss
@@ -64,12 +84,27 @@ public:
 
     void SetHeartBeat( float Hz );
 
+    // errors
+    void SetError( eSessionError error );
+    void ClearError();
+    eSessionError GetLastError();
+
+    bool ReachedMaxClients();
+    uint8 GetAvailableConnectionIdx();
+
 public:
 
     void ProcessIncommingWithLatency();
     void ProcessIncommingImmediate();
 
+    // Connections
+    vector<NetConnection*> m_unboundConnections;
     map<uint8, NetConnection*> m_connections; // all connections I know about;
+    NetConnection* m_myConnection = nullptr;
+    NetConnection* m_hostConnection = nullptr;
+    NetAddress m_boundAddress;
+    Timer* m_joinTimeoutTimer = nullptr;
+
     uint8 m_myConnectionIdx = INVALID_CONNECTION_INDEX;
     PacketChannel* m_packetChannel = nullptr; // what we send/receive packets on;
 
@@ -89,4 +124,9 @@ public:
     };
     std::priority_queue<NetPacket*, vector<NetPacket*>, GreaterThanByTime> m_queuedPacketsToProcess;
 
+    // error
+    eSessionError m_lastError = eSessionError::OK;
+
+    // session state
+    eSessionState m_state = eSessionState::DISCONNECTED;
 };

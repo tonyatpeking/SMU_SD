@@ -94,8 +94,9 @@
     <ClCompile Include="Net\EngineNetMessages.cpp" />
     <ClCompile Include="Net\Net.cpp" />
     <ClCompile Include="Net\NetAddress.cpp" />
-    <ClCompile Include="Net\NetCommand.cpp" />
+    <ClCompile Include="Net\NetConnectionInfo.cpp" />
     <ClCompile Include="Net\NetMessage.cpp" />
+    <ClCompile Include="Net\NetMessageChannel.cpp" />
     <ClCompile Include="Net\NetMessageDatabase.cpp" />
     <ClCompile Include="Net\NetMessageDefinition.cpp" />
     <ClCompile Include="Net\NetPacket.cpp" />
@@ -160,7 +161,6 @@
     <ClCompile Include="Thread\Thread.cpp" />
     <ClCompile Include="Time\Clock.cpp" />
     <ClCompile Include="Time\DateTime.cpp" />
-    <ClCompile Include="Time\StopWatch.cpp" />
     <ClCompile Include="Time\Time.cpp" />
     <ClCompile Include="Time\Timer.cpp" />
     <ClCompile Include="Time\Tween.cpp" />
@@ -243,9 +243,11 @@
     <ClInclude Include="Net\EngineNetMessages.hpp" />
     <ClInclude Include="Net\Net.hpp" />
     <ClInclude Include="Net\NetAddress.hpp" />
-    <ClInclude Include="Net\NetCommand.hpp" />
-    <ClInclude Include="Net\NetDefines.hpp" />
+    <ClInclude Include="Net\NetConnectionInfo.hpp" />
+    <ClInclude Include="Net\NetCommonH.hpp" />
+    <ClInclude Include="Net\NetCommonC.hpp" />
     <ClInclude Include="Net\NetMessage.hpp" />
+    <ClInclude Include="Net\NetMessageChannel.hpp" />
     <ClInclude Include="Net\NetMessageDatabase.hpp" />
     <ClInclude Include="Net\NetMessageDefinition.hpp" />
     <ClInclude Include="Net\NetPacket.hpp" />
@@ -318,7 +320,6 @@
     <ClInclude Include="Thread\ThreadSafeQueue.hpp" />
     <ClInclude Include="Time\Clock.hpp" />
     <ClInclude Include="Time\DateTime.hpp" />
-    <ClInclude Include="Time\StopWatch.hpp" />
     <ClInclude Include="Time\Time.hpp" />
     <ClInclude Include="Time\Timer.hpp" />
     <ClInclude Include="Time\Tween.hpp" />

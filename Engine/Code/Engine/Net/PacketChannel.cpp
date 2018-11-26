@@ -1,10 +1,6 @@
-#include "Engine/Net/NetSession.hpp"
-#include "Engine/Net/PacketChannel.hpp"
-#include "Engine/Net/UDPSocket.hpp"
-#include "Engine/Net/NetPacket.hpp"
-#include "Engine/Net/NetAddress.hpp"
-#include "Engine/Net/NetConnection.hpp"
-#include "Engine/Net/NetDefines.hpp"
+
+#include "Engine/Net/NetCommonC.hpp"
+
 #include "Engine/Math/MathUtils.hpp"
 
 bool PacketChannel::Bind( const NetAddress& addr )
@@ -25,15 +21,20 @@ bool PacketChannel::Bind( const NetAddress& addr )
     }
 }
 
+void PacketChannel::Close()
+{
+    m_socket->Close();
+}
+
 void PacketChannel::SendImmediate( const NetPacket& packet )
 {
     if( IsClosed() )
         LOG_ERROR_TAG( "Net", "Cannot send, socket is closed or unbound" );
 
-    if( !packet.m_receiver->IsValid() )
-        LOG_ERROR_TAG( "Net", "Cannot send, invalid packet receiver" );
+    if( packet.m_receiverAddress.IsInvalid() )
+        LOG_ERROR_TAG( "Net", "Cannot send, invalid packet receiver address" );
 
-    m_socket->SendTo( packet.m_receiver->m_address,
+    m_socket->SendTo( packet.m_receiverAddress,
                       packet.m_localBuffer,
                       packet.GetWrittenByteCount() );
 }

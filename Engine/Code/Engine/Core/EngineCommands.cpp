@@ -184,52 +184,6 @@ void EngineCommands::RegisterAllCommands()
 
     //--------------------------------------------------------------------------------------
     // Net commands
-    commandSys->AddCommand( "TestConnect", []( string& str )
-    {
-        UNUSED( str );
-        CommandParameterParser parser( str );
-        size_t numParams = parser.NumOfParams();
-        if( numParams < 2 )
-        {
-            LOG_WARNING( "TestConnect needs 2 params, IP:PORT and msg" );
-            return;
-        }
-        string addrStr;
-        parser.GetNext( addrStr );
-        NetAddress netAddr( addrStr );
-        string msg;
-        parser.GetNext( msg );
-        Net::ConnectionTest( netAddr, msg );
-    } );
-
-
-    commandSys->AddCommand( "TestHost", []( string& str )
-    {
-        UNUSED( str );
-        CommandParameterParser parser( str );
-
-        size_t numParams = parser.NumOfParams();
-        if( numParams < 1 )
-        {
-            LOG_WARNING( "TestHost needs 1 params, PORT" );
-            return;
-        }
-
-        int port;
-        parser.GetNext( port );
-
-        Net::HostTest( port );
-
-    } );
-
-
-    commandSys->AddCommand( "TestHostClose", []( string& str )
-    {
-        UNUSED( str );
-
-        Net::HostTestClose();
-
-    } );
 
 
     commandSys->AddCommand( "NetLocalIP", []( string& str )
@@ -513,6 +467,30 @@ void EngineCommands::RegisterAllCommands()
         CommandSystem::DefaultCommandSystem()->RunCommand( "rca add_connection 0 " + localIP1 );
         CommandSystem::DefaultCommandSystem()->RunCommand( "add_connection 1 " + localIP2 );
     } );
+
+
+    commandSys->AddCommand( "host", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        int port;
+        if( !parser.GetNext( port ) )
+            port = (int) GAME_PORT;
+        NetSession::GetDefault()->Host( "host_tony", port );
+    } );
+
+    commandSys->AddCommand( "join", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        string hostIP;
+        if( !parser.GetNext( hostIP ) )
+            hostIP = NetAddress::GetLocal( ToString( GAME_PORT ) ).ToStringAll();
+        NetAddress m_address = NetAddress( hostIP );
+        NetSession::GetDefault()->Join( "Tony_client" , m_address );
+    } );
+
+
+    //--------------------------------------------------------------------------------------
+    // vars
 
     commandSys->AddCommand( "logVars", []( string& str )
     {

@@ -1,9 +1,6 @@
 #pragma once
 
-struct NetAddress;
-class UDPSocket;
-class NetPacket;
-class NetSession;
+#include "Engine/Net/NetCommonH.hpp"
 
 // collection of UDP sockets to communicate on
 // can allocate and free packets
@@ -14,6 +11,7 @@ public:
     // returns the index assigned to this socket.
     // returns -1 if it failed to bind;
     bool Bind( const NetAddress& addr );
+    void Close();
 
     void SendImmediate( const NetPacket& packet );
 

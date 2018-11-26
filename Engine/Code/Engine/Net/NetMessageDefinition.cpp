@@ -19,9 +19,11 @@ NetMessageDefinition::NetMessageDefinition(
 
 void NetMessageDefinition::CalculateHeaderSize()
 {
-    m_headerSize = 1;
+    m_headerSize = sizeof( MessageID );
     if( IsReliable() )
-        m_headerSize += 2;
+        m_headerSize += sizeof( ReliableID );
+    if( IsInOrder() )
+        m_headerSize += sizeof( SequenceID );
 }
 
 bool NetMessageDefinition::RequiresConnection() const

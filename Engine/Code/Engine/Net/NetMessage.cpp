@@ -20,6 +20,22 @@ NetMessage::NetMessage()
     SetEndianness( Endianness::LITTLE );
 }
 
+NetMessage::NetMessage( NetMessage& copyFrom )
+    : BytePacker( MESSAGE_MTU, m_localBuffer )
+{
+    SetEndianness( Endianness::LITTLE );
+    CopyFrom( copyFrom );
+    m_name = copyFrom.m_name;
+    m_def = copyFrom.m_def;
+    m_senderAddress = copyFrom.m_senderAddress;
+    m_sender = copyFrom.m_sender;
+    m_receiver = copyFrom.m_receiver;
+    m_id = copyFrom.m_id;
+    m_reliableID = copyFrom.m_reliableID;
+    m_sequenceID = copyFrom.m_sequenceID;
+    m_lastSentTime = copyFrom.m_lastSentTime;
+}
+
 MessageID NetMessage::GetMessageID()
 {
     return m_id;
@@ -45,6 +61,11 @@ bool NetMessage::UnpackHeader()
     if( m_def->IsReliable() )
         if( !Read( &m_reliableID ) )
             return false;
+
+    if( m_def->IsInOrder() )
+        if( !Read( &m_sequenceID ) )
+            return false;
+
     return true;
 }
 
@@ -56,6 +77,9 @@ void NetMessage::PackHeader()
 
     if( m_def->IsReliable() )
         Write( m_reliableID );
+
+    if( m_def->IsInOrder() )
+        Write( m_sequenceID );
 
     SetWriteHead( saveWriteHead );
 }

@@ -256,8 +256,7 @@ void GameCommands::RegisterAllCommands()
             LOG_WARNING("net_unreliable_test takes 2 args, idx and count");
             return;
         }
-        g_game->StartNetworkTest( idx, count, false );
-
+        g_game->StartNetworkTest( idx, count, eNetworkTestType::UNRELIABLE );
     } );
 
     commandSys->AddCommand( "net_reliable_test", []( string& str )
@@ -270,11 +269,21 @@ void GameCommands::RegisterAllCommands()
             LOG_WARNING( "net_reliable_test takes 2 args, idx and count" );
             return;
         }
-        g_game->StartNetworkTest( idx, count, true );
-
+        g_game->StartNetworkTest( idx, count, eNetworkTestType::RELIABLE );
     } );
 
-
+    commandSys->AddCommand( "net_sequence_test", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        uint idx;
+        uint count;
+        if( !parser.GetNext( idx ) || !parser.GetNext( count ) )
+        {
+            LOG_WARNING( "net_sequence_test takes 2 args, idx and count" );
+            return;
+        }
+        g_game->StartNetworkTest( idx, count, eNetworkTestType::SEQUENCE );
+    } );
 
 }
 

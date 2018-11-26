@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Core/EngineCommonH.hpp"
-#include "Engine/Net/NetDefines.hpp"
+#include "Engine/Net/NetCommonH.hpp"
 #include "Engine/DataUtils/BytePacker.hpp"
 #include "Engine/Net/NetAddress.hpp"
 
@@ -8,7 +8,8 @@ class NetConnection;
 class NetMessageDefinition;
 
 // [uint8 messageID] // this is header for now
-// [uint16 reliableID // only for reliable
+// [uint16 reliableID] // only for reliable
+// [uint16 sequenceID]
 // [byte_t* messagePayload] // will be message_and_header_length - 1U long for now
 
 
@@ -16,8 +17,10 @@ class NetMessage : public BytePacker
 {
 public:
     NetMessage( const string& name );
+    NetMessage( NetMessage& copyFrom );
     NetMessage();
     ~NetMessage() {};
+
 
     // also sets the read head to be after the header
     MessageID GetMessageID();
@@ -36,11 +39,13 @@ public:
     NetConnection* m_sender = nullptr;
     NetConnection* m_receiver = nullptr;
 
-    MessageID m_id;
+    MessageID m_id = NET_MESSAGE_ID_INVALID;
 
     // reliable
-    uint16 m_reliableID = 0;
-    float m_lastSentTime = 0.f;
+    ReliableID m_reliableID = 0;
+    SequenceID m_sequenceID = 0;
+
+    float m_lastSentTime = 0.f; // seconds
 
 
 

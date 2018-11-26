@@ -1,11 +1,17 @@
 #include "Engine/Net/EngineNetMessages.hpp"
-#include "Engine/Net/NetSession.hpp"
-#include "Engine/Core/EngineCommonC.hpp"
-#include "Engine/Net/NetMessage.hpp"
-#include "Engine/Core/ErrorUtils.hpp"
-#include "Engine/Net/NetConnection.hpp"
-#include "Engine/Net/NetMessageDatabase.hpp"
 
+#include "Engine/Net/NetCommonC.hpp"
+
+
+NetMessageSelfRegister::NetMessageSelfRegister(
+    const string& name,
+    NetMessageCB cb,
+    eNetMessageFlag flags /*= eNetMessageFlag::DEFAULT*/,
+    uint8 messageId /*= NET_MESSAGE_ID_AUTO*/,
+    uint8 channelIdx /*= 0 */ )
+{
+    NetMessageDatabase::RegisterDefinition( name, cb, flags, messageId, channelIdx );
+}
 
 namespace EngineNetMessages
 {
@@ -21,7 +27,8 @@ NetMessage* Compose_Ping( const string& str )
 }
 
 NET_MESSAGE_STATIC_REGSITER(
-    ping, eNetMessageFlag::CONNECTIONLESS, eNetCoreMessageIdx::PING, 0 )
+    ping, eNetMessageFlag::CONNECTIONLESS,
+    eNetCoreMessageIdx::NETMSG_CORE_PING, 0 )
 {
     string pingMsg;
     netMessage->ReadString( pingMsg );
@@ -48,7 +55,8 @@ NetMessage* Compose_Pong()
 }
 
 NET_MESSAGE_STATIC_REGSITER(
-    pong, eNetMessageFlag::CONNECTIONLESS, eNetCoreMessageIdx::PONG, 0 )
+    pong, eNetMessageFlag::CONNECTIONLESS,
+    eNetCoreMessageIdx::NETMSG_CORE_PONG, 0 )
 {
     LOG_INFO_TAG( "Net",
                   "Incomming [%s] [pong]",
@@ -87,7 +95,6 @@ NET_MESSAGE_STATIC_REGSITER_AUTO( add )
 
 //--------------------------------------------------------------------------------------
 // Add Response
-
 NetMessage* Compose_AddResponse( float a, float b, float sum )
 {
     NetMessage* msg = new NetMessage( "add_response" );
@@ -116,7 +123,6 @@ NET_MESSAGE_STATIC_REGSITER_AUTO( add_response )
 
 //--------------------------------------------------------------------------------------
 // Heartbeat
-
 NetMessage* Compose_Heartbeat()
 {
     NetMessage* msg = new NetMessage( "heartbeat" );
@@ -124,22 +130,118 @@ NetMessage* Compose_Heartbeat()
 }
 
 NET_MESSAGE_STATIC_REGSITER(
-    heartbeat, eNetMessageFlag::DEFAULT, eNetCoreMessageIdx::HEARTBEAT, 0 )
+    heartbeat, eNetMessageFlag::DEFAULT,
+    eNetCoreMessageIdx::NETMSG_CORE_HEARTBEAT, 0 )
 {
+    UNUSED( netMessage );
     //     LOG_INFO_TAG( "Net", "Incomming [%s] [heartbeat]",
     //                   netMessage->m_sender->m_address.ToStringAll().c_str() );
     return true;
 }
 
-
-}
-
-NetMessageSelfRegister::NetMessageSelfRegister(
-    const string& name,
-    NetMessageCB cb,
-    eNetMessageFlag flags /*= eNetMessageFlag::DEFAULT*/,
-    uint8 messageId /*= NET_MESSAGE_ID_AUTO*/,
-    uint8 channelIdx /*= 0 */ )
+//--------------------------------------------------------------------------------------
+// JoinRequest
+NetMessage* Compose_JoinRequest()
 {
-    NetMessageDatabase::RegisterDefinition( name, cb, flags, messageId, channelIdx );
+    NetMessage* msg = new NetMessage( "join_request" );
+    return msg;
 }
+
+NET_MESSAGE_STATIC_REGSITER(
+    join_request, eNetMessageFlag::CONNECTIONLESS,
+    eNetCoreMessageIdx::NETMSG_JOIN_REQUEST, 0 )
+{
+    return NetSession::GetDefault()->ProcessJoinRequest( netMessage );
+}
+
+//--------------------------------------------------------------------------------------
+// JoinDeny
+NetMessage* Compose_JoinDeny()
+{
+    NetMessage* msg = new NetMessage( "join_deny" );
+    return msg;
+}
+
+NET_MESSAGE_STATIC_REGSITER(
+    join_deny, eNetMessageFlag::CONNECTIONLESS,
+    eNetCoreMessageIdx::NETMSG_JOIN_DENY, 0 )
+{
+    return NetSession::GetDefault()->ProcessJoinDeny( netMessage );
+}
+
+//--------------------------------------------------------------------------------------
+// JoinAccept
+NetMessage* Compose_JoinAccept( uint8 assignedConnectionIdx )
+{
+    NetMessage* msg = new NetMessage( "join_accept" );
+    msg->Write( assignedConnectionIdx );
+    return msg;
+}
+
+NET_MESSAGE_STATIC_REGSITER(
+    join_accept, eNetMessageFlag::RELIABLE_IN_ORDER,
+    eNetCoreMessageIdx::NETMSG_JOIN_ACCEPT, 0 )
+{
+    uint8 assignedIdx;
+    if( !netMessage->Read( &assignedIdx ) )
+        return false;
+
+    return NetSession::GetDefault()->ProcessJoinAccept( assignedIdx );
+}
+
+//--------------------------------------------------------------------------------------
+// NewConnection
+NetMessage* Compose_NewConnection()
+{
+    NetMessage* msg = new NetMessage( "new_connection" );
+    return msg;
+}
+
+NET_MESSAGE_STATIC_REGSITER(
+    new_connection, eNetMessageFlag::RELIABLE_IN_ORDER,
+    eNetCoreMessageIdx::NETMSG_NEW_CONNECTION, 0 )
+{
+    return NetSession::GetDefault()->ProcessNewConnection( netMessage );
+}
+
+//--------------------------------------------------------------------------------------
+// JoinFinished
+NetMessage* Compose_JoinFinished()
+{
+    NetMessage* msg = new NetMessage( "join_finished" );
+    return msg;
+}
+
+NET_MESSAGE_STATIC_REGSITER(
+    join_finished, eNetMessageFlag::RELIABLE_IN_ORDER,
+    eNetCoreMessageIdx::NETMSG_JOIN_FINISHED, 0 )
+{
+    return NetSession::GetDefault()->ProcessJoinFinished( netMessage );
+}
+
+//--------------------------------------------------------------------------------------
+// UpdateConnectionState
+NetMessage* Compose_UpdateConnectionState( eConnectionState state )
+{
+    NetMessage* msg = new NetMessage( "update_connection_state" );
+    msg->Write( (uint8) state );
+    return msg;
+}
+
+
+NET_MESSAGE_STATIC_REGSITER(
+    update_connection_state, eNetMessageFlag::RELIABLE_IN_ORDER,
+    eNetCoreMessageIdx::NETMSG_UPDATE_CONNECTION_STATE, 0 )
+{
+    uint8 state;
+    if( !netMessage->Read( &state ) )
+        return false;
+    return NetSession::GetDefault()->ProcessUpdateConnectionState(
+        netMessage, (eConnectionState) state );
+}
+
+
+
+}
+
+

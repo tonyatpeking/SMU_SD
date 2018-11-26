@@ -25,6 +25,8 @@
 namespace Tests
 {
 
+
+
 void PrintfTest( bool success, const char* format, ... )
 {
     va_list args;
@@ -32,6 +34,27 @@ void PrintfTest( bool success, const char* format, ... )
     Rgba color = success ? Rgba::GREEN_CYAN : Rgba::ORANGE;
     Printfv( color, format, args );
     va_end( args );
+}
+
+void MathTests()
+{
+    uint16 a = 2;
+    uint16 b = 3;
+    uint16 c = 65530;
+    uint16 d = 65531;
+
+    bool test1 = CyclicLesser( a, b );
+    bool test2 = CyclicLesser( c, d );
+    bool test3 = CyclicLesser( c, a );
+    bool test4 = !CyclicLesser( a, c );
+
+    bool test5 = CyclicGreater( b, c );
+    bool test6 = !CyclicGreater( c, b );
+
+
+
+    PrintfTest( test1 && test2 && test3 && test4 && test5 && test6,
+                "Cyclic Test" );
 }
 
 void SolverTests()
@@ -272,6 +295,9 @@ void RunTests()
 
     Printf( Rgba::CYAN, "\nLogger Tests:" );
     LoggerTests();
+
+    Printf( Rgba::CYAN, "\nMath Tests:" );
+    MathTests();
 
     Printf( Rgba::CYAN, "\n---End of Tests---\n" );
 

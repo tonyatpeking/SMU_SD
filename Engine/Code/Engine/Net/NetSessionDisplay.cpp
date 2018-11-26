@@ -1,13 +1,11 @@
-#include "Engine/Net/NetSession.hpp"
+
+#include "Engine/Net/NetCommonC.hpp"
 #include "Engine/Net/NetSessionDisplay.hpp"
+
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Core/Console.hpp"
 #include "Engine/Renderer/TextRenderable.hpp"
-#include "Engine/Net/PacketChannel.hpp"
-#include "Engine/Net/UDPSocket.hpp"
-#include "Engine/Net/NetAddress.hpp"
-#include "Engine/Net/NetConnection.hpp"
 #include "Engine/String/StringUtils.hpp"
 #include "Engine/Time/Time.hpp"
 #include "Engine/Core/RuntimeVars.hpp"
@@ -64,6 +62,10 @@ void NetSessionDisplay::Render()
         return;
 
     NetSession* session = NetSession::GetDefault();
+
+    if( session->m_state == eSessionState::DISCONNECTED )
+        return;
+
     string infoStr = Stringf(
         "sim lag: %dms-%dms  sim loss: %0.00f \n  My Addr:\n    %s \n  Connections:\n"
         "%-1s %-3s %-22s %-5s %-5s %-4s %-4s %-4s %-4s %-16s\n",

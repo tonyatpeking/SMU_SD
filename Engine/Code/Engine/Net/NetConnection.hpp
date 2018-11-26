@@ -1,13 +1,10 @@
 #pragma once
+#include "Engine/Net/NetCommonH.hpp"
 #include "Engine/Net/NetAddress.hpp"
-#include "Engine/Core/EngineCommonH.hpp"
+#include "Engine/Net/NetConnectionInfo.hpp"
 #include <queue>
 
-class NetMessage;
-class NetSession;
-class NetPacket;
 class Timer;
-class PacketTracker;
 
 class NetConnection
 {
@@ -16,7 +13,7 @@ public:
     NetConnection();
     ~NetConnection();
 
-    void ProcessOutgoing();
+    void Flush();
     bool OnReceivePacket( NetPacket& packet, bool processSuccess );
     void QueueSend( NetMessage* netMsg );
     void SendImmediate( const NetPacket& packet );
@@ -29,10 +26,13 @@ public:
 
     bool IsValid();
 
-    // This will also pop and delete the unreliables in m_outboundUnreliables
+    // This will also pop and delete the unreliables in m_unsentUnreliables
     // Assumes that the write head is later than the PacketHeader
     // will update header with number of unreliables
-    void FillPacketWithUnreliables( NetPacket& packet );
+    void FillPacketWithUnsentUnreliables( NetPacket& packet );
+    void FillPacketWithUnconfirmedReliables( NetPacket& packet );
+    void FillPacketWithUnsentReliables( NetPacket& packet );
+    void ClearUnreliables();
 
     void SetSendRate( float hz );
     float GetEffectiveSendInterval() const;
@@ -48,10 +48,12 @@ public:
 
     // Acks
     void UpdateLastReceivedAck( uint16 ackFromOther );
-    void ConfirmPacketsReceivedByOther( uint16 ackISentBefore, uint16 ackBitfield );
+    void ConfirmPacketsReceivedByOther(
+        uint16 ackISentBefore, uint16 ackBitfield );
     void ConfirmOnePacketReceivedByOther( uint16 ackISentBefore );
 
     // Packet Tracker
+    PacketTracker* GetCurrentPacketTracker();
     PacketTracker* AddPacketTracker( uint16 ackIJustSent );
     PacketTracker* GetPackerTracker( uint16 ackISentBefore );
 
@@ -59,11 +61,43 @@ public:
     void UpdateLossTracker( bool packetWasReceived );
     float CalculateLossRate();
 
+    // Reliable
+    float GetReliableResendWait();
+    void ConfirmReliable( uint16 reliableID );
+    bool HasReliableBeenProcessed( uint16 reliableID );
+    void MarkReliableProcessed( uint16 reliableID );
+    uint16 GetOldestUnconfirmedReliableID(); // cyclic lowest
+    bool CanSendNewReliable();
+
+    // Connection
+    bool IsMe() const;
+    bool IsHost() const;
+    bool IsClient() const;
+    bool IsConnected() const;
+    bool IsDisconnected() const;
+    bool IsReady() const;
+
+    // state
+    void SetState( eConnectionState state );
+
 public:
 
     NetAddress m_address;
-    std::queue<NetMessage*> m_outboundUnreliables;
     bool m_isClosed = false;
+
+
+    // messages
+    std::queue<NetMessage*> m_unsentUnreliables;
+
+    // reliables
+    std::queue<NetMessage*> m_unsentReliables;
+    std::vector<NetMessage*> m_unconfirmedReliables;
+    uint16 m_nextReliableID = 65530;
+    std::vector<uint16> m_receivedReliableIDs;
+    uint16 m_highestReceivedReliabeID = 65530;
+
+    // in order traffic
+    NetMessageChannel* m_messageChannels[MAX_MESSAGE_CHANNELS];
 
     // Session
     NetSession* m_owningSession = nullptr;
@@ -90,11 +124,15 @@ public:
     vector<uint8> m_packetLossTracker; // 1 for packed received, 0 for lost
     size_t m_nextFreeLossTrackerSlot = 0;
 
-
     // Analytics
     uint m_timeOfLastSendMS = 0;
     uint m_timeOfLastReceiveMS = 0;
     float m_lossRate = 0.f; //[0-1]
     uint m_roundTripTime = 0;
-    float m_roundTripTimeInertia = 0.8f;  // [0,1]  higher values mean chages slower
+    // [0,1]  higher values mean changes slower
+    float m_roundTripTimeInertia = 0.8f;
+
+    // Connection
+    NetConnectionInfo m_info;
+    eConnectionState m_state = eConnectionState::DISCONNECTED;
 };

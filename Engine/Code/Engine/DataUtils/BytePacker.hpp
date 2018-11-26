@@ -64,7 +64,7 @@ public:
     // read and write head rules are respected by both copier and copied
     // i.e copy starts at copyFrom read head, and copyTo write head
     // and moves the heads respectively, will not overflow
-    size_t CopyFrom( BytePacker& copyFrom, size_t maxBytesToCopy );
+    size_t CopyFrom( BytePacker& copyFrom, size_t maxBytesToCopy = MAX_SIZE_T );
 
     size_t WriteLengthHeader( size_t length ); // returns how many bytes used
 
