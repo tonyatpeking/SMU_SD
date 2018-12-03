@@ -21,7 +21,7 @@ double InitializeTime( LARGE_INTEGER& out_initialTime )
 
 
 
-double TimeUtils::GetCurrentTimeSeconds()
+double TimeUtils::GetCurrentTimeSecondsD()
 {
     static LARGE_INTEGER initialTime;
     static double secondsPerCount = InitializeTime( initialTime );
@@ -35,11 +35,11 @@ double TimeUtils::GetCurrentTimeSeconds()
 
 float TimeUtils::GetCurrentTimeSecondsF()
 {
-    return (float)GetCurrentTimeSeconds();
+    return (float)GetCurrentTimeSecondsD();
 }
 
 uint TimeUtils::GetCurrentTimeMS()
 {
-    return (uint) ( GetCurrentTimeSeconds() * 1000 );
+    return (uint) ( GetCurrentTimeSecondsD() * 1000 );
 }
 

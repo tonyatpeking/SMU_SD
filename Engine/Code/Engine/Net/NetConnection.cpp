@@ -22,11 +22,20 @@ NetConnection::NetConnection()
     {
         m_messageChannels[i] = new NetMessageChannel();
     }
+
+    // this is so the connection does not timeout right after creation
+    m_timeOfLastReceive = TimeUtils::GetCurrentTimeSecondsF();
 }
 
 NetConnection::~NetConnection()
 {
+    if( IsHost() )
+        m_owningSession->ShouldDisconnect();
+
     ContainerUtils::DeletePointers( m_packetTrackers );
+    ContainerUtils::DeletePointers( m_unconfirmedReliables );
+    ContainerUtils::DeletePointersQueue( m_unsentUnreliables );
+    ContainerUtils::DeletePointersQueue( m_unsentReliables );
 
     delete m_heartbeatTimer;
     delete m_sendTimer;
@@ -37,18 +46,27 @@ NetConnection::~NetConnection()
     }
 }
 
-void NetConnection::Flush()
+void NetConnection::FlushIfTimeUp()
 {
     if( !PopSendTimer() )
         return;
 
+    Flush();
+}
+
+void NetConnection::Flush()
+{
+
     if( PopHeartbeatTimer() )
     {
-        QueueSend( EngineNetMessages::Compose_Heartbeat() );
+        uint time = 0;
+        if( m_owningSession->IsHost() )
+            time = (uint) ( Clock::GetRealTimeClock()->GetTimeSinceStartup() * 1000 );
+        QueueSend( EngineNetMessages::Compose_Heartbeat( time ) );
     }
 
     NetPacket packet;
-    packet.m_receiver = this;
+    packet.m_receiverIdx = m_idxInSession;
     packet.m_receiverAddress = this->m_address;
     if( !m_unsentUnreliables.empty()
         || !m_unconfirmedReliables.empty()
@@ -62,7 +80,6 @@ void NetConnection::Flush()
         header.m_lastReceivedAck = m_lastReceivedAck;
         header.m_receivedAckBitfield = m_receivedAckBitfield;
         header.m_message_count = 0;
-
 
         FillPacketWithUnconfirmedReliables( packet );
         FillPacketWithUnsentReliables( packet );
@@ -86,12 +103,11 @@ void NetConnection::Flush()
     }
 }
 
-
 bool NetConnection::OnReceivePacket( NetPacket& packet, bool processSuccess )
 {
     UNUSED( processSuccess );
 
-    m_timeOfLastReceiveMS = TimeUtils::GetCurrentTimeMS();
+    m_timeOfLastReceive = TimeUtils::GetCurrentTimeSecondsF();
 
     PacketHeader& header = packet.m_header;
 
@@ -133,7 +149,7 @@ void NetConnection::QueueSend( NetMessage* netMsg )
 
 void NetConnection::SendImmediate( const NetPacket& packet )
 {
-    m_timeOfLastSendMS = TimeUtils::GetCurrentTimeMS();
+    m_timeOfLastSend = TimeUtils::GetCurrentTimeSecondsF();
 
     m_owningSession->SendImmediate( packet );
 }
@@ -178,7 +194,7 @@ void NetConnection::FillPacketWithUnconfirmedReliables( NetPacket& packet )
                 msg->m_lastSentTime = currentTime;
 
                 GetCurrentPacketTracker()->AddReliable( msg->m_reliableID );
-                LOG_INFO_TAG( "Debug", "resend" );
+                LOG_INFO_TAG( "Debug", "resend msg %s", msg->m_def->GetName().c_str() );
             }
             else
             {
@@ -315,8 +331,8 @@ void NetConnection::ConfirmOnePacketReceivedByOther( uint16 ackISentBefore )
         return;
 
     // Update Round trip time
-    uint rttLatest = TimeUtils::GetCurrentTimeMS() - tracker->m_timeOfSendMS;
-    m_roundTripTime = (uint) Lerp( (float) rttLatest, (float) m_roundTripTime, m_roundTripTimeInertia );
+    float rttLatest = TimeUtils::GetCurrentTimeSecondsF() - tracker->m_timeOfSend;
+    m_roundTripTime = Lerp( rttLatest, m_roundTripTime, m_roundTripTimeInertia );
 
     // Reliables
     for( int idx = 0; idx < (int) tracker->m_reliablesInPacket; ++idx )
@@ -343,7 +359,7 @@ PacketTracker* NetConnection::AddPacketTracker( uint16 ackIJustSent )
     UpdateLossTracker( notOverwriting );
 
     tracker->m_ack = ackIJustSent;
-    tracker->m_timeOfSendMS = TimeUtils::GetCurrentTimeMS();
+    tracker->m_timeOfSend = TimeUtils::GetCurrentTimeSecondsF();
 
     ++m_nextFreePacketTrackerSlot;
 
@@ -384,8 +400,8 @@ float NetConnection::CalculateLossRate()
 
 float NetConnection::GetReliableResendWait()
 {
-    float wait = RELIABLE_RESEND_WAIT_MULTIPLIER * m_roundTripTime;
-    wait = Clampf( wait, RELIABLE_RESEND_WAIT_MIN, RELIABLE_RESEND_WAIT_MAX );
+    //float wait = RELIABLE_RESEND_WAIT_MULTIPLIER * m_roundTripTime;
+    //wait = Clampf( wait, RELIABLE_RESEND_WAIT_MIN, RELIABLE_RESEND_WAIT_MAX );
     return RELIABLE_RESEND_WAIT_FIXED;
 }
 
@@ -504,5 +520,14 @@ void NetConnection::SetState( eConnectionState state )
             }
         }
     }
+}
+
+bool NetConnection::DidTimeout()
+{
+    float timeSinceReceive = TimeUtils::GetCurrentTimeSecondsF() - m_timeOfLastReceive;
+    bool didTimeout = timeSinceReceive > DEFAULT_CONNECTION_TIMEOUT;
+    if( didTimeout )
+        LOG_INFO_TAG( "Net", "Connection %d timeout", m_idxInSession );
+    return didTimeout;
 }
 

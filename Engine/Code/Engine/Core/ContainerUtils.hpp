@@ -50,6 +50,16 @@ void DeletePointers( ContainerT& pointers )
     pointers.clear();
 }
 
+template <typename ContainerT>
+void DeletePointersQueue( ContainerT& pointers )
+{
+    while( !pointers.empty() )
+    {
+        delete pointers.front();
+        pointers.pop();
+    }
+}
+
 // Find and erase all elements equal to value in vector
 template <typename ValueT>
 void EraseValues( vector<ValueT>& container, ValueT value )

@@ -45,6 +45,12 @@ void Clock::Update( double ds )
         child->Update( m_deltaSeconds );
 }
 
+void Clock::SetTime( double seconds )
+{
+    m_timeSinceStartup = seconds;
+    m_timeSinceStartupF = (float) seconds;
+}
+
 void Clock::SetParent( Clock* parent )
 {
     m_parentClock = parent;

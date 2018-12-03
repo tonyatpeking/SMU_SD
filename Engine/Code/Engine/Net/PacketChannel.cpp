@@ -23,7 +23,8 @@ bool PacketChannel::Bind( const NetAddress& addr )
 
 void PacketChannel::Close()
 {
-    m_socket->Close();
+    if( m_socket )
+        m_socket->Close();
 }
 
 void PacketChannel::SendImmediate( const NetPacket& packet )
@@ -59,7 +60,8 @@ bool PacketChannel::Receive( NetPacket& out_packet )
         if( !connection )
             connection = m_owningSession->GetConnection( senderAddr );
 
-        out_packet.m_sender = connection; // can be null
+        out_packet.m_senderIdx = connection ?
+            connection->m_idxInSession : INVALID_CONNECTION_INDEX; // can be null
         out_packet.m_senderAddress = senderAddr;
         return true;
     }

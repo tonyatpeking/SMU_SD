@@ -78,7 +78,7 @@ Measurement* CreateMeasurement( const char* id )
     measure->m_name[MAX_STR_LEN - 1] = '\0';
 
     // set time
-    measure->m_startTime = TimeUtils::GetCurrentTimeSeconds();
+    measure->m_startTime = TimeUtils::GetCurrentTimeSecondsD();
 
     return measure;
 }
@@ -146,7 +146,7 @@ double Measurement::GetElapsedTime()
 
 void Measurement::Finish()
 {
-    m_endTime = TimeUtils::GetCurrentTimeSeconds();
+    m_endTime = TimeUtils::GetCurrentTimeSecondsD();
 }
 
 void StartUp()

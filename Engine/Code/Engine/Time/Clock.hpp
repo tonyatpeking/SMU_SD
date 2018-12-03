@@ -11,6 +11,7 @@ public:
     Clock( Clock* parent );
     ~Clock();
     void Update( double ds );
+    void SetTime( double seconds );
     double GetTimeSinceStartup() { return m_timeSinceStartup; };
     float GetTimeSinceStartupF() { return m_timeSinceStartupF; };
     double GetDeltaSeconds() { return m_deltaSeconds; };

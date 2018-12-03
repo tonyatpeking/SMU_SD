@@ -6,11 +6,11 @@
 ProfileLogScoped::ProfileLogScoped( const char* tag )
 {
     m_tag = tag;
-    m_timeStart = TimeUtils::GetCurrentTimeSeconds();
+    m_timeStart = TimeUtils::GetCurrentTimeSecondsD();
 }
 
 ProfileLogScoped::~ProfileLogScoped()
 {
-    double timeUsed = TimeUtils::GetCurrentTimeSeconds() - m_timeStart;
+    double timeUsed = TimeUtils::GetCurrentTimeSecondsD() - m_timeStart;
     LOG_INFO_TAG( "Profiler", "[%s]:[%f ms]", m_tag, timeUsed * 1000 );
 }

@@ -488,6 +488,12 @@ void EngineCommands::RegisterAllCommands()
         NetSession::GetDefault()->Join( "Tony_client" , m_address );
     } );
 
+    commandSys->AddCommand( "leave", []( string& str )
+    {
+        UNUSED( str );
+        NetSession::GetDefault()->ShouldDisconnect();
+    } );
+
 
     //--------------------------------------------------------------------------------------
     // vars

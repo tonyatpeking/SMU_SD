@@ -10,7 +10,7 @@
 namespace TimeUtils
 {
 
-double GetCurrentTimeSeconds();
+double GetCurrentTimeSecondsD();
 float GetCurrentTimeSecondsF();
 uint GetCurrentTimeMS();
 

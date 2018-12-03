@@ -7,7 +7,7 @@ class PacketTracker
 public:
     void AddReliable( uint16 id );
     void Invalidate();
-    uint m_timeOfSendMS = 0;
+    float m_timeOfSend = 0;
     uint16 m_ack = INVALID_PACKET_ACK;
 
     uint16 m_sentReliableIds[MAX_RELIABLES_PER_PACKET];

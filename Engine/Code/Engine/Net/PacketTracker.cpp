@@ -11,6 +11,6 @@ void PacketTracker::AddReliable( uint16 id )
 void PacketTracker::Invalidate()
 {
     m_ack = INVALID_PACKET_ACK;
-    m_timeOfSendMS = 0;
+    m_timeOfSend = 0.f;
     m_reliablesInPacket = 0;
 }

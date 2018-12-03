@@ -78,6 +78,7 @@ App::~App()
 
     Logger::GetDefault()->ShutDown();
 
+    delete NetSession::GetDefault();
     Net::Shutdown();
 
     DebugRender::Shutdown();

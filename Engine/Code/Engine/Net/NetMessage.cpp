@@ -28,8 +28,8 @@ NetMessage::NetMessage( NetMessage& copyFrom )
     m_name = copyFrom.m_name;
     m_def = copyFrom.m_def;
     m_senderAddress = copyFrom.m_senderAddress;
-    m_sender = copyFrom.m_sender;
-    m_receiver = copyFrom.m_receiver;
+    m_senderIdx = copyFrom.m_senderIdx;
+    m_receiverIdx = copyFrom.m_receiverIdx;
     m_id = copyFrom.m_id;
     m_reliableID = copyFrom.m_reliableID;
     m_sequenceID = copyFrom.m_sequenceID;

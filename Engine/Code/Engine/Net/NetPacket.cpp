@@ -85,8 +85,8 @@ bool NetPacket::ExtractMessage( NetMessage& out_msg )
         return false;
 
     out_msg.m_senderAddress = m_senderAddress;
-    out_msg.m_sender = m_sender;
-    out_msg.m_receiver = m_receiver;
+    out_msg.m_senderIdx = m_senderIdx;
+    out_msg.m_receiverIdx = m_receiverIdx;
 
     if( !out_msg.UnpackHeader() )
         return false;

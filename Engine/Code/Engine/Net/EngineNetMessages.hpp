@@ -12,7 +12,7 @@ NetMessage* Compose_Ping( const string& str );
 NetMessage* Compose_Pong();
 NetMessage* Compose_Add( float a, float b );
 NetMessage* Compose_AddResponse( float a, float b, float sum );
-NetMessage* Compose_Heartbeat();
+NetMessage* Compose_Heartbeat( uint timeMS );
 
 NetMessage* Compose_JoinRequest();
 NetMessage* Compose_JoinDeny();
@@ -20,7 +20,7 @@ NetMessage* Compose_JoinAccept( uint8 assignedConnectionIdx );
 NetMessage* Compose_NewConnection();
 NetMessage* Compose_JoinFinished();
 NetMessage* Compose_UpdateConnectionState(eConnectionState state);
-
+NetMessage* Compose_Hangup();
 
 
 };

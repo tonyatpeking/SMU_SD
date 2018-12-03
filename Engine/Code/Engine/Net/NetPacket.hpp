@@ -52,9 +52,10 @@ public:
 
     NetAddress m_senderAddress;
     NetAddress m_receiverAddress;
-    NetConnection* m_sender = nullptr;
-    NetConnection* m_receiver = nullptr;
 
-    uint m_timeOfReceiveMS = 0;
+    float m_timeOfReceive = 0;
     uint m_reliableMessageCount = 0;
+
+    uint8 m_senderIdx = 0U;
+    uint8 m_receiverIdx = 0U;
 };

@@ -13,6 +13,7 @@ public:
     NetConnection();
     ~NetConnection();
 
+    void FlushIfTimeUp();
     void Flush();
     bool OnReceivePacket( NetPacket& packet, bool processSuccess );
     void QueueSend( NetMessage* netMsg );
@@ -80,6 +81,9 @@ public:
     // state
     void SetState( eConnectionState state );
 
+    // timeout
+    bool DidTimeout();
+
 public:
 
     NetAddress m_address;
@@ -125,12 +129,11 @@ public:
     size_t m_nextFreeLossTrackerSlot = 0;
 
     // Analytics
-    uint m_timeOfLastSendMS = 0;
-    uint m_timeOfLastReceiveMS = 0;
+    float m_timeOfLastSend = 0.f;
+    float m_timeOfLastReceive = 0.f;
     float m_lossRate = 0.f; //[0-1]
-    uint m_roundTripTime = 0;
-    // [0,1]  higher values mean changes slower
-    float m_roundTripTimeInertia = 0.8f;
+    float m_roundTripTime = 0;
+    float m_roundTripTimeInertia = ROUND_TRIP_TIME_INERTIA;
 
     // Connection
     NetConnectionInfo m_info;

@@ -9,6 +9,7 @@
 #include "Engine/String/StringUtils.hpp"
 #include "Engine/Time/Time.hpp"
 #include "Engine/Core/RuntimeVars.hpp"
+#include "Engine/Time/Clock.hpp"
 
 NetSessionDisplay* NetSessionDisplay::GetDefault()
 {
@@ -67,10 +68,11 @@ void NetSessionDisplay::Render()
         return;
 
     string infoStr = Stringf(
-        "sim lag: %dms-%dms  sim loss: %0.00f \n  My Addr:\n    %s \n  Connections:\n"
+        "sim lag: %0.2fs-%0.2fs  sim loss: %0.2f%%  net clock: %0.2fs \n  My Addr:\n    %s \n  Connections:\n"
         "%-1s %-3s %-22s %-5s %-5s %-4s %-4s %-4s %-4s %-16s\n",
-        session->m_minSimLatencyMS, session->m_maxSimLatencyMS,
+        session->m_minSimLatency, session->m_maxSimLatency,
         session->m_simLossAmount * 100,
+        session->GetNetClock()->GetTimeSinceStartupF(),
         session->m_packetChannel->m_socket->m_address.ToStringAll().c_str(),
         "-", "idx", "addr", "rtt/s", "loss%", "lrcv", "lsnt", "oAck", "iAck", "rcvBits"
     );
@@ -86,10 +88,10 @@ void NetSessionDisplay::Render()
             indicator,
             pair.first,
             connection->m_address.ToStringAll().c_str(),
-            connection->m_roundTripTime / 1000.f,
+            connection->m_roundTripTime,
             connection->CalculateLossRate() * 100.f,
-            TimeUtils::GetCurrentTimeSeconds() - connection->m_timeOfLastReceiveMS / 1000.f,
-            TimeUtils::GetCurrentTimeSeconds() - connection->m_timeOfLastSendMS / 1000.f,
+            TimeUtils::GetCurrentTimeSecondsF() - connection->m_timeOfLastReceive,
+            TimeUtils::GetCurrentTimeSecondsF() - connection->m_timeOfLastSend,
             connection->m_nextAckToSend,
             connection->m_receivedAcksCount,
             StringUtils::ToBitfield( connection->m_receivedAckBitfield ).c_str()

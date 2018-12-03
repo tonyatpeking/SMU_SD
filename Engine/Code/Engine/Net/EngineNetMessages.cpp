@@ -37,10 +37,11 @@ NET_MESSAGE_STATIC_REGSITER(
                   netMessage->m_senderAddress.ToStringAll().c_str(),
                   pingMsg.c_str() );
 
-    if( netMessage->m_sender )
+    if( netMessage->m_senderIdx != INVALID_CONNECTION_INDEX )
     {
         NetMessage* pongMsg = Compose_Pong();
-        netMessage->m_sender->QueueSend( pongMsg );
+        NetSession::GetDefault()->GetConnection( netMessage->m_senderIdx )
+            ->QueueSend( pongMsg );
     }
 
     return true;
@@ -89,7 +90,8 @@ NET_MESSAGE_STATIC_REGSITER_AUTO( add )
                   a, b );
 
     NetMessage* response = Compose_AddResponse( a, b, a + b );
-    netMessage->m_sender->QueueSend( response );
+    NetSession::GetDefault()->GetConnection( netMessage->m_senderIdx )
+        ->QueueSend( response );
     return true;
 }
 
@@ -123,9 +125,10 @@ NET_MESSAGE_STATIC_REGSITER_AUTO( add_response )
 
 //--------------------------------------------------------------------------------------
 // Heartbeat
-NetMessage* Compose_Heartbeat()
+NetMessage* Compose_Heartbeat( uint timeMS )
 {
     NetMessage* msg = new NetMessage( "heartbeat" );
+    msg->Write( timeMS );
     return msg;
 }
 
@@ -133,9 +136,13 @@ NET_MESSAGE_STATIC_REGSITER(
     heartbeat, eNetMessageFlag::DEFAULT,
     eNetCoreMessageIdx::NETMSG_CORE_HEARTBEAT, 0 )
 {
-    UNUSED( netMessage );
-    //     LOG_INFO_TAG( "Net", "Incomming [%s] [heartbeat]",
-    //                   netMessage->m_sender->m_address.ToStringAll().c_str() );
+    uint hostTimeMS = 0U;
+    if( !netMessage->Read( &hostTimeMS ) )
+    {
+        LOG_WARNING_TAG( "Net", "Bad heartbeat message" );
+        return false;
+    }
+    return NetSession::GetDefault()->ProcessHeartbeat( netMessage, hostTimeMS );
     return true;
 }
 
@@ -239,6 +246,23 @@ NET_MESSAGE_STATIC_REGSITER(
     return NetSession::GetDefault()->ProcessUpdateConnectionState(
         netMessage, (eConnectionState) state );
 }
+
+//--------------------------------------------------------------------------------------
+// Hangup
+
+NetMessage* Compose_Hangup()
+{
+    NetMessage* msg = new NetMessage( "hangup" );
+    return msg;
+}
+
+NET_MESSAGE_STATIC_REGSITER(
+    hangup, eNetMessageFlag::DEFAULT,
+    eNetCoreMessageIdx::NETMSG_HANGUP, 0 )
+{
+    return NetSession::GetDefault()->ProcessHangup( netMessage );
+}
+
 
 
 

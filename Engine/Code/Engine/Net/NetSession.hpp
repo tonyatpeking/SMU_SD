@@ -6,6 +6,7 @@
 #include <map>
 #include <queue>
 
+class Clock;
 
 class NetSession
 {
@@ -19,10 +20,14 @@ public:
     void Host( const string& myID, int port, uint rangeToTry = 0U );
     void Join( const string& myID, const NetAddress& hostAddr );
     void Disconnect();
+    void ShouldDisconnect();
     bool IsHost();
     void SendJoinRequestWithInterval();
     void ResetJoinTimeout();
     bool DidJoinTimeout();
+
+    // Hangup, also flushes
+    void SendHangupToAll();
 
     // Message processing
     bool ProcessJoinRequest( NetMessage* msg );
@@ -31,6 +36,8 @@ public:
     bool ProcessNewConnection( NetMessage* msg );
     bool ProcessJoinFinished( NetMessage* msg );
     bool ProcessUpdateConnectionState( NetMessage* msg, eConnectionState state );
+    bool ProcessHangup( NetMessage* msg );
+    bool ProcessHeartbeat( NetMessage* msg, uint hostTimeMS );
 
     // Starting a session (finalizes definitions - can't add more once
     // the session is running)
@@ -61,7 +68,7 @@ public:
     // returns false if any messages in queue failed
     bool ProcessInOrderMessage( NetMessage& message );
 
-    void Flush();
+    void Flush(bool forced = false);
 
     void SendImmediate( const NetPacket& packet );
     // takes ownership of netMessage, only works for connectionless
@@ -92,6 +99,12 @@ public:
     bool ReachedMaxClients();
     uint8 GetAvailableConnectionIdx();
 
+    void CheckForTimeoutConnections();
+
+    // Net Clock
+    void UpdateNetClock();
+    Clock* GetNetClock() { return m_netClock; };
+
 public:
 
     void ProcessIncommingWithLatency();
@@ -99,7 +112,7 @@ public:
 
     // Connections
     vector<NetConnection*> m_unboundConnections;
-    map<uint8, NetConnection*> m_connections; // all connections I know about;
+    map<uint8, NetConnection*> m_connections; // all bound connections I know about;
     NetConnection* m_myConnection = nullptr;
     NetConnection* m_hostConnection = nullptr;
     NetAddress m_boundAddress;
@@ -114,8 +127,8 @@ public:
 
     // network condition simulation
     float m_simLossAmount = 0.f;
-    uint m_minSimLatencyMS = 0U;
-    uint m_maxSimLatencyMS = 0U;
+    float m_minSimLatency = 0.f;
+    float m_maxSimLatency = 0.f;
 
     // using this for compare puts the oldest time at the top of the queue
     struct GreaterThanByTime
@@ -129,4 +142,10 @@ public:
 
     // session state
     eSessionState m_state = eSessionState::DISCONNECTED;
+
+    // net clock
+    float m_lastReceivedHostTime = 0.f;
+    float m_desiredClientTime = 0.f;
+    Clock* m_netClock = nullptr;
+    bool m_shouldResetClock = false;
 };

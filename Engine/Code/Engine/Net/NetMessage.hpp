@@ -36,8 +36,9 @@ public:
     const NetMessageDefinition* m_def;
 
     NetAddress m_senderAddress;
-    NetConnection* m_sender = nullptr;
-    NetConnection* m_receiver = nullptr;
+
+    uint8 m_senderIdx = 0U;
+    uint8 m_receiverIdx = 0U;
 
     MessageID m_id = NET_MESSAGE_ID_INVALID;
 

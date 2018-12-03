@@ -39,7 +39,7 @@ constexpr size_t MAX_CONNECTION_COUNT = INVALID_CONNECTION_INDEX - 1;
 // Send rate
 #define DEFAULT_SESSION_SEND_RATE (20) // Hz
 #define MAX_SEND_RATE (200) // Hz
-#define DEFAULT_HEARTBEAT_RATE (0.5f) // Hz
+#define DEFAULT_HEARTBEAT_RATE (20) // Hz
 
 // Reliable
 #define RELIABLE_RESEND_WAIT_MULTIPLIER (1.2f) // This is multiplied with the RTT
@@ -50,6 +50,13 @@ constexpr size_t MAX_CONNECTION_COUNT = INVALID_CONNECTION_INDEX - 1;
 #define RELIABLE_WINDOW (64)
 #define JOIN_REQUEST_RESEND_TIME (0.1f) // Seconds
 #define JOIN_TIMEOUT (5.f) // Seconds
+
+// Timeout
+#define DEFAULT_CONNECTION_TIMEOUT (5.f) // Seconds
+// NetClock
+#define ROUND_TRIP_TIME_INERTIA (0.8f) // [0,1]  higher values mean changes slower
+#define MAX_NET_TIME_DILATION (0.1f)
+#define DESIRED_CLIENT_TIME_INERTIA (0.8f) // [0,1] higher values mean changes slower
 
 
 class NetMessage;
@@ -93,6 +100,8 @@ enum eNetCoreMessageIdx : uint8_t
     NETMSG_NEW_CONNECTION, // reliable in-order
     NETMSG_JOIN_FINISHED, // reliable in-order
     NETMSG_UPDATE_CONNECTION_STATE, // reliable in-order
+    NETMSG_HANGUP, // unreliable
+
 
     NET_CORE_COUNT,
 };
@@ -100,6 +109,7 @@ enum eNetCoreMessageIdx : uint8_t
 enum class eSessionState
 {
     DISCONNECTED = 0,  // Session can be modified
+    SHOULD_DISCONNECT,
     BOUND,             // Bound to a socket - can send and receive connectionless messages.  No connections exist
     CONNECTING,        // Attempting to connecting - waiting for response from the host
     JOINING,           // Has established a connection, waiting final setup information/join completion
