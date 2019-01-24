@@ -67,9 +67,6 @@
     <ClCompile Include="GameState_Victory.cpp">
       <Filter>GameStates</Filter>
     </ClCompile>
-    <ClCompile Include="GameplayEnums.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="GameState_Playing.cpp">
       <Filter>GameStates</Filter>
     </ClCompile>
@@ -80,6 +77,18 @@
       <Filter>GameStates</Filter>
     </ClCompile>
     <ClCompile Include="GameNetMessages.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientInputs.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameplayDefines.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="NetCube.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
       <Filter>General</Filter>
     </ClCompile>
   </ItemGroup>
@@ -120,9 +129,6 @@
     <ClInclude Include="Tests.hpp">
       <Filter>General</Filter>
     </ClInclude>
-    <ClInclude Include="GameplayEnums.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="GameState_Playing.hpp">
       <Filter>GameStates</Filter>
     </ClInclude>
@@ -133,6 +139,12 @@
       <Filter>GameStates</Filter>
     </ClInclude>
     <ClInclude Include="GameNetMessages.hpp" />
+    <ClInclude Include="ClientInputs.hpp" />
+    <ClInclude Include="GameplayDefines.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="NetCube.hpp" />
+    <ClInclude Include="Player.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">

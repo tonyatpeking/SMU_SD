@@ -71,7 +71,7 @@ void GameState_Loading::LoadResourcesOnSecondFrame()
 
     {
         PROFILE_LOG_SCOPE( MakeSkyBox );
-        MakeSkyBox();
+        //MakeSkyBox();
     }
 
 }

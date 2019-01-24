@@ -43,6 +43,7 @@ public:
     Vec2 WindowToScreen( const Vec2& pos );
     Vec2 ScreenToWindow( const Vec2& pos );
     void* GetWindowHWND() { return m_hwnd; };
+    void Tile4by4( int pos ); // [0,3] 0 for top left, 1 for top right
 
 private:
 

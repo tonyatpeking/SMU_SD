@@ -41,6 +41,8 @@ public:
 
     Rgba Color();
     Rgba ColorInRange( const Rgba& colorA, const Rgba& colorB );
+    Rgba ColorInRange( const Rgba& color, int range );
+    Rgba ColorWheel();
 
     // collections
     void UniqueValuesInRange( int numOfValues, int minInclusive, int maxInclusive,

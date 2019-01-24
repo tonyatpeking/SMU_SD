@@ -125,6 +125,29 @@ Rgba Random::ColorInRange( const Rgba& colorA, const Rgba& colorB )
         CharInRange( colorA.a, colorB.a ) );
 }
 
+Rgba Random::ColorInRange( const Rgba& color, int range )
+{
+    Rgba colorA, colorB;
+    colorA.r = (uint8) ClampInt( color.r - range, 0, 255 );
+    colorA.g = (uint8) ClampInt( color.g - range, 0, 255 );
+    colorA.b = (uint8) ClampInt( color.b - range, 0, 255 );
+    colorA.a = (uint8) ClampInt( color.a - range, 0, 255 );
+
+    colorB.r = (uint8) ClampInt( color.r + range, 0, 255 );
+    colorB.g = (uint8) ClampInt( color.g + range, 0, 255 );
+    colorB.b = (uint8) ClampInt( color.b + range, 0, 255 );
+    colorB.a = (uint8) ClampInt( color.a + range, 0, 255 );
+
+    return ColorInRange( colorA, colorB );
+}
+
+Rgba Random::ColorWheel()
+{
+    vector<Rgba>& colorWheel = Rgba::GetColorWheel();
+    int i = IntInRange( 0, colorWheel.size() - 1 );
+    return colorWheel[i];
+}
+
 void Random::UniqueValuesInRange( int numOfValues, int minInclusive, int maxInclusive, vector<int>& out_uniqueValues )
 {
     //#OPTIMIZE very inefficient, should probably take one out of the list and update the list every time.

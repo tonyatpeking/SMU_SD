@@ -1,11 +1,36 @@
 #include "Engine/Core/RuntimeVars.hpp"
 #include "Engine/Core/EngineCommonC.hpp"
+#include "Engine/String/StringUtils.hpp"
 
 namespace RuntimeVars
 {
 // <VarName, Value>
 map<string, string> g_allVars;
 
+
+void PopulateFromCommandLine( char* commandline )
+{
+    string str = string( commandline );
+    Strings args;
+    StringUtils::ParseToTokens( str, args, " ", true, false );
+    for ( auto& arg : args )
+    {
+        Strings argAndValue;
+        StringUtils::ParseToTokens( arg, argAndValue, "=", true, false );
+        if( argAndValue.size() == 1 )
+        {
+            if( StringUtils::IsAllWhitespace( argAndValue[0] ) )
+                continue;
+            SetVar( arg, true );
+        }
+        if( argAndValue.size() == 2 )
+        {
+            if( StringUtils::IsAllWhitespace( argAndValue[0] ) )
+                continue;
+            SetVar( argAndValue[0], argAndValue[1] );
+        }
+    }
+}
 
 void LogAll()
 {

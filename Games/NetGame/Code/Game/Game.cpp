@@ -100,7 +100,6 @@ void Game::Render() const
     m_currentGameState->Render();
 
     RenderPause();
-
 }
 
 void Game::Initialize()
@@ -108,8 +107,6 @@ void Game::Initialize()
 #ifdef _DEBUG
     SetFlag( GameFlag::runTests );
 #endif // _DEBUG
-
-
 
     g_input->LockCursor( true );
     g_input->ClipCursor( true );

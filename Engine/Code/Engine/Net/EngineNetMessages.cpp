@@ -76,7 +76,7 @@ NetMessage* Compose_Add( float a, float b )
     return msg;
 }
 
-NET_MESSAGE_STATIC_REGSITER_AUTO( add )
+NET_MESSAGE_STATIC_REGSITER_AUTO( add, eNetMessageFlag::DEFAULT )
 {
     float a, b;
 
@@ -106,7 +106,7 @@ NetMessage* Compose_AddResponse( float a, float b, float sum )
     return msg;
 }
 
-NET_MESSAGE_STATIC_REGSITER_AUTO( add_response )
+NET_MESSAGE_STATIC_REGSITER_AUTO( add_response, eNetMessageFlag::DEFAULT )
 {
     float a, b, sum;
 

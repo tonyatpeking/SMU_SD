@@ -175,6 +175,24 @@ Vec3 Rgba::ToVec3() const
         ( (float) b ) / 255.f );
 }
 
+vector<Rgba>& Rgba::GetColorWheel()
+{
+    static vector<Rgba> s_colorWheel ={
+    RED
+    ,ORANGE
+    ,YELLOW
+    ,GREEN_YELLOW
+    ,GREEN
+    ,GREEN_CYAN
+    ,CYAN
+    ,BLUE_CYAN
+    ,BLUE
+    ,BLUE_MAGENTA
+    ,MAGENTA
+    ,RED_MAGENTA };
+    return s_colorWheel;
+}
+
 void Rgba::ScaleRGB( float rgbScale )
 {
     r = (unsigned char) Clampf( (float) r * rgbScale, 0.f, 255.f );

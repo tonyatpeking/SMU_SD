@@ -8,9 +8,11 @@
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Core/Window.hpp"
 #include "Engine/Core/Console.hpp"
+#include "Engine/Core/RuntimeVars.hpp"
 
 #include "Game/App.hpp"
 #include "Game/GameCommon.hpp"
+#include "Game/GameplayDefines.hpp"
 
 #include "Engine/Core/WindowsCommon.hpp"
 
@@ -94,6 +96,12 @@ void Initialize()
     g_window = new Window( g_config->clientAspect );
     g_window->RegisterHandler( WindowCallback );
     g_app = new App();
+    if( RuntimeVars::HasVar( TILE_WINDOW ) )
+    {
+        int tile_pos = 0;
+        RuntimeVars::GetVar( TILE_WINDOW, tile_pos );
+        g_window->Tile4by4( tile_pos );
+    }
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -106,9 +114,13 @@ void Shutdown()
 //-----------------------------------------------------------------------------------------------
 int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR commandLineString, int )
 {
-    UNUSED( commandLineString );
     UNUSED( applicationInstanceHandle );
+    RuntimeVars::PopulateFromCommandLine( ADDITIONAL_COMMAND_LINE_ARGS );
+    // these can overwrite the above
+    RuntimeVars::PopulateFromCommandLine( commandLineString );
     Initialize();
+    RuntimeVars::LogAll();
+
     while( !g_app->IsQuitting() )
     {
         Sleep( 2 ); // give at least 1 millisecond (out of 16 per frame) back so that other processes can run

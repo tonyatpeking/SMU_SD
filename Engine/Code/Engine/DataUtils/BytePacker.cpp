@@ -56,7 +56,7 @@ void BytePacker::SetEndianness( Endianness byteOrder )
 
 bool BytePacker::WriteBytes( size_t byteCount, const void* data )
 {
-    bool hasRoom = m_bufferSize - m_writeHead > byteCount;
+    bool hasRoom = m_bufferSize - m_writeHead >= byteCount;
     hasRoom = hasRoom && ReadAndWriteHeadsValid();
     if( !hasRoom )
     {
@@ -199,7 +199,10 @@ void BytePacker::ReadString( string& out_str )
 
 bool BytePacker::ReadAndWriteHeadsValid() const
 {
-    return m_readHead <= m_writeHead && m_writeHead <= m_bufferSize;
+    bool valid = m_readHead <= m_writeHead && m_writeHead <= m_bufferSize;
+    if( !valid )
+        LOG_ERROR_TAG( "Byte", "INVALID READ WRITE HEAD" );
+    return valid;
 }
 
 bool BytePacker::CanGrow() const

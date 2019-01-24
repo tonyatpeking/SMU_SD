@@ -7,6 +7,7 @@
 #include <queue>
 
 class Clock;
+class Timer;
 
 class NetSession
 {
@@ -75,6 +76,9 @@ public:
     void SendImmediateConnectionless( NetMessage* netMessage,
                                       const NetAddress& addr );
     bool SendToConnection( uint8 idx, NetMessage* message ); // takes ownership of netMessage
+    bool SendToAll( NetMessage* message ); // takes ownership of netMessage
+    bool SendToAllButMe( NetMessage* message ); // takes ownership of netMessage
+    bool SendToHost( NetMessage* message ); // takes ownership of netMessage
 
     // network condition simulation
     // 1 for all loss

@@ -44,6 +44,8 @@ public:
     // Ignores alpha
     Vec3 ToVec3() const;
 
+    static vector<Rgba>& GetColorWheel();
+
 public:
     unsigned char r = 255;
     unsigned char g = 0;

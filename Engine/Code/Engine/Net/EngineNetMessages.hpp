@@ -35,8 +35,8 @@ static NetMessageSelfRegister name ## _self_register\
     = NetMessageSelfRegister( #name, Execute_ ## name, flags, messageId, channelIdx );\
 bool Execute_ ## name ( NetMessage* netMessage )
 
-#define NET_MESSAGE_STATIC_REGSITER_AUTO( name ) \
-NET_MESSAGE_STATIC_REGSITER( name, eNetMessageFlag::DEFAULT, NET_MESSAGE_ID_AUTO, 0 )
+#define NET_MESSAGE_STATIC_REGSITER_AUTO( name, flags ) \
+NET_MESSAGE_STATIC_REGSITER( name, flags, NET_MESSAGE_ID_AUTO, 0 )
 
 // make a static variable of this to self register
 class NetMessageSelfRegister

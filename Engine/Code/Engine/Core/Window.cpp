@@ -189,3 +189,39 @@ Vec2 Window::ScreenToWindow( const Vec2& pos )
     ScreenToClient( (HWND) m_hwnd, &center );
     return Vec2( (float) center.x, (float) center.y );
 }
+
+void Window::Tile4by4( int pos )
+{
+    // Get desktop rect, dimensions, aspect
+    RECT desktopRect;
+    HWND desktopWindowHandle = GetDesktopWindow();
+    GetClientRect( desktopWindowHandle, &desktopRect );
+    int desktopWidth = (int) ( desktopRect.right - desktopRect.left );
+    int desktopHeight = (int) ( desktopRect.bottom - desktopRect.top );
+
+    int left = 0;
+    int top = 0;
+
+    int halfWidth = desktopWidth / 2;
+    int halfHeight = desktopHeight / 2;
+
+
+    switch( pos )
+    {
+    case 1:
+        left = halfWidth;
+        break;
+    case 2:
+        top = halfHeight;
+        break;
+    case 3:
+        left = halfWidth;
+        top = halfHeight;
+        break;
+    default:
+        break;
+    }
+
+    SetWindowPos( (HWND) m_hwnd, HWND_TOP, left, top, desktopWidth / 2, desktopHeight / 2, NULL );
+
+}

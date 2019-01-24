@@ -45,48 +45,72 @@
 #include "Engine/Thread/ThreadSafeQueue.hpp"
 #include "Engine/Log/Logger.hpp"
 
+#include "Game/NetCube.hpp"
+#include "Engine/Net/NetSession.hpp"
+
 #include "Game/GameState_Playing.hpp"
 #include "Game/GameCommon.hpp"
 #include "Game/Game.hpp"
 #include "Game/App.hpp"
+#include "Game/GameNetMessages.hpp"
+#include "Game/Player.hpp"
 
-#include "ThirdParty/pybind11/embed.h"
-#include "ThirdParty/pybind11/operators.h"
-#include "ThirdParty/pybind11/stl.h"
 
-namespace py = pybind11;
-using namespace pybind11::literals;
+namespace
+{
+GameState_Playing* s_default = nullptr;
 
-PYBIND11_EMBEDDED_MODULE( zzzGame, m ) {
-    m.def( "SetRootGameObject", &GameState_Playing::SetRootGameObject );
 }
 
-GameObject* GameState_Playing::s_rootGameObject = nullptr;
 
+GameState_Playing* GameState_Playing::GetDefault()
+{
+    return  s_default;
+}
 
 GameState_Playing::GameState_Playing()
     : GameState( GameStateType::PLAYING )
 {
+    s_default = this;
 }
 
 GameState_Playing::~GameState_Playing()
 {
     //delete g_mainCamera;
+    s_default = nullptr;
 }
 
 void GameState_Playing::Update()
 {
     PROFILER_SCOPED();
+    g_input->ShowCursor( false );
 
     // switch phase before all updates, this is after process input
     GameState::Update();
 
-    CheckForShipRuleChange();
+    // Host is also a client
+    ClientUpdate();
+
+    if( IsHost() )
+        HostUpdate();
 
     g_gameObjectManager->Update();
 
     g_gameObjectManager->DeleteDeadGameObjects();
+}
 
+void GameState_Playing::HostUpdate()
+{
+    RemoveDisconnectedPlayers();
+    CheckForVictoryReset();
+    UpdatePlayerInputs();
+    SendCubeUpdatesForAllClients();
+    UpdateBullets();
+}
+
+void GameState_Playing::ClientUpdate()
+{
+    SendInputsToHost();
 }
 
 void GameState_Playing::Render() const
@@ -94,11 +118,11 @@ void GameState_Playing::Render() const
     GameState::Render();
 }
 
-
-
 void GameState_Playing::OnEnter()
 {
     GameState::OnEnter();
+
+    m_session = NetSession::GetDefault();
 
     g_input->LockCursor( true );
     g_input->ClipCursor( true );
@@ -114,13 +138,8 @@ void GameState_Playing::OnEnter()
 
     SetAmbient( 0.3f );
 
-    BuildShipFromTree();
-
-    ShapeRulesetLoader::Init();
-
-    ShapeRulesetLoader::Load( "example_ruleset" );
-
-
+    // Tell the host we have started playing
+    SendEnterGame();
 }
 
 void GameState_Playing::OnExit()
@@ -140,10 +159,280 @@ void GameState_Playing::ProcessInput()
 }
 
 
-
-void GameState_Playing::SetRootGameObject( GameObject* go )
+void GameState_Playing::Process_EnterGame( uint8 playerID )
 {
-    s_rootGameObject = go;
+    // tell new player to create all cubes
+    map<uint16, NetCube*> allCubes = NetCube::GetAllCubes();
+    for( auto& pair : allCubes )
+    {
+        SendCreateCube( playerID, pair.second );
+    }
+    CreatePlayerCube( playerID );
+}
+
+void GameState_Playing::SendCreateCube( uint8 playerID, NetCube* cube )
+{
+    if( playerID == 0 )
+        return;
+    m_session->SendToConnection(
+        playerID, GameNetMessages::Compose_CreateCube( cube ) );
+}
+
+void GameState_Playing::SendDestroyCube( uint16 netID )
+{
+    m_session->SendToAllButMe( GameNetMessages::Compose_DestroyCube( netID ) );
+}
+
+void GameState_Playing::SendCreateCubeToAll( NetCube* cube )
+{
+    m_session->SendToAllButMe(
+        GameNetMessages::Compose_CreateCube( cube ) );
+}
+
+void GameState_Playing::CreatePlayerCube( uint8 playerID )
+{
+    Rgba color = Random::Default()->ColorWheel();
+    uint16 netID = NetCube::GetNextFreeNetID();
+    NetCube* cube = new NetCube(
+        Vec3::ZEROS, Vec3::ZEROS, Vec3::ONES, color, netID );
+    cube->m_factionID = playerID;
+    Player* player = new Player();
+    player->m_id = playerID;
+    player->m_cube = cube;
+    m_players[playerID] = player;
+
+    SendCreateCubeToAll( cube );
+}
+
+void GameState_Playing::SendCubeUpdatesForAllClients()
+{
+    for( auto& pair : m_players )
+    {
+        NetCube* cube = pair.second->m_cube;
+        if( cube )
+            m_session->SendToAllButMe(
+                GameNetMessages::Compose_UpdateCube( cube ) );
+    }
+}
+
+
+void GameState_Playing::CreateBulletForPlayer( uint8 playerID )
+{
+    Player* player = GetPlayer( playerID );
+    NetCube* playerCube = GetPlayerCube( playerID );
+    if( playerCube == nullptr )
+        return;
+    if( !player->PopShootTimer() )
+        return;
+    Rgba color = playerCube->GetColor();
+    color = Random::Default()->ColorInRange( color, 30 );
+    uint16 netID = NetCube::GetNextFreeNetID();
+    NetCube* bullet = new NetCube(
+        playerCube->GetTransform().GetLocalPosition(),
+        Vec3::ZEROS, Vec3( 0.3f, 0.3f, 0.3f ), color, netID );
+    bullet->m_velocity = playerCube->m_direction;
+    bullet->m_factionID = playerCube->m_factionID;
+    m_bullets.push_back( bullet );
+
+    SendCreateCubeToAll( bullet );
+}
+
+void GameState_Playing::RemoveDisconnectedPlayers()
+{
+    for( auto it = m_players.cbegin(); it != m_players.cend(); )
+    {
+        uint8 playerID  = it->first;
+        if( m_session->GetConnection( playerID ) == nullptr )
+        {
+            SendDestroyCube( playerID );
+            delete it->second;
+            it = m_players.erase( it );
+        }
+        else
+        {
+            ++it;
+        }
+    }
+}
+
+void GameState_Playing::CheckForVictoryReset()
+{
+    if( m_players.size() == 1 )
+        return;
+
+    float r = 0;
+    float g = 0;
+    float b = 0;
+
+    for( auto& pair : m_players )
+    {
+        NetCube* playerCube = pair.second->m_cube;
+        Rgba color = playerCube->GetColor();
+        r += (float) color.r;
+        g += (float) color.g;
+        b += (float) color.b;
+    }
+    r = r / (float) m_players.size();
+    g = g / (float) m_players.size();
+    b = b / (float) m_players.size();
+
+    for( auto& pair : m_players )
+    {
+        NetCube* playerCube = pair.second->m_cube;
+        Rgba color = playerCube->GetColor();
+        if( fabsf( (float) color.r - r ) > VICTORY_COLOR_DEVIATION
+            || fabsf( (float) color.g - g ) > VICTORY_COLOR_DEVIATION
+            || fabsf( (float) color.b - b ) > VICTORY_COLOR_DEVIATION )
+        {
+            return;
+        }
+    }
+
+    // Victory
+    for( auto& pair : m_players )
+    {
+        NetCube* playerCube = pair.second->m_cube;
+        playerCube->SetTargetColor( Random::Default()->ColorWheel() );
+    }
+}
+
+NetCube* GameState_Playing::GetPlayerCube( uint8 playerID )
+{
+    Player* player = GetPlayer( playerID );
+    if( player )
+        return player->m_cube;
+    return nullptr;
+}
+
+Player* GameState_Playing::GetPlayer( uint8 playerID )
+{
+    if( ContainerUtils::ContainsKey( m_players, playerID ) )
+        return m_players[playerID];
+    return nullptr;
+}
+
+void GameState_Playing::Process_SendInputs(
+    uint8 playerID, const ClientInputs& inputs )
+{
+    Player* player = GetPlayer( playerID );
+    if( player )
+        *player->m_inputs = inputs;
+}
+
+void GameState_Playing::UpdatePlayerInputs()
+{
+    for( auto& pair : m_players )
+    {
+        uint8 playerID = pair.first;
+        Player* player = pair.second;
+        // movement
+        NetCube* playerCube = player->m_cube;
+        ClientInputs& input = *player->m_inputs;
+        Transform& t = playerCube->GetTransform();
+        Vec3 translate =
+            input.up * Vec3::UP
+            + input.left * Vec3::LEFT
+            + input.down * Vec3::DOWN
+            + input.right * Vec3::RIGHT;
+        float length = translate.NormalizeAndGetLength();
+        if( length > 0.00001 )
+            playerCube->m_direction = translate;
+        translate = translate
+            * g_gameClock->GetDeltaSecondsF()
+            * PLAYER_MOVE_SPEED;
+        t.TranslateLocal( translate );
+        playerCube->SetTargetPosition( t.GetLocalPosition() );
+
+        // shooting
+        if( input.fire )
+        {
+            CreateBulletForPlayer( playerID );
+        }
+
+    }
+}
+
+void GameState_Playing::UpdateBullets()
+{
+    for( int i = (int)m_bullets.size() - 1; i >= 0; --i )
+    {
+        NetCube* bullet = m_bullets[i];
+        bullet->m_timeToLive -= g_gameClock->GetDeltaSecondsF();
+        if( bullet->m_timeToLive <= 0.f )
+        {
+            SendDestroyCube( bullet->m_netID );
+            bullet->SetShouldDie( true );
+            ContainerUtils::EraseAtIndexFast( m_bullets, i );
+            continue;
+        }
+
+        for( auto& pair : m_players )
+        {
+            Player* player = pair.second;
+            if( player->m_cube->m_factionID == bullet->m_factionID )
+                continue;
+            Vec3 playerPos = player->m_cube->GetTransform().GetLocalPosition();
+            Vec3 bulletPos = bullet->GetTransform().GetLocalPosition();
+            if( ( playerPos - bulletPos ).GetLengthSquared()
+                < PLAYER_BULLET_COLLISION_DIST_SQUARED )
+            {
+                Rgba playerColor = player->m_cube->GetColor();
+                Rgba bulletColor = bullet->GetColor();
+                Rgba blend = Lerp( playerColor, bulletColor,
+                                   BULLET_COLOR_BLEND_WEIGHT );
+                player->m_cube->SetTargetColor( blend );
+                SendDestroyCube( bullet->m_netID );
+                bullet->SetShouldDie( true );
+                ContainerUtils::EraseAtIndexFast( m_bullets, i );
+                break;
+            }
+        }
+
+    }
+}
+
+void GameState_Playing::SendInputsToHost()
+{
+    ClientInputs inputs;
+    inputs.up = g_input->IsKeyPressed( 'W' );
+    inputs.left = g_input->IsKeyPressed( 'A' );
+    inputs.down = g_input->IsKeyPressed( 'S' );
+    inputs.right = g_input->IsKeyPressed( 'D' );
+    inputs.fire = g_input->IsKeyPressed( InputSystem::KEYBOARD_SPACE );
+    m_session->SendToHost( GameNetMessages::Compose_SendInputs( inputs ) );
+}
+
+void GameState_Playing::Process_CreateCube( const Vec3& position, const Vec3& velocity, const Vec3& scale, const Rgba& color, uint16 netID )
+{
+    NetCube* cube = new NetCube( position, Vec3::ZEROS, scale, color, netID );
+    cube->m_velocity = velocity;
+}
+
+void GameState_Playing::SendEnterGame()
+{
+    m_session->SendToHost( GameNetMessages::Compose_EnterGame() );
+}
+
+void GameState_Playing::Process_DestroyCube( uint16 netID )
+{
+    NetCube::MarkForDestroy( netID );
+}
+
+void GameState_Playing::Process_UpdateCube(
+    const Vec3& position,
+    const Rgba& color,
+    uint16 netID )
+{
+    NetCube* cube = NetCube::GetNetCube( netID );
+    if( !cube )
+        return;
+    cube->SetTargetPosition( position );
+    cube->SetTargetColor( color );
+}
+
+bool GameState_Playing::IsHost()
+{
+    return m_session->IsHost();
 }
 
 void GameState_Playing::MakeCamera()
@@ -164,32 +453,21 @@ void GameState_Playing::ProcessMovementInput()
 
     float ds = g_gameClock->GetDeltaSecondsF();
 
-    if( s_rootGameObject )
-    {
-        Transform& shipTransform = s_rootGameObject->GetTransform();
-        float deltaShipRoll = 0;
-
-        if( g_input->IsKeyPressed( 'Q' ) )
-            deltaShipRoll = ds * m_rollSpeed;
-        if( g_input->IsKeyPressed( 'E' ) )
-            deltaShipRoll = -ds * m_rollSpeed;
-        shipTransform.RotateLocalEuler( Vec3( 0, 0, deltaShipRoll ) );
-    }
+    SendInputsToHost();
 
     float deltaCamYaw = 0;
     float deltaCamPitch = 0;
 
 
-
-    Vec2 cursorDelta = g_input->GetCursorDelta();
-    if( cursorDelta.GetLengthSquared() > 0.01f )
-    {
-        deltaCamYaw = -cursorDelta.x * m_cameraRotateSpeed;
-        deltaCamPitch = cursorDelta.y * m_cameraRotateSpeed;
-    }
-    m_camYaw += deltaCamYaw;
-    m_camPitch += deltaCamPitch;
-    m_camPitch = Clampf( m_camPitch, -89, 89 );
+    //     Vec2 cursorDelta = g_input->GetCursorDelta();
+    //     if( cursorDelta.GetLengthSquared() > 0.01f )
+    //     {
+    //         deltaCamYaw = -cursorDelta.x * m_cameraRotateSpeed;
+    //         deltaCamPitch = cursorDelta.y * m_cameraRotateSpeed;
+    //     }
+    //     m_camYaw += deltaCamYaw;
+    //     m_camPitch += deltaCamPitch;
+    //     m_camPitch = Clampf( m_camPitch, -89, 89 );
 
 
     UpdateCameraToFollow();
@@ -222,40 +500,14 @@ void GameState_Playing::SetAmbient( float ambient )
 }
 
 
-void GameState_Playing::CheckForShipRuleChange()
-{
-    if( ShapeRulesetLoader::DidCurrentRuleChange() )
-        ShapeRulesetLoader::Load( "example_ruleset" );
-}
-
-void GameState_Playing::BuildShipFromTree()
-{
-//     if( s_rootGameObject )
-//     {
-//         s_rootGameObject->GetRenderable()->DeleteMesh();
-//         delete s_rootGameObject;
-//         s_rootGameObject = nullptr;
-//     }
-
-    //     s_rootGameObject = new GameObject();
-    //     Renderable* r = new Renderable();
-    //     s_rootGameObject->SetRenderable( r );
-    //     r->GetMaterial( 0 )->SetShaderPass( 0, ShaderPass::GetLitShader() );
-    //     r->SetMesh( MeshPrimitive::MakeCube().MakeMesh() );
-    //s_rootGameObject = GameObject::MakeCube();
-
-}
-
 void GameState_Playing::UpdateCameraToFollow()
 {
     float camHeight = 3;
     float camRadius = 20;
     Vec3 camOrbitPoint;
-    if( s_rootGameObject )
+    if( true )
     {
-        Transform& shipTrans = s_rootGameObject->GetTransform();
-
-        Vec3 shipPos = shipTrans.GetWorldPosition();
+        Vec3 shipPos = Vec3::ZEROS;
         camOrbitPoint = shipPos + Vec3::UP * camHeight;
     }
     else

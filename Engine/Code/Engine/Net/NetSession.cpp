@@ -385,7 +385,10 @@ void NetSession::Update()
     if( m_state == eSessionState::CONNECTING )
     {
         if( m_myConnection->m_state == eConnectionState::CONNECTED )
+        {
             m_state = eSessionState::JOINING;
+            m_myConnection->m_state = eConnectionState::READY;
+        }
         SendJoinRequestWithInterval();
         if( DidJoinTimeout() )
         {
@@ -494,16 +497,31 @@ bool NetSession::ProcessPacket( NetPacket& packet )
     }
 
     if( VALIDATE_PACKET && !packet.IsValid() )
+    {
+        LOG_WARNING_TAG(
+            "Net",
+            "Packet Validation Failed!" );
         return false;
+    }
     packet.SetReadHead( sizeof( PacketHeader ) );
     NetMessage msg;
     for( int msgIdx = 0; msgIdx < packet.m_header.m_message_count; ++msgIdx )
     {
         if( !packet.ExtractMessage( msg ) )
+        {
+            LOG_WARNING_TAG(
+                "Net",
+                "ExtractMessage Failed!" );
             return false;
+        }
 
         if( !ProcessMessage( msg ) )
+        {
+            LOG_WARNING_TAG(
+                "Net",
+                "ProcessMessage Failed!" );
             return false;
+        }
     }
     return true;
 }
@@ -520,7 +538,7 @@ bool NetSession::ProcessMessage( NetMessage& message )
         return false;
     }
 
-    if( def->RequiresConnection() && GetConnection(message.m_senderIdx) == nullptr )
+    if( def->RequiresConnection() && GetConnection( message.m_senderIdx ) == nullptr )
     {
         LOG_WARNING_TAG( "Net",
                          "MessageID [%d] required connection when there was none"
@@ -658,6 +676,41 @@ bool NetSession::SendToConnection( uint8 idx, NetMessage* message )
     }
     connection->QueueSend( message );
     return true;
+}
+
+bool NetSession::SendToAll( NetMessage* message )
+{
+    bool success = true;
+    for( auto& pair : m_connections )
+    {
+        uint8 idx = pair.first;
+        NetMessage* copyMsg = new NetMessage( *message );
+        if( !SendToConnection( idx, copyMsg ) )
+            success = false;
+    }
+    delete message;
+    return success;
+}
+
+bool NetSession::SendToAllButMe( NetMessage* message )
+{
+    bool success = true;
+    for( auto& pair : m_connections )
+    {
+        uint8 idx = pair.first;
+        if( idx == m_myConnectionIdx )
+            continue;
+        NetMessage* copyMsg = new NetMessage( *message );
+        if( !SendToConnection( idx, copyMsg ) )
+            success = false;
+    }
+    delete message;
+    return success;
+}
+
+bool NetSession::SendToHost( NetMessage* message )
+{
+    return SendToConnection( 0, message );
 }
 
 void NetSession::SetSimLoss( float lossAmount )

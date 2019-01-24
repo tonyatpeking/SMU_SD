@@ -32,20 +32,23 @@ App::App()
 {
     Profiler::StartUp();
 
-    Logger::GetDefault()->StartUp();
-    Logger::GetDefault()->AddFileHook();
-    Logger::GetDefault()->AddFileHook( IOUtils::GetCurrentDir() + "/Logs/log.txt" );
-    HookDebuggerToLogger( Logger::GetDefault() );
+    {
+        Logger::GetDefault()->StartUp();
+        Logger::GetDefault()->AddFileHook();
+        Logger::GetDefault()->AddFileHook( IOUtils::GetCurrentDir() + "/Logs/log.txt" );
+        HookDebuggerToLogger( Logger::GetDefault() );
 
-    g_realtimeClock = new Clock();
-    Clock::SetRealTimeClock( g_realtimeClock );
-    g_appClock = new Clock();
-    g_UIClock = new Clock( g_appClock );
-    g_gameClock = new Clock( g_appClock );
+        g_realtimeClock = new Clock();
+        Clock::SetRealTimeClock( g_realtimeClock );
+        g_appClock = new Clock();
+        g_UIClock = new Clock( g_appClock );
+        g_gameClock = new Clock( g_appClock );
 
-    g_renderer = new Renderer( g_window );
-    g_renderer->SetDefaultFont( g_config->fontPath );
-    g_renderer->SetClocks( g_gameClock, g_appClock );
+        g_renderer = new Renderer( g_window );
+        g_renderer->SetDefaultFont( g_config->fontPath );
+        g_renderer->SetClocks( g_gameClock, g_appClock );
+    }
+
 
     DebugRender::Startup( g_renderer );
     DebugRender::SetClock( g_appClock );
@@ -62,7 +65,8 @@ App::App()
     Console::SetDefaultConsole( g_console );
     g_console->SetSizeRatio( g_config->consoleHeightRatio );
     g_console->HookToLogger( Logger::GetDefault() );
-    g_audio = new AudioSystem();
+
+    //g_audio = new AudioSystem();
 
     g_UITweenSystem = new TweenSystem();
     g_gameTweenSystem = new TweenSystem();
@@ -70,6 +74,7 @@ App::App()
     g_game = new Game();
 
     RemoteCommandService::GetDefault()->StartUp();
+
 }
 
 App::~App()
@@ -118,9 +123,7 @@ void App::RunFrame()
     lastTime = currentTime;
     g_appClock->Update( deltaSeconds );
 
-    PROFILER_PUSH( Audio );
-    g_audio->BeginFrame();
-    PROFILER_POP();
+    //g_audio->BeginFrame();
 
     PROFILER_PUSH( g_renderer->BeginFrame() );
     g_renderer->BeginFrame();
@@ -155,7 +158,7 @@ void App::RunFrame()
 
     g_input->EndFrame();
     g_renderer->EndFrame();
-    g_audio->EndFrame();
+    //g_audio->EndFrame();
 
 }
 

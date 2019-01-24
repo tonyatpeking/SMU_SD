@@ -5,6 +5,8 @@
 #include "Engine/Renderer/DebugRender.hpp"
 #include "Engine/Profiler/ProfilerReport.hpp"
 #include "Engine/Profiler/ProfilerReportEntry.hpp"
+#include "Engine/Core/Window.hpp"
+#include "Engine/Core/SystemUtils.hpp"
 
 #include "Game/GameCommands.hpp"
 #include "Game/GameCommon.hpp"
@@ -283,6 +285,24 @@ void GameCommands::RegisterAllCommands()
             return;
         }
         g_game->StartNetworkTest( idx, count, eNetworkTestType::SEQUENCE );
+    } );
+
+    commandSys->AddCommand( "ez", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        g_window->Tile4by4( 0 );
+        CommandSystem::DefaultCommandSystem()->RunCommand( "host" );
+        SystemUtils::CloneProcess( "tile_window=1 auto_join" );
+    } );
+
+    commandSys->AddCommand( "ez4", []( string& str )
+    {
+        CommandParameterParser parser( str );
+        g_window->Tile4by4( 0 );
+        CommandSystem::DefaultCommandSystem()->RunCommand( "host" );
+        SystemUtils::CloneProcess( "tile_window=1 auto_join" );
+        SystemUtils::CloneProcess( "tile_window=2 auto_join" );
+        SystemUtils::CloneProcess( "tile_window=3 auto_join" );
     } );
 
 }

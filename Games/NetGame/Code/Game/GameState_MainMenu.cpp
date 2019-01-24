@@ -7,6 +7,10 @@
 #include "Engine/Time/TweenSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Audio/AudioSystem.hpp"
+#include "Engine/Net/NetSession.hpp"
+#include "Engine/Core/EngineCommonC.hpp"
+#include "Engine/Core/RuntimeVars.hpp"
+#include "Engine/Core/CommandSystem.hpp"
 
 #include "Game/GameState_MainMenu.hpp"
 #include "Game/Game.hpp"
@@ -29,7 +33,13 @@ GameState_MainMenu::~GameState_MainMenu()
 void GameState_MainMenu::Update()
 {
     GameState::Update();
-
+    if( RuntimeVars::IsBoolSet( AUTO_JOIN ) )
+    {
+        CommandSystem::DefaultCommandSystem()->RunCommand( "join" );
+        RuntimeVars::EraseVar( AUTO_JOIN );
+    }
+    if( NetSession::GetDefault()->m_state == eSessionState::READY )
+        StartGame();
 }
 
 void GameState_MainMenu::Render() const

@@ -56,6 +56,7 @@ public:
 
     void UpdateClipCursorAfterResize();
 
+    // window
     void SetWindowHasFocus( bool focus );
     bool WindowHasFocus() { return m_hasFocus; };
     bool DidWindowJustLoseFocus();

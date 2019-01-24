@@ -119,7 +119,7 @@ public:
 
     string ToString() const;
 
-private:
+protected:
     // Caution, may or may not own this memory, check BytePackerOptions
     Byte* m_buffer = nullptr;
 

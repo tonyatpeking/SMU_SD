@@ -24,6 +24,7 @@ NetMessage::NetMessage( NetMessage& copyFrom )
     : BytePacker( MESSAGE_MTU, m_localBuffer )
 {
     SetEndianness( Endianness::LITTLE );
+    copyFrom.SetReadHead( 0 );
     CopyFrom( copyFrom );
     m_name = copyFrom.m_name;
     m_def = copyFrom.m_def;

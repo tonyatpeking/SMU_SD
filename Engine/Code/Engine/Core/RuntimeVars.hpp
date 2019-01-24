@@ -6,6 +6,7 @@ namespace RuntimeVars
 
 extern map<string, string> g_allVars;
 
+void PopulateFromCommandLine(char* commandline);
 
 void LogAll();
 
